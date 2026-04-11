@@ -1,0 +1,15 @@
+schemaVersion: 1
+id: agency-client-beta
+name: Client Beta
+kind: child
+version: 0.1.0
+description: Second client engagement — demonstrates repeatable per-client cabinet pattern.
+entry: index.md
+
+parent:
+  shared_context:
+    - /processes/index.md
+    - /templates/index.md
+
+access:
+  mode: subtree-plus-parent-brief

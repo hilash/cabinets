@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikTok Content Calendar</title>
+    <style>
+      :root {
+        --bg: #fff7f2;
+        --card: #ffffff;
+        --ink: #2f2424;
+        --muted: #7b6d6a;
+        --line: #ead9d2;
+        --accent: #ff6b6b;
+        --accent-2: #ffb347;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background: radial-gradient(circle at top, #ffe7db, var(--bg) 45%);
+        color: var(--ink);
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: end;
+        margin-bottom: 24px;
+      }
+      .kicker {
+        font: 700 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+      }
+      h1 {
+        margin: 8px 0 6px;
+        font-size: clamp(2.2rem, 4vw, 4rem);
+        line-height: 0.95;
+      }
+      .summary {
+        color: var(--muted);
+        max-width: 680px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 18px;
+        box-shadow: 0 14px 35px rgba(89, 59, 44, 0.07);
+      }
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 107, 107, 0.12);
+        color: #9f2f3b;
+        font: 700 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+      }
+      h2 {
+        margin: 12px 0 8px;
+        font-size: 1.25rem;
+      }
+      ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <div class="kicker">Text Your Mom / TikTok Growth</div>
+          <h1>Weekly Content Calendar</h1>
+          <p class="summary">
+            A lightweight planning surface for hooks, skits, and confession-style creative built
+            around reply guilt, family group chat avoidance, and warm accountability.
+          </p>
+        </div>
+        <div class="pill">Imported cabinet</div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="pill">Monday</div>
+          <h2>The Question Mark Post</h2>
+          <ul>
+            <li>Format: 5-slide carousel</li>
+            <li>Hook: "Text your mom before she sends ?"</li>
+            <li>Status: script ready</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="pill">Wednesday</div>
+          <h2>Group Chat Shame Spiral</h2>
+          <ul>
+            <li>Format: skit</li>
+            <li>Angle: you muted it, but emotionally it muted you</li>
+            <li>Status: idea</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="pill">Friday</div>
+          <h2>Liked The Photo, Ignored The Text</h2>
+          <ul>
+            <li>Format: talking head</li>
+            <li>Angle: accidental betrayal via casual social interaction</li>
+            <li>Status: research</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

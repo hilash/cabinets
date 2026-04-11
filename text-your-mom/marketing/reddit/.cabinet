@@ -1,0 +1,16 @@
+schemaVersion: 1
+id: text-your-mom-reddit
+name: Reddit Community
+kind: child
+version: 0.1.0
+description: Reddit research and community acquisition cabinet for Text Your Mom.
+entry: index.md
+
+parent:
+  shared_context:
+    - /company/strategy/index.md
+    - /company/goals/index.md
+    - /company/persona/index.md
+
+access:
+  mode: subtree-plus-parent-brief

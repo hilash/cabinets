@@ -1,0 +1,6 @@
+Bug,Area,Severity,Status,Notes
+"Reminder sent 2 hours late",Notifications,Critical,Open,"Breaks trust in the core product promise"
+"Imported contact nickname not shown in setup",Onboarding,Medium,Open,"Feels impersonal but not blocking"
+"Streak resets after timezone change",Retention,High,Investigating,"Makes the app feel unfair"
+"Trial paywall dismiss button clipped on small screens",Subscription,High,Open,"Directly affects conversion and trust"
+"Reply suggestion card flickers on refresh",Home feed,Low,Backlog,"Annoying but not harmful"

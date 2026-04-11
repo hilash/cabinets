@@ -1,0 +1,16 @@
+id: daily-trend-scan
+name: Daily Trend Scan
+description: Finds fresh TikTok angles, references, and hooks relevant to missed replies, family guilt, and caring-without-being-cringe.
+ownerAgent: trend-scout
+enabled: false
+schedule: "0 8 * * 1-5"
+prompt: |-
+  Review the current TikTok cabinet backlog and identify 3 to 5 fresh content angles for Text Your Mom.
+  Focus on:
+  - missed reply guilt
+  - mom texting patterns
+  - group chat avoidance
+  - wholesome but funny accountability
+  Update content-ideas.csv with new hooks, formats, and suggested post dates.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

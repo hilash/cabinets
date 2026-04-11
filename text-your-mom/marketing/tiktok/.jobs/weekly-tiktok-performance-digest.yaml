@@ -1,0 +1,16 @@
+id: weekly-tiktok-performance-digest
+name: Weekly TikTok Performance Digest
+description: Summarizes what content styles are earning attention, saves, comments, and installs.
+ownerAgent: post-optimizer
+enabled: false
+schedule: "0 9 * * 1"
+prompt: |-
+  Review the TikTok cabinet backlog, briefs, and analytics notes.
+  Write a weekly digest covering:
+  - what hooks worked
+  - what story formats fell flat
+  - what emotional angles got the best response
+  - what to produce next week
+  Save the digest in /analytics.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

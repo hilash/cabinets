@@ -1,0 +1,7 @@
+schemaVersion: 1
+id: saas-startup-root
+name: SaaS Startup
+kind: root
+version: 0.1.0
+description: B2B SaaS startup with product-led growth, engineering, and customer success teams.
+entry: index.md

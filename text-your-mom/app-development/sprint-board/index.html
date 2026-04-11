@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sprint Board</title>
+    <style>
+      :root {
+        --bg: #f6f4ff;
+        --card: #ffffff;
+        --ink: #292538;
+        --muted: #706b84;
+        --line: #ddd7f2;
+        --accent: #5867ff;
+        --accent-soft: rgba(88, 103, 255, 0.12);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, #e5e1ff, transparent 34%),
+          linear-gradient(180deg, #ffffff 0%, var(--bg) 60%);
+      }
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 20px;
+      }
+      .kicker {
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      h1 {
+        margin: 8px 0 6px;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 0.95;
+      }
+      .summary {
+        max-width: 720px;
+        color: var(--muted);
+      }
+      .board {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .column {
+        background: rgba(255,255,255,0.74);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 16px;
+        backdrop-filter: blur(10px);
+      }
+      .column h2 {
+        margin: 0 0 12px;
+        font-size: 1rem;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        margin-bottom: 12px;
+        box-shadow: 0 10px 24px rgba(74, 65, 111, 0.08);
+      }
+      .tag {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <div class="kicker">Text Your Mom / App Development</div>
+          <h1>Sprint Board</h1>
+          <p class="summary">
+            A lightweight board for the imported app-development cabinet, centered on onboarding,
+            reminders, trust, and release readiness.
+          </p>
+        </div>
+        <div class="tag">Imported cabinet</div>
+      </div>
+      <div class="board">
+        <div class="column">
+          <h2>Ready</h2>
+          <div class="card">
+            <div class="tag">Product</div>
+            <p>Finalize onboarding v2 acceptance criteria around first reminder setup.</p>
+          </div>
+          <div class="card">
+            <div class="tag">QA</div>
+            <p>Triage timezone-related streak resets and document reproduction steps.</p>
+          </div>
+        </div>
+        <div class="column">
+          <h2>In Progress</h2>
+          <div class="card">
+            <div class="tag">Engineering</div>
+            <p>Improve reminder timing logic to reduce "too late" notifications.</p>
+          </div>
+        </div>
+        <div class="column">
+          <h2>Review</h2>
+          <div class="card">
+            <div class="tag">Release</div>
+            <p>Check rollback steps and production alerts before next mobile release.</p>
+          </div>
+        </div>
+        <div class="column">
+          <h2>Later</h2>
+          <div class="card">
+            <div class="tag">Growth</div>
+            <p>Experiment with premium features around recurring check-in circles.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

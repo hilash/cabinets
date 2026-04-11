@@ -1,0 +1,15 @@
+id: weekly-status-update-beta
+name: Weekly Status Update
+description: Writes the weekly status report for Client Beta.
+ownerAgent: account-manager
+enabled: true
+schedule: "0 14 * * 4"
+prompt: |-
+  Review this week's deliverables, communications, and progress.
+  Write a client-facing weekly status update covering:
+  - Completed items
+  - In-progress work
+  - Upcoming milestones
+  - Any blockers or decisions needed from the client
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

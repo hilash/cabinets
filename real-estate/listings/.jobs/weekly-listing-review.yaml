@@ -1,0 +1,13 @@
+id: weekly-listing-review
+name: Weekly Listing Review
+description: Reviews all active listings for performance and recommends pricing or marketing adjustments.
+ownerAgent: listing-agent
+enabled: true
+schedule: "0 10 * * 1"
+prompt: |-
+  Review all active listings.
+  For each listing, note days on market, showing count, and any feedback.
+  Flag listings that may need price reductions or marketing changes.
+  Write a weekly listing review summary.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

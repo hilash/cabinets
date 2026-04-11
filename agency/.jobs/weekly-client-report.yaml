@@ -1,0 +1,16 @@
+id: weekly-client-report
+name: Weekly Client Report
+description: Generates cross-client status report covering utilization, deliverables, and risks.
+ownerAgent: account-director
+enabled: true
+schedule: "0 14 * * 5"
+prompt: |-
+  Review all client cabinet summaries and delivery status.
+  Write a weekly agency report covering:
+  - Deliverable status per client
+  - Team utilization this week
+  - At-risk items or escalations
+  - Upcoming deadlines across all clients
+  Save the report to /processes.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

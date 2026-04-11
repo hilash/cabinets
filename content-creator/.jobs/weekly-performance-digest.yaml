@@ -1,0 +1,16 @@
+id: weekly-performance-digest
+name: Weekly Performance Digest
+description: Analyzes content performance from the past week and recommends adjustments.
+ownerAgent: analytics-reviewer
+enabled: true
+schedule: "0 8 * * 1"
+prompt: |-
+  Review content performance data from the past week.
+  Write a performance digest covering:
+  - Top 3 performing pieces and why they worked
+  - Bottom 3 and hypotheses for underperformance
+  - Audience growth trends
+  - One recommendation for next week's content strategy
+  Save the digest to /audience-research.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

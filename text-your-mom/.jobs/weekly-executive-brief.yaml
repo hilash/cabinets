@@ -1,0 +1,16 @@
+id: weekly-executive-brief
+name: Weekly Executive Brief
+description: Creates the weekly leadership brief covering growth, product risks, and next decisions.
+ownerAgent: ceo
+enabled: true
+schedule: "0 9 * * 1"
+prompt: |-
+  Review the company strategy, goals, KPI pages, and all active child cabinet summaries.
+  Write a sharp weekly executive brief for Text Your Mom that includes:
+  - what changed this week
+  - the biggest growth or retention signal
+  - the top product risk
+  - one decision leadership should make next
+  Save the brief as a new page under /company/strategy or append to the latest weekly review page.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

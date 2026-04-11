@@ -1,0 +1,13 @@
+id: daily-lead-followup
+name: Daily Lead Follow-up
+description: Reviews new leads and ensures timely follow-up within the client relations pipeline.
+ownerAgent: ops-manager
+enabled: true
+schedule: "0 9 * * 1-5"
+prompt: |-
+  Review the client relations pipeline for new leads and pending follow-ups.
+  Identify any leads that have not been contacted within 24 hours.
+  Flag overdue follow-ups and draft response priorities for today.
+  Write a brief daily lead status note.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

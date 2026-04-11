@@ -1,0 +1,13 @@
+id: daily-followup-queue
+name: Daily Follow-up Queue
+description: Identifies clients due for follow-up and prioritizes outreach.
+ownerAgent: client-manager
+enabled: true
+schedule: "0 9 * * 1-5"
+prompt: |-
+  Review the client pipeline for follow-ups due today.
+  Prioritize by urgency: hot leads first, then nurture contacts.
+  Draft brief follow-up notes for each contact.
+  Flag any clients at risk of going cold.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

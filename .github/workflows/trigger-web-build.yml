@@ -1,0 +1,20 @@
+name: Trigger Website Rebuild
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - 'CLAUDE.md'
+      - '.github/**'
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger cabinets-web rebuild
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.CABINETS_WEB_PAT }}
+          repository: ${{ github.repository_owner }}/cabinets-web
+          event-type: registry-updated

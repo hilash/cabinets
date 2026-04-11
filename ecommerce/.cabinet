@@ -1,0 +1,7 @@
+schemaVersion: 1
+id: ecommerce-root
+name: E-commerce Store
+kind: root
+version: 0.1.0
+description: Direct-to-consumer e-commerce brand with inventory, email marketing, and fulfillment operations.
+entry: index.md

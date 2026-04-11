@@ -1,0 +1,7 @@
+schemaVersion: 1
+id: content-creator-root
+name: Content Creator
+kind: root
+version: 0.1.0
+description: Solo content creator operation with strategy, editing, and analytics workflows.
+entry: index.md

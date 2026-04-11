@@ -1,0 +1,7 @@
+schemaVersion: 1
+id: real-estate-root
+name: Real Estate Brokerage
+kind: root
+version: 0.1.0
+description: Real estate brokerage with listings management, marketing, and client relationship operations.
+entry: index.md

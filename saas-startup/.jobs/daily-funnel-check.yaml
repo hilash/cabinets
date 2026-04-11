@@ -1,0 +1,13 @@
+id: daily-funnel-check
+name: Daily Funnel Check
+description: Checks signup-to-activation funnel for anomalies and drops.
+ownerAgent: head-of-growth
+enabled: true
+schedule: "0 10 * * 1-5"
+prompt: |-
+  Check the growth metrics and funnel data for today.
+  Flag any anomalies: signup drops, activation rate changes, or unusual churn.
+  If an experiment is running, report its current performance against the hypothesis.
+  Write a brief daily funnel note to /growth.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

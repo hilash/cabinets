@@ -1,0 +1,12 @@
+id: comment-opportunity-scan
+name: Comment Opportunity Scan
+description: Finds high-empathy opportunities for non-cringe participation and future message testing.
+ownerAgent: growth-marketer
+enabled: false
+schedule: "0 11 * * 1-5"
+prompt: |-
+  Review the current subreddit watchlist and recent discussion themes.
+  Identify the best opportunities for helpful, non-promotional participation or message testing.
+  Log the most promising opportunities in /comment-opportunities with a short note on why they matter.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

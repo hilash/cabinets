@@ -1,0 +1,17 @@
+id: weekly-operating-review
+name: Weekly Operating Review
+description: Reviews execution health across the company and flags bottlenecks or overloaded teams.
+ownerAgent: coo
+enabled: true
+schedule: "0 11 * * 1"
+prompt: |-
+  Review the root cabinet plus every child cabinet for execution health.
+  Summarize open bottlenecks, stale work, duplicate effort, and places where one team is blocked by another.
+  Produce an operating review with:
+  - wins
+  - blockers
+  - overdue items
+  - one process fix to make this week
+  Save the review to a company operations page.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

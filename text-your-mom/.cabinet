@@ -1,0 +1,7 @@
+schemaVersion: 1
+id: text-your-mom-root
+name: Text Your Mom
+kind: root
+version: 0.1.0
+description: Relatable B2C app company cabinet used to test nested cabinet behavior.
+entry: index.md

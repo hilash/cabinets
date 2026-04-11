@@ -1,0 +1,15 @@
+schemaVersion: 1
+id: agency-client-alpha
+name: Client Alpha
+kind: child
+version: 0.1.0
+description: First client engagement — template for per-client cabinet structure.
+entry: index.md
+
+parent:
+  shared_context:
+    - /processes/index.md
+    - /templates/index.md
+
+access:
+  mode: subtree-plus-parent-brief

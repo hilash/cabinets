@@ -1,0 +1,12 @@
+id: daily-bug-triage
+name: Daily Bug Triage
+description: Reviews bug severity, reproduction quality, and whether issues threaten trust or retention.
+ownerAgent: qa
+enabled: false
+schedule: "0 10 * * 1-5"
+prompt: |-
+  Review bug-triage.csv and identify the highest-risk issues for the Text Your Mom app.
+  Prioritize bugs that break trust, reminders, onboarding, or subscription flow.
+  Update triage notes with severity guidance and recommend what should be fixed next.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

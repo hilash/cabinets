@@ -1,0 +1,15 @@
+id: weekly-promo-planning
+name: Weekly Promo Planning
+description: Plans upcoming promotional campaigns based on inventory levels and seasonal calendar.
+ownerAgent: ceo
+enabled: true
+schedule: "0 10 * * 1"
+prompt: |-
+  Review current inventory, upcoming seasonal events, and recent sales performance.
+  Draft promotional priorities for the week including:
+  - Which products to feature based on stock and margin
+  - Email campaign themes for the week
+  - Any clearance items to move
+  Save the plan to /company/strategy.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

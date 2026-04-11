@@ -1,0 +1,12 @@
+id: daily-creative-queue
+name: Daily Creative Queue
+description: Turns the top TikTok ideas into brief-ready scripts and marks what should move into production next.
+ownerAgent: script-writer
+enabled: false
+schedule: "0 10 * * 1-5"
+prompt: |-
+  Review content-ideas.csv and pick the best ideas that are still in Idea or Research status.
+  Draft short creative briefs and move the strongest concepts toward script-ready status.
+  Prioritize ideas that feel immediately relatable, funny, and easy to visualize in 5 to 7 slides.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

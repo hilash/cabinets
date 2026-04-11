@@ -1,0 +1,16 @@
+id: weekly-sprint-plan
+name: Weekly Sprint Plan
+description: Reviews backlog and goals to recommend the next focused engineering sprint.
+ownerAgent: product-manager
+enabled: false
+schedule: "0 9 * * 1"
+prompt: |-
+  Review the roadmap, backlog, PRDs, and KPI context for Text Your Mom.
+  Propose a focused weekly sprint plan that includes:
+  - top priorities
+  - why they matter
+  - what to defer
+  - what should be treated as risk mitigation rather than feature work
+  Save the sprint plan in /backlog or a weekly planning page.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

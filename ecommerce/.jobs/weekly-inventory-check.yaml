@@ -1,0 +1,13 @@
+id: weekly-inventory-check
+name: Weekly Inventory Check
+description: Reviews stock levels across all SKUs and flags items approaching reorder thresholds.
+ownerAgent: head-of-ops
+enabled: true
+schedule: "0 8 * * 1"
+prompt: |-
+  Review current inventory levels for all product categories.
+  Flag any SKUs below reorder threshold.
+  Check supplier lead times for items that need restocking.
+  Write a weekly inventory report with reorder recommendations.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

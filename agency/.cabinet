@@ -1,0 +1,7 @@
+schemaVersion: 1
+id: agency-root
+name: Digital Agency
+kind: root
+version: 0.1.0
+description: Digital agency managing multiple client engagements with shared processes and templates.
+entry: index.md

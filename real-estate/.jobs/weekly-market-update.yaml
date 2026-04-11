@@ -1,0 +1,17 @@
+id: weekly-market-update
+name: Weekly Market Update
+description: Analyzes local market data and updates pricing strategy for active listings.
+ownerAgent: broker
+enabled: true
+schedule: "0 8 * * 1"
+prompt: |-
+  Review local market data including recent sales, new listings, and price trends.
+  Compare active listings against current market conditions.
+  Write a weekly market update with:
+  - Market trend summary
+  - Listings that may need price adjustments
+  - New comparable sales worth noting
+  - Competitive landscape changes
+  Save the update to /market-data.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

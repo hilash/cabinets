@@ -1,0 +1,16 @@
+id: subreddit-signal-scan
+name: Subreddit Signal Scan
+description: Reviews the target subreddit set for phrasing, pain patterns, and emerging user language.
+ownerAgent: researcher
+enabled: false
+schedule: "0 8 * * 1-5"
+prompt: |-
+  Review the Reddit watchlist and summarize the clearest emotional and behavioral patterns relevant to Text Your Mom.
+  Focus on:
+  - people avoiding replies
+  - guilt around family communication
+  - routines for checking in
+  - language people use to describe texting anxiety
+  Save the best signals to /analytics and update the watchlist notes.
+createdAt: "2026-04-11T00:00:00.000Z"
+updatedAt: "2026-04-11T00:00:00.000Z"

@@ -1,0 +1,17 @@
+schemaVersion: 1
+id: text-your-mom-app-development
+name: App Development
+kind: child
+version: 0.1.0
+description: Product, engineering, QA, and release cabinet for the Text Your Mom app.
+entry: index.md
+
+parent:
+  shared_context:
+    - /company/strategy/index.md
+    - /company/goals/index.md
+    - /company/persona/index.md
+    - /company/kpis/index.md
+
+access:
+  mode: subtree-plus-parent-brief
