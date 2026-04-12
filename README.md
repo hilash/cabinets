@@ -240,17 +240,14 @@ A cabinet maps the three pillars of a human organization onto plain files:
 
 ## Install a Cabinet
 
-Copy any cabinet directory into your project:
+```bash
+npx cabinets add hilash/cabinets/text-your-mom
+```
+
+Or with git directly:
 
 ```bash
-# Clone and copy
-git clone https://github.com/hilash/cabinets.git /tmp/cabinets
-cp -r /tmp/cabinets/text-your-mom ./my-company
-
-# Or use sparse checkout for a single cabinet
-git clone --filter=blob:none --sparse https://github.com/hilash/cabinets.git
-cd cabinets
-git sparse-checkout set text-your-mom
+git clone --filter=blob:none --sparse https://github.com/hilash/cabinets.git && cd cabinets && git sparse-checkout set text-your-mom
 ```
 
 ## Contributing
