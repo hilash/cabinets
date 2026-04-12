@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SaaS Metrics Dashboard</title>
+    <style>
+      :root{--bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6}
+      *{box-sizing:border-box;margin:0}
+      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
+      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
+      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+      .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+      .stat-val{font-size:28px;font-weight:800}
+      .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+      .stat-delta{font-size:11px;margin-top:3px;font-weight:600}
+      .up{color:var(--green)}.down{color:var(--red)}
+      .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+      @media(max-width:700px){.two{grid-template-columns:1fr}}
+      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
+      .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+      .row:last-child{border-bottom:none}
+      .r-name{flex:1;font-size:14px;font-weight:600}
+      .r-val{font-size:14px;font-weight:700;flex-shrink:0}
+      .r-sub{font-size:12px;color:var(--muted)}
+      .bar-wrap{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+      .bar{height:100%;border-radius:999px}
+      .funnel{margin-bottom:24px}
+      .funnel-row{display:flex;align-items:center;gap:14px;padding:8px 0}
+      .f-label{width:100px;font-size:13px;font-weight:600;flex-shrink:0}
+      .f-bar-wrap{flex:1;height:24px;background:var(--line);border-radius:8px;overflow:hidden}
+      .f-bar{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;font-size:12px;font-weight:700;color:#fff}
+      .f-val{width:50px;text-align:right;font-size:14px;font-weight:700;flex-shrink:0}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="kicker">SaaS Startup</div>
+      <h1>Growth Dashboard</h1>
+      <p class="sub">ARR, funnel health, and customer metrics for the B2B SaaS motion.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-val" style="color:var(--green)">$1.8M</div><div class="stat-label">ARR</div><div class="stat-delta up">+18% QoQ</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--blue)">$156K</div><div class="stat-label">MRR</div><div class="stat-delta up">+$12K</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--accent)">342</div><div class="stat-label">Customers</div><div class="stat-delta up">+28 this month</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--green)">94%</div><div class="stat-label">Logo Retention</div><div class="stat-delta up">+2%</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--purple)">112%</div><div class="stat-label">Net Revenue Retention</div><div class="stat-delta up">healthy</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--ink)">14.2</div><div class="stat-label">LTV/CAC Ratio</div><div class="stat-delta up">target: >3</div></div>
+      </div>
+
+      <div class="panel funnel">
+        <div class="panel-title">Growth Funnel — This Month</div>
+        <div class="funnel-row"><div class="f-label">Visitors</div><div class="f-bar-wrap"><div class="f-bar" style="width:100%;background:var(--muted)">24,500</div></div><div class="f-val">24.5K</div></div>
+        <div class="funnel-row"><div class="f-label">Signups</div><div class="f-bar-wrap"><div class="f-bar" style="width:12%;background:var(--blue)">2,940</div></div><div class="f-val">12%</div></div>
+        <div class="funnel-row"><div class="f-label">Activated</div><div class="f-bar-wrap"><div class="f-bar" style="width:5.2%;background:var(--accent)">1,274</div></div><div class="f-val">43%</div></div>
+        <div class="funnel-row"><div class="f-label">Trial</div><div class="f-bar-wrap"><div class="f-bar" style="width:2.1%;background:var(--purple)">510</div></div><div class="f-val">40%</div></div>
+        <div class="funnel-row"><div class="f-label">Paid</div><div class="f-bar-wrap"><div class="f-bar" style="width:0.5%;background:var(--green)">28</div></div><div class="f-val">5.5%</div></div>
+      </div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-title">Top Growth Channels</div>
+          <div class="row"><div class="r-name">Organic / SEO</div><div class="bar-wrap"><div class="bar" style="width:42%;background:var(--green)"></div></div><div class="r-val">42%</div></div>
+          <div class="row"><div class="r-name">Product Referrals</div><div class="bar-wrap"><div class="bar" style="width:28%;background:var(--blue)"></div></div><div class="r-val">28%</div></div>
+          <div class="row"><div class="r-name">Content Marketing</div><div class="bar-wrap"><div class="bar" style="width:18%;background:var(--accent)"></div></div><div class="r-val">18%</div></div>
+          <div class="row"><div class="r-name">Paid Ads</div><div class="bar-wrap"><div class="bar" style="width:12%;background:var(--purple)"></div></div><div class="r-val">12%</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Customer Health</div>
+          <div class="row"><div class="r-name">Healthy (daily active)</div><div class="r-val" style="color:var(--green)">78%</div></div>
+          <div class="row"><div class="r-name">At Risk (low usage 14d)</div><div class="r-val" style="color:var(--accent)">16%</div></div>
+          <div class="row"><div class="r-name">Churn Risk (inactive 30d)</div><div class="r-val" style="color:var(--red)">6%</div></div>
+          <div class="row"><div class="r-name">NPS Score</div><div class="r-val" style="color:var(--green)">52</div></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

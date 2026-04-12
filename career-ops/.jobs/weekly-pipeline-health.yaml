@@ -1,0 +1,37 @@
+id: weekly-pipeline-health
+name: Weekly Pipeline Health
+enabled: true
+schedule: 0 9 * * 1
+provider: claude-code
+ownerAgent: evaluator
+agentSlug: evaluator
+timeout: 600
+prompt: |-
+  Analyze the full pipeline in /pipeline/tracker.csv and produce a health report:
+
+  Pipeline Metrics:
+  - Total opportunities by status (Discovered, Evaluating, Applied, Screen, Interview, Offer, Rejected, Ghosted, Withdrawn)
+  - Conversion rates between each stage
+  - Average time in each stage
+  - Pipeline velocity (new entries vs closures per week)
+
+  Quality Metrics:
+  - Average evaluation score of applied roles
+  - Percentage of applications scoring 4.0+ (should be >80%)
+  - Referral vs cold apply ratio
+  - Channel performance (which portals produce the best matches)
+
+  Stale Detection:
+  - Flag applications in "Applied" for 10+ days with no response
+  - Flag evaluations in "Discovered" for 7+ days without being scored
+  - Flag interviews with no follow-up sent within 24 hours
+
+  Strategy Recommendation:
+  - Based on conversion data, what should the user focus on this week?
+  - Are they applying to too many low-score roles? Too few total?
+  - Which pipeline stage is the bottleneck?
+
+  Save the report to /analytics and update the dashboard context.
+cabinetPath: jobs/career-ops
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

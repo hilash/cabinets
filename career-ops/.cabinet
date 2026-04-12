@@ -1,0 +1,14 @@
+schemaVersion: 1
+id: career-ops-root
+name: Career Ops
+kind: root
+version: 0.1.0
+description: >
+  AI-powered job search command center. Evaluate offers with a 6-block scoring system,
+  scan 45+ company portals, generate ATS-optimized CVs, and track your pipeline with
+  data-driven precision. Inspired by santifer/career-ops (MIT) by Santiago Fernandez.
+entry: index.md
+attribution:
+  source: https://github.com/santifer/career-ops
+  author: Santiago Fernandez de Valderrama (@santifer)
+  license: MIT

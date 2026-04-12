@@ -1,0 +1,35 @@
+id: batch-evaluate
+name: Batch Evaluate
+enabled: true
+schedule: 0 10 * * 1-5
+provider: claude-code
+ownerAgent: evaluator
+agentSlug: evaluator
+timeout: 600
+prompt: |-
+  Review /pipeline/tracker.csv for all entries with status "Discovered" or "Evaluating"
+  that do not yet have a 6-block evaluation score.
+
+  For each pending offer (up to 10 per batch):
+  1. Fetch or read the job posting details
+  2. Run the full 6-block evaluation (A through F):
+     - A: Role Summary (scope, team, growth)
+     - B: CV Match Analysis (skills overlap, gaps, ATS keywords)
+     - C: Level Strategy (seniority fit, trajectory)
+     - D: Compensation Research (market benchmarks, total comp)
+     - E: Personalization Tips (culture signals, application angle)
+     - F: Interview Prep (likely questions, STAR+R story mapping)
+  3. Calculate the weighted score (A:20%, B:25%, C:15%, D:15%, E:10%, F:15%)
+  4. Update tracker.csv with the score and recommendation
+  5. Save the full evaluation as a page in /evaluations
+
+  Recommendations:
+  - 4.0+ : Move to "Ready to Apply" — trigger CV tailoring
+  - 3.5-3.9 : "Consider" — apply only if pipeline is thin
+  - 3.0-3.4 : "Weak" — only with a warm referral
+  - Below 3.0 : "Skip" — move to Withdrawn
+
+  Produce a batch summary: how many evaluated, score distribution, top recommendation.
+cabinetPath: jobs/career-ops
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

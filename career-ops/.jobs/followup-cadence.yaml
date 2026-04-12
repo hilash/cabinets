@@ -1,0 +1,34 @@
+id: followup-cadence
+name: Follow-up Cadence
+enabled: true
+schedule: 0 10 * * 2,4
+provider: claude-code
+ownerAgent: interview-strategist
+agentSlug: interview-strategist
+timeout: 600
+prompt: |-
+  Review /pipeline/tracker.csv and /outreach/index.md for follow-up actions:
+
+  Application Follow-ups:
+  - "Applied" for 7-10 days, no response → Draft a polite check-in email
+  - "Applied" for 14+ days, no response → Flag as likely ghosted, suggest one final follow-up
+  - "Screen" completed 5+ days ago with no next steps → Draft a "checking in" message
+
+  Post-Interview:
+  - Interviews completed in the last 48 hours → Draft a specific thank-you (not generic)
+  - Interviews completed 5+ days ago with no update → Draft a professional follow-up
+
+  Networking:
+  - Outreach sent 5+ days ago with no reply → Suggest a gentle bump (once only)
+  - Contacts who responded positively → Suggest next action to deepen the relationship
+  - Referral contacts at companies with active applications → Status update message
+
+  For each follow-up:
+  - Draft the actual message, personalized to the recipient and context
+  - Note the escalation level (first follow-up, second follow-up, final)
+  - Flag when further follow-up would cross into pestering territory
+
+  Save the action list to /outreach.
+cabinetPath: jobs/career-ops
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

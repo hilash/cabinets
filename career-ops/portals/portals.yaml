@@ -1,0 +1,282 @@
+# Career Ops Portal Configuration
+# Scanner agent uses this to discover new opportunities daily.
+# Adapted from santifer/career-ops (45+ companies, 19 search queries)
+
+# Portal types: greenhouse, ashby, lever, wellfound, career_page
+# Status: active (scan daily), watch (scan weekly), paused (skip)
+# SCANNER NOTE (2026-04-12): Greenhouse boards have migrated from boards.greenhouse.io
+# to job-boards.greenhouse.io. JSON API still works at boards-api.greenhouse.io/v1/boards/<slug>.
+# Ashby boards require JavaScript — static fetch returns only the loading shell.
+# Lever boards returning 403 on direct access — use company careers page as fallback.
+
+portals:
+
+  # --- AI / ML ---
+  - company: Anthropic
+    slug: anthropic
+    type: greenhouse
+    url: "boards.greenhouse.io/anthropic"
+    status: active
+    priority: high
+    notes: "Claude, API platform. Dream target."
+
+  - company: Mistral
+    slug: mistral
+    type: greenhouse
+    url: "boards.greenhouse.io/mistral"
+    status: active
+    priority: high
+    notes: "European AI leader. Strong platform play."
+
+  - company: Hugging Face
+    slug: huggingface
+    type: greenhouse
+    url: "boards.greenhouse.io/huggingface"
+    status: active
+    priority: high
+    notes: "Open source AI. Hub + API platform."
+
+  - company: ElevenLabs
+    slug: elevenlabs
+    type: ashby
+    url: "jobs.ashbyhq.com/elevenlabs"
+    status: active
+    priority: high
+    notes: "Voice AI. Fast growth."
+
+  - company: Weights & Biases
+    slug: wandb
+    type: ashby
+    url: "jobs.ashbyhq.com/wandb"
+    status: active
+    priority: medium
+    notes: "ML Ops tooling."
+
+  - company: Cohere
+    slug: cohere
+    type: greenhouse
+    url: "boards.greenhouse.io/cohere"
+    status: active
+    priority: medium
+    notes: "Enterprise AI. RAG and search."
+
+  - company: Replicate
+    slug: replicate
+    type: ashby
+    url: "jobs.ashbyhq.com/replicate"
+    status: watch
+    priority: medium
+    notes: "ML inference. Small team."
+
+  # --- Developer Tools ---
+  - company: Vercel
+    slug: vercel
+    type: greenhouse
+    url: "boards.greenhouse.io/vercel"
+    status: active
+    priority: high
+    notes: "Frontend infra. DX focus."
+
+  - company: Linear
+    slug: linear
+    type: ashby
+    url: "jobs.ashbyhq.com/linear"
+    status: active
+    priority: high
+    notes: "Project management. Best-in-class PLG."
+
+  - company: Supabase
+    slug: supabase
+    type: ashby
+    url: "jobs.ashbyhq.com/supabase"
+    status: active
+    priority: medium
+    notes: "Open source Firebase alternative."
+
+  - company: Retool
+    slug: retool
+    type: lever
+    url: "jobs.lever.co/retool"
+    status: active
+    priority: medium
+    notes: "Internal tools builder."
+
+  - company: Resend
+    slug: resend
+    type: ashby
+    url: "jobs.ashbyhq.com/resend"
+    status: watch
+    priority: low
+    notes: "Email API. Small but growing."
+
+  - company: Neon
+    slug: neon
+    type: ashby
+    url: "jobs.ashbyhq.com/neon"
+    status: active
+    priority: medium
+    notes: "Serverless Postgres. Developer infra."
+
+  - company: Railway
+    slug: railway
+    type: ashby
+    url: "jobs.ashbyhq.com/railway"
+    status: watch
+    priority: low
+    notes: "PaaS for developers."
+
+  - company: Planetscale
+    slug: planetscale
+    type: greenhouse
+    url: "boards.greenhouse.io/planetscale"
+    status: active
+    priority: medium
+    notes: "Serverless MySQL. Developer tools."
+
+  # --- Data / Analytics ---
+  - company: dbt Labs
+    slug: dbtlabs
+    type: greenhouse
+    url: "boards.greenhouse.io/dbtlabs"
+    status: active
+    priority: medium
+    notes: "Analytics engineering. Data transformation."
+
+  - company: Datadog
+    slug: datadog
+    type: greenhouse
+    url: "boards.greenhouse.io/datadog"
+    status: active
+    priority: medium
+    notes: "Observability. Large PM org."
+
+  - company: Grafana Labs
+    slug: grafana
+    type: ashby
+    url: "jobs.ashbyhq.com/grafana"
+    status: active
+    priority: medium
+    notes: "Open source observability."
+
+  - company: ClickHouse
+    slug: clickhouse
+    type: greenhouse
+    url: "boards.greenhouse.io/clickhouse"
+    status: watch
+    priority: low
+    notes: "Real-time analytics database."
+
+  # --- Productivity / Collaboration ---
+  - company: Notion
+    slug: notion
+    type: greenhouse
+    url: "boards.greenhouse.io/notion"
+    status: active
+    priority: high
+    notes: "Productivity. Large PM team."
+
+  - company: Figma
+    slug: figma
+    type: lever
+    url: "jobs.lever.co/figma"
+    status: active
+    priority: medium
+    notes: "Design tools. Collaboration focus."
+
+  - company: Loom
+    slug: loom
+    type: greenhouse
+    url: "boards.greenhouse.io/loom"
+    status: watch
+    priority: low
+    notes: "Async video communication."
+
+  # --- Automation / Workflow ---
+  - company: n8n
+    slug: n8n
+    type: career_page
+    url: "n8n.io/careers"
+    status: active
+    priority: high
+    notes: "Berlin-based. Open source automation. CTO connection."
+
+  - company: Zapier
+    slug: zapier
+    type: greenhouse
+    url: "boards.greenhouse.io/zapier"
+    status: watch
+    priority: low
+    notes: "Workflow automation. Remote-first."
+
+  # --- Fintech ---
+  - company: Stripe
+    slug: stripe
+    type: career_page
+    url: "stripe.com/jobs"
+    status: active
+    priority: high
+    notes: "Payments. Gold standard PM org."
+
+  - company: Wise
+    slug: wise
+    type: greenhouse
+    url: "boards.greenhouse.io/wise"
+    status: active
+    priority: medium
+    notes: "International payments. Tallinn/London."
+
+  - company: Revolut
+    slug: revolut
+    type: greenhouse
+    url: "boards.greenhouse.io/revolut"
+    status: watch
+    priority: low
+    notes: "Digital banking. Fast-paced culture."
+
+  # --- Infrastructure ---
+  - company: Cloudflare
+    slug: cloudflare
+    type: greenhouse
+    url: "boards.greenhouse.io/cloudflare"
+    status: active
+    priority: medium
+    notes: "Edge computing. Developer platform."
+
+  - company: Fly.io
+    slug: flyio
+    type: ashby
+    url: "jobs.ashbyhq.com/fly.io"
+    status: watch
+    priority: low
+    notes: "Edge hosting. Small team."
+
+  # --- Wellfound (startup aggregator) ---
+  - company: Wellfound
+    slug: wellfound
+    type: wellfound
+    url: "wellfound.com/jobs"
+    status: active
+    priority: medium
+    notes: "Aggregator for Series A-C startups."
+
+# Search queries (run against each active portal)
+search_queries:
+  - "Product Manager"
+  - "Senior Product Manager"
+  - "Product Lead"
+  - "Head of Product"
+  - "Staff PM"
+  - "Director of Product"
+  - "Technical PM"
+  - "Platform PM"
+  - "AI Product Manager"
+  - "ML Product Manager"
+  - "Growth PM"
+  - "Developer Experience"
+  - "Developer Tools PM"
+  - "Data Product Manager"
+  - "Solutions Architect"
+  - "Product Operations"
+  - "Product Strategy"
+  - "Applied AI"
+  - "API Product Manager"

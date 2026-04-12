@@ -1,0 +1,20 @@
+id: follow-up-nudge
+name: Follow-up Nudge
+description: Checks for stale applications, unreplied networking messages, and interview thank-yous.
+ownerAgent: networking-scout
+enabled: true
+schedule: "0 10 * * 2,4"
+prompt: |-
+  Review the pipeline in /pipeline/applications.csv and contacts in /networking/contacts.csv.
+  Generate a follow-up action list:
+  - Applications in "Applied" stage for 7+ days with no response — draft a polite follow-up email
+  - Networking contacts marked "Sent" for 5+ days with no reply — suggest a gentle bump
+  - Interviews completed in the last 48 hours without a thank-you sent — draft one
+  - Contacts who responded positively but have no next action scheduled — suggest one
+  For each follow-up:
+  - Draft the actual message (not just a reminder to write one)
+  - Keep the tone warm, professional, and specific to the relationship
+  - Note when following up again would cross into pestering territory
+  Save the action list as a daily page or append to the networking log.
+createdAt: "2026-04-12T00:00:00.000Z"
+updatedAt: "2026-04-12T00:00:00.000Z"

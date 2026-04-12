@@ -1,0 +1,81 @@
+# Career Ops Profile Configuration
+# This file is read by agents for structured profile data.
+# Update it alongside index.md when your criteria change.
+
+identity:
+  name: "Your Full Name"
+  email: "you@example.com"
+  phone: "+49 XXX XXXXXXXX"
+  linkedin: "linkedin.com/in/yourname"
+  github: "github.com/yourname"
+  website: "yourname.dev"
+  location: "Berlin, Germany"
+
+career:
+  current_title: "Senior Product Manager"
+  years_experience: 8
+  domains:
+    - "B2B SaaS"
+    - "Developer Tools"
+    - "Data Platforms"
+    - "AI/ML Products"
+  languages:
+    - lang: English
+      level: fluent
+    - lang: Spanish
+      level: native
+    - lang: German
+      level: B2
+
+search:
+  target_titles:
+    - "PM Lead"
+    - "Head of Product"
+    - "Senior Product Manager"
+    - "Staff Product Manager"
+    - "Director of Product"
+  seniority: "senior-to-director"
+  industries:
+    - "AI/ML"
+    - "Developer Tools"
+    - "Data Infrastructure"
+    - "Fintech"
+  company_stage:
+    - "Series B"
+    - "Series C"
+    - "Series D"
+    - "Pre-IPO"
+  headcount_range: "50-1000"
+  location_preference: "remote-first"
+  location_acceptable:
+    - "Berlin"
+    - "Remote (EU timezone)"
+  comp_range:
+    currency: EUR
+    min: 140000
+    max: 200000
+    includes_equity: true
+  non_negotiable:
+    - "Real product org (not founder-decides-everything)"
+    - "Engineering team of 10+ people"
+    - "Remote or Berlin-based"
+    - "Clear scope and impact path"
+
+anti_targets:
+  - "Consulting/agency"
+  - "Pre-product startups"
+  - "Project management disguised as PM"
+  - "RTO mandates"
+
+scan_queries:
+  - "Product Manager"
+  - "Senior Product Manager"
+  - "Product Lead"
+  - "Head of Product"
+  - "Staff PM"
+  - "Director of Product"
+  - "Technical PM"
+  - "AI Product Manager"
+  - "Platform PM"
+  - "Growth PM"
+  - "Developer Experience PM"

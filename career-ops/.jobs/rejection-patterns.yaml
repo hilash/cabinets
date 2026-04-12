@@ -1,0 +1,35 @@
+id: rejection-patterns
+name: Rejection Pattern Analysis
+enabled: true
+schedule: 0 9 * * 5
+provider: claude-code
+ownerAgent: evaluator
+agentSlug: evaluator
+timeout: 600
+prompt: |-
+  Analyze all rejected and ghosted entries in /pipeline/tracker.csv
+  plus interview feedback in /interview-prep to identify patterns.
+
+  Pattern Analysis:
+  - Are rejections clustering around a specific role type or seniority level?
+  - Are ghostings higher from a specific channel (LinkedIn vs career page vs referral)?
+  - Is there a correlation between evaluation score and outcome?
+  - At which stage do most rejections happen (resume screen, phone screen, onsite)?
+  - Are certain skills or experience gaps repeatedly cited in rejection feedback?
+
+  Interview Pattern Analysis:
+  - Which interview types (behavioral, product, technical) have the lowest pass rate?
+  - Are certain questions or topics consistently tripping the user up?
+  - Is the user's energy/vibe reading improving, declining, or flat over time?
+
+  Recommendations:
+  - If resume-screen rejections are high → CV tailoring needs improvement
+  - If phone-screen rejections are high → story delivery or positioning issue
+  - If onsite rejections are high → deeper prep needed for specific interview types
+  - If ghosting rate is high → targeting or channel strategy needs adjustment
+
+  Save the analysis to /analytics with specific, actionable recommendations.
+  Compare to previous week's analysis if available.
+cabinetPath: jobs/career-ops
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

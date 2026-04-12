@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate Dashboard</title>
+    <style>
+      :root{--bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--green:#22c55e;--red:#ef4444;--blue:#3b82f6}
+      *{box-sizing:border-box;margin:0}
+      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
+      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
+      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+      .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+      .stat-val{font-size:30px;font-weight:800}
+      .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+      .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+      @media(max-width:700px){.two{grid-template-columns:1fr}}
+      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px}
+      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
+      .listing{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+      .listing:last-child{border-bottom:none}
+      .l-price{font-size:18px;font-weight:800;width:90px;flex-shrink:0}
+      .l-info{flex:1}
+      .l-addr{font-size:14px;font-weight:600}
+      .l-detail{font-size:12px;color:var(--muted);margin-top:2px}
+      .l-status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;flex-shrink:0}
+      .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+      .row:last-child{border-bottom:none}
+      .r-name{flex:1;font-size:14px;font-weight:600}
+      .r-sub{font-size:12px;color:var(--muted)}
+      .r-val{font-size:14px;font-weight:700;flex-shrink:0}
+      .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="kicker">Real Estate Brokerage</div>
+      <h1>Brokerage Dashboard</h1>
+      <p class="sub">Listings, leads, and market performance at a glance.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-val" style="color:var(--accent)">18</div><div class="stat-label">Active Listings</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--blue)">42</div><div class="stat-label">Active Leads</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--green)">$2.4M</div><div class="stat-label">Pipeline Value</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--green)">3</div><div class="stat-label">Closings This Month</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--ink)">28</div><div class="stat-label">Avg Days on Market</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Active Listings</div>
+        <div class="listing"><div class="l-price" style="color:var(--green)">$895K</div><div class="l-info"><div class="l-addr">142 Oak Avenue, Willow Park</div><div class="l-detail">4 bed / 3 bath / 2,400 sqft - Listed 6 days ago</div></div><div class="l-status" style="background:rgba(34,197,94,0.1);color:var(--green)">Active</div></div>
+        <div class="listing"><div class="l-price" style="color:var(--accent)">$1.2M</div><div class="l-info"><div class="l-addr">88 Lakeview Drive, Cedar Heights</div><div class="l-detail">5 bed / 4 bath / 3,100 sqft - Listed 14 days ago</div></div><div class="l-status" style="background:rgba(139,94,60,0.1);color:var(--accent)">Showing</div></div>
+        <div class="listing"><div class="l-price" style="color:var(--blue)">$675K</div><div class="l-info"><div class="l-addr">305 Main Street #4B, Downtown</div><div class="l-detail">2 bed / 2 bath / 1,200 sqft - Listed 3 days ago</div></div><div class="l-status" style="background:rgba(59,130,246,0.1);color:var(--blue)">New</div></div>
+        <div class="listing"><div class="l-price" style="color:var(--green)">$1.05M</div><div class="l-info"><div class="l-addr">22 Birch Lane, Riverside</div><div class="l-detail">4 bed / 3 bath / 2,800 sqft - Offer received</div></div><div class="l-status" style="background:rgba(34,197,94,0.1);color:var(--green)">Under Offer</div></div>
+      </div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-title">Lead Follow-ups Due</div>
+          <div class="row"><div class="dot" style="background:var(--red)"></div><div class="r-name">Sarah & Tom Mitchell</div><div class="r-sub">Interested in Willow Park area</div><div class="r-val" style="color:var(--red)">Overdue</div></div>
+          <div class="row"><div class="dot" style="background:var(--accent)"></div><div class="r-name">James Chen</div><div class="r-sub">Pre-approved, looking $800K-1M</div><div class="r-val">Today</div></div>
+          <div class="row"><div class="dot" style="background:var(--blue)"></div><div class="r-name">Maria Gonzalez</div><div class="r-sub">First-time buyer, Downtown condos</div><div class="r-val">Tomorrow</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Market Snapshot</div>
+          <div class="row"><div class="r-name">Median Sale Price</div><div class="r-val" style="color:var(--green)">$842K</div></div>
+          <div class="row"><div class="r-name">Avg Days on Market</div><div class="r-val">28 days</div></div>
+          <div class="row"><div class="r-name">List-to-Sale Ratio</div><div class="r-val" style="color:var(--green)">98.2%</div></div>
+          <div class="row"><div class="r-name">New Listings (30d)</div><div class="r-val">47</div></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

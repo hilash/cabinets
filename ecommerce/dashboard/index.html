@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-commerce Dashboard</title>
+    <style>
+      :root{--bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--green:#22c55e;--red:#ef4444;--blue:#3b82f6}
+      *{box-sizing:border-box;margin:0}
+      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
+      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
+      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+      .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+      .stat-val{font-size:30px;font-weight:800}
+      .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+      .stat-delta{font-size:11px;margin-top:3px;font-weight:600}
+      .up{color:var(--green)}.down{color:var(--red)}
+      .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+      @media(max-width:700px){.two{grid-template-columns:1fr}}
+      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
+      .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+      .row:last-child{border-bottom:none}
+      .r-name{flex:1;font-size:14px;font-weight:600}
+      .r-sub{font-size:12px;color:var(--muted)}
+      .r-val{font-size:14px;font-weight:700;flex-shrink:0}
+      .bar-wrap{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+      .bar{height:100%;border-radius:999px}
+      .product{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+      .product:last-child{border-bottom:none}
+      .p-rank{width:24px;font-size:14px;font-weight:800;color:var(--accent);flex-shrink:0}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="kicker">E-commerce Store</div>
+      <h1>Sales Dashboard</h1>
+      <p class="sub">Revenue, inventory, and channel performance this week.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-val" style="color:var(--green)">$48.2K</div><div class="stat-label">Weekly Revenue</div><div class="stat-delta up">+12% vs last week</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--blue)">847</div><div class="stat-label">Orders</div><div class="stat-delta up">+8%</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--accent)">$56.90</div><div class="stat-label">Avg Order Value</div><div class="stat-delta up">+3%</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--ink)">3.2%</div><div class="stat-label">Conversion Rate</div><div class="stat-delta down">-0.4%</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--red)">23</div><div class="stat-label">Low Stock Items</div><div class="stat-delta down">needs reorder</div></div>
+      </div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-title">Top Products</div>
+          <div class="product"><div class="p-rank">1</div><div class="r-name">Classic Tote Bag</div><div class="r-val" style="color:var(--green)">$8,420</div></div>
+          <div class="product"><div class="p-rank">2</div><div class="r-name">Leather Journal Set</div><div class="r-val">$6,180</div></div>
+          <div class="product"><div class="p-rank">3</div><div class="r-name">Ceramic Mug Collection</div><div class="r-val">$4,950</div></div>
+          <div class="product"><div class="p-rank">4</div><div class="r-name">Organic Candle Bundle</div><div class="r-val">$3,820</div></div>
+          <div class="product"><div class="p-rank">5</div><div class="r-name">Linen Apron</div><div class="r-val">$2,640</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Channel Performance</div>
+          <div class="row"><div class="r-name">Email Campaigns</div><div class="bar-wrap"><div class="bar" style="width:45%;background:var(--green)"></div></div><div class="r-val">45%</div></div>
+          <div class="row"><div class="r-name">Organic Search</div><div class="bar-wrap"><div class="bar" style="width:28%;background:var(--blue)"></div></div><div class="r-val">28%</div></div>
+          <div class="row"><div class="r-name">Social Media</div><div class="bar-wrap"><div class="bar" style="width:18%;background:var(--accent)"></div></div><div class="r-val">18%</div></div>
+          <div class="row"><div class="r-name">Direct</div><div class="bar-wrap"><div class="bar" style="width:9%;background:var(--muted)"></div></div><div class="r-val">9%</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Inventory Alerts</div>
+        <div class="row"><span style="color:var(--red);font-weight:700;font-size:12px">LOW</span><div class="r-name">Classic Tote Bag - Natural</div><div class="r-sub">12 units left</div><div class="r-val" style="color:var(--red)">Reorder</div></div>
+        <div class="row"><span style="color:var(--red);font-weight:700;font-size:12px">LOW</span><div class="r-name">Ceramic Mug - Sage</div><div class="r-sub">8 units left</div><div class="r-val" style="color:var(--red)">Reorder</div></div>
+        <div class="row"><span style="color:var(--accent);font-weight:700;font-size:12px">WATCH</span><div class="r-name">Leather Journal - Brown</div><div class="r-sub">34 units left</div><div class="r-val">Monitor</div></div>
+      </div>
+    </div>
+  </body>
+</html>

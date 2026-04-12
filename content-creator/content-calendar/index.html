@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Calendar</title>
+    <style>
+      :root{--bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--accent-bg:#f5e6d3;--green:#22c55e;--blue:#3b82f6;--purple:#8b5cf6}
+      *{box-sizing:border-box;margin:0}
+      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
+      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
+      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+      .stats{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+      .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;text-align:center;min-width:110px}
+      .stat-val{font-size:24px;font-weight:800}
+      .stat-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:3px}
+      .week{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+      .day-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+      .day-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:10px}
+      .content-item{padding:8px 0;border-bottom:1px solid var(--line)}
+      .content-item:last-child{border-bottom:none}
+      .ci-title{font-size:13px;font-weight:600;margin-bottom:2px}
+      .ci-type{font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;display:inline-block;margin-bottom:4px}
+      .ci-status{font-size:10px;color:var(--muted)}
+      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
+      .row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+      .row:last-child{border-bottom:none}
+      .r-name{flex:1;font-size:13px;font-weight:600}
+      .r-val{font-size:13px;font-weight:700;flex-shrink:0}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="kicker">Content Creator</div>
+      <h1>Content Calendar</h1>
+      <p class="sub">This week's content pipeline with status and performance tracking.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-val" style="color:var(--accent)">7</div><div class="stat-label">Scheduled</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--green)">3</div><div class="stat-label">Published</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--blue)">2</div><div class="stat-label">In Review</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--purple)">2</div><div class="stat-label">Drafting</div></div>
+      </div>
+
+      <div class="week">
+        <div class="day-card">
+          <div class="day-name">Monday</div>
+          <div class="content-item">
+            <div class="ci-type" style="background:rgba(34,197,94,0.1);color:var(--green)">Newsletter</div>
+            <div class="ci-title">Weekly Industry Roundup</div>
+            <div class="ci-status">Published - 2,340 opens (48%)</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Tuesday</div>
+          <div class="content-item">
+            <div class="ci-type" style="background:rgba(59,130,246,0.1);color:var(--blue)">Blog Post</div>
+            <div class="ci-title">5 Tools I Can't Live Without</div>
+            <div class="ci-status">Published - 1,820 views</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Wednesday</div>
+          <div class="content-item">
+            <div class="ci-type" style="background:rgba(139,94,60,0.1);color:var(--accent)">Social Thread</div>
+            <div class="ci-title">Behind the scenes of my workflow</div>
+            <div class="ci-status">Published - 890 engagements</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Thursday</div>
+          <div class="content-item">
+            <div class="ci-type" style="background:rgba(139,92,246,0.1);color:var(--purple)">Video</div>
+            <div class="ci-title">Tutorial: Setting Up Your Stack</div>
+            <div class="ci-status">In Review - editor feedback pending</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Friday</div>
+          <div class="content-item">
+            <div class="ci-type" style="background:rgba(59,130,246,0.1);color:var(--blue)">Blog Post</div>
+            <div class="ci-title">Lessons from 100K Subscribers</div>
+            <div class="ci-status">Drafting - outline complete</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Saturday</div>
+          <div class="content-item">
+            <div class="ci-type" style="background:rgba(139,94,60,0.1);color:var(--accent)">Social</div>
+            <div class="ci-title">Weekend engagement post</div>
+            <div class="ci-status">Drafting - hook ideas ready</div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Sunday</div>
+          <div class="content-item">
+            <div class="ci-type" style="background:rgba(139,92,246,0.1);color:var(--purple)">Planning</div>
+            <div class="ci-title">Next week's content review</div>
+            <div class="ci-status">Scheduled - analytics review</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Weekly Performance</div>
+        <div class="row"><div class="r-name">Total Impressions</div><div class="r-val" style="color:var(--green)">34,200</div></div>
+        <div class="row"><div class="r-name">Newsletter Open Rate</div><div class="r-val" style="color:var(--green)">48%</div></div>
+        <div class="row"><div class="r-name">Blog Traffic</div><div class="r-val">4,160 views</div></div>
+        <div class="row"><div class="r-name">Social Engagement Rate</div><div class="r-val" style="color:var(--blue)">5.2%</div></div>
+        <div class="row"><div class="r-name">New Subscribers</div><div class="r-val" style="color:var(--green)">+127</div></div>
+      </div>
+    </div>
+  </body>
+</html>

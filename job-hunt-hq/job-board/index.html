@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Board</title>
+    <style>
+      :root {
+        --bg: #faf9f7;
+        --card: #ffffff;
+        --ink: #1a1a2e;
+        --muted: #6b6b80;
+        --line: #e8e6e1;
+        --accent: #e8a838;
+        --accent-soft: rgba(232, 168, 56, 0.12);
+        --blue: #3b82f6;
+        --blue-soft: rgba(59, 130, 246, 0.10);
+        --green: #22c55e;
+        --green-soft: rgba(34, 197, 94, 0.10);
+        --purple: #8b5cf6;
+        --purple-soft: rgba(139, 92, 246, 0.10);
+        --red-soft: rgba(239, 68, 68, 0.08);
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(ellipse at 70% 0%, rgba(59, 130, 246, 0.04), transparent 50%),
+          var(--bg);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px 64px; }
+      .kicker {
+        font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .subtitle { color: var(--muted); font-size: 15px; margin-bottom: 20px; max-width: 550px; }
+
+      /* Filters */
+      .filters {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .filter-btn {
+        padding: 7px 16px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--card);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .filter-btn:hover, .filter-btn.active {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      /* Job cards */
+      .jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 14px;
+      }
+      .job-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        transition: box-shadow 0.15s, transform 0.15s;
+        position: relative;
+      }
+      .job-card:hover {
+        box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+      }
+
+      /* Match score badge */
+      .match-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 800;
+      }
+      .match-9, .match-10 { background: var(--green-soft); color: #15803d; }
+      .match-8 { background: var(--blue-soft); color: #2563eb; }
+      .match-7 { background: var(--accent-soft); color: #b47d1e; }
+      .match-6 { background: var(--red-soft); color: #dc2626; }
+
+      .jc-company {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .jc-title {
+        font-size: 19px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        padding-right: 50px;
+        line-height: 1.2;
+      }
+      .jc-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .pill-location { background: var(--blue-soft); color: #2563eb; }
+      .pill-salary { background: var(--green-soft); color: #15803d; }
+      .pill-source { background: var(--purple-soft); color: #7c3aed; }
+      .pill-date { background: rgba(107, 107, 128, 0.08); color: var(--muted); }
+      .jc-reqs {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+      .jc-notes {
+        font-size: 12px;
+        color: var(--ink);
+        background: rgba(232, 168, 56, 0.06);
+        border-radius: 10px;
+        padding: 10px 14px;
+        line-height: 1.4;
+      }
+
+      /* Status indicator */
+      .jc-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 10px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .dot-saved { background: var(--muted); }
+      .dot-applied { background: var(--blue); }
+      .dot-screen { background: var(--purple); }
+      .dot-interview { background: var(--accent); }
+      .dot-offer { background: var(--green); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="kicker">Job Hunt HQ</div>
+      <h1>Job Board</h1>
+      <p class="subtitle">Every opportunity discovered, scored, and tracked. Quality beats volume.</p>
+
+      <div class="filters">
+        <div class="filter-btn active">All (12)</div>
+        <div class="filter-btn">Saved (2)</div>
+        <div class="filter-btn">Applied (3)</div>
+        <div class="filter-btn">In Process (5)</div>
+        <div class="filter-btn">Referral (5)</div>
+        <div class="filter-btn">Match 8+ (8)</div>
+      </div>
+
+      <div class="jobs-grid">
+        <!-- Planetscale - Offer -->
+        <div class="job-card" style="border-color: var(--green); border-width: 2px;">
+          <div class="match-badge match-9">9</div>
+          <div class="jc-company">Planetscale</div>
+          <div class="jc-title">Product Lead</div>
+          <div class="jc-status"><span class="dot dot-offer"></span> Offer Received</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">Remote</span>
+            <span class="pill pill-salary">$195-235K</span>
+            <span class="pill pill-source">Referral</span>
+          </div>
+          <div class="jc-reqs">7+ yrs PM, databases, developer tools, leadership</div>
+          <div class="jc-notes">Offer: $210K base + equity. Decision deadline Apr 18. Sam Torres (CTO) connection.</div>
+        </div>
+
+        <!-- Notion -->
+        <div class="job-card">
+          <div class="match-badge match-9">9</div>
+          <div class="jc-company">Notion</div>
+          <div class="jc-title">Senior PM, Platform</div>
+          <div class="jc-status"><span class="dot dot-interview"></span> Interview</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">SF / Remote</span>
+            <span class="pill pill-salary">$190-230K</span>
+            <span class="pill pill-source">Referral</span>
+          </div>
+          <div class="jc-reqs">5+ yrs PM, platform experience, API knowledge</div>
+          <div class="jc-notes">Round 2 panel scheduled Apr 15. Strong culture fit via Dana Kim.</div>
+        </div>
+
+        <!-- Vercel -->
+        <div class="job-card">
+          <div class="match-badge match-9">9</div>
+          <div class="jc-company">Vercel</div>
+          <div class="jc-title">Senior PM, Developer Experience</div>
+          <div class="jc-status"><span class="dot dot-applied"></span> Applied</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">Remote</span>
+            <span class="pill pill-salary">$185-225K</span>
+            <span class="pill pill-source">Career Page</span>
+          </div>
+          <div class="jc-reqs">5+ yrs PM, developer tools, DX portfolio</div>
+          <div class="jc-notes">Applied Apr 5. Perfect DX match. No response yet.</div>
+        </div>
+
+        <!-- Stripe -->
+        <div class="job-card">
+          <div class="match-badge match-8">8</div>
+          <div class="jc-company">Stripe</div>
+          <div class="jc-title">PM, Billing Platform</div>
+          <div class="jc-status"><span class="dot dot-applied"></span> Applied</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">San Francisco</span>
+            <span class="pill pill-salary">$200-250K</span>
+            <span class="pill pill-source">Referral</span>
+          </div>
+          <div class="jc-reqs">4+ yrs PM, payments/fintech, technical depth</div>
+          <div class="jc-notes">Marcus Johnson submitted referral Apr 7. Highest comp in pipeline.</div>
+        </div>
+
+        <!-- Linear -->
+        <div class="job-card">
+          <div class="match-badge match-8">8</div>
+          <div class="jc-company">Linear</div>
+          <div class="jc-title">Product Manager, Growth</div>
+          <div class="jc-status"><span class="dot dot-screen"></span> Screen</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">Remote</span>
+            <span class="pill pill-salary">$175-210K</span>
+            <span class="pill pill-source">LinkedIn</span>
+          </div>
+          <div class="jc-reqs">3+ yrs PM, growth/PLG experience, metrics-driven</div>
+          <div class="jc-notes">Phone screen completed. Small team, high autonomy. Waiting on next steps.</div>
+        </div>
+
+        <!-- Retool -->
+        <div class="job-card">
+          <div class="match-badge match-8">8</div>
+          <div class="jc-company">Retool</div>
+          <div class="jc-title">Senior PM</div>
+          <div class="jc-status"><span class="dot dot-interview"></span> Interview</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">San Francisco</span>
+            <span class="pill pill-salary">$180-215K</span>
+            <span class="pill pill-source">Referral</span>
+          </div>
+          <div class="jc-reqs">5+ yrs PM, internal tools, builder personas</div>
+          <div class="jc-notes">Onsite completed Apr 9. Priya Patel referral. Awaiting decision.</div>
+        </div>
+
+        <!-- Supabase -->
+        <div class="job-card">
+          <div class="match-badge match-8">8</div>
+          <div class="jc-company">Supabase</div>
+          <div class="jc-title">PM, Developer Tools</div>
+          <div class="jc-status"><span class="dot dot-screen"></span> Screen</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">Remote</span>
+            <span class="pill pill-salary">$165-200K</span>
+            <span class="pill pill-source">Career Page</span>
+          </div>
+          <div class="jc-reqs">3+ yrs PM, open source, developer community</div>
+          <div class="jc-notes">Technical screen scheduled Apr 14. Growing fast. Good DX angle.</div>
+        </div>
+
+        <!-- Dbt Labs -->
+        <div class="job-card">
+          <div class="match-badge match-8">8</div>
+          <div class="jc-company">Dbt Labs</div>
+          <div class="jc-title">Senior PM, Core</div>
+          <div class="jc-status"><span class="dot dot-saved"></span> Saved</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">Remote</span>
+            <span class="pill pill-salary">$185-225K</span>
+            <span class="pill pill-source">Career Page</span>
+            <span class="pill pill-date">Posted Apr 10</span>
+          </div>
+          <div class="jc-reqs">5+ yrs PM, data tools, analytics engineering</div>
+          <div class="jc-notes">Need to research the team and product direction. David Park might have insight.</div>
+        </div>
+
+        <!-- Figma -->
+        <div class="job-card">
+          <div class="match-badge match-7">7</div>
+          <div class="jc-company">Figma</div>
+          <div class="jc-title">Senior PM, Collaboration</div>
+          <div class="jc-status"><span class="dot dot-saved"></span> Saved</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">SF / Remote</span>
+            <span class="pill pill-salary">$190-240K</span>
+            <span class="pill pill-source">AngelList</span>
+            <span class="pill pill-date">Posted Apr 9</span>
+          </div>
+          <div class="jc-reqs">5+ yrs PM, design tools, collaboration features</div>
+          <div class="jc-notes">Interesting but less direct match. Rachel Torres is a connection worth exploring.</div>
+        </div>
+
+        <!-- Loom -->
+        <div class="job-card">
+          <div class="match-badge match-7">7</div>
+          <div class="jc-company">Loom</div>
+          <div class="jc-title">PM, Growth</div>
+          <div class="jc-status"><span class="dot dot-applied"></span> Applied</div>
+          <div class="jc-meta">
+            <span class="pill pill-location">Remote</span>
+            <span class="pill pill-salary">$170-205K</span>
+            <span class="pill pill-source">LinkedIn</span>
+          </div>
+          <div class="jc-reqs">3+ yrs PM, growth/activation, video/content</div>
+          <div class="jc-notes">Applied Apr 9 with tailored resume. Decent match but no connection.</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

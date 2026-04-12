@@ -1,0 +1,13 @@
+Skill,Category,Proficiency,Years,Notes
+"Project Management",Leadership,Advanced,6,"Led cross-functional teams of 5-12 people"
+"Product Strategy",Leadership,Advanced,5,"Roadmap ownership, OKR setting, stakeholder alignment"
+"Data Analysis",Technical,Intermediate,4,"SQL, Excel, Looker, basic Python for analysis"
+"SQL",Technical,Advanced,5,"Complex queries, window functions, performance tuning"
+"Python",Technical,Intermediate,3,"Scripts, data analysis, automation"
+"JavaScript",Technical,Beginner,2,"Enough to read code and prototype"
+"Figma",Design,Intermediate,3,"Wireframes, prototypes, design reviews"
+"User Research",Research,Advanced,5,"Interviews, surveys, usability testing"
+"A/B Testing",Analytics,Advanced,4,"Experiment design, statistical significance, Optimizely"
+"Stakeholder Communication",Soft Skill,Advanced,6,"Board presentations, exec updates, cross-team alignment"
+"Technical Writing",Soft Skill,Advanced,5,"PRDs, RFCs, documentation"
+"Hiring & Team Building",Leadership,Intermediate,3,"Interviewed 100+ candidates, built team from 3 to 8"

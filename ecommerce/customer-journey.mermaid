@@ -1,0 +1,50 @@
+graph TD
+    subgraph Acquisition
+        AD["📣 Marketing"]
+        EM["✉️ Email Campaigns"]
+        SEO["🔍 Organic Search"]
+    end
+
+    subgraph Conversion
+        LP["🛍️ Product Page"]
+        CART["🛒 Cart"]
+        CO["💳 Checkout"]
+    end
+
+    subgraph Fulfillment
+        ORD["📦 Order Processing"]
+        SHIP["🚚 Shipping"]
+        DEL["✅ Delivery"]
+    end
+
+    subgraph Retention
+        REV["⭐ Review Request"]
+        RPT["🔄 Repeat Purchase"]
+        LTV["💎 Loyalty Program"]
+    end
+
+    AD --> LP
+    EM --> LP
+    SEO --> LP
+    LP --> CART
+    CART --> CO
+    CO --> ORD
+    ORD --> SHIP
+    SHIP --> DEL
+    DEL --> REV
+    REV --> RPT
+    RPT --> LTV
+    LTV --> EM
+
+    style AD fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style EM fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style SEO fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style LP fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style CART fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style CO fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style ORD fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style SHIP fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style DEL fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style REV fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style RPT fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style LTV fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F

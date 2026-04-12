@@ -1,0 +1,42 @@
+graph LR
+    subgraph Research
+        AR["🔍 Audience Research"]
+        BV["🎨 Brand Voice"]
+    end
+
+    subgraph Planning
+        CS["📝 Content Strategist"]
+        CAL["📅 Content Calendar"]
+    end
+
+    subgraph Production
+        ED["✍️ Editor"]
+        DRAFT["📄 Draft"]
+        REVIEW["👀 Review"]
+    end
+
+    subgraph Distribution
+        PUB["🚀 Publish"]
+        AN["📊 Analytics Reviewer"]
+    end
+
+    AR --> CS
+    BV --> CS
+    CS --> CAL
+    CAL --> DRAFT
+    DRAFT --> ED
+    ED --> REVIEW
+    REVIEW -->|approved| PUB
+    REVIEW -->|revisions| DRAFT
+    PUB --> AN
+    AN -->|insights| CS
+
+    style AR fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style BV fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style CS fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style CAL fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style ED fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style DRAFT fill:#fff,stroke:#D4C4B0,color:#6B5B4F
+    style REVIEW fill:#fff,stroke:#D4C4B0,color:#6B5B4F
+    style PUB fill:#fff,stroke:#D4C4B0,color:#6B5B4F
+    style AN fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F

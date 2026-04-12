@@ -1,0 +1,19 @@
+id: weekly-pipeline-review
+name: Weekly Pipeline Review
+description: Analyzes the full application pipeline for health, velocity, and strategy adjustments.
+ownerAgent: career-strategist
+enabled: true
+schedule: "0 9 * * 1"
+prompt: |-
+  Review the full pipeline in /pipeline/applications.csv and recent interview feedback in /interviews/feedback-log.csv.
+  Produce a weekly pipeline health report that includes:
+  - Total applications by stage (Saved, Applied, Screen, Interview, Offer, Rejected, Ghosted)
+  - Response rate (applications that got any response vs total sent)
+  - Average time in each stage
+  - Applications that have been in the same stage for more than 10 days (flag as stale)
+  - Interview conversion rate (interviews / applications)
+  - Top-performing channels (referral, direct apply, recruiter, job board)
+  - One specific strategy recommendation based on the data
+  Save the report as a new page or update the dashboard context.
+createdAt: "2026-04-12T00:00:00.000Z"
+updatedAt: "2026-04-12T00:00:00.000Z"
