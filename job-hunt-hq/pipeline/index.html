@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Application Pipeline</title>
+    <style>
+      :root {
+        --bg: #faf9f7;
+        --card: #ffffff;
+        --ink: #1a1a2e;
+        --muted: #6b6b80;
+        --line: #e8e6e1;
+        --accent: #e8a838;
+        --accent-soft: rgba(232, 168, 56, 0.12);
+        --blue: #3b82f6;
+        --blue-soft: rgba(59, 130, 246, 0.10);
+        --green: #22c55e;
+        --green-soft: rgba(34, 197, 94, 0.10);
+        --red: #ef4444;
+        --red-soft: rgba(239, 68, 68, 0.10);
+        --purple: #8b5cf6;
+        --purple-soft: rgba(139, 92, 246, 0.10);
+        --gray-soft: rgba(107, 107, 128, 0.08);
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(ellipse at 20% 0%, rgba(232, 168, 56, 0.06), transparent 50%),
+          radial-gradient(ellipse at 80% 0%, rgba(59, 130, 246, 0.04), transparent 50%),
+          var(--bg);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 1400px; margin: 0 auto; padding: 32px 24px 64px; }
+      .hero { margin-bottom: 28px; }
+      .kicker {
+        font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .subtitle { color: var(--muted); font-size: 15px; max-width: 600px; }
+
+      /* Stats bar */
+      .stats {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 20px;
+        min-width: 130px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      .stat-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .stat-value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+      .stat-value.gold { color: var(--accent); }
+      .stat-value.blue { color: var(--blue); }
+      .stat-value.green { color: var(--green); }
+      .stat-value.red { color: var(--red); }
+
+      /* Board */
+      .board {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 14px;
+        overflow-x: auto;
+      }
+      @media (max-width: 1100px) {
+        .board { grid-template-columns: repeat(3, 1fr); }
+      }
+      @media (max-width: 700px) {
+        .board { grid-template-columns: 1fr; }
+      }
+      .column {
+        background: var(--gray-soft);
+        border-radius: 18px;
+        padding: 14px;
+        min-height: 200px;
+      }
+      .col-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding: 0 4px;
+      }
+      .col-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .col-count {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        background: var(--card);
+        border-radius: 999px;
+        padding: 2px 10px;
+        border: 1px solid var(--line);
+      }
+
+      /* Cards */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: box-shadow 0.15s, transform 0.15s;
+        cursor: default;
+      }
+      .card:hover {
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        transform: translateY(-1px);
+      }
+      .card-company {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .card-role {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 10px;
+        line-height: 1.3;
+      }
+      .card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .pill-source {
+        background: var(--blue-soft);
+        color: #2563eb;
+      }
+      .pill-score {
+        background: var(--accent-soft);
+        color: #b47d1e;
+      }
+      .pill-salary {
+        background: var(--green-soft);
+        color: #15803d;
+      }
+      .pill-contact {
+        background: var(--purple-soft);
+        color: #7c3aed;
+      }
+      .card-note {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+        line-height: 1.4;
+        padding-top: 8px;
+        border-top: 1px solid var(--line);
+      }
+
+      /* Closed columns */
+      .closed-section {
+        margin-top: 24px;
+      }
+      .closed-header {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 12px;
+        padding: 0 4px;
+      }
+      .closed-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 10px;
+      }
+      .card-closed {
+        opacity: 0.6;
+      }
+      .pill-rejected { background: var(--red-soft); color: #dc2626; }
+      .pill-ghosted { background: var(--gray-soft); color: var(--muted); }
+      .pill-offer { background: var(--green-soft); color: #15803d; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <div class="kicker">Job Hunt HQ</div>
+        <h1>Application Pipeline</h1>
+        <p class="subtitle">Every opportunity, tracked from discovery to decision. Quality over quantity.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Total Active</div>
+          <div class="stat-value gold">8</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">In Interviews</div>
+          <div class="stat-value blue">2</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Response Rate</div>
+          <div class="stat-value green">63%</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Offers</div>
+          <div class="stat-value green">1</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Avg Match Score</div>
+          <div class="stat-value gold">8.1</div>
+        </div>
+      </div>
+
+      <div class="board">
+        <!-- Saved -->
+        <div class="column">
+          <div class="col-header">
+            <span class="col-title">Saved</span>
+            <span class="col-count">2</span>
+          </div>
+          <div class="card">
+            <div class="card-company">Figma</div>
+            <div class="card-role">Senior PM, Collaboration</div>
+            <div class="card-meta">
+              <span class="pill pill-source">AngelList</span>
+              <span class="pill pill-score">Match: 7</span>
+            </div>
+            <div class="card-note">Job posted Apr 9. Need to tailor resume.</div>
+          </div>
+          <div class="card">
+            <div class="card-company">Dbt Labs</div>
+            <div class="card-role">Senior PM, Core</div>
+            <div class="card-meta">
+              <span class="pill pill-source">Career Page</span>
+              <span class="pill pill-score">Match: 8</span>
+            </div>
+            <div class="card-note">Interesting role. Need to research team.</div>
+          </div>
+        </div>
+
+        <!-- Applied -->
+        <div class="column">
+          <div class="col-header">
+            <span class="col-title">Applied</span>
+            <span class="col-count">3</span>
+          </div>
+          <div class="card">
+            <div class="card-company">Vercel</div>
+            <div class="card-role">Senior PM, Developer Experience</div>
+            <div class="card-meta">
+              <span class="pill pill-source">Career Page</span>
+              <span class="pill pill-score">Match: 9</span>
+              <span class="pill pill-salary">$185-225K</span>
+            </div>
+            <div class="card-note">Applied Apr 5. Strong DX portfolio match.</div>
+          </div>
+          <div class="card">
+            <div class="card-company">Stripe</div>
+            <div class="card-role">PM, Billing Platform</div>
+            <div class="card-meta">
+              <span class="pill pill-contact">Referral: Marcus J.</span>
+              <span class="pill pill-score">Match: 8</span>
+            </div>
+            <div class="card-note">Marcus submitted referral Apr 7. Waiting.</div>
+          </div>
+          <div class="card">
+            <div class="card-company">Loom</div>
+            <div class="card-role">PM, Growth</div>
+            <div class="card-meta">
+              <span class="pill pill-source">LinkedIn</span>
+              <span class="pill pill-score">Match: 7</span>
+            </div>
+            <div class="card-note">Applied Apr 9 with tailored resume.</div>
+          </div>
+        </div>
+
+        <!-- Screen -->
+        <div class="column">
+          <div class="col-header">
+            <span class="col-title">Screen</span>
+            <span class="col-count">2</span>
+          </div>
+          <div class="card">
+            <div class="card-company">Linear</div>
+            <div class="card-role">Product Manager, Growth</div>
+            <div class="card-meta">
+              <span class="pill pill-source">LinkedIn</span>
+              <span class="pill pill-contact">Amy Chen</span>
+              <span class="pill pill-salary">$175-210K</span>
+            </div>
+            <div class="card-note">Phone screen completed. Awaiting next steps.</div>
+          </div>
+          <div class="card">
+            <div class="card-company">Supabase</div>
+            <div class="card-role">PM, Developer Tools</div>
+            <div class="card-meta">
+              <span class="pill pill-source">Career Page</span>
+              <span class="pill pill-score">Match: 8</span>
+            </div>
+            <div class="card-note">Technical screen scheduled Apr 14.</div>
+          </div>
+        </div>
+
+        <!-- Interview -->
+        <div class="column">
+          <div class="col-header">
+            <span class="col-title">Interview</span>
+            <span class="col-count">2</span>
+          </div>
+          <div class="card">
+            <div class="card-company">Notion</div>
+            <div class="card-role">Senior PM, Platform</div>
+            <div class="card-meta">
+              <span class="pill pill-contact">Referral: Dana Kim</span>
+              <span class="pill pill-score">Match: 9</span>
+              <span class="pill pill-salary">$190-230K</span>
+            </div>
+            <div class="card-note">2nd round scheduled Apr 15. Strong fit.</div>
+          </div>
+          <div class="card">
+            <div class="card-company">Retool</div>
+            <div class="card-role">Senior PM</div>
+            <div class="card-meta">
+              <span class="pill pill-contact">Referral: Priya Patel</span>
+              <span class="pill pill-score">Match: 8</span>
+            </div>
+            <div class="card-note">Completed onsite Apr 9. Awaiting decision.</div>
+          </div>
+        </div>
+
+        <!-- Offer -->
+        <div class="column">
+          <div class="col-header">
+            <span class="col-title">Offer</span>
+            <span class="col-count">1</span>
+          </div>
+          <div class="card" style="border-color: var(--green); border-width: 2px;">
+            <div class="card-company">Planetscale</div>
+            <div class="card-role">Product Lead</div>
+            <div class="card-meta">
+              <span class="pill pill-offer">Offer: $210K + equity</span>
+              <span class="pill pill-contact">Sam Torres (CTO)</span>
+            </div>
+            <div class="card-note">Offer received Apr 11! Need to decide by Apr 18.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Closed -->
+      <div class="closed-section">
+        <div class="closed-header">Closed</div>
+        <div class="closed-grid">
+          <div class="card card-closed">
+            <div class="card-company">Datadog</div>
+            <div class="card-role">PM, Dashboards</div>
+            <div class="card-meta">
+              <span class="pill pill-rejected">Rejected</span>
+              <span class="pill pill-source">LinkedIn</span>
+            </div>
+            <div class="card-note">Generic rejection after 2 weeks. No feedback.</div>
+          </div>
+          <div class="card card-closed">
+            <div class="card-company">Airtable</div>
+            <div class="card-role">Senior PM, Platform</div>
+            <div class="card-meta">
+              <span class="pill pill-ghosted">Ghosted</span>
+              <span class="pill pill-source">LinkedIn</span>
+            </div>
+            <div class="card-note">No response after 4 weeks. Moving on.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

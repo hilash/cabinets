@@ -1,0 +1,13 @@
+{
+  "id": "2026-04-12T07-15-31-879Z-pipeline-conductor-heartbeat",
+  "agentSlug": "pipeline-conductor",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Pipeline Conductor heartbeat",
+  "trigger": "heartbeat",
+  "status": "running",
+  "startedAt": "2026-04-12T07:15:31.879Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-15-31-879Z-pipeline-conductor-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-15-31-879Z-pipeline-conductor-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": []
+}

@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Hunt HQ — Dashboard</title>
+    <style>
+      :root {
+        --bg: #faf9f7;
+        --card: #ffffff;
+        --ink: #1a1a2e;
+        --muted: #6b6b80;
+        --line: #e8e6e1;
+        --accent: #e8a838;
+        --accent-soft: rgba(232, 168, 56, 0.12);
+        --blue: #3b82f6;
+        --blue-soft: rgba(59, 130, 246, 0.10);
+        --green: #22c55e;
+        --green-soft: rgba(34, 197, 94, 0.10);
+        --red: #ef4444;
+        --red-soft: rgba(239, 68, 68, 0.08);
+        --purple: #8b5cf6;
+        --purple-soft: rgba(139, 92, 246, 0.10);
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(ellipse at 10% 0%, rgba(232, 168, 56, 0.07), transparent 40%),
+          radial-gradient(ellipse at 90% 0%, rgba(59, 130, 246, 0.05), transparent 40%),
+          radial-gradient(ellipse at 50% 100%, rgba(34, 197, 94, 0.03), transparent 40%),
+          var(--bg);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px 64px; }
+
+      /* Hero */
+      .hero { margin-bottom: 28px; }
+      .kicker {
+        font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      h1 {
+        font-size: clamp(2.2rem, 5vw, 3.2rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      h1 span { color: var(--accent); }
+      .subtitle { color: var(--muted); font-size: 15px; }
+      .date-badge {
+        display: inline-block;
+        margin-top: 10px;
+        font: 600 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: var(--muted);
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 14px;
+      }
+
+      /* Big stats */
+      .big-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+      .big-stat {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        text-align: center;
+      }
+      .bs-value {
+        font-size: 40px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+      .bs-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .bs-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      /* Section headers */
+      .section-title {
+        font: 700 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        margin-bottom: 14px;
+        margin-top: 8px;
+      }
+
+      /* Two-column layout */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+      @media (max-width: 768px) {
+        .two-col { grid-template-columns: 1fr; }
+      }
+
+      /* Funnel */
+      .funnel-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      }
+      .funnel-stage {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .funnel-stage:last-child { border-bottom: none; }
+      .funnel-bar-wrap {
+        flex: 1;
+        height: 28px;
+        background: rgba(107, 107, 128, 0.06);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+      }
+      .funnel-bar {
+        height: 100%;
+        border-radius: 8px;
+        transition: width 0.6s ease;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        color: white;
+      }
+      .funnel-label {
+        width: 80px;
+        font-size: 13px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .funnel-count {
+        width: 30px;
+        text-align: right;
+        font-size: 15px;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+
+      /* Channel performance */
+      .channel-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      }
+      .channel-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .channel-row:last-child { border-bottom: none; }
+      .ch-name { width: 100px; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+      .ch-bar-wrap {
+        flex: 1;
+        height: 10px;
+        background: rgba(107, 107, 128, 0.06);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .ch-bar { height: 100%; border-radius: 999px; }
+      .ch-stat {
+        width: 50px;
+        text-align: right;
+        font-size: 13px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      /* Activity timeline */
+      .timeline-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        margin-bottom: 28px;
+      }
+      .tl-item {
+        display: flex;
+        gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+        align-items: flex-start;
+      }
+      .tl-item:last-child { border-bottom: none; }
+      .tl-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 5px;
+      }
+      .tl-date {
+        width: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .tl-text { font-size: 14px; line-height: 1.4; }
+      .tl-text strong { font-weight: 700; }
+
+      /* Action items */
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+      }
+      .action-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        border-left: 4px solid;
+      }
+      .action-card.urgent { border-left-color: var(--red); }
+      .action-card.important { border-left-color: var(--accent); }
+      .action-card.routine { border-left-color: var(--blue); }
+      .ac-priority {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 6px;
+      }
+      .ac-priority.urgent { color: var(--red); }
+      .ac-priority.important { color: var(--accent); }
+      .ac-priority.routine { color: var(--blue); }
+      .ac-text { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+      .ac-detail { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- Hero -->
+      <div class="hero">
+        <div class="kicker">Job Hunt HQ</div>
+        <h1>Search <span>Dashboard</span></h1>
+        <p class="subtitle">Your job search at a glance. Data-driven decisions, not anxiety-driven applications.</p>
+        <div class="date-badge">Week of Apr 7 - Apr 12, 2026</div>
+      </div>
+
+      <!-- Big stats -->
+      <div class="big-stats">
+        <div class="big-stat">
+          <div class="bs-value" style="color: var(--ink)">12</div>
+          <div class="bs-label">Total Opportunities</div>
+          <div class="bs-sub">8 active, 4 closed</div>
+        </div>
+        <div class="big-stat">
+          <div class="bs-value" style="color: var(--blue)">8</div>
+          <div class="bs-label">Applications Sent</div>
+          <div class="bs-sub">+3 this week</div>
+        </div>
+        <div class="big-stat">
+          <div class="bs-value" style="color: var(--green)">63%</div>
+          <div class="bs-label">Response Rate</div>
+          <div class="bs-sub">5 of 8 got a reply</div>
+        </div>
+        <div class="big-stat">
+          <div class="bs-value" style="color: var(--purple)">5</div>
+          <div class="bs-label">Interviews Done</div>
+          <div class="bs-sub">2 more scheduled</div>
+        </div>
+        <div class="big-stat">
+          <div class="bs-value" style="color: var(--accent)">1</div>
+          <div class="bs-label">Offers</div>
+          <div class="bs-sub">Planetscale $210K</div>
+        </div>
+        <div class="big-stat">
+          <div class="bs-value" style="color: var(--green)">42%</div>
+          <div class="bs-label">Referral Rate</div>
+          <div class="bs-sub">5 of 12 via network</div>
+        </div>
+      </div>
+
+      <!-- Funnel + Channels -->
+      <div class="two-col">
+        <div class="funnel-card">
+          <div class="section-title">Pipeline Funnel</div>
+          <div class="funnel-stage">
+            <div class="funnel-label">Saved</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width: 100%; background: linear-gradient(90deg, #6b6b80, #9090a0);">12</div>
+            </div>
+            <div class="funnel-count">12</div>
+          </div>
+          <div class="funnel-stage">
+            <div class="funnel-label">Applied</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width: 67%; background: linear-gradient(90deg, var(--blue), #60a5fa);">8</div>
+            </div>
+            <div class="funnel-count">8</div>
+          </div>
+          <div class="funnel-stage">
+            <div class="funnel-label">Screen</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width: 42%; background: linear-gradient(90deg, var(--purple), #a78bfa);">5</div>
+            </div>
+            <div class="funnel-count">5</div>
+          </div>
+          <div class="funnel-stage">
+            <div class="funnel-label">Interview</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width: 25%; background: linear-gradient(90deg, var(--accent), #f0c060);">3</div>
+            </div>
+            <div class="funnel-count">3</div>
+          </div>
+          <div class="funnel-stage">
+            <div class="funnel-label">Offer</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width: 8%; background: linear-gradient(90deg, var(--green), #4ade80);">1</div>
+            </div>
+            <div class="funnel-count">1</div>
+          </div>
+        </div>
+
+        <div class="channel-card">
+          <div class="section-title">Channel Performance</div>
+          <div class="channel-row">
+            <div class="ch-name">Referral</div>
+            <div class="ch-bar-wrap">
+              <div class="ch-bar" style="width: 100%; background: var(--green);"></div>
+            </div>
+            <div class="ch-stat" style="color: var(--green)">80%</div>
+          </div>
+          <div style="font-size: 11px; color: var(--muted); padding: 0 0 6px 114px;">4 of 5 got interviews</div>
+          <div class="channel-row">
+            <div class="ch-name">Career Page</div>
+            <div class="ch-bar-wrap">
+              <div class="ch-bar" style="width: 50%; background: var(--blue);"></div>
+            </div>
+            <div class="ch-stat" style="color: var(--blue)">50%</div>
+          </div>
+          <div style="font-size: 11px; color: var(--muted); padding: 0 0 6px 114px;">1 of 2 responded</div>
+          <div class="channel-row">
+            <div class="ch-name">LinkedIn</div>
+            <div class="ch-bar-wrap">
+              <div class="ch-bar" style="width: 25%; background: var(--purple);"></div>
+            </div>
+            <div class="ch-stat" style="color: var(--purple)">25%</div>
+          </div>
+          <div style="font-size: 11px; color: var(--muted); padding: 0 0 6px 114px;">1 of 4 responded</div>
+          <div class="channel-row">
+            <div class="ch-name">AngelList</div>
+            <div class="ch-bar-wrap">
+              <div class="ch-bar" style="width: 0%; background: var(--muted);"></div>
+            </div>
+            <div class="ch-stat" style="color: var(--muted)">0%</div>
+          </div>
+          <div style="font-size: 11px; color: var(--muted); padding: 0 0 0 114px;">0 of 1 (just saved)</div>
+        </div>
+      </div>
+
+      <!-- Activity timeline -->
+      <div class="section-title">Recent Activity</div>
+      <div class="timeline-card">
+        <div class="tl-item">
+          <div class="tl-dot" style="background: var(--green);"></div>
+          <div class="tl-date">Apr 11</div>
+          <div class="tl-text"><strong>Planetscale</strong> sent offer: $210K base + equity package. Decision by Apr 18.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: var(--purple);"></div>
+          <div class="tl-date">Apr 10</div>
+          <div class="tl-text"><strong>Notion</strong> Round 2 with Dana Kim. Strong vibe. Panel scheduled for Apr 15.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: var(--accent);"></div>
+          <div class="tl-date">Apr 9</div>
+          <div class="tl-text"><strong>Retool</strong> onsite completed. 4-person panel. Mixed signals from eng director.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: var(--blue);"></div>
+          <div class="tl-date">Apr 9</div>
+          <div class="tl-text"><strong>Loom</strong> application submitted with tailored resume.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: var(--blue);"></div>
+          <div class="tl-date">Apr 8</div>
+          <div class="tl-text"><strong>Linear</strong> phone screen completed. PLG examples resonated. Waiting on next round.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: var(--blue);"></div>
+          <div class="tl-date">Apr 7</div>
+          <div class="tl-text"><strong>Stripe</strong> referral submitted by Marcus Johnson. Waiting for recruiter outreach.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: var(--muted);"></div>
+          <div class="tl-date">Apr 5</div>
+          <div class="tl-text"><strong>Vercel</strong> application submitted directly. No response yet.</div>
+        </div>
+      </div>
+
+      <!-- Action items -->
+      <div class="section-title">This Week's Actions</div>
+      <div class="actions-grid">
+        <div class="action-card urgent">
+          <div class="ac-priority urgent">Urgent</div>
+          <div class="ac-text">Decide on Planetscale offer</div>
+          <div class="ac-detail">Deadline Apr 18. Consider negotiation. Compare with Notion and Retool timelines.</div>
+        </div>
+        <div class="action-card urgent">
+          <div class="ac-priority urgent">Urgent</div>
+          <div class="ac-text">Prep for Notion panel (Apr 15)</div>
+          <div class="ac-detail">Study Notion API. Practice system design. Load STAR stories #1, #3, #5.</div>
+        </div>
+        <div class="action-card important">
+          <div class="ac-priority important">Important</div>
+          <div class="ac-text">Prep for Supabase screen (Apr 14)</div>
+          <div class="ac-detail">Review Supabase docs, open source model, DX examples.</div>
+        </div>
+        <div class="action-card important">
+          <div class="ac-priority important">Important</div>
+          <div class="ac-text">Follow up with Vercel</div>
+          <div class="ac-detail">Applied Apr 5, no response. Send a polite check-in to the hiring team.</div>
+        </div>
+        <div class="action-card important">
+          <div class="ac-priority important">Important</div>
+          <div class="ac-text">Nudge Sarah Lin (Vercel)</div>
+          <div class="ac-detail">LinkedIn message sent Apr 6, no reply. Gentle bump if no response by Apr 13.</div>
+        </div>
+        <div class="action-card routine">
+          <div class="ac-priority routine">Routine</div>
+          <div class="ac-text">Tailor resume for Figma</div>
+          <div class="ac-detail">Saved Apr 9. Run resume-tailor-for-job to generate application materials.</div>
+        </div>
+        <div class="action-card routine">
+          <div class="ac-priority routine">Routine</div>
+          <div class="ac-text">Research Dbt Labs team</div>
+          <div class="ac-detail">Check David Park's perspective. Review product direction before applying.</div>
+        </div>
+        <div class="action-card routine">
+          <div class="ac-priority routine">Routine</div>
+          <div class="ac-text">Practice system design</div>
+          <div class="ac-detail">Weak spot flagged in interviews. Do 2 practice rounds before Notion panel.</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

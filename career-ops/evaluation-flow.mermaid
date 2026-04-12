@@ -1,0 +1,88 @@
+graph TD
+    subgraph Discovery
+        SCAN["📡 Portal Scanner"]
+        DISC["🔎 Discovered"]
+    end
+
+    subgraph Evaluation
+        EVAL["🔬 6-Block Evaluation"]
+        A["A: Role Summary"]
+        B["B: CV Match"]
+        C["C: Level Strategy"]
+        D["D: Compensation"]
+        E["E: Personalization"]
+        F["F: Interview Prep"]
+    end
+
+    subgraph Decision
+        SCORE{"Score >= 4.0?"}
+        APPLY_GO["✅ Ready to Apply"]
+        CONSIDER["⚠️ Consider"]
+        SKIP["⏭️ Skip"]
+    end
+
+    subgraph Application
+        CV["📄 Tailored CV"]
+        APP["📤 Submit"]
+        TRACK["📊 Pipeline Tracker"]
+    end
+
+    subgraph Interview
+        PREP["🎯 STAR+R Prep"]
+        INT["🎤 Interview"]
+        DEBRIEF["📝 Debrief"]
+    end
+
+    subgraph Outcome
+        OFFER["🎉 Offer"]
+        NEG["💰 Negotiation Scripts"]
+        PATTERNS["📊 Pattern Analysis"]
+    end
+
+    SCAN --> DISC
+    DISC --> EVAL
+    EVAL --> A
+    EVAL --> B
+    EVAL --> C
+    EVAL --> D
+    EVAL --> E
+    EVAL --> F
+
+    A & B & C & D & E & F --> SCORE
+    SCORE -->|4.0+| APPLY_GO
+    SCORE -->|3.5-3.9| CONSIDER
+    SCORE -->|below 3.5| SKIP
+
+    APPLY_GO --> CV
+    CV --> APP
+    APP --> TRACK
+    TRACK --> PREP
+    PREP --> INT
+    INT --> DEBRIEF
+    DEBRIEF --> OFFER
+    DEBRIEF --> PATTERNS
+    OFFER --> NEG
+    PATTERNS -.->|adjust strategy| EVAL
+
+    style SCAN fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style DISC fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style EVAL fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style A fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style B fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style C fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style D fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style E fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style F fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style SCORE fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style APPLY_GO fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style CONSIDER fill:#FAF2EA,stroke:#D4C4B0,color:#6B5B4F
+    style SKIP fill:#fff,stroke:#E8DDD0,color:#6B5B4F
+    style CV fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style APP fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style TRACK fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style PREP fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style INT fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style DEBRIEF fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style OFFER fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style NEG fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style PATTERNS fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F

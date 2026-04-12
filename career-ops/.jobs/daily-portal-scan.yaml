@@ -1,0 +1,24 @@
+id: daily-portal-scan
+name: Daily Portal Scan
+enabled: true
+schedule: 0 7 * * 1-5
+provider: claude-code
+ownerAgent: scanner
+agentSlug: scanner
+timeout: 600
+prompt: |-
+  Run the daily portal scan across all companies in /portals/portals.yaml.
+  For each portal:
+  1. Execute configured search queries against the portal API or listing page
+  2. Filter results against the profile criteria in /profile/index.md
+  3. Deduplicate against /pipeline/tracker.csv
+  4. Verify listings are still active and posted within the last 30 days
+  For qualifying matches:
+  - Add to /pipeline/tracker.csv with status "Discovered" and today's date
+  - Calculate a preliminary match score based on title, skills, and location overlap
+  - Flag any matches at companies where the user has a warm contact
+  Produce a brief scan digest with: new matches found, top 3 by preliminary score,
+  portals that had errors or were unreachable.
+cabinetPath: jobs/career-ops
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

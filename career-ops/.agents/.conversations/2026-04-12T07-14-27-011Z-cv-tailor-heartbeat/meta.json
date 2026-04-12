@@ -1,0 +1,13 @@
+{
+  "id": "2026-04-12T07-14-27-011Z-cv-tailor-heartbeat",
+  "agentSlug": "cv-tailor",
+  "cabinetPath": "jobs/career-ops",
+  "title": "CV Tailor heartbeat",
+  "trigger": "heartbeat",
+  "status": "running",
+  "startedAt": "2026-04-12T07:14:27.011Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-14-27-011Z-cv-tailor-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-14-27-011Z-cv-tailor-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": []
+}

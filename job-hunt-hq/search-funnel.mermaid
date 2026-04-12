@@ -1,0 +1,58 @@
+graph TD
+    subgraph Discovery
+        SCAN["📡 Job Scan"]
+        SAVE["📌 Save to Board"]
+        NET["🔗 Network Lead"]
+    end
+
+    subgraph Application
+        TAILOR["✂️ Tailor Resume"]
+        APPLY["📤 Apply"]
+        COVER["📝 Cover Letter"]
+    end
+
+    subgraph Interview
+        SCREEN["📞 Phone Screen"]
+        PREP["🎤 Interview Prep"]
+        ONSITE["🏢 Onsite / Panel"]
+    end
+
+    subgraph Outcome
+        OFFER["🎉 Offer"]
+        NEG["💰 Negotiation"]
+        ACCEPT["✅ Accepted"]
+        REJECT["❌ Rejected"]
+        GHOST["👻 Ghosted"]
+    end
+
+    SCAN --> SAVE
+    NET --> SAVE
+    SAVE --> TAILOR
+    TAILOR --> COVER
+    COVER --> APPLY
+    APPLY --> SCREEN
+    APPLY -->|no response 14d| GHOST
+    SCREEN --> PREP
+    PREP --> ONSITE
+    ONSITE --> OFFER
+    ONSITE --> REJECT
+    OFFER --> NEG
+    NEG --> ACCEPT
+
+    REJECT -.->|feedback| TAILOR
+    GHOST -.->|follow up| APPLY
+
+    style SCAN fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style SAVE fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style NET fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style TAILOR fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style APPLY fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style COVER fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style SCREEN fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style PREP fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style ONSITE fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style OFFER fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style NEG fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style ACCEPT fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style REJECT fill:#fff,stroke:#E8DDD0,color:#6B5B4F
+    style GHOST fill:#fff,stroke:#E8DDD0,color:#6B5B4F

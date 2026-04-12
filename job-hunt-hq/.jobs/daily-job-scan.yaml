@@ -1,0 +1,20 @@
+id: daily-job-scan
+name: Daily Job Scan
+description: Scans target role criteria and saved job boards to surface new matching opportunities.
+ownerAgent: career-strategist
+enabled: true
+schedule: "0 8 * * 1-5"
+prompt: |-
+  Review the target roles in /profile/target-roles.md and the current saved jobs in /job-board/saved-jobs.csv.
+  Search for new job postings that match the candidate's criteria:
+  - Role titles and seniority level
+  - Location or remote preferences
+  - Industry and company size preferences
+  - Required skills overlap with /profile/skills-inventory.csv
+  For each new match:
+  - Add it to /job-board/saved-jobs.csv with a match score (1-10)
+  - Flag any that have a warm connection in /networking/contacts.csv
+  - Note the application deadline if visible
+  Summarize findings as a brief daily digest.
+createdAt: "2026-04-12T00:00:00.000Z"
+updatedAt: "2026-04-12T00:00:00.000Z"

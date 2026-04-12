@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Career Ops — Evaluations</title>
+    <style>
+      :root {
+        --bg: #1e1e2e;
+        --surface: #313244;
+        --overlay: #45475a;
+        --text: #cdd6f4;
+        --subtext: #a6adc8;
+        --lavender: #b4befe;
+        --blue: #89b4fa;
+        --green: #a6e3a1;
+        --yellow: #f9e2af;
+        --peach: #fab387;
+        --red: #f38ba8;
+        --mauve: #cba6f7;
+        --teal: #94e2d5;
+        --sapphire: #74c7ec;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 28px 24px 64px; }
+      .logo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--subtext); margin-bottom: 6px; }
+      .logo span { color: var(--lavender); }
+      h1 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; margin-bottom: 4px; }
+      .tagline { font-size: 13px; color: var(--subtext); margin-bottom: 24px; }
+
+      /* Evaluation card */
+      .eval-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 16px;
+      }
+      .eval-card {
+        background: var(--surface);
+        border: 1px solid var(--overlay);
+        border-radius: 16px;
+        padding: 22px;
+        position: relative;
+      }
+      .eval-card.top { border-color: var(--green); border-width: 2px; }
+
+      /* Score circle */
+      .score-circle {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 800;
+        border: 3px solid;
+      }
+      .score-high { border-color: var(--green); color: var(--green); background: rgba(166, 227, 161, 0.08); }
+      .score-mid { border-color: var(--yellow); color: var(--yellow); background: rgba(249, 226, 175, 0.08); }
+      .score-low { border-color: var(--red); color: var(--red); background: rgba(243, 139, 168, 0.08); }
+
+      .ec-company { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--subtext); margin-bottom: 4px; }
+      .ec-role { font-size: 18px; font-weight: 800; margin-bottom: 4px; padding-right: 60px; }
+      .ec-rec {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 3px 10px;
+        border-radius: 999px;
+        margin-bottom: 14px;
+      }
+      .rec-apply { background: rgba(166, 227, 161, 0.15); color: var(--green); }
+      .rec-consider { background: rgba(249, 226, 175, 0.15); color: var(--yellow); }
+
+      /* Block bars */
+      .blocks { margin-top: 4px; }
+      .block-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 5px 0;
+      }
+      .block-label {
+        width: 110px;
+        font-size: 11px;
+        color: var(--subtext);
+        flex-shrink: 0;
+      }
+      .block-bar-wrap {
+        flex: 1;
+        height: 8px;
+        background: var(--overlay);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .block-bar {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.4s ease;
+      }
+      .block-score {
+        width: 28px;
+        text-align: right;
+        font-size: 12px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .ec-note {
+        font-size: 11px;
+        color: var(--subtext);
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--overlay);
+        line-height: 1.5;
+      }
+      .ec-note strong { color: var(--text); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="logo"><span>career</span>-ops</div>
+      <h1>6-Block Evaluations</h1>
+      <p class="tagline">Every offer scored across role fit, CV match, level, comp, personalization, and interview readiness.</p>
+
+      <div class="eval-grid">
+
+        <!-- Hugging Face -->
+        <div class="eval-card top">
+          <div class="score-circle score-high">4.7</div>
+          <div class="ec-company">Hugging Face</div>
+          <div class="ec-role">Senior PM, Hub</div>
+          <div class="ec-rec rec-apply">Strong Apply</div>
+          <div class="blocks">
+            <div class="block-row">
+              <div class="block-label">A Role Summary</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:96%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.8</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">B CV Match</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:94%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.7</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">C Level</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:92%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.6</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">D Compensation</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:90%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.5</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">E Personal</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:94%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.7</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">F Interview</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:96%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.8</div>
+            </div>
+          </div>
+          <div class="ec-note"><strong>Verdict:</strong> Near-perfect fit. Open source + DX + AI domain. Strong VP Product connection. Offer received at EUR 175K + equity.</div>
+        </div>
+
+        <!-- Anthropic -->
+        <div class="eval-card top">
+          <div class="score-circle score-high">4.6</div>
+          <div class="ec-company">Anthropic</div>
+          <div class="ec-role">PM, Claude API</div>
+          <div class="ec-rec rec-apply">Strong Apply</div>
+          <div class="blocks">
+            <div class="block-row">
+              <div class="block-label">A Role Summary</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:96%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.8</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">B CV Match</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:94%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.7</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">C Level</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:90%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.5</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">D Compensation</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:86%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.3</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">E Personal</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:92%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.6</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">F Interview</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:94%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.7</div>
+            </div>
+          </div>
+          <div class="ec-note"><strong>Verdict:</strong> API platform + AI = peak CV alignment. Referral from Elena Torres. Panel Apr 16. Comp slightly below ceiling but equity compensates.</div>
+        </div>
+
+        <!-- n8n -->
+        <div class="eval-card">
+          <div class="score-circle score-high">4.5</div>
+          <div class="ec-company">n8n</div>
+          <div class="ec-role">Head of Product</div>
+          <div class="ec-rec rec-apply">Strong Apply</div>
+          <div class="blocks">
+            <div class="block-row">
+              <div class="block-label">A Role Summary</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:92%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.6</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">B CV Match</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:86%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.3</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">C Level</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:96%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.8</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">D Compensation</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:88%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.4</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">E Personal</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:90%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.5</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">F Interview</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:88%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.4</div>
+            </div>
+          </div>
+          <div class="ec-note"><strong>Verdict:</strong> Level-up opportunity. Berlin-based, open source, CTO connection. CV match slightly lower — automation domain is adjacent but not core.</div>
+        </div>
+
+        <!-- Vercel -->
+        <div class="eval-card">
+          <div class="score-circle score-high">4.4</div>
+          <div class="ec-company">Vercel</div>
+          <div class="ec-role">Senior PM, DX</div>
+          <div class="ec-rec rec-apply">Strong Apply</div>
+          <div class="blocks">
+            <div class="block-row">
+              <div class="block-label">A Role Summary</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:90%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.5</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">B CV Match</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:92%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.6</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">C Level</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:86%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.3</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">D Compensation</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:84%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.2</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">E Personal</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:88%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.4</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">F Interview</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:88%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.4</div>
+            </div>
+          </div>
+          <div class="ec-note"><strong>Verdict:</strong> DX background is the strongest match signal. CV match is excellent. Comp is middle of range.</div>
+        </div>
+
+        <!-- Mistral -->
+        <div class="eval-card">
+          <div class="score-circle score-high">4.3</div>
+          <div class="ec-company">Mistral</div>
+          <div class="ec-role">Senior PM, Platform</div>
+          <div class="ec-rec rec-apply">Strong Apply</div>
+          <div class="blocks">
+            <div class="block-row">
+              <div class="block-label">A Role Summary</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:90%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.5</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">B CV Match</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:84%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.2</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">C Level</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:88%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.4</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">D Compensation</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:80%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.0</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">E Personal</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:86%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.3</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">F Interview</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:88%; background: var(--green);"></div></div>
+              <div class="block-score" style="color:var(--green)">4.4</div>
+            </div>
+          </div>
+          <div class="ec-note"><strong>Verdict:</strong> European AI leader. Platform + AI domain match. Comp is slightly below target — negotiate on equity if offer comes.</div>
+        </div>
+
+        <!-- Retool (below threshold) -->
+        <div class="eval-card">
+          <div class="score-circle score-mid">3.8</div>
+          <div class="ec-company">Retool</div>
+          <div class="ec-role">Senior PM, Platform</div>
+          <div class="ec-rec rec-consider">Consider</div>
+          <div class="blocks">
+            <div class="block-row">
+              <div class="block-label">A Role Summary</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:80%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">4.0</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">B CV Match</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:76%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">3.8</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">C Level</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:78%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">3.9</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">D Compensation</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:70%; background: var(--peach);"></div></div>
+              <div class="block-score" style="color:var(--peach)">3.5</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">E Personal</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:76%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">3.8</div>
+            </div>
+            <div class="block-row">
+              <div class="block-label">F Interview</div>
+              <div class="block-bar-wrap"><div class="block-bar" style="width:76%; background: var(--yellow);"></div></div>
+              <div class="block-score" style="color:var(--yellow)">3.8</div>
+            </div>
+          </div>
+          <div class="ec-note"><strong>Verdict:</strong> Below 4.0 threshold. Internal tools is adjacent but not core. Comp below target. Applied anyway — domain is growing. Low priority.</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

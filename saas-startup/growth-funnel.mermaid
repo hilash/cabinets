@@ -1,0 +1,59 @@
+graph TD
+    subgraph Acquisition
+        TOP["🌐 Top of Funnel"]
+        CONT["📝 Content / SEO"]
+        PAID["💸 Paid Channels"]
+        REF["🔗 Referrals"]
+    end
+
+    subgraph Activation
+        SIGN["📋 Signup"]
+        ONBD["🎯 Onboarding"]
+        AHA["💡 Aha Moment"]
+    end
+
+    subgraph Revenue
+        TRIAL["🆓 Free Trial"]
+        CONV["💳 Conversion"]
+        PAID_USER["👤 Paid User"]
+    end
+
+    subgraph Retention
+        ENGAGE["📊 Engagement"]
+        NPS["⭐ NPS Survey"]
+        EXPAND["📈 Expansion"]
+        CHURN["🚪 Churn Risk"]
+    end
+
+    TOP --> CONT
+    TOP --> PAID
+    TOP --> REF
+    CONT --> SIGN
+    PAID --> SIGN
+    REF --> SIGN
+    SIGN --> ONBD
+    ONBD --> AHA
+    AHA --> TRIAL
+    TRIAL --> CONV
+    CONV --> PAID_USER
+    PAID_USER --> ENGAGE
+    ENGAGE --> NPS
+    NPS -->|promoter| EXPAND
+    NPS -->|detractor| CHURN
+    EXPAND --> REF
+    CHURN -.->|win back| ENGAGE
+
+    style TOP fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style CONT fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style PAID fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style REF fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style SIGN fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style ONBD fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style AHA fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style TRIAL fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style CONV fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style PAID_USER fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style ENGAGE fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style NPS fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style EXPAND fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style CHURN fill:#fff,stroke:#E8DDD0,color:#6B5B4F

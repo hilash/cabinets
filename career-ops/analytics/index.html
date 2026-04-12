@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Career Ops — Analytics</title>
+    <style>
+      :root {
+        --bg: #1e1e2e;
+        --surface: #313244;
+        --overlay: #45475a;
+        --text: #cdd6f4;
+        --subtext: #a6adc8;
+        --lavender: #b4befe;
+        --blue: #89b4fa;
+        --green: #a6e3a1;
+        --yellow: #f9e2af;
+        --peach: #fab387;
+        --red: #f38ba8;
+        --mauve: #cba6f7;
+        --teal: #94e2d5;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+      }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 28px 24px 64px; }
+      .logo { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--subtext); margin-bottom: 6px; }
+      .logo span { color: var(--lavender); }
+      h1 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; margin-bottom: 4px; }
+      .tagline { font-size: 13px; color: var(--subtext); margin-bottom: 24px; }
+      .section-label {
+        font-size: 11px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.12em; color: var(--lavender); margin-bottom: 12px; margin-top: 8px;
+      }
+
+      /* Stats */
+      .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 24px; }
+      .stat { background: var(--surface); border: 1px solid var(--overlay); border-radius: 12px; padding: 16px; text-align: center; }
+      .stat-val { font-size: 28px; font-weight: 800; }
+      .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--subtext); margin-top: 4px; }
+      .stat-delta { font-size: 11px; margin-top: 3px; font-weight: 600; }
+      .up { color: var(--green); }
+      .down { color: var(--red); }
+      .flat { color: var(--subtext); }
+
+      /* Two-col */
+      .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+      @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+      .panel { background: var(--surface); border: 1px solid var(--overlay); border-radius: 14px; padding: 20px; }
+
+      /* Conversion funnel */
+      .funnel-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--overlay); }
+      .funnel-row:last-child { border-bottom: none; }
+      .f-label { width: 90px; font-size: 12px; color: var(--subtext); flex-shrink: 0; }
+      .f-bar-wrap { flex: 1; height: 22px; background: var(--overlay); border-radius: 6px; overflow: hidden; position: relative; }
+      .f-bar { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: var(--bg); }
+      .f-pct { width: 40px; text-align: right; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+
+      /* Channel bars */
+      .ch-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--overlay); }
+      .ch-row:last-child { border-bottom: none; }
+      .ch-name { width: 80px; font-size: 12px; flex-shrink: 0; }
+      .ch-bar-wrap { flex: 1; height: 10px; background: var(--overlay); border-radius: 999px; overflow: hidden; }
+      .ch-bar { height: 100%; border-radius: 999px; }
+      .ch-stats { width: 120px; font-size: 11px; color: var(--subtext); text-align: right; flex-shrink: 0; }
+
+      /* Insights */
+      .insights { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 24px; }
+      .insight {
+        background: var(--surface); border: 1px solid var(--overlay); border-radius: 12px;
+        padding: 16px; border-left: 4px solid;
+      }
+      .insight-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+      .insight-text { font-size: 13px; line-height: 1.5; }
+
+      /* Week-over-week */
+      .wow-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 24px; }
+      @media (max-width: 700px) { .wow-grid { grid-template-columns: repeat(3, 1fr); } }
+      .wow-cell {
+        background: var(--surface); border: 1px solid var(--overlay); border-radius: 10px;
+        padding: 12px; text-align: center;
+      }
+      .wow-week { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--subtext); margin-bottom: 6px; }
+      .wow-val { font-size: 20px; font-weight: 800; }
+      .wow-detail { font-size: 10px; color: var(--subtext); margin-top: 3px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="logo"><span>career</span>-ops</div>
+      <h1>Search Analytics</h1>
+      <p class="tagline">Patterns turn failures into strategy adjustments. Week of Apr 7-12, 2026.</p>
+
+      <!-- Top stats -->
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-val" style="color: var(--green)">63%</div>
+          <div class="stat-label">Response Rate</div>
+          <div class="stat-delta up">+8% vs last week</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" style="color: var(--blue)">38%</div>
+          <div class="stat-label">Interview Rate</div>
+          <div class="stat-delta up">+5% vs last week</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" style="color: var(--mauve)">4.2</div>
+          <div class="stat-label">Avg Eval Score</div>
+          <div class="stat-delta flat">same</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" style="color: var(--teal)">36%</div>
+          <div class="stat-label">Referral Rate</div>
+          <div class="stat-delta up">+4%</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" style="color: var(--yellow)">7.2d</div>
+          <div class="stat-label">Avg Time to Response</div>
+          <div class="stat-delta down">-1.3d (improving)</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" style="color: var(--peach)">14%</div>
+          <div class="stat-label">Ghost Rate</div>
+          <div class="stat-delta down">-6% (improving)</div>
+        </div>
+      </div>
+
+      <!-- Funnel + Channels -->
+      <div class="two-col">
+        <div class="panel">
+          <div class="section-label">Conversion Funnel</div>
+          <div class="funnel-row">
+            <div class="f-label">Discovered</div>
+            <div class="f-bar-wrap"><div class="f-bar" style="width:100%; background: var(--subtext);">14</div></div>
+            <div class="f-pct" style="color: var(--subtext)">100%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="f-label">Evaluated</div>
+            <div class="f-bar-wrap"><div class="f-bar" style="width:79%; background: var(--lavender);">11</div></div>
+            <div class="f-pct" style="color: var(--lavender)">79%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="f-label">Applied</div>
+            <div class="f-bar-wrap"><div class="f-bar" style="width:64%; background: var(--blue);">9</div></div>
+            <div class="f-pct" style="color: var(--blue)">64%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="f-label">Screen</div>
+            <div class="f-bar-wrap"><div class="f-bar" style="width:43%; background: var(--mauve);">6</div></div>
+            <div class="f-pct" style="color: var(--mauve)">43%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="f-label">Interview</div>
+            <div class="f-bar-wrap"><div class="f-bar" style="width:29%; background: var(--yellow);">4</div></div>
+            <div class="f-pct" style="color: var(--yellow)">29%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="f-label">Offer</div>
+            <div class="f-bar-wrap"><div class="f-bar" style="width:7%; background: var(--green);">1</div></div>
+            <div class="f-pct" style="color: var(--green)">7%</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="section-label">Channel Performance</div>
+          <div class="ch-row">
+            <div class="ch-name" style="color: var(--green)">Referral</div>
+            <div class="ch-bar-wrap"><div class="ch-bar" style="width:80%; background: var(--green);"></div></div>
+            <div class="ch-stats">4/5 responded</div>
+          </div>
+          <div class="ch-row">
+            <div class="ch-name" style="color: var(--blue)">Career</div>
+            <div class="ch-bar-wrap"><div class="ch-bar" style="width:60%; background: var(--blue);"></div></div>
+            <div class="ch-stats">3/5 responded</div>
+          </div>
+          <div class="ch-row">
+            <div class="ch-name" style="color: var(--mauve)">LinkedIn</div>
+            <div class="ch-bar-wrap"><div class="ch-bar" style="width:25%; background: var(--mauve);"></div></div>
+            <div class="ch-stats">1/3 responded</div>
+          </div>
+          <div class="ch-row">
+            <div class="ch-name" style="color: var(--subtext)">Scan</div>
+            <div class="ch-bar-wrap"><div class="ch-bar" style="width:0%; background: var(--subtext);"></div></div>
+            <div class="ch-stats">0/1 (new)</div>
+          </div>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--overlay);">
+            <div style="font-size: 11px; color: var(--green); font-weight: 700;">Insight:</div>
+            <div style="font-size: 12px; color: var(--subtext); margin-top: 4px; line-height: 1.5;">Referrals produce 80% response rate vs 25% for LinkedIn cold apply. Every hour spent networking > 3 hours on cold applications.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly velocity -->
+      <div class="section-label">Weekly Pipeline Velocity</div>
+      <div class="wow-grid">
+        <div class="wow-cell">
+          <div class="wow-week">Mar 10</div>
+          <div class="wow-val" style="color: var(--subtext)">3</div>
+          <div class="wow-detail">applied: 2 / screen: 0</div>
+        </div>
+        <div class="wow-cell">
+          <div class="wow-week">Mar 17</div>
+          <div class="wow-val" style="color: var(--blue)">5</div>
+          <div class="wow-detail">applied: 3 / screen: 1</div>
+        </div>
+        <div class="wow-cell">
+          <div class="wow-week">Mar 24</div>
+          <div class="wow-val" style="color: var(--blue)">4</div>
+          <div class="wow-detail">applied: 2 / screen: 2</div>
+        </div>
+        <div class="wow-cell">
+          <div class="wow-week">Mar 31</div>
+          <div class="wow-val" style="color: var(--mauve)">6</div>
+          <div class="wow-detail">applied: 3 / interview: 1</div>
+        </div>
+        <div class="wow-cell">
+          <div class="wow-week">Apr 7</div>
+          <div class="wow-val" style="color: var(--green)">7</div>
+          <div class="wow-detail">applied: 3 / interview: 2</div>
+        </div>
+        <div class="wow-cell">
+          <div class="wow-week">Apr 14</div>
+          <div class="wow-val" style="color: var(--yellow)">?</div>
+          <div class="wow-detail">2 interviews scheduled</div>
+        </div>
+      </div>
+
+      <!-- Pattern insights -->
+      <div class="section-label">Pattern Analysis</div>
+      <div class="insights">
+        <div class="insight" style="border-left-color: var(--green);">
+          <div class="insight-label" style="color: var(--green);">Working</div>
+          <div class="insight-text">Referral-sourced applications have 3.2x the response rate. Network investment is paying off. Keep 40%+ of pipeline referral-sourced.</div>
+        </div>
+        <div class="insight" style="border-left-color: var(--green);">
+          <div class="insight-label" style="color: var(--green);">Working</div>
+          <div class="insight-text">All applications scoring 4.0+ received a response. The evaluation threshold is accurately predicting fit. Don't lower it.</div>
+        </div>
+        <div class="insight" style="border-left-color: var(--red);">
+          <div class="insight-label" style="color: var(--red);">Fix</div>
+          <div class="insight-text">Stripe rejection cited "payments domain" gap. Block B flagged it but you applied anyway. Trust the evaluation — domain gaps at senior level are real.</div>
+        </div>
+        <div class="insight" style="border-left-color: var(--yellow);">
+          <div class="insight-label" style="color: var(--yellow);">Watch</div>
+          <div class="insight-text">LinkedIn cold-apply response rate is 25% — below the 30% healthy threshold. Consider only using LinkedIn for discovery, not as an application channel.</div>
+        </div>
+        <div class="insight" style="border-left-color: var(--blue);">
+          <div class="insight-label" style="color: var(--blue);">Opportunity</div>
+          <div class="insight-text">3 pending evaluations in the queue (Linear, Supabase, ElevenLabs). Clear the batch to keep the pipeline fresh. Don't let discovery outrun evaluation.</div>
+        </div>
+        <div class="insight" style="border-left-color: var(--mauve);">
+          <div class="insight-label" style="color: var(--mauve);">Decision</div>
+          <div class="insight-text">Hugging Face offer expires Apr 18. Anthropic panel is Apr 16. If Anthropic goes well, ask HF for 3-day extension. Prepare the negotiation script.</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

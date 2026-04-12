@@ -1,0 +1,13 @@
+{
+  "id": "2026-04-12T07-14-21-430Z-application-assistant-heartbeat",
+  "agentSlug": "application-assistant",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Application Assistant heartbeat",
+  "trigger": "heartbeat",
+  "status": "running",
+  "startedAt": "2026-04-12T07:14:21.430Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-14-21-430Z-application-assistant-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-14-21-430Z-application-assistant-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": []
+}

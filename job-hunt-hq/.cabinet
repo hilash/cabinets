@@ -1,0 +1,7 @@
+schemaVersion: 1
+id: job-hunt-hq-root
+name: Job Hunt HQ
+kind: root
+version: 0.1.0
+description: Job search is a full-time job. This cabinet staffs it with a career strategist, resume tailor, interview coach, and networking scout.
+entry: index.md

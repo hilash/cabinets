@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agency Dashboard</title>
+    <style>
+      :root { --bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--accent-bg:#f5e6d3;--green:#22c55e;--red:#ef4444;--blue:#3b82f6; }
+      *{box-sizing:border-box;margin:0}
+      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
+      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
+      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px}
+      .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+      .stat-val{font-size:32px;font-weight:800}
+      .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+      .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+      @media(max-width:700px){.two{grid-template-columns:1fr}}
+      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
+      .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+      .row:last-child{border-bottom:none}
+      .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+      .r-name{flex:1;font-size:14px;font-weight:600}
+      .r-sub{font-size:12px;color:var(--muted)}
+      .r-val{font-size:14px;font-weight:700;flex-shrink:0}
+      .bar-wrap{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+      .bar{height:100%;border-radius:999px}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="kicker">Digital Agency</div>
+      <h1>Agency Dashboard</h1>
+      <p class="sub">Client health, team utilization, and project status at a glance.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-val" style="color:var(--accent)">2</div><div class="stat-label">Active Clients</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--blue)">87%</div><div class="stat-label">Utilization</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--green)">$142K</div><div class="stat-label">Monthly Revenue</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--ink)">14</div><div class="stat-label">Active Projects</div></div>
+      </div>
+
+      <div class="two">
+        <div class="panel">
+          <div class="panel-title">Client Health</div>
+          <div class="row"><div class="dot" style="background:var(--green)"></div><div class="r-name">Client Alpha</div><div class="r-sub">Retainer - $68K/mo</div><div class="r-val" style="color:var(--green)">Healthy</div></div>
+          <div class="row"><div class="dot" style="background:var(--accent)"></div><div class="r-name">Client Beta</div><div class="r-sub">Project - $74K/mo</div><div class="r-val" style="color:var(--accent)">At Risk</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Team Utilization</div>
+          <div class="row"><div class="r-name">Account Directors</div><div class="bar-wrap"><div class="bar" style="width:92%;background:var(--green)"></div></div><div class="r-val">92%</div></div>
+          <div class="row"><div class="r-name">Designers</div><div class="bar-wrap"><div class="bar" style="width:85%;background:var(--blue)"></div></div><div class="r-val">85%</div></div>
+          <div class="row"><div class="r-name">Developers</div><div class="bar-wrap"><div class="bar" style="width:78%;background:var(--accent)"></div></div><div class="r-val">78%</div></div>
+          <div class="row"><div class="r-name">Strategists</div><div class="bar-wrap"><div class="bar" style="width:95%;background:var(--red)"></div></div><div class="r-val" style="color:var(--red)">95%</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Recent Activity</div>
+        <div class="row"><div class="dot" style="background:var(--green)"></div><div class="r-name">Client Alpha: Q2 campaign assets delivered</div><div class="r-sub">2 hours ago</div></div>
+        <div class="row"><div class="dot" style="background:var(--accent)"></div><div class="r-name">Client Beta: Scope creep flagged on redesign project</div><div class="r-sub">Yesterday</div></div>
+        <div class="row"><div class="dot" style="background:var(--blue)"></div><div class="r-name">Monthly utilization report generated</div><div class="r-sub">Apr 7</div></div>
+        <div class="row"><div class="dot" style="background:var(--green)"></div><div class="r-name">New project brief received from Client Alpha</div><div class="r-sub">Apr 5</div></div>
+      </div>
+    </div>
+  </body>
+</html>

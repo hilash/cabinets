@@ -1,0 +1,62 @@
+graph TD
+    CEO["🎯 CEO"]
+    COO["⚙️ COO"]
+    CFO["💰 CFO"]
+    CTO["🛠️ CTO"]
+
+    CEO --> COO
+    CEO --> CFO
+    CEO --> CTO
+
+    subgraph App Development
+        PM["🎯 Product Manager"]
+        DEV["🛠️ CTO"]
+        QA["🧪 QA"]
+        DEVOPS["🚀 DevOps"]
+    end
+
+    subgraph Reddit Growth
+        GM["🚀 Growth Marketer"]
+        RES["🔍 Researcher"]
+        CW["✍️ Copywriter"]
+        DA["📊 Data Analyst"]
+    end
+
+    subgraph TikTok Growth
+        TS["🔍 Trend Scout"]
+        SW["✍️ Script Writer"]
+        IC["🎨 Image Creator"]
+        PO["📈 Post Optimizer"]
+    end
+
+    CTO --> PM
+    CTO --> DEV
+    PM --> QA
+    PM --> DEVOPS
+
+    COO --> GM
+    COO --> RES
+    GM --> CW
+    GM --> DA
+
+    COO --> TS
+    TS --> SW
+    SW --> IC
+    IC --> PO
+
+    style CEO fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style COO fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style CFO fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style CTO fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style PM fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style DEV fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style QA fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style DEVOPS fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style GM fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style RES fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style CW fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style DA fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style TS fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style SW fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style IC fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style PO fill:#fff,stroke:#D4C4B0,color:#3B2F2F

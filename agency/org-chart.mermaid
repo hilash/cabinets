@@ -1,0 +1,32 @@
+graph TD
+    MD["🎩 Managing Director"]
+    AD["📋 Account Director"]
+
+    MD --> AD
+    MD --> PROC["📁 processes/"]
+    MD --> TMPL["📁 templates/"]
+
+    AD --> CA["📂 client-alpha/"]
+    AD --> CB["📂 client-beta/"]
+
+    CA --> AM1["👤 Account Manager"]
+    CA --> J1["⏰ Weekly Status Update"]
+
+    CB --> AM2["👤 Account Manager"]
+    CB --> J2["⏰ Weekly Status Update"]
+
+    MD -.-> J3["⏰ Monthly Utilization Review"]
+    AD -.-> J4["⏰ Weekly Client Report"]
+
+    style MD fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style AD fill:#F5E6D3,stroke:#8B5E3C,color:#3B2F2F
+    style CA fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style CB fill:#FAF2EA,stroke:#D4C4B0,color:#3B2F2F
+    style AM1 fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style AM2 fill:#fff,stroke:#D4C4B0,color:#3B2F2F
+    style J1 fill:#fff,stroke:#E8DDD0,color:#6B5B4F
+    style J2 fill:#fff,stroke:#E8DDD0,color:#6B5B4F
+    style J3 fill:#fff,stroke:#E8DDD0,color:#6B5B4F
+    style J4 fill:#fff,stroke:#E8DDD0,color:#6B5B4F
+    style PROC fill:#FAF2EA,stroke:#D4C4B0,color:#6B5B4F
+    style TMPL fill:#FAF2EA,stroke:#D4C4B0,color:#6B5B4F
