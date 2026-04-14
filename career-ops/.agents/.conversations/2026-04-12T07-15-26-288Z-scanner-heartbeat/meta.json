@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-12T07-15-26-288Z-scanner-heartbeat",
+  "agentSlug": "scanner",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Scanner heartbeat",
+  "trigger": "heartbeat",
+  "status": "failed",
+  "startedAt": "2026-04-12T07:15:26.288Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-15-26-288Z-scanner-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-15-26-288Z-scanner-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T11:15:28.411Z",
+  "exitCode": 1
+}

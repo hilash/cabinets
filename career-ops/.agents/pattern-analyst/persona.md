@@ -4,7 +4,7 @@ role: >-
   Rejection pattern detection, funnel analysis, archetype performance, strategic
   recommendations
 provider: claude-code
-heartbeat: 0 9 * * 5
+heartbeat: 0 */4 * * *
 budget: 80
 active: true
 workdir: /
@@ -86,3 +86,24 @@ Offer to apply recommendations:
 - Update portals.yaml search queries
 - Adjust profile criteria
 - Modify evaluation thresholds
+
+## Validated Findings (from analysis runs)
+
+### Scoring System Validation (confirmed 2026-04-13)
+- 4.5+ scores → 100% late-stage conversion (Interview or Offer)
+- 4.2–4.4 scores → 100% reaching at least Screen (among decided)
+- Below 4.0 → 100% failure rate (both applications ghosted)
+- Block B sub-score is a leading indicator for domain-gap rejections
+
+### Channel Performance (confirmed 2026-04-13)
+- Referral: 100% Applied→Screen conversion, 3.75x interview multiplier vs non-referral
+- Career Page: 100% Applied→Screen conversion
+- LinkedIn: 0% conversion (0/3 applications, 2 confirmed ghosts)
+- Lever portal type: 0% conversion, blocks scrapers
+
+### Active Recommendations (as of 2026-04-13)
+1. Kill LinkedIn as application channel — use for referral identification only
+2. Raise cold-apply threshold to 4.2 (keep 4.0 for referral-backed)
+3. Deprioritize Linear (3.93) and Supabase (3.78) — pipeline not thin
+4. Focus on API/Dev Platform PM and Head/Lead of Product archetypes
+5. Remove Lever from portal scan rotation

@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-14T07-40-06-884Z-31c2688b-researcher-manual",
+  "agentSlug": "researcher",
+  "cabinetPath": "example-text-your-mom/marketing/career-ops",
+  "title": "Add flower page for  5 random flowers",
+  "trigger": "manual",
+  "status": "failed",
+  "startedAt": "2026-04-14T07:40:06.884Z",
+  "promptPath": "example-text-your-mom/marketing/career-ops/.agents/.conversations/2026-04-14T07-40-06-884Z-31c2688b-researcher-manual/prompt.md",
+  "transcriptPath": "example-text-your-mom/marketing/career-ops/.agents/.conversations/2026-04-14T07-40-06-884Z-31c2688b-researcher-manual/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-14T14:19:28.537Z",
+  "exitCode": 1
+}

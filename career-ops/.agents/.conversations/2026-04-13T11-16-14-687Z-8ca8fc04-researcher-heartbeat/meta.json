@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-13T11-16-14-687Z-8ca8fc04-researcher-heartbeat",
+  "agentSlug": "researcher",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Researcher heartbeat",
+  "trigger": "heartbeat",
+  "status": "failed",
+  "startedAt": "2026-04-13T11:16:14.687Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-14-687Z-8ca8fc04-researcher-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-14-687Z-8ca8fc04-researcher-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T11:53:58.567Z",
+  "exitCode": 1
+}

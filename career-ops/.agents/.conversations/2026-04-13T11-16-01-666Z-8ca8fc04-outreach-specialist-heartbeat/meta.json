@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-13T11-16-01-666Z-8ca8fc04-outreach-specialist-heartbeat",
+  "agentSlug": "outreach-specialist",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Outreach Specialist heartbeat",
+  "trigger": "heartbeat",
+  "status": "failed",
+  "startedAt": "2026-04-13T11:16:01.666Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-01-666Z-8ca8fc04-outreach-specialist-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-01-666Z-8ca8fc04-outreach-specialist-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T11:53:58.568Z",
+  "exitCode": 1
+}

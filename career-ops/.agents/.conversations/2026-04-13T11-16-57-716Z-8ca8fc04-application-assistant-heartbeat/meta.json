@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-13T11-16-57-716Z-8ca8fc04-application-assistant-heartbeat",
+  "agentSlug": "application-assistant",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Application Assistant heartbeat",
+  "trigger": "heartbeat",
+  "status": "failed",
+  "startedAt": "2026-04-13T11:16:57.716Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-57-716Z-8ca8fc04-application-assistant-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-57-716Z-8ca8fc04-application-assistant-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T11:53:58.459Z",
+  "exitCode": 1
+}

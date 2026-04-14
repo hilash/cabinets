@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-13T11-16-01-512Z-8ca8fc04-interview-strategist-heartbeat",
+  "agentSlug": "interview-strategist",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Interview Strategist heartbeat",
+  "trigger": "heartbeat",
+  "status": "failed",
+  "startedAt": "2026-04-13T11:16:01.512Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-01-512Z-8ca8fc04-interview-strategist-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-01-512Z-8ca8fc04-interview-strategist-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T11:53:58.679Z",
+  "exitCode": 1
+}

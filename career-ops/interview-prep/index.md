@@ -1,7 +1,7 @@
 ---
 title: Interview Prep
 created: '2026-04-12T00:00:00Z'
-modified: '2026-04-12T00:00:00Z'
+modified: '2026-04-13T00:00:00Z'
 tags:
   - interviews
   - preparation
@@ -15,7 +15,10 @@ The Interview Strategist works from Block F evaluations to build company-specifi
 
 - **[[story-bank]]** — STAR+R stories mapped to competencies. The reusable ammo.
 - **[[negotiation-scripts]]** — Scripts for counters, geographic pushback, competing offers, equity, and timing.
-- Company-specific prep packets (generated per interview)
+- Company-specific prep packets (generated per interview):
+  - **[[anthropic-panel-prep]]** — Anthropic PM, Claude API — Apr 16 panel (**T-3 days**)
+  - **[[hugging-face-negotiation]]** — Hugging Face Senior PM, Hub — offer negotiation (deadline Apr 18)
+  - **[[n8n-onsite-debrief]]** — n8n Head of Product — post-onsite debrief (**ACTION REQUIRED**)
 
 ## The STAR+R Difference
 

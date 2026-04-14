@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HeartStrings - Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#004557",
+                    "on-primary": "#fff7f4",
+                    "background": "#fff8f4",
+                    "surface-dim": "#ffd2a3",
+                    "surface-container": "#ffead8",
+                    "surface-tint": "#914d00",
+                    "secondary-fixed-dim": "#8ce0ff",
+                    "outline-variant": "#daa972",
+                    "surface-variant": "#ffddba",
+                    "primary": "#914d00",
+                    "error-container": "#fa7150",
+                    "error": "#aa371c",
+                    "inverse-primary": "#fca151",
+                    "tertiary": "#006d42",
+                    "tertiary-dim": "#006039",
+                    "on-surface": "#4b2b00",
+                    "primary-container": "#ffaf6d",
+                    "tertiary-fixed-dim": "#8aebb1",
+                    "surface-container-highest": "#ffddba",
+                    "on-secondary-fixed-variant": "#00647c",
+                    "surface-container-low": "#fff1e6",
+                    "on-primary-fixed": "#401f00",
+                    "on-secondary-container": "#00596f",
+                    "on-tertiary-fixed-variant": "#006b40",
+                    "surface-bright": "#fff8f4",
+                    "on-error": "#fff7f6",
+                    "primary-dim": "#804300",
+                    "error-dim": "#821a01",
+                    "on-tertiary": "#e7ffeb",
+                    "on-error-container": "#671200",
+                    "secondary-fixed": "#b7eaff",
+                    "inverse-surface": "#190b00",
+                    "secondary-dim": "#005b71",
+                    "secondary": "#006880",
+                    "outline": "#9d7240",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#98fabe",
+                    "inverse-on-surface": "#b69777",
+                    "on-primary-container": "#5f3000",
+                    "primary-fixed-dim": "#f89e4f",
+                    "surface-container-high": "#ffe4c9",
+                    "surface": "#fff8f4",
+                    "on-background": "#4b2b00",
+                    "tertiary-container": "#98fabe",
+                    "primary-fixed": "#ffaf6d",
+                    "on-secondary": "#f1faff",
+                    "on-tertiary-fixed": "#004b2c",
+                    "secondary-container": "#b7eaff",
+                    "on-tertiary-container": "#006039",
+                    "on-surface-variant": "#7e5728",
+                    "on-primary-fixed-variant": "#6c3800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Be Vietnam Pro"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-tonal-shift {
+            background: linear-gradient(180deg, rgba(255, 248, 244, 0) 0%, #fff1e6 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-[#fff8f4]/80 backdrop-blur-xl flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="favorite">favorite</span>
+<h1 class="text-xl font-bold text-orange-900 font-headline tracking-tight">HeartStrings</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container shadow-sm border-2 border-primary-container">
+<img alt="User Profile" data-alt="Close-up portrait of a young woman with a warm, friendly smile and natural lighting in an indoor setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHypG785-Kh3eBoFRxTe7OIWNBYYCipQJDkxZdovNbcVbTNjQrXiQR_d3gVU0Rv-9GJVuHm96FSpxBGkdTqkFannbjEdvMTUcOgC2q4xP9nsCazkE-bZNUxS8UEzYbJSETAeX1tT6DS_4dtxovNZgcOv13T4uG4chi5YYsF0qPUxkbljvMaEbk9GSfyE28WXhV-ZvI2P3ABmBotxdcWM-NDRWwGiy7tuVoXaQ7E_jhp0pzZNh_yxhS6nJtkl53o-zYAaNiGSgGoiM"/>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-4xl mx-auto space-y-8">
+<!-- Welcome Section -->
+<section class="space-y-1">
+<h2 class="text-3xl font-extrabold font-headline text-on-surface tracking-tight">Hi, Sarah</h2>
+<p class="text-on-surface-variant font-medium">She's probably thinking of you right now.</p>
+</section>
+<!-- Countdown Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Main Countdown Card -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-lg p-8 relative overflow-hidden flex flex-col justify-between min-h-[280px]">
+<div class="absolute top-0 right-0 p-6 opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="call">call</span>
+</div>
+<div class="space-y-4">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-highest rounded-full text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-sm" data-icon="event">event</span>
+                        Next Scheduled Call
+                    </div>
+<div class="space-y-1">
+<p class="text-5xl font-extrabold font-headline text-primary tracking-tighter">02:14:45</p>
+<p class="text-on-surface-variant font-medium">Sunday with Mom • 6:00 PM</p>
+</div>
+</div>
+<div class="flex items-center gap-4 mt-6">
+<button class="bg-primary text-on-primary font-bold py-4 px-8 rounded-lg flex items-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-lg">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+                        Send a Text
+                    </button>
+<button class="w-14 h-14 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center transition-all hover:bg-secondary-fixed shadow-md">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</button>
+</div>
+</div>
+<!-- Profile / Status Card -->
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col items-center justify-center text-center space-y-4">
+<div class="relative">
+<div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-xl">
+<img alt="Mom's Profile" data-alt="Portrait of a smiling mature woman with warm eyes, silver hair, wearing a cozy knit sweater in a soft-lit living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi-iR7AatAq-wbwxci5fwquYBA5BNGIizkfg4NWGQUo67U2ouzZoQPOZEyXQb9KeHVpszB8YyYBJ5Ql-RjzhNgM_KJvhXxjiBKIL9g2H7OwWg4T_lL_vnEZpAy_td1IHDk2aaAaTRax1KkSXKq_AAK4YeEP94TdfB1oO44cJWPTDgpzrJXNs0Mwh5LdRYjAQrUPY8kVwZOoQ7WgZC-A9JzZPMs5wt4dKFBa6uJr8gWGFw97zRT1lRh4szm7UOwaDEc2R6gStTVGXA"/>
+</div>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-tertiary rounded-full border-4 border-surface-container-low"></div>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline">Mom</h3>
+<p class="text-sm text-on-surface-variant">Last active 15m ago</p>
+</div>
+<div class="flex gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="w-2 h-2 rounded-full bg-primary-container/30"></span>
+</div>
+</div>
+</div>
+<!-- Memories & Updates Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Last Memory -->
+<section class="space-y-4">
+<div class="flex justify-between items-center px-2">
+<h4 class="font-bold text-lg font-headline text-on-surface">Last Memory</h4>
+<button class="text-sm font-bold text-primary flex items-center gap-1">
+                        View Journal
+                        <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-4 shadow-sm group cursor-pointer hover:shadow-md transition-shadow">
+<div class="aspect-video rounded-md overflow-hidden mb-4">
+<img alt="Family Garden" data-alt="Close up of bright yellow flowers in a sun-drenched home garden with a watering can in soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_-oVP0hZpP9MI_a_wryDzGLSjf-f6Yef0pHuiT-e7NIvNCRdCPoPW1KVZbZEUv7Ytr1-tksLpoVDfiAZYPDwWBUzKAXhQnY-p1b7PwdDdTNsfZXUs1b3hTynEBL9F4FYp4d8lWDlClhujF1VmRIr9I43e3wG-G0DkAu0eWzIYLbSikdA2oRLd4i797jUVWeMRubA-tAxZrYBzSfIjHrHPUX0hpJBdlsUBYYeXi4i36XGY8Ur9TucpY5p-siOjTRuBuDWfgW3cKg8"/>
+</div>
+<p class="text-on-surface italic font-medium leading-relaxed">
+                        "The hydrangeas finally bloomed! Wish you were here to see the garden this morning. Love you, honey."
+                    </p>
+<div class="mt-3 flex items-center gap-2 text-xs text-on-surface-variant font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="photo_camera">photo_camera</span>
+                        Yesterday, 9:20 AM
+                    </div>
+</div>
+</section>
+<!-- Memory Thread (The Signature Component) -->
+<section class="space-y-4">
+<h4 class="font-bold text-lg font-headline text-on-surface px-2">Weekly Activity</h4>
+<div class="relative pl-8 space-y-8">
+<!-- The Thread Line -->
+<div class="absolute left-[7px] top-4 bottom-4 w-0.5 border-l-2 border-dashed border-secondary-fixed-dim"></div>
+<!-- Entry 1 -->
+<div class="relative">
+<div class="absolute -left-8 w-4 h-4 rounded-full bg-primary ring-4 ring-surface"></div>
+<div class="space-y-1">
+<p class="text-sm font-bold text-primary">Call Completed</p>
+<p class="text-sm text-on-surface-variant">42-minute catch up about the weekend</p>
+<p class="text-[10px] text-outline font-bold uppercase tracking-wider">Tuesday</p>
+</div>
+</div>
+<!-- Entry 2 -->
+<div class="relative">
+<div class="absolute -left-8 w-4 h-4 rounded-full bg-secondary ring-4 ring-surface"></div>
+<div class="space-y-1">
+<p class="text-sm font-bold text-secondary">3 Photos Received</p>
+<p class="text-sm text-on-surface-variant">Mom shared "Sunday Brunch" album</p>
+<p class="text-[10px] text-outline font-bold uppercase tracking-wider">Sunday</p>
+</div>
+</div>
+<!-- Entry 3: Growth Bloom -->
+<div class="relative">
+<div class="absolute -left-9 w-6 h-6 rounded-full bg-tertiary flex items-center justify-center ring-4 ring-surface">
+<span class="material-symbols-outlined text-[14px] text-white" data-icon="potted_plant" style="font-variation-settings: 'FILL' 1;">potted_plant</span>
+</div>
+<div class="space-y-1">
+<p class="text-sm font-bold text-tertiary">14 Day Streak!</p>
+<p class="text-sm text-on-surface-variant font-medium">You've connected every day for 2 weeks.</p>
+<p class="text-[10px] text-outline font-bold uppercase tracking-wider">Today</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Quick Actions Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
+<button class="bg-surface-container-high p-4 rounded-lg flex flex-col items-center gap-2 hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-sm font-bold text-on-surface-variant">Prompt</span>
+</button>
+<button class="bg-surface-container-high p-4 rounded-lg flex flex-col items-center gap-2 hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" data-icon="favorite">favorite</span>
+<span class="text-sm font-bold text-on-surface-variant">Wishlist</span>
+</button>
+<button class="bg-surface-container-high p-4 rounded-lg flex flex-col items-center gap-2 hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" data-icon="photo_library">photo_library</span>
+<span class="text-sm font-bold text-on-surface-variant">Gallery</span>
+</button>
+<button class="bg-surface-container-high p-4 rounded-lg flex flex-col items-center gap-2 hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" data-icon="redeem">redeem</span>
+<span class="text-sm font-bold text-on-surface-variant">Send Gift</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#fff8f4]/80 backdrop-blur-xl rounded-t-[2rem] shadow-[0_-8px_24px_rgba(75,43,0,0.06)]">
+<a class="flex flex-col items-center justify-center bg-orange-100 text-orange-900 rounded-full px-5 py-2 scale-95 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home_heart" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-orange-800/70 px-5 py-2 hover:text-orange-900 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">Schedule</span>
+</a>
+<a class="flex flex-col items-center justify-center text-orange-800/70 px-5 py-2 hover:text-orange-900 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-orange-800/70 px-5 py-2 hover:text-orange-900 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">Settings</span>
+</a>
+</nav>
+</body></html>

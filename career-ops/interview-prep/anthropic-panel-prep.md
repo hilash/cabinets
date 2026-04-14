@@ -1,7 +1,7 @@
 ---
 title: "Anthropic — PM, Claude API — 2nd Round Panel Prep"
 created: '2026-04-12T00:00:00Z'
-modified: '2026-04-12T00:00:00Z'
+modified: '2026-04-13T00:00:00Z'
 tags:
   - interview-prep
   - anthropic
@@ -189,7 +189,43 @@ You'll almost certainly be asked: *"Why Anthropic? Why not OpenAI or Mistral?"*
 
 ---
 
-## Logistics Checklist
+## T-3 Countdown: Final Sharpening (Updated Apr 13)
+
+**Panel is April 16. The 48-hour prep window opens tomorrow (Apr 14).**
+
+### What to do TODAY (Apr 13)
+- [ ] Confirm time and video link with Elena Torres — do this now, don't wait
+- [ ] Read Anthropic's RSP (Responsible Scaling Policy) in full — you need to reference it naturally, not recite it
+- [ ] Skim the Claude API docs: look at current SDK structure, pricing page, rate limits page — find one thing you'd improve
+
+### What to do TOMORROW (Apr 14 — 48h out)
+- [ ] Do one full run-through of Story 2 (SDK) and Story 1 (PLG) out loud with a timer — hit 90 seconds each
+- [ ] Practice the safety answer (Theme 4) out loud — it needs to sound like your opinion, not a script
+- [ ] Read the latest 2-3 Anthropic blog posts — look for anything you can reference in conversation
+- [ ] Write down your "Why Anthropic" answer in your own words and say it out loud once
+
+### What to do NIGHT BEFORE (Apr 15)
+- [ ] Stop actively prepping by 8pm — you are ready, don't over-study
+- [ ] Set up your interview space: quiet room, good lighting, camera at eye level, water
+- [ ] Have proof-points doc open on a second screen (not visibly reading, but accessible)
+- [ ] Review your 4 questions to ask them — pick 2-3 to actually ask based on flow
+
+### DAY OF (Apr 16)
+- [ ] 30 min before: review Story 2 and Story 1 bullet points (just the A and R sections)
+- [ ] Glance at the safety answer framing — just the opening sentence
+- [ ] Take 3 deep breaths before joining the call
+- [ ] **First 30 seconds set the tone:** warm, direct, genuinely excited. Not nervous. Not casual.
+- [ ] After each answer, pause. Don't fill silence — let them process or ask a follow-up.
+- [ ] **If you don't know something:** "That's not an area I have deep experience in, but here's how I'd approach it..." — Anthropic values honesty over bluffing.
+
+### POST-PANEL (within 2 hours)
+- [ ] Run the 5-minute debrief: what landed, what didn't, surprise questions, story performance
+- [ ] Send a prep-aligned thank-you email to Elena Torres within 24 hours
+- [ ] If the panel went well: this becomes HF negotiation leverage (see hugging-face-negotiation.md Step 4)
+
+---
+
+## Logistics Checklist (legacy — see countdown above)
 
 - [ ] Confirm time and video link with Elena Torres
 - [ ] Read Anthropic's RSP (Responsible Scaling Policy) — published on their website

@@ -22,8 +22,8 @@ portals:
 
   - company: Mistral
     slug: mistral
-    type: greenhouse
-    url: "boards.greenhouse.io/mistral"
+    type: lever
+    url: "jobs.lever.co/mistral"
     status: active
     priority: high
     notes: "European AI leader. Strong platform play."
@@ -54,8 +54,8 @@ portals:
 
   - company: Cohere
     slug: cohere
-    type: greenhouse
-    url: "boards.greenhouse.io/cohere"
+    type: ashby
+    url: "jobs.ashbyhq.com/cohere"
     status: active
     priority: medium
     notes: "Enterprise AI. RAG and search."

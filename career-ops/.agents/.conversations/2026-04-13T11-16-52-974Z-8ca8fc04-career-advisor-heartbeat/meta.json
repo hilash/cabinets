@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-13T11-16-52-974Z-8ca8fc04-career-advisor-heartbeat",
+  "agentSlug": "career-advisor",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Career Advisor heartbeat",
+  "trigger": "heartbeat",
+  "status": "failed",
+  "startedAt": "2026-04-13T11:16:52.974Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-52-974Z-8ca8fc04-career-advisor-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T11-16-52-974Z-8ca8fc04-career-advisor-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T11:53:58.461Z",
+  "exitCode": 1
+}

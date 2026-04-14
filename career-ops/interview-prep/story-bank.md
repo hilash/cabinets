@@ -1,7 +1,7 @@
 ---
 title: STAR+R Story Bank
 created: '2026-04-12T00:00:00Z'
-modified: '2026-04-12T00:00:00Z'
+modified: '2026-04-13T00:00:00Z'
 tags:
   - interviews
   - stories
@@ -105,6 +105,23 @@ Career Ops uses **STAR+R** — adding Reflection to the classic STAR format. The
 | Stakeholder Management | Story 4: Migration | Story 3 |
 | Customer / User Empathy | Story 2: SDK v3.0 | Story 5 |
 | Failure / Learning | Story 5: Feature Killed | Story 3 (first hire) |
+
+## Gap Analysis (Updated Apr 13)
+
+**Single-coverage risks** — these competencies have no backup story. If the primary doesn't land or the interviewer probes deeper, you have nothing to pivot to:
+
+| Competency | Only Story | Risk Level | Recommendation |
+| --- | --- | --- | --- |
+| Growth / PLG | Story 1 | **High** — core theme for Anthropic, HF, ElevenLabs | Need a 2nd growth story (growth experiment, A/B test, market expansion) |
+| Conflict Resolution | Story 4 | Medium — less frequently probed | Acceptable for now; consider a non-technical conflict story |
+| Leadership / Hiring | Story 3 | Medium — only matters for Head-level roles (n8n) | Acceptable; n8n onsite already happened |
+| Saying No / Hard Calls | Story 5 | Low — Story 5 is strong enough to carry this alone | No action needed |
+
+**Recommended Story 6 topic:** A growth experiment or activation initiative that's distinct from Story 1's PLG engine. Ideally something where you ran a specific experiment, measured it, and iterated — not a broad strategic motion. This would give Growth a backup and strengthen Data-Driven coverage further.
+
+**Customer Empathy note:** Currently only covered as backup (Stories 2 and 5). For API/developer-tools roles, the diary studies in Story 2 serve this well. But if an interviewer asks "how do you stay close to the user?" as a standalone question, Story 2's answer is really about research methodology, not ongoing empathy habits. Consider whether a short vignette about regular user engagement (community calls, support ticket reviews, beta programs) could fill this gap without needing a full STAR+R story.
+
+---
 
 ## Interview Load-Outs
 

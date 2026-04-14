@@ -1,7 +1,7 @@
 ---
 title: Master CV
 created: '2026-04-12T00:00:00Z'
-modified: '2026-04-12T00:00:00Z'
+modified: '2026-04-13T12:56:09.514Z'
 tags:
   - cv
   - master
@@ -13,11 +13,16 @@ order: 2
 
 ## Contact
 
-- **Name:** Your Full Name
-- **Email:** you@example.com
-- **LinkedIn:** linkedin.com/in/yourname
-- **GitHub:** github.com/yourname
-- **Location:** Berlin, Germany (open to remote)
+-   **Name:** Your Full Name
+    
+-   **Email:** [you@example.com](mailto:you@example.com)
+    
+-   **LinkedIn:** linkedin.com/in/yourname
+    
+-   **GitHub:** github.com/yourname
+    
+-   **Location:** Berlin, Germany (open to remote)
+    
 
 ## Professional Summary
 
@@ -26,59 +31,89 @@ Product leader with 8 years of experience shipping B2B SaaS and developer tools 
 ## Experience
 
 ### Senior Product Manager — DataPlatform GmbH
+
 **2024-Present** | Berlin, Germany
 
-- Led the developer experience platform team (8 engineers, 2 designers), shipping a new API console that increased developer activation by 34%
-- Defined and executed the PLG motion for the self-serve tier, growing MRR from EUR 120K to EUR 380K in 12 months
-- Built the product analytics stack (Amplitude + dbt) and established experiment culture — 40+ A/B tests in first year
-- Shipped SDK v3.0 across Python, Node, and Go with 96% developer satisfaction score
-- Reduced time-to-first-API-call from 45 minutes to 8 minutes through onboarding redesign
+-   Led the developer experience platform team (8 engineers, 2 designers), shipping a new API console that increased developer activation by 34%
+    
+-   Defined and executed the PLG motion for the self-serve tier, growing MRR from EUR 120K to EUR 380K in 12 months
+    
+-   Built the product analytics stack (Amplitude + dbt) and established experiment culture — 40+ A/B tests in first year
+    
+-   Shipped SDK v3.0 across Python, Node, and Go with 96% developer satisfaction score
+    
+-   Reduced time-to-first-API-call from 45 minutes to 8 minutes through onboarding redesign
+    
 
 ### Product Manager — BuildTools Inc.
+
 **2021-2024** | Remote (US company)
 
-- Owned the CI/CD pipeline product (120K monthly active builds), prioritizing reliability and speed
-- Shipped parallel build execution, reducing median build time by 62% and saving enterprise customers ~$2M/year in compute
-- Led the migration from monolith to service-oriented architecture from the product side — defined service boundaries, migration priorities, and customer communication
-- Hired and onboarded 3 PMs to build out the product team from solo PM to a team of 4
-- Established quarterly OKR process and product review cadence adopted company-wide
+-   Owned the CI/CD pipeline product (120K monthly active builds), prioritizing reliability and speed
+    
+-   Shipped parallel build execution, reducing median build time by 62% and saving enterprise customers ~$2M/year in compute
+    
+-   Led the migration from monolith to service-oriented architecture from the product side — defined service boundaries, migration priorities, and customer communication
+    
+-   Hired and onboarded 3 PMs to build out the product team from solo PM to a team of 4
+    
+-   Established quarterly OKR process and product review cadence adopted company-wide
+    
 
 ### Product Manager — StartupCo
+
 **2019-2021** | San Francisco, CA
 
-- First PM hire. Defined the product roadmap, established user research practice, and shipped v1.0 to v3.0
-- Grew the user base from 2K to 45K through product-led acquisition and referral loops
-- Shipped the integration marketplace (Slack, Jira, GitHub) that became the #1 reason enterprise customers upgraded
-- Conducted 200+ user interviews in 2 years, building a research repository that the team still uses
+-   First PM hire. Defined the product roadmap, established user research practice, and shipped v1.0 to v3.0
+    
+-   Grew the user base from 2K to 45K through product-led acquisition and referral loops
+    
+-   Shipped the integration marketplace (Slack, Jira, GitHub) that became the #1 reason enterprise customers upgraded
+    
+-   Conducted 200+ user interviews in 2 years, building a research repository that the team still uses
+    
 
 ### Software Engineer — TechCorp
+
 **2016-2019** | San Francisco, CA
 
-- Full-stack engineer on the platform team (Python, React, PostgreSQL)
-- Built the internal analytics dashboard used by 50+ people across product, sales, and CS
-- Led the database migration from MySQL to PostgreSQL with zero downtime (2M+ records)
-- Mentored 2 junior engineers through their first production deployments
+-   Full-stack engineer on the platform team (Python, React, PostgreSQL)
+    
+-   Built the internal analytics dashboard used by 50+ people across product, sales, and CS
+    
+-   Led the database migration from MySQL to PostgreSQL with zero downtime (2M+ records)
+    
+-   Mentored 2 junior engineers through their first production deployments
+    
 
 ## Education
 
 ### MSc Computer Science — Technical University of Berlin
+
 **2015-2016** | Focus: Distributed Systems
 
 ### BSc Computer Science — Universidad de Sevilla
+
 **2011-2015** | First Class Honours
 
 ## Certifications
 
-- AWS Solutions Architect Associate (2023)
-- Pragmatic Institute Product Management (2020)
-- Certified Scrum Product Owner (2019)
+-   AWS Solutions Architect Associate (2023)
+    
+-   Pragmatic Institute Product Management (2020)
+    
+-   Certified Scrum Product Owner (2019)
+    
 
 ## Languages
 
-- Spanish (Native)
-- English (Fluent)
-- German (B2)
+-   Spanish (Native)
+    
+-   English (Fluent)
+    
+-   German (B2)
+    
 
 ---
 
-*This is the raw material. Every tailored CV is a focused subset generated by the CV Tailor agent.*
+*This is the raw material. Every tailored CV is a focused subset generated by the CV Tailor agent.u*

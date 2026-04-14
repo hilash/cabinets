@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-13T13-44-09-261Z-8ca8fc04-application-assistant-manual",
+  "agentSlug": "application-assistant",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Write harry potter stories",
+  "trigger": "manual",
+  "status": "failed",
+  "startedAt": "2026-04-13T13:44:09.261Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T13-44-09-261Z-8ca8fc04-application-assistant-manual/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-13T13-44-09-261Z-8ca8fc04-application-assistant-manual/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T15:56:11.736Z",
+  "exitCode": 1
+}

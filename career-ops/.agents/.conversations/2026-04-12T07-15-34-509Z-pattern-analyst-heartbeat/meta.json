@@ -1,0 +1,15 @@
+{
+  "id": "2026-04-12T07-15-34-509Z-pattern-analyst-heartbeat",
+  "agentSlug": "pattern-analyst",
+  "cabinetPath": "jobs/career-ops",
+  "title": "Pattern Analyst heartbeat",
+  "trigger": "heartbeat",
+  "status": "failed",
+  "startedAt": "2026-04-12T07:15:34.509Z",
+  "promptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-15-34-509Z-pattern-analyst-heartbeat/prompt.md",
+  "transcriptPath": "jobs/career-ops/.agents/.conversations/2026-04-12T07-15-34-509Z-pattern-analyst-heartbeat/transcript.txt",
+  "mentionedPaths": [],
+  "artifactPaths": [],
+  "completedAt": "2026-04-13T11:15:28.233Z",
+  "exitCode": 1
+}
