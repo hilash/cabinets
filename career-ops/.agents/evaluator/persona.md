@@ -4,7 +4,7 @@ role: '6-block offer evaluation, scoring, fit analysis, go/no-go recommendations
 provider: claude-code
 heartbeat: 0 9 * * 1-5
 budget: 100
-active: true
+active: false
 workdir: /
 focus:
   - offer-evaluation

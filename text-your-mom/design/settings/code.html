@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be_Vietnam_Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#004557",
+                    "on-primary": "#fff7f4",
+                    "background": "#fff8f4",
+                    "surface-dim": "#ffd2a3",
+                    "surface-container": "#ffead8",
+                    "surface-tint": "#914d00",
+                    "secondary-fixed-dim": "#8ce0ff",
+                    "outline-variant": "#daa972",
+                    "surface-variant": "#ffddba",
+                    "primary": "#914d00",
+                    "error-container": "#fa7150",
+                    "error": "#aa371c",
+                    "inverse-primary": "#fca151",
+                    "tertiary": "#006d42",
+                    "tertiary-dim": "#006039",
+                    "on-surface": "#4b2b00",
+                    "primary-container": "#ffaf6d",
+                    "tertiary-fixed-dim": "#8aebb1",
+                    "surface-container-highest": "#ffddba",
+                    "on-secondary-fixed-variant": "#00647c",
+                    "surface-container-low": "#fff1e6",
+                    "on-primary-fixed": "#401f00",
+                    "on-secondary-container": "#00596f",
+                    "on-tertiary-fixed-variant": "#006b40",
+                    "surface-bright": "#fff8f4",
+                    "on-error": "#fff7f6",
+                    "primary-dim": "#804300",
+                    "error-dim": "#821a01",
+                    "on-tertiary": "#e7ffeb",
+                    "on-error-container": "#671200",
+                    "secondary-fixed": "#b7eaff",
+                    "inverse-surface": "#190b00",
+                    "secondary-dim": "#005b71",
+                    "secondary": "#006880",
+                    "outline": "#9d7240",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#98fabe",
+                    "inverse-on-surface": "#b69777",
+                    "on-primary-container": "#5f3000",
+                    "primary-fixed-dim": "#f89e4f",
+                    "surface-container-high": "#ffe4c9",
+                    "surface": "#fff8f4",
+                    "on-background": "#4b2b00",
+                    "tertiary-container": "#98fabe",
+                    "primary-fixed": "#ffaf6d",
+                    "on-secondary": "#f1faff",
+                    "on-tertiary-fixed": "#004b2c",
+                    "secondary-container": "#b7eaff",
+                    "on-tertiary-container": "#006039",
+                    "on-surface-variant": "#7e5728",
+                    "on-primary-fixed-variant": "#6c3800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Be Vietnam Pro"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky bg-[#fff8f4]/80 dark:bg-orange-950/80 backdrop-blur-xl docked full-width top-0 z-50">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-900 dark:text-orange-100" data-icon="favorite">favorite</span>
+<span class="text-xl font-bold text-orange-900 dark:text-orange-100 font-['Plus_Jakarta_Sans'] tracking-tight">HeartStrings</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 items-center">
+<span class="text-orange-700/60 dark:text-orange-200/60 font-medium cursor-pointer hover:bg-white/40 dark:hover:bg-black/20 transition-colors px-3 py-1 rounded-full">Home</span>
+<span class="text-orange-700/60 dark:text-orange-200/60 font-medium cursor-pointer hover:bg-white/40 dark:hover:bg-black/20 transition-colors px-3 py-1 rounded-full">Schedule</span>
+<span class="text-orange-700/60 dark:text-orange-200/60 font-medium cursor-pointer hover:bg-white/40 dark:hover:bg-black/20 transition-colors px-3 py-1 rounded-full">History</span>
+<span class="text-orange-900 dark:text-orange-100 font-bold cursor-pointer px-3 py-1 rounded-full">Settings</span>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container flex items-center justify-center">
+<img alt="User profile" data-alt="Close up portrait of a middle aged woman with kind eyes and a warm smile in a brightly lit indoor setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-6vWjkII2quxYwAUNqLlJ67O9-ldglyx_R3CxoZSD0N3JvgVl_VgR76hl6FnMF5_mCL9ppYt_biYbRemUrgHQEmJCyRu1fv82JTXo5yHtimNFrlhFURYkQZPi6pOcpag8RzC_KBJkKWXmrMNqnruPFtqf2sYYHzd7J7DDRouS1tLhlusPR5aWoNmrEmMvF7f-ZGF_h26z6-E-WbJd6JTccMBIThd4IqcvdWzN0FEKtQFpwT49Mcq4a7IIHn9-klIbv2nqAcapnPw"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-6 pt-12">
+<div class="mb-10">
+<h1 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2">Settings</h1>
+<p class="text-on-surface-variant">Customize your family experience and preferences.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Bento Grid Section: Parent's Contact Info -->
+<div class="md:col-span-8 space-y-6">
+<section class="bg-surface-container-low p-8 rounded-xl">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="person_edit">person_edit</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface">Parent's Contact Info</h2>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-on-surface-variant px-1">Full Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" type="text" value="Eleanor Heart"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-on-surface-variant px-1">Email Address</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" type="email" value="eleanor.h@family.com"/>
+</div>
+<div class="flex flex-col gap-2 sm:col-span-2">
+<label class="text-sm font-semibold text-on-surface-variant px-1">Primary Phone</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" type="tel" value="+1 (555) 234-5678"/>
+</div>
+</div>
+<div class="mt-8 flex justify-end">
+<button class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold shadow-lg shadow-on-surface/5 hover:scale-95 transition-transform">
+                            Save Changes
+                        </button>
+</div>
+</section>
+<!-- Notification Preferences -->
+<section class="bg-surface-container-low p-8 rounded-xl">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="notifications_active">notifications_active</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface">Notification Preferences</h2>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Family Updates</span>
+<span class="text-sm text-on-surface-variant">Daily summaries of new photos and posts</span>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Event Reminders</span>
+<span class="text-sm text-on-surface-variant">Alerts for upcoming birthdays and gatherings</span>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-4 h-4 bg-on-primary rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Safety Alerts</span>
+<span class="text-sm text-on-surface-variant">Real-time check-ins and travel updates</span>
+</div>
+<div class="w-12 h-6 bg-outline-variant/30 rounded-full relative cursor-pointer">
+<div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Theme Selection & Side Content -->
+<div class="md:col-span-4 space-y-6">
+<section class="bg-surface-container-low p-8 rounded-xl h-full">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="palette">palette</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface">App Theme</h2>
+</div>
+<div class="flex flex-col gap-4">
+<div class="group relative cursor-pointer border-2 border-primary bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4 transition-all">
+<div class="w-12 h-12 rounded-lg bg-background flex items-center justify-center border border-outline-variant/20">
+<span class="material-symbols-outlined text-primary" data-icon="light_mode">light_mode</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Warm Light</span>
+<span class="text-xs text-on-surface-variant">The digital living room</span>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="group relative cursor-pointer border-2 border-transparent hover:border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4 transition-all">
+<div class="w-12 h-12 rounded-lg bg-inverse-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-inverse-on-surface" data-icon="dark_mode">dark_mode</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Cozy Dark</span>
+<span class="text-xs text-on-surface-variant">Gentle on the eyes</span>
+</div>
+</div>
+<div class="group relative cursor-pointer border-2 border-transparent hover:border-outline-variant/30 bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4 transition-all">
+<div class="w-12 h-12 rounded-lg bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="routine">routine</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Auto</span>
+<span class="text-xs text-on-surface-variant">Follow system settings</span>
+</div>
+</div>
+</div>
+<div class="mt-12 p-6 rounded-xl bg-primary-container/20 border border-primary-container/30">
+<p class="text-xs font-bold text-primary mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="auto_awesome">auto_awesome</span>
+                            PRO TIP
+                        </p>
+<p class="text-sm text-on-surface-variant italic">The "Warm Light" theme is scientifically proven to reduce digital strain during family night chats.</p>
+</div>
+</section>
+</div>
+</div>
+<!-- Danger Zone -->
+<div class="mt-12 flex justify-center">
+<button class="text-error font-medium px-6 py-2 rounded-full hover:bg-error-container/10 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+                Sign out of all devices
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Visible on Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#fff8f4]/80 dark:bg-orange-950/80 backdrop-blur-xl md:hidden shadow-[0_-8px_24px_rgba(75,43,0,0.06)] rounded-t-[2rem]">
+<div class="flex flex-col items-center justify-center text-orange-800/70 dark:text-orange-200/70 px-5 py-2 hover:text-orange-900 dark:hover:text-orange-100 transition-all scale-95 duration-300">
+<span class="material-symbols-outlined" data-icon="home_heart">home</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-orange-800/70 dark:text-orange-200/70 px-5 py-2 hover:text-orange-900 dark:hover:text-orange-100 transition-all scale-95 duration-300">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">Schedule</span>
+</div>
+<div class="flex flex-col items-center justify-center text-orange-800/70 dark:text-orange-200/70 px-5 py-2 hover:text-orange-900 dark:hover:text-orange-100 transition-all scale-95 duration-300">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">History</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-orange-100 dark:bg-orange-900 text-orange-900 dark:text-orange-100 rounded-full px-5 py-2 transition-all scale-95 duration-300">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium">Settings</span>
+</div>
+</nav>
+</body></html>

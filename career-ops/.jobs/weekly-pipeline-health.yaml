@@ -32,6 +32,6 @@ prompt: |-
   - Which pipeline stage is the bottleneck?
 
   Save the report to /analytics and update the dashboard context.
-cabinetPath: jobs/career-ops
+cabinetPath: example-text-your-mom/marketing/career-ops
 createdAt: '2026-04-12T00:00:00.000Z'
 updatedAt: '2026-04-12T00:00:00.000Z'

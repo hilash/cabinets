@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HeartStrings - Activity Log</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Be+Vietnam+Pro', sans-serif;
+            background-color: #fff8f4;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+        }
+        .memory-thread::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            border-left: 2px dashed #8ce0ff;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#004557",
+                      "on-primary": "#fff7f4",
+                      "background": "#fff8f4",
+                      "surface-dim": "#ffd2a3",
+                      "surface-container": "#ffead8",
+                      "surface-tint": "#914d00",
+                      "secondary-fixed-dim": "#8ce0ff",
+                      "outline-variant": "#daa972",
+                      "surface-variant": "#ffddba",
+                      "primary": "#914d00",
+                      "error-container": "#fa7150",
+                      "error": "#aa371c",
+                      "inverse-primary": "#fca151",
+                      "tertiary": "#006d42",
+                      "tertiary-dim": "#006039",
+                      "on-surface": "#4b2b00",
+                      "primary-container": "#ffaf6d",
+                      "tertiary-fixed-dim": "#8aebb1",
+                      "surface-container-highest": "#ffddba",
+                      "on-secondary-fixed-variant": "#00647c",
+                      "surface-container-low": "#fff1e6",
+                      "on-primary-fixed": "#401f00",
+                      "on-secondary-container": "#00596f",
+                      "on-tertiary-fixed-variant": "#006b40",
+                      "surface-bright": "#fff8f4",
+                      "on-error": "#fff7f6",
+                      "primary-dim": "#804300",
+                      "error-dim": "#821a01",
+                      "on-tertiary": "#e7ffeb",
+                      "on-error-container": "#671200",
+                      "secondary-fixed": "#b7eaff",
+                      "inverse-surface": "#190b00",
+                      "secondary-dim": "#005b71",
+                      "secondary": "#006880",
+                      "outline": "#9d7240",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#98fabe",
+                      "inverse-on-surface": "#b69777",
+                      "on-primary-container": "#5f3000",
+                      "primary-fixed-dim": "#f89e4f",
+                      "surface-container-high": "#ffe4c9",
+                      "surface": "#fff8f4",
+                      "on-background": "#4b2b00",
+                      "tertiary-container": "#98fabe",
+                      "primary-fixed": "#ffaf6d",
+                      "on-secondary": "#f1faff",
+                      "on-tertiary-fixed": "#004b2c",
+                      "secondary-container": "#b7eaff",
+                      "on-tertiary-container": "#006039",
+                      "on-surface-variant": "#7e5728",
+                      "on-primary-fixed-variant": "#6c3800"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "body": ["Be Vietnam Pro"],
+                      "label": ["Be Vietnam Pro"]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#fff8f4]/80 dark:bg-orange-950/80 backdrop-blur-xl fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-orange-900 dark:text-orange-100" data-icon="favorite">favorite</span>
+<h1 class="text-xl font-bold text-orange-900 dark:text-orange-100 font-['Plus_Jakarta_Sans'] tracking-tight">HeartStrings</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 rounded-full hover:bg-white/40 dark:hover:bg-black/20 transition-colors text-orange-900" data-icon="search">search</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a smiling older woman with grey hair in a soft lit indoor setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRChQk6_T1gQ00O2YzIA4TrLgDRKq9eUeX7PL1LR-EKKCBcbkzvRZ3YNajw4hgg4jVTWIj4xkHA_8vK_9xoBr6Vc5JiM-h2bnuNlZbAmgQB0O749QE2SdADOcElRm7oYMXNPi6FvpPwDUaVNMkwrFIdiv_-PTuR5sezXVe_fmtkUbFKrpGjTpzII4b4JCZ_fhenb1hdrF01_kjgF1lCoFZAgwgKTBNTdjPP3xEHkQGX19FswWt3OiZ3Hw3Lz17zgS0wt21AU4e5vk"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Section Header -->
+<div class="mb-8">
+<h2 class="text-3xl font-extrabold text-on-surface mb-2 tracking-tight">History</h2>
+<p class="text-on-surface-variant text-sm">A timeline of your connections and shared moments.</p>
+</div>
+<!-- Bento Stats Grid -->
+<div class="grid grid-cols-2 gap-4 mb-10">
+<div class="bg-surface-container-low p-5 rounded-lg flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<span class="text-on-surface-variant text-xs font-semibold block mb-1">THIS WEEK</span>
+<span class="text-2xl font-bold text-primary">24 Calls</span>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-primary/10 text-8xl" data-icon="call" style="font-variation-settings: 'FILL' 1;">call</span>
+</div>
+<div class="bg-secondary-container p-5 rounded-lg flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<span class="text-on-secondary-container text-xs font-semibold block mb-1">MESSAGES</span>
+<span class="text-2xl font-bold text-on-secondary-container">142 Sent</span>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-on-secondary-container/10 text-8xl" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</div>
+</div>
+<!-- Activity Timeline -->
+<div class="relative memory-thread">
+<!-- Timeline Item: Today -->
+<div class="mb-10 relative z-10 pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 bg-tertiary-fixed text-on-tertiary-fixed rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-xl" data-icon="today">today</span>
+</div>
+<h3 class="font-bold text-on-surface mb-4">Today</h3>
+<div class="space-y-4">
+<!-- Call Log Card -->
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center gap-4 shadow-[0_8px_24px_rgba(75,43,0,0.04)] hover:scale-[0.98] transition-transform duration-200">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="portrait of a young man with a warm smile and kind eyes in natural daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYIYy0v4CDZ_rxqrty2Uhi1O2JmkXigrwp446U8xi-0JCsbMZkZAcp6SK-3kGW_rEvhp-KRTImyi6vk7Kq3ClPb9_3sYtYY0tjnN1sqnQMH8dIvW6-yVy2y0Xyc-ul6p74nop_S3YOISNZjSF6E-HFTZBBawMerQ3O_iYgErEew_070hj65N2x1mObZ0lKwqdzZFMVfk88hEwpSrAgtKQUcx0FaIwnfqjgy0QKfqrZ7oFYSbIWounoSFM6xQX5VCDP5IqnjA-wH7U"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface">Grandson Michael</h4>
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">10:42 AM</span>
+</div>
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="call_received">call_received</span>
+<p class="text-sm">Incoming Call • 12 mins</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-primary/5 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<!-- Text Log Card -->
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center gap-4 shadow-[0_8px_24px_rgba(75,43,0,0.04)] hover:scale-[0.98] transition-transform duration-200 border-l-4 border-secondary">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="portrait of a woman in her 40s with a cheerful expression and bright background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs70FEjJrF8eEwfBjPavWsTmQIiKCRj6Sv22K70tVbs82y50oDDY6lL--AOsZd29VtiMG_vgEb5Ln0MAlyYWo_cIDZQwEekm7mmCuvR6KMJdfVeixabeGrZsqVvslMtNfqOomu9zWcMuy9TJIpuQIXTueAU_4AAWgj628etMV2ScFQUgzq_cfxu0C9HLSaHvMeE3pQcfIy-vvnzVjKbTo-GOFkL8KI8t3LUuBVHNJzt5xWVyc8TEA1FC09ASktJQyzMKda4UOhjE8"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface">Sarah Miller</h4>
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">8:15 AM</span>
+</div>
+<p class="text-sm text-on-surface-variant italic line-clamp-1">"Thinking of you! Can't wait for Sunday dinner..."</p>
+<div class="flex items-center gap-1 text-secondary mt-1">
+<span class="material-symbols-outlined text-sm" data-icon="chat_bubble">chat_bubble</span>
+<span class="text-[11px] font-medium uppercase tracking-wider">SMS MESSAGE</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item: Yesterday -->
+<div class="mb-10 relative z-10 pl-12">
+<div class="absolute left-0 top-0 w-10 h-10 bg-surface-container-highest text-on-surface rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-xl" data-icon="history">history</span>
+</div>
+<h3 class="font-bold text-on-surface mb-4">Yesterday</h3>
+<div class="space-y-4">
+<!-- Event Log Card -->
+<div class="bg-surface-container-low p-5 rounded-lg border-2 border-dashed border-outline-variant/30 relative overflow-hidden">
+<div class="flex justify-between mb-2">
+<span class="text-[10px] font-bold text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded uppercase tracking-widest">VIDEO CALL</span>
+<span class="text-[10px] font-medium text-on-surface-variant">4:30 PM</span>
+</div>
+<h4 class="font-bold text-on-surface text-lg">Family Group Hangout</h4>
+<p class="text-sm text-on-surface-variant mb-4">4 participants joined. Laughter shared for 45 minutes.</p>
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-gray-200">
+<img class="w-full h-full object-cover" data-alt="man smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZqGpIrQ_R8ZxOALuXdo8fP1U5GjlttWZVlAGIxZFCp4_inZ6t7RfbfumkKaxkzNpiNaKuv7ugELMb5dyvG-j694ZYmjDsjSwRn4eSWy7YqJ-RGWAP8xYb-jFJSr6ix2m89K9wuAVhPq6yYtdAaTLzfzsPFeii7cU74o1JFyuOLWkDppXQneOVzdiBlcjnvENBnxcsYEEvCr9jI_Ppl8gG1IOjl95k4t-Fu3ZUGA3olEw6QZ5Pyu6eCU0QPidGYzirt0tJzBPux7M"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-gray-200">
+<img class="w-full h-full object-cover" data-alt="woman portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB80oEHVC9Vy3idKyE6qXOk9qlbZtgbr1xZmL7LiOTheks3y-N2s59t5QngyiTpw_DxCgMn2Jk6ZQfu8U2qWp41u9BW6wmUVJm1D7ANsnb36gO4cR05-Topzp8X5is-56DpifMD0manIctlJBhRem_0uJiQAAuaiBNWHx7U4j03SPGyZCnGuPbFyr5KZBntTAqV9sYWSbbO0-jMEkmZkBONqTTqBxUyOvpyaIEDL11T_dY367EZBuuXEIc2n-lz5-MCErIfBWbBYs0"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-gray-200">
+<img class="w-full h-full object-cover" data-alt="elderly woman portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWRNBX9RES9O4HoWybU2HgvmDy8uz8Kzce8NDFoDm2Dfqph6Cp417TUzJazTt14zKsG9uV0670g9LNzRs4G3yro83TEq2_RoxnznTekcQCF7S7uEwNbuXS-ZeRRbPqw2aOOXPlyKq7yYA8skDqrkHvYYWS5VTaEsYIMZ5Bv_qfxzn-o61QBCpugVazNeurN7nUWExIMeOPDW2yW3q6lCqFFcAnaeRTXFvqsKOGTo4yIQNp_vOd_zU6ORCHn7G8h-EVKT2xmFOYMNY"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container flex items-center justify-center text-[10px] font-bold text-on-surface-variant">+1</div>
+</div>
+</div>
+<!-- Voice Mail Card -->
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center gap-4 shadow-[0_8px_24px_rgba(75,43,0,0.04)] hover:scale-[0.98] transition-transform duration-200">
+<div class="w-12 h-12 bg-primary-container/20 text-primary rounded-full shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl" data-icon="voicemail">voicemail</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface">Unknown Caller</h4>
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">11:20 AM</span>
+</div>
+<p class="text-xs text-on-surface-variant">Voice message left (0:32)</p>
+<div class="mt-2 w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="w-1/3 h-full bg-primary"></div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bloom Ending Icon -->
+<div class="relative z-10 pl-12 flex items-center gap-3">
+<div class="absolute left-0 top-0 w-10 h-10 bg-tertiary text-on-tertiary rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined" data-icon="local_florist" style="font-variation-settings: 'FILL' 1;">local_florist</span>
+</div>
+<div class="py-2">
+<p class="text-xs font-bold text-tertiary uppercase tracking-tighter">Your relationships are blooming</p>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<div class="fixed right-6 bottom-24 z-50">
+<button class="bg-primary text-on-primary w-14 h-14 rounded-lg shadow-[0_8px_24px_rgba(75,43,0,0.25)] flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-[#fff8f4]/80 dark:bg-orange-950/80 backdrop-blur-xl flex justify-around items-center px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(75,43,0,0.06)] rounded-t-[2rem]">
+<a class="flex flex-col items-center justify-center text-orange-800/70 dark:text-orange-200/70 px-5 py-2 hover:text-orange-900 dark:hover:text-orange-100 transition-all duration-300 scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="home_heart">home</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-orange-800/70 dark:text-orange-200/70 px-5 py-2 hover:text-orange-900 dark:hover:text-orange-100 transition-all duration-300 scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium mt-1">Schedule</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-orange-100 dark:bg-orange-900 text-orange-900 dark:text-orange-100 rounded-full px-5 py-2 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-bold mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-orange-800/70 dark:text-orange-200/70 px-5 py-2 hover:text-orange-900 dark:hover:text-orange-100 transition-all duration-300 scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium mt-1">Settings</span>
+</a>
+</nav>
+</body></html>
