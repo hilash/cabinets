@@ -1,0 +1,18 @@
+id: weekly-vault-synthesis
+name: Weekly Vault Synthesis
+description: Librarian reindexes the vault, surfaces clusters, orphans, and resurfacing topics.
+ownerAgent: librarian
+enabled: true
+schedule: "0 20 * * 5"
+prompt: |-
+  Walk brain/notes/ and brain/writing/.
+
+  Produce brain/briefs/week-YYYY-WW.md with three sections:
+    1. Clusters forming (topics referenced in 3+ recent notes that aren't linked yet)
+    2. Resurfacing (old notes whose topics re-appear in this week's writing)
+    3. Orphans worth rescuing (untouched 90+ days, but relevant to recent work)
+
+  Do not edit user notes. Only report.
+  If vault has fewer than 20 notes, write a one-line note and exit.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

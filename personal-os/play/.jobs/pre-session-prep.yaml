@@ -1,0 +1,22 @@
+id: pre-session-prep
+name: DnD Pre-Session Prep
+description: Friday 5pm — prep the next session based on campaign state and last recap.
+ownerAgent: dnd-dm
+enabled: true
+schedule: "0 17 * * 5"
+prompt: |-
+  Read play/dnd/campaign.md, the most recent session recap, and current NPC/world state.
+
+  If a next session is scheduled in play/dnd/sessions/, produce session-NN-prep.md with:
+    1. Last-time recap (3 bullets)
+    2. Where they are now
+    3. Likely path A (scene outline)
+    4. Sideways path B (backup)
+    5. NPC voices needed (voice cues)
+    6. Stat blocks needed
+    7. Loot options
+    8. Ending options with natural pause points
+
+  Age-appropriate stakes. Plan to ~90 minutes with pause points every ~30.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

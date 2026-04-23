@@ -1,0 +1,11 @@
+schemaVersion: 1
+id: keto-hq-root
+name: Keto HQ
+kind: root
+version: 0.1.0
+description: >
+  Specialty protocol cabinet for ketogenic eating. Macros, electrolytes,
+  ketone tracking, stall diagnosis, meal planning. Designed to plug into
+  personal-os/health data (labs, weight, workouts) while staying installable
+  standalone. Every recommendation cites a source.
+entry: index.md

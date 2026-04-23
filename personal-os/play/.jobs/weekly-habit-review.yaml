@@ -1,0 +1,19 @@
+id: weekly-habit-review
+name: Weekly Habit Review
+description: Sunday 6pm — what stuck, what wobbled, what's a lie.
+ownerAgent: habit-architect
+enabled: true
+schedule: "0 18 * * 0"
+prompt: |-
+  Read play/habits/ logs for the past 7 days.
+
+  Write play/briefs/habits-week-YYYY-WW.md with:
+    1. What stuck (adherence + outcome signal)
+    2. What wobbled (adherence + likely reason)
+    3. What's a lie (streaks without signal — name them)
+    4. Proposed changes (drop / modify / replace)
+
+  Never shame. Streaks are vanity. Outcomes matter.
+  If >3 active habits, flag it — adherence collapses past 3.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

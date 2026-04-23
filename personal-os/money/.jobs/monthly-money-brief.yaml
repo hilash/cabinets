@@ -1,0 +1,24 @@
+id: monthly-money-brief
+name: Monthly Money Brief
+description: 3rd-of-the-month budget brief, net worth update, and one lever for next month.
+ownerAgent: budget-keeper
+enabled: true
+schedule: "0 9 3 * *"
+prompt: |-
+  Read money/budget.md, money/transactions/ (latest month), money/networth.md, money/goals.md.
+  Also read home/briefs/bills-*.md for recurring-bill context.
+
+  Write money/briefs/month-YYYY-MM.md with:
+    1. Headline (one sentence)
+    2. Category table (target, actual, delta, factual "why")
+    3. Three things to notice (patterns, not numbers)
+    4. Net worth snapshot
+    5. Goal progress
+    6. One lever for next month (specific, estimated savings)
+
+  Rules:
+    - Never moralize.
+    - Always end with ONE actionable lever.
+    - Note life events that legitimately distort comparisons.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

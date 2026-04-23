@@ -1,0 +1,16 @@
+schemaVersion: 1
+id: personal-os-family
+name: Family
+kind: child
+version: 0.1.0
+description: >
+  The people side of the household — kids, partner, school, birthdays, activities,
+  babysitters. Not bills or maintenance (see home/).
+entry: index.md
+
+parent:
+  shared_context:
+    - /index.md
+
+access:
+  mode: subtree-plus-parent-brief

@@ -1,0 +1,18 @@
+id: weekly-bills-check
+name: Weekly Bills Check
+description: Monday morning — what's due, what spiked, what's renewing.
+ownerAgent: bills-clerk
+enabled: true
+schedule: "0 8 * * 1"
+prompt: |-
+  Read home/bills.md and home/utilities.md.
+
+  Write home/briefs/bills-week-YYYY-WW.md with:
+    1. Due this week (amount, date, auto-pay status)
+    2. Anomalies (any bill >15% above 3-month average — explain the likely cause)
+    3. Renewals in next 60 days (with a drafted renegotiation message in home/bills/negotiations/)
+    4. Auto-pay health (missing cards, expiring cards)
+
+  Never pay or cancel anything. Only track and recommend.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

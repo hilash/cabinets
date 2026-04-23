@@ -1,0 +1,16 @@
+schemaVersion: 1
+id: personal-os-home
+name: Home
+kind: child
+version: 0.1.0
+description: >
+  The building side of the household — bills, utilities, maintenance, warranties,
+  repairs, groceries. People live in family/, not here.
+entry: index.md
+
+parent:
+  shared_context:
+    - /index.md
+
+access:
+  mode: subtree-plus-parent-brief

@@ -1,0 +1,10 @@
+schemaVersion: 1
+id: personal-os-root
+name: Personal OS
+kind: root
+version: 0.1.0
+description: >
+  Your life has departments. Staff them. A second-brain / personal-assistant
+  cabinet with six life areas — brain, family, home, money, health, play — each
+  with its own agents, jobs, and working files.
+entry: index.md

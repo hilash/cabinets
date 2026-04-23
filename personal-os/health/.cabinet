@@ -1,0 +1,17 @@
+schemaVersion: 1
+id: personal-os-health
+name: Health
+kind: child
+version: 0.1.0
+description: >
+  Your expert team — coordinator, protocol scientist, longevity physician,
+  metabolic dietitian, strength coach, pharmacist. Every recommendation links
+  to a source file. No ungrounded advice.
+entry: index.md
+
+parent:
+  shared_context:
+    - /index.md
+
+access:
+  mode: subtree-plus-parent-brief

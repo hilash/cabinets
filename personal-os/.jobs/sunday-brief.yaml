@@ -1,0 +1,27 @@
+id: sunday-brief
+name: Sunday Weekly Brief
+description: One-page cross-department brief for the week ahead.
+ownerAgent: chief-of-staff
+enabled: true
+schedule: "0 17 * * 0"
+prompt: |-
+  Read the latest weekly output from every child cabinet:
+    - brain/briefs/
+    - family/briefs/
+    - home/briefs/
+    - money/briefs/
+    - health/briefs/
+    - play/briefs/
+
+  Write one page at /briefs/week-YYYY-WW.md with exactly these sections:
+    1. What moved this week (one bullet per active department)
+    2. What stalled (items open >2 weeks)
+    3. Needs you this week (bills, appointments, decisions — with dates)
+    4. One thing to notice (cross-department pattern)
+
+  Rules:
+    - Never longer than one page.
+    - Don't repeat child-cabinet content verbatim — synthesize.
+    - If a department has nothing to report, write one line saying so.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

@@ -1,0 +1,14 @@
+schemaVersion: 1
+id: personal-os-brain
+name: Brain
+kind: child
+version: 0.1.0
+description: Your second brain. Reads your notes and writing. Surfaces patterns. Helps you write better.
+entry: index.md
+
+parent:
+  shared_context:
+    - /index.md
+
+access:
+  mode: subtree-plus-parent-brief

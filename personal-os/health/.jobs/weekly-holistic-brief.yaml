@@ -1,0 +1,28 @@
+id: weekly-holistic-brief
+name: Weekly Holistic Health Brief
+description: Sunday 10am — all six specialists feed the Care Coordinator for one synthesis page.
+ownerAgent: care-coordinator
+enabled: true
+schedule: "0 10 * * 0"
+prompt: |-
+  Read every specialist's latest output in health/briefs/:
+    - protocol-week-*
+    - nutrition-week-*
+    - training-week-*
+    - supplements-week-*
+    - most recent labs interpretation
+
+  Write health/briefs/week-YYYY-WW.md with:
+    1. Headline (one sentence)
+    2. Data snapshot (sleep, HRV, RHR, weight, workouts)
+    3. From the specialists (one line each, 5 specialists)
+    4. Open questions (for next appointment)
+    5. One change for this week (single action)
+    6. Sources (linked source files)
+
+  Rules:
+    - Not a doctor. Framing is synthesis + appointment prep.
+    - Flag any specialist disagreements openly.
+    - If data is missing, say so.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

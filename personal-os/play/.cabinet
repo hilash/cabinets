@@ -1,0 +1,16 @@
+schemaVersion: 1
+id: personal-os-play
+name: Play
+kind: child
+version: 0.1.0
+description: >
+  Habits, hobbies, tinkering. Where the fun work lives — dashboards you actually
+  use, the kids' DnD campaign, side projects that aren't a business.
+entry: index.md
+
+parent:
+  shared_context:
+    - /index.md
+
+access:
+  mode: subtree-plus-parent-brief

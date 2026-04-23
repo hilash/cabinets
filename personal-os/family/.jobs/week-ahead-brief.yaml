@@ -1,0 +1,22 @@
+id: week-ahead-brief
+name: Week-Ahead Family Brief
+description: Friday afternoon one-pager covering the coming week's family logistics.
+ownerAgent: family-coordinator
+enabled: true
+schedule: "0 16 * * 5"
+prompt: |-
+  Read family/members.md, family/calendar/, and the past week's school/inbox.md.
+
+  Write family/briefs/week-YYYY-WW.md with these sections:
+    1. Launch sheet per day (Mon–Sun): who goes where with what, by when
+    2. Conflicts / needs a decision
+    3. Handoffs (per parent)
+    4. Reminders (birthdays, permission slips, gifts)
+    5. One thing to enjoy
+
+  Rules:
+    - One page max.
+    - If a slot needs a babysitter, draft a warm message in family/babysitters/drafts/.
+    - Flag conflicts, don't resolve them.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

@@ -1,0 +1,16 @@
+schemaVersion: 1
+id: personal-os-money
+name: Money
+kind: child
+version: 0.1.0
+description: >
+  Budget, subscriptions, taxes, investments, net worth. Where the money went and
+  where it's going.
+entry: index.md
+
+parent:
+  shared_context:
+    - /index.md
+
+access:
+  mode: subtree-plus-parent-brief

@@ -1,0 +1,22 @@
+id: weekly-keto-brief
+name: Weekly Keto Brief
+description: Sunday 9am — adherence, signals, and one adjustment.
+ownerAgent: keto-coach
+enabled: true
+schedule: "0 9 * * 0"
+prompt: |-
+  Read logs/ for the past 7 days, weight trend, and any BHB readings.
+  If personal-os/health/wearables/ exists, pull HRV + sleep context.
+
+  Write briefs/week-YYYY-WW.md with:
+    1. Adherence (days under carb target, avg protein, avg calories)
+    2. Signals (weight trend, BHB if logged, subjective notes)
+    3. What the data says (one paragraph, honest)
+    4. One adjustment for next week
+
+  If personal-os/health/ exists, also write a cross-post summary at
+  personal-os/health/briefs/keto-week-YYYY-WW-summary.md.
+
+  No cheerleading. No scold. Signal only.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

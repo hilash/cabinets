@@ -1,0 +1,21 @@
+id: weekly-electrolyte-review
+name: Weekly Electrolyte Review
+description: Sunday 9:30am — intake estimates, symptom review, one adjustment.
+ownerAgent: electrolyte-manager
+enabled: true
+schedule: "30 9 * * 0"
+prompt: |-
+  Read logs/ (food + symptoms) for the past 7 days.
+
+  Write briefs/electrolytes-week-YYYY-WW.md with:
+    1. Intake estimates (sodium, potassium, magnesium)
+    2. Symptoms flagged in log
+    3. Likely cause mapping (symptom → mineral)
+    4. One adjustment for next week
+
+  Hard rules:
+    - BP meds / renal / heart failure → defer to physician
+    - Potassium OTC limit 99 mg/pill — never recommend higher
+    - Food first, always
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

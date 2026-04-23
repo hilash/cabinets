@@ -1,0 +1,19 @@
+id: quarterly-stack-review
+name: Quarterly Supplement Stack Review
+description: Every 3 months — audit the stack. Flag anything without a source, without recent labs justification, or duplicated.
+ownerAgent: pharmacist
+enabled: true
+schedule: "0 11 1 1,4,7,10 *"
+prompt: |-
+  Read health/supplements.md, health/sources/supplements/, and the most recent health/labs/*/interpretation.md.
+
+  Produce health/briefs/stack-quarterly-YYYY-Q.md with:
+    1. Current stack (with monthly cost total)
+    2. Items with no current source file (flag for re-justify or remove)
+    3. Items >12 months in stack without recent labs justification (flag for review)
+    4. Overlapping mechanisms (e.g. two Mg forms)
+    5. Recommended changes (with interaction + dose checks)
+
+  Never remove or add unilaterally. Draft + flag.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

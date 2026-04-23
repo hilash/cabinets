@@ -1,0 +1,22 @@
+id: weekly-meal-plan
+name: Weekly Meal Plan
+description: Monday 10am — meal rotation + grocery list for the coming week.
+ownerAgent: meal-architect
+enabled: true
+schedule: "0 10 * * 1"
+prompt: |-
+  Read targets.md, meals/preferences.md, meals/favorites.md, and the past 2 weeks of logs/ (to avoid repetition).
+  If personal-os/family/ exists, account for household size + kid-friendly variants.
+  If personal-os/home/groceries/ exists, reconcile with recurring staples.
+
+  Write meals/week-YYYY-WW.md with:
+    1. Macro target per day
+    2. Breakfast rotation (2-3 options)
+    3. Lunch rotation (2-3 options)
+    4. Dinner plan (specific by day, no repeats within 5 days)
+    5. Snacks (macros included)
+    6. Grocery list (grouped by store section)
+
+  Include at least one "20-min weeknight" meal every 3 days and one batch-cook meal for Sunday.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

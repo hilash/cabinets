@@ -1,0 +1,18 @@
+id: monthly-maintenance
+name: Monthly Maintenance Brief
+description: First Monday of the month — what's due, what's coming, what's in progress.
+ownerAgent: home-ops
+enabled: true
+schedule: "0 9 1 * *"
+prompt: |-
+  Read home/maintenance/ and home/warranties.md.
+
+  Write home/briefs/month-YYYY-MM.md with:
+    1. Due this month (based on last-service dates + intervals)
+    2. Upcoming 90 days
+    3. In-progress repairs (vendor, scheduled date, status)
+    4. Warranty reminders (anything expiring next 90 days)
+
+  For each due item, note DIY-vs-pro tradeoff with time and cost estimates.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

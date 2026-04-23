@@ -1,0 +1,21 @@
+id: quarterly-subscription-audit
+name: Quarterly Subscription Audit
+description: First of each quarter — find the zombies, draft the cancellations.
+ownerAgent: subscription-auditor
+enabled: true
+schedule: "0 10 1 1,4,7,10 *"
+prompt: |-
+  Read money/subscriptions.md and any usage data in money/subscriptions/usage/.
+
+  Write money/briefs/subscriptions-YYYY-Q.md with:
+    1. Active total ($/mo and $/yr)
+    2. Clear keepers
+    3. Review (low use but plausibly justified)
+    4. Cut list (with drafted cancellation messages saved to money/subscriptions/cancellations/)
+    5. Zombies (zero use in 90 days)
+    6. Duplicates/overlap
+    7. Cut-list total annual savings
+
+  Never cancel. Only draft.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"

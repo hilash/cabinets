@@ -1,0 +1,25 @@
+id: labs-interpretation
+name: Labs Interpretation (on upload)
+description: When new labs land in health/labs/YYYY-MM/, produce an interpretation file.
+ownerAgent: longevity-physician
+enabled: true
+trigger: on-file-change
+watch: /health/labs/**
+prompt: |-
+  A new labs file arrived. Read it (PDF → parsed values → structured table).
+
+  Produce health/labs/YYYY-MM/interpretation.md with:
+    1. Summary (2-3 sentences)
+    2. Values table with 6-month trend column
+    3. What moved significantly
+    4. What to ask the physician (with specific data points)
+    5. Team handoffs (Dietitian for food patterns, Pharmacist for stack changes)
+    6. Sources
+
+  Always show trend before making directional claims.
+  Distinguish standard reference range from optimal range with sources.
+  Never diagnose. Describe + prompt physician conversation.
+
+  Then notify Pharmacist and Metabolic Dietitian to review the stack and food patterns against the new values.
+createdAt: "2026-04-23T00:00:00.000Z"
+updatedAt: "2026-04-23T00:00:00.000Z"
