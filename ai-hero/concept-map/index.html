@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Hero — Concept Map</title>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #F5EEDC;
+      --bg-warm:     #EFE5CC;
+      --surface:     #FFF9E9;
+      --ink:         #2A221B;
+      --ink-muted:   #7A6B5D;
+      --line:        #D4C4B0;
+      --accent:      #8B5E3C;
+
+      --math:        #2E4156;
+      --intuition:   #B8892E;
+      --theory:      #8B2E3E;
+      --handson:     #6B8E5A;
+      --paper:       #5E3C8B;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(184, 137, 46, 0.07) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(46, 65, 86, 0.06) 0, transparent 50%);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      height: 100vh; overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    #topbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      padding: 18px 28px;
+      background: rgba(245, 238, 220, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .brand .eyebrow {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); font-weight: 600;
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 40;
+      font-size: 22px; font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    h1 em {
+      font-style: italic; color: var(--accent);
+      font-variation-settings: "opsz" 40;
+    }
+    .subtitle {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 13px; color: var(--ink-muted); margin-top: 3px;
+    }
+    .legend {
+      display: flex; gap: 16px; font-size: 11px;
+      color: var(--ink-muted); flex-wrap: wrap;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; }
+
+    #graph { width: 100vw; height: 100vh; }
+
+    .node circle {
+      stroke: var(--ink); stroke-width: 0.8; stroke-opacity: 0.4;
+      cursor: pointer; transition: stroke-opacity 0.25s, r 0.25s;
+    }
+    .node:hover circle { stroke-opacity: 1; stroke-width: 1.4; }
+    .node text {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 14;
+      font-size: 12px;
+      fill: var(--ink);
+      pointer-events: none;
+      text-anchor: middle;
+      font-weight: 500;
+    }
+    .link {
+      stroke: var(--line);
+      stroke-opacity: 0.75;
+      stroke-linecap: round;
+    }
+
+    #info-panel {
+      position: fixed; bottom: 24px; left: 24px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 22px;
+      max-width: 420px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px -10px rgba(42, 34, 27, 0.15);
+    }
+    #info-panel .title {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 20px; font-weight: 500;
+      color: var(--ink); margin-bottom: 6px;
+      letter-spacing: -0.005em;
+    }
+    #info-panel .body {
+      font-size: 13px; color: var(--ink-muted); line-height: 1.55;
+    }
+    #info-panel code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--bg-warm);
+      padding: 2px 7px; border-radius: 4px;
+    }
+    #info-panel .category {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .hint {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+  </style>
+</head>
+<body>
+  <div id="topbar">
+    <div class="brand">
+      <div class="eyebrow">Interactive Reference</div>
+      <h1>Concept <em>Map</em></h1>
+      <div class="subtitle">Drag to arrange. Scroll to zoom. Click a node to locate it in the course.</div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="dot" style="background: var(--math)"></span>Math</div>
+      <div class="legend-item"><span class="dot" style="background: var(--intuition)"></span>Intuition</div>
+      <div class="legend-item"><span class="dot" style="background: var(--theory)"></span>Theory</div>
+      <div class="legend-item"><span class="dot" style="background: var(--handson)"></span>Hands-On</div>
+      <div class="legend-item"><span class="dot" style="background: var(--paper)"></span>Paper</div>
+    </div>
+  </div>
+
+  <svg id="graph"></svg>
+
+  <div id="info-panel">
+    <div class="title">Start here</div>
+    <div class="body">
+      Every node is a concept in the course. Edges point from prerequisite to consequence. <span class="hint">Click one to reveal where it first appears.</span>
+    </div>
+  </div>
+
+  <script>
+    const nodes = [
+      { id: 'Vectors',            group: 'math',       section: '01-math-prerequisites/linear-algebra', blurb: 'The natural way to represent data in a computer.' },
+      { id: 'Matrix Multiply',    group: 'math',       section: '01-math-prerequisites/linear-algebra', blurb: 'The single operation every forward pass reduces to.' },
+      { id: 'Transpose',          group: 'math',       section: '01-math-prerequisites/linear-algebra', blurb: 'Swaps rows and columns. Shows up in every gradient.' },
+      { id: 'Derivative',         group: 'math',       section: '01-math-prerequisites/calculus',       blurb: 'The slope of a function — a rate of change.' },
+      { id: 'Chain Rule',         group: 'math',       section: '01-math-prerequisites/calculus',       blurb: 'Differentiate nested functions. This IS backprop.' },
+      { id: 'Gradient',           group: 'math',       section: '01-math-prerequisites/calculus',       blurb: 'The vector of all partial derivatives. Points uphill.' },
+      { id: 'Probability',        group: 'math',       section: '01-math-prerequisites/probability',    blurb: 'Language models output probabilities — not classes.' },
+      { id: 'Softmax',            group: 'math',       section: '01-math-prerequisites/probability',    blurb: 'Turns any vector into a valid probability distribution.' },
+      { id: 'Cross-Entropy',      group: 'math',       section: '01-math-prerequisites/probability',    blurb: 'Negative log-prob of the correct class. The loss.' },
+
+      { id: 'Neuron',             group: 'intuition',  section: '02-intuition', blurb: 'Dot product + bias + nonlinearity. That\'s it.' },
+      { id: 'Gradient Descent',   group: 'intuition',  section: '02-intuition', blurb: 'A marble rolling downhill in a loss landscape.' },
+      { id: 'Loss Function',      group: 'intuition',  section: '02-intuition', blurb: 'What you\'re minimizing. Picks the "best" parameters.' },
+      { id: 'Backprop',           group: 'intuition',  section: '02-intuition', blurb: 'Chain rule applied backwards through the network.' },
+
+      { id: 'MLP',                group: 'theory',     section: '03-academic-theory', blurb: 'Stacked linear layers with nonlinearities. The baseline.' },
+      { id: 'CNN',                group: 'theory',     section: '03-academic-theory', blurb: 'Spatial inductive bias — perfect for images.' },
+      { id: 'RNN/LSTM',           group: 'theory',     section: '03-academic-theory', blurb: 'Sequential — predates transformers.' },
+      { id: 'Transformer',        group: 'theory',     section: '03-academic-theory', blurb: 'The architecture of modern LLMs.' },
+      { id: 'Residual',           group: 'theory',     section: '03-academic-theory', blurb: 'x + f(x) — makes deep nets trainable.' },
+      { id: 'LayerNorm',          group: 'theory',     section: '03-academic-theory', blurb: 'Normalize per-sample, not per-batch.' },
+
+      { id: 'Autograd',           group: 'handson',    section: '04-hands-on/01-micrograd', blurb: 'Automatic backprop via a computation graph.' },
+      { id: 'Topological Sort',   group: 'handson',    section: '04-hands-on/01-micrograd', blurb: 'The order to visit nodes during backward pass.' },
+      { id: 'Bigram',             group: 'handson',    section: '04-hands-on/02-makemore-bigram', blurb: 'Predict the next char from the previous one.' },
+      { id: 'One-Hot',            group: 'handson',    section: '04-hands-on/02-makemore-bigram', blurb: 'Discrete token as a sparse {0, 1} vector.' },
+      { id: 'Trigram',            group: 'handson',    section: '04-hands-on/03-trigram-exercise', blurb: 'Use two previous chars instead of one.' },
+      { id: 'Embedding',          group: 'handson',    section: '04-hands-on/04-makemore-mlp', blurb: 'Learned dense vector for each discrete token.' },
+      { id: 'Mini-Batch SGD',     group: 'handson',    section: '04-hands-on/04-makemore-mlp', blurb: 'Update weights on random subsets of data.' },
+      { id: 'Hyperparam Tuning',  group: 'handson',    section: '04-hands-on/05-mlp-tuning', blurb: 'Systematic search for LR, depth, width.' },
+      { id: 'Initialization',     group: 'handson',    section: '04-hands-on/06-activations-batchnorm', blurb: 'Kaiming/Xavier scale weights at init for sane gradients.' },
+      { id: 'BatchNorm',          group: 'handson',    section: '04-hands-on/06-activations-batchnorm', blurb: 'Normalize activations layer-by-layer during training.' },
+      { id: 'Saturation',         group: 'handson',    section: '04-hands-on/06-activations-batchnorm', blurb: 'Tanh at ±1 → gradient is ~0. Net stops learning.' },
+      { id: 'Manual Backprop',    group: 'handson',    section: '04-hands-on/07-backprop-ninja', blurb: 'Compute every gradient yourself, no .backward().' },
+      { id: 'Hierarchical Fusion',group: 'handson',    section: '04-hands-on/08-wavenet', blurb: 'Fuse pairs of tokens into pairs of pairs.' },
+      { id: 'Self-Attention',     group: 'handson',    section: '04-hands-on/09-build-gpt', blurb: 'Weighted sum over values, weights come from the input itself.' },
+      { id: 'Multi-Head',         group: 'handson',    section: '04-hands-on/09-build-gpt', blurb: 'Run attention in parallel across subspaces.' },
+      { id: 'Causal Mask',        group: 'handson',    section: '04-hands-on/09-build-gpt', blurb: 'Triangular mask — tokens can only see past, not future.' },
+      { id: 'Positional Emb',     group: 'handson',    section: '04-hands-on/09-build-gpt', blurb: 'Attention is permutation-invariant. Inject order manually.' },
+      { id: 'Arithmetic LLM',     group: 'handson',    section: '04-hands-on/10-gpt-addition', blurb: 'Train a small GPT to add two numbers.' },
+      { id: 'Loss Masking',       group: 'handson',    section: '04-hands-on/10-gpt-addition', blurb: 'Ignore loss on problem-statement tokens with ignore_index=-1.' },
+      { id: 'BPE Tokenizer',      group: 'handson',    section: '04-hands-on/11-gpt-tokenizer', blurb: 'Byte-pair encoding — iteratively merge frequent pairs.' },
+
+      { id: 'Critical Reading',   group: 'paper',      section: '05-research-paper', blurb: 'Three-pass method for reading a paper when you\'re still learning.' },
+    ];
+
+    const links = [
+      ['Vectors', 'Matrix Multiply'],
+      ['Matrix Multiply', 'Transpose'],
+      ['Derivative', 'Chain Rule'],
+      ['Chain Rule', 'Gradient'],
+      ['Probability', 'Softmax'],
+      ['Softmax', 'Cross-Entropy'],
+      ['Matrix Multiply', 'Neuron'],
+      ['Gradient', 'Gradient Descent'],
+      ['Chain Rule', 'Backprop'],
+      ['Cross-Entropy', 'Loss Function'],
+      ['Neuron', 'MLP'],
+      ['MLP', 'CNN'],
+      ['MLP', 'RNN/LSTM'],
+      ['RNN/LSTM', 'Transformer'],
+      ['Transformer', 'Residual'],
+      ['Transformer', 'LayerNorm'],
+      ['Backprop', 'Autograd'],
+      ['Autograd', 'Topological Sort'],
+      ['Cross-Entropy', 'Bigram'],
+      ['Bigram', 'One-Hot'],
+      ['Bigram', 'Trigram'],
+      ['Trigram', 'Embedding'],
+      ['Embedding', 'Mini-Batch SGD'],
+      ['Mini-Batch SGD', 'Hyperparam Tuning'],
+      ['MLP', 'Initialization'],
+      ['Initialization', 'BatchNorm'],
+      ['BatchNorm', 'Saturation'],
+      ['BatchNorm', 'Manual Backprop'],
+      ['Manual Backprop', 'Hierarchical Fusion'],
+      ['Hierarchical Fusion', 'Self-Attention'],
+      ['Transformer', 'Self-Attention'],
+      ['Self-Attention', 'Multi-Head'],
+      ['Self-Attention', 'Causal Mask'],
+      ['Self-Attention', 'Positional Emb'],
+      ['Multi-Head', 'Arithmetic LLM'],
+      ['Arithmetic LLM', 'Loss Masking'],
+      ['One-Hot', 'BPE Tokenizer'],
+      ['Transformer', 'Critical Reading'],
+      ['Self-Attention', 'Critical Reading'],
+    ].map(([s, t]) => ({ source: s, target: t }));
+
+    const colorMap = {
+      math:      getComputedStyle(document.documentElement).getPropertyValue('--math').trim(),
+      intuition: getComputedStyle(document.documentElement).getPropertyValue('--intuition').trim(),
+      theory:    getComputedStyle(document.documentElement).getPropertyValue('--theory').trim(),
+      handson:   getComputedStyle(document.documentElement).getPropertyValue('--handson').trim(),
+      paper:     getComputedStyle(document.documentElement).getPropertyValue('--paper').trim(),
+    };
+
+    const categoryLabel = {
+      math: 'Math',
+      intuition: 'Intuition',
+      theory: 'Theory',
+      handson: 'Hands-On',
+      paper: 'Paper',
+    };
+
+    const svg = d3.select('#graph');
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const g = svg.append('g');
+
+    const simulation = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(links).id(d => d.id).distance(95).strength(0.5))
+      .force('charge', d3.forceManyBody().strength(-320))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('collision', d3.forceCollide().radius(32));
+
+    const link = g.append('g')
+      .selectAll('line')
+      .data(links)
+      .join('line')
+      .attr('class', 'link')
+      .attr('stroke-width', 1.2);
+
+    const node = g.append('g')
+      .selectAll('g')
+      .data(nodes)
+      .join('g')
+      .attr('class', 'node')
+      .call(d3.drag()
+        .on('start', (event, d) => {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x; d.fy = d.y;
+        })
+        .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+        .on('end', (event, d) => {
+          if (!event.active) simulation.alphaTarget(0);
+          d.fx = null; d.fy = null;
+        }));
+
+    node.append('circle')
+      .attr('r', 13)
+      .attr('fill', d => colorMap[d.group])
+      .attr('fill-opacity', 0.85);
+    node.append('text').attr('dy', 30).text(d => d.id);
+
+    node.on('click', (event, d) => {
+      const panel = document.getElementById('info-panel');
+      const color = colorMap[d.group];
+      panel.innerHTML = `
+        <div class="title">${d.id}</div>
+        <div class="body">${d.blurb}</div>
+        <div class="body" style="margin-top: 10px;">First met in <code>${d.section}</code></div>
+        <span class="category" style="background: ${color}22; color: ${color};">${categoryLabel[d.group]}</span>
+      `;
+    });
+
+    simulation.on('tick', () => {
+      link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      node.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+    svg.call(d3.zoom().scaleExtent([0.3, 3]).on('zoom', (event) => {
+      g.attr('transform', event.transform);
+    }));
+  </script>
+</body>
+</html>

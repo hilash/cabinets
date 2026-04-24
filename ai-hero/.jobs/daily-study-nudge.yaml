@@ -1,0 +1,26 @@
+id: daily-study-nudge
+name: Daily Study Nudge
+enabled: true
+schedule: 0 9 * * 1-5
+provider: claude-code
+adapterType: claude_local
+ownerAgent: mentor
+agentSlug: mentor
+timeout: 300
+prompt: |-
+  Read progress/progress.csv to see what sections are complete, in-progress, and not-started.
+  Identify the single most important next action for the student today based on:
+  1. What they're currently working on (in-progress sections)
+  2. What they haven't touched yet but should have by now
+  3. Any section flagged as stalled in progress/index.md
+
+  Append a new block to the TOP of index.md (under the "Today's focus" section, creating it if absent) with this format:
+
+  ## Today's focus — [YYYY-MM-DD]
+  **Do this:** [one concrete action, one sentence, with a wiki-link to the relevant section]
+  **Why it matters:** [one sentence on what this concept unlocks downstream in the course]
+
+  Remove any previous "Today's focus" block so only today's shows. Do not touch any other part of index.md.
+cabinetPath: cabinetscopy/ai-hero
+createdAt: '2026-04-24T00:00:00.000Z'
+updatedAt: '2026-04-24T00:00:00.000Z'

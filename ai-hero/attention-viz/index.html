@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Hero — Attention Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #F5EEDC;
+      --bg-warm:     #EFE5CC;
+      --surface:     #FFF9E9;
+      --ink:         #2A221B;
+      --ink-muted:   #7A6B5D;
+      --line:        #D4C4B0;
+      --line-soft:   #E8DDC5;
+      --accent:      #8B5E3C;
+      --indigo:      #2E4156;
+      --burgundy:    #8B2E3E;
+      --gold:        #B8892E;
+      --sage:        #6B8E5A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(184, 137, 46, 0.07) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(46, 65, 86, 0.06) 0, transparent 50%);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      min-height: 100vh; padding: 40px 28px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    header { margin-bottom: 32px; border-bottom: 1px solid var(--line-soft); padding-bottom: 24px; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: 0.18em;
+      font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 144;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 500; letter-spacing: -0.02em; line-height: 1.05;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .tagline {
+      margin-top: 14px; font-size: 16px; color: var(--ink-muted);
+      font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 26px 28px;
+      margin-bottom: 22px;
+    }
+    .card h2 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 20px; font-weight: 500; margin-bottom: 6px;
+    }
+    .helper {
+      font-size: 13px; color: var(--ink-muted);
+      font-family: 'Fraunces', serif; font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .sentence-row {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      justify-content: center; padding: 10px 0;
+    }
+    .token {
+      background: var(--bg-warm);
+      color: var(--ink);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px; font-weight: 500;
+      padding: 10px 14px; border-radius: 8px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .token:hover { border-color: var(--line); }
+    .token.query { border-color: var(--indigo); background: var(--surface); }
+    .token .weight {
+      position: absolute; top: -8px; right: -4px;
+      background: var(--burgundy); color: var(--surface);
+      font-size: 10px; font-weight: 600;
+      padding: 2px 6px; border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      opacity: 0; transform: scale(0.8); transition: all 0.25s;
+    }
+    .token.showing-weights .weight { opacity: 1; transform: scale(1); }
+
+    .heatmap-wrap {
+      display: flex; justify-content: center; margin: 20px 0;
+      overflow-x: auto;
+    }
+    canvas { display: block; border-radius: 10px; }
+    .hint {
+      font-size: 12px; color: var(--ink-muted); text-align: center;
+      font-family: 'JetBrains Mono', monospace; margin-top: 12px;
+    }
+
+    .controls {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      align-items: center; margin-top: 8px;
+    }
+    .switch {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg-warm);
+      padding: 8px 14px; border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; color: var(--ink);
+      cursor: pointer; user-select: none;
+      transition: all 0.2s;
+    }
+    .switch:hover { background: var(--line-soft); }
+    .switch input { display: none; }
+    .switch .dot {
+      width: 32px; height: 18px; background: var(--line);
+      border-radius: 100px; position: relative; transition: background 0.2s;
+    }
+    .switch .dot::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--surface); transition: transform 0.2s;
+    }
+    .switch input:checked + .dot { background: var(--accent); }
+    .switch input:checked + .dot::after { transform: translateX(14px); }
+
+    .sentence-select {
+      flex: 1; min-width: 220px;
+      background: var(--bg-warm); border: 1px solid var(--line);
+      padding: 10px 14px; border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; color: var(--ink);
+      cursor: pointer; outline: none;
+    }
+
+    .quote {
+      margin-top: 24px;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 16px; line-height: 1.55;
+      color: var(--ink-muted);
+      padding-left: 18px; border-left: 2px solid var(--line);
+    }
+    .quote strong { color: var(--ink); font-style: normal; font-weight: 600; }
+
+    .equation-box {
+      background: var(--bg-warm);
+      border-radius: 10px; padding: 16px 20px;
+      margin-top: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; line-height: 1.9;
+      color: var(--ink);
+    }
+    .equation-box .label { color: var(--ink-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .equation-box strong { color: var(--burgundy); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="eyebrow">Interactive — Hands-On Stage · Build GPT</div>
+      <h1>Attention <em>Visualizer</em></h1>
+      <p class="tagline">Click any token. See who it attends to. Toggle the causal mask. This is the operation at the heart of every LLM.</p>
+    </header>
+
+    <div class="card">
+      <h2>Pick a sentence</h2>
+      <p class="helper">A real transformer's attention is learned; this demo uses hand-designed key/query vectors that give sensible patterns for each sentence. The mechanism is the same.</p>
+
+      <div class="controls">
+        <select class="sentence-select" id="sentence-select">
+          <option value="0">"The cat sat on the mat"</option>
+          <option value="1">"She picked up the book and read it"</option>
+          <option value="2">"Dogs bark because they are loud"</option>
+        </select>
+        <label class="switch">
+          <input type="checkbox" id="causal-toggle" checked>
+          <span class="dot"></span>
+          causal mask
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Attention weights for the selected query</h2>
+      <p class="helper">Each token shows, above it, how much attention <em>the query token</em> (highlighted) pays to it. Percentages sum to 100% across the row.</p>
+
+      <div class="sentence-row" id="sentence-row"></div>
+
+      <p class="hint">click any token to make it the query</p>
+    </div>
+
+    <div class="card">
+      <h2>The full attention matrix</h2>
+      <p class="helper">Row = query (who is asking). Column = key (who they could attend to). Darker = higher weight.</p>
+      <div class="heatmap-wrap"><canvas id="heatmap" width="600" height="600"></canvas></div>
+      <p class="hint">With the causal mask on, the upper triangle is zero — tokens cannot attend to future tokens.</p>
+    </div>
+
+    <div class="card">
+      <h2>What just happened</h2>
+      <div class="equation-box">
+        <div class="label">The attention formula</div>
+        attention(Q, K, V) = softmax(<strong>Q·Kᵀ</strong> / √d_k) · V
+        <br><br>
+        <div class="label">In plain English</div>
+        For each token, compute a <strong>similarity score</strong> with every other token. Softmax those into weights. Use the weights to take a <strong>weighted average</strong> of value vectors. That weighted average is the new representation.
+      </div>
+    </div>
+
+    <p class="quote">
+      <strong>This is it.</strong> Attention is a weighted sum over values, where the weights come from the input itself. Stack many heads in parallel, stack many such blocks in sequence, and you have a transformer. Everything else — layernorm, residuals, MLP blocks — is supporting infrastructure around this core idea.
+    </p>
+  </div>
+
+  <script>
+    // Hand-designed patterns: for each sentence, attention[queryIdx][keyIdx] = unnormalized score
+    // designed to show sensible patterns (e.g., "it" attends back to its referent)
+    const SENTENCES = [
+      {
+        tokens: ['The', 'cat', 'sat', 'on', 'the', 'mat'],
+        // rough pattern: content words attend to their subject; function words spread
+        scores: [
+          [3, 1, 0, 0, 0, 0],
+          [1, 3, 2, 0, 0, 1],
+          [1, 3, 3, 1, 0, 1],
+          [0, 1, 2, 3, 1, 1],
+          [0, 0, 0, 1, 3, 2],
+          [0, 1, 1, 1, 1, 3],
+        ],
+      },
+      {
+        tokens: ['She', 'picked', 'up', 'the', 'book', 'and', 'read', 'it'],
+        // "it" strongly attends to "book"; "read" to "book" and "she"
+        scores: [
+          [3, 1, 0, 0, 0, 0, 0, 0],
+          [2, 3, 2, 0, 0, 0, 0, 0],
+          [0, 3, 3, 0, 0, 0, 0, 0],
+          [0, 0, 0, 3, 2, 0, 0, 0],
+          [0, 1, 0, 2, 3, 0, 0, 0],
+          [0, 1, 0, 0, 1, 3, 0, 0],
+          [2, 0, 0, 0, 3, 0, 3, 0],
+          [1, 0, 0, 0, 4, 0, 1, 3],  // it → book strongly
+        ],
+      },
+      {
+        tokens: ['Dogs', 'bark', 'because', 'they', 'are', 'loud'],
+        // "they" → dogs; "are" → they; "loud" → bark/dogs
+        scores: [
+          [3, 0, 0, 0, 0, 0],
+          [2, 3, 0, 0, 0, 0],
+          [1, 2, 3, 0, 0, 0],
+          [3, 1, 1, 3, 0, 0],  // they → dogs
+          [1, 0, 0, 3, 3, 0],  // are → they
+          [2, 2, 0, 1, 1, 3],  // loud → dogs, bark
+        ],
+      },
+    ];
+
+    let sentenceIdx = 0;
+    let queryIdx = 0;
+    let causal = true;
+
+    const row = document.getElementById('sentence-row');
+    const canvas = document.getElementById('heatmap');
+    const ctx = canvas.getContext('2d');
+
+    function softmax(scores) {
+      const m = Math.max(...scores);
+      const exps = scores.map(s => Math.exp(s - m));
+      const sum = exps.reduce((a, b) => a + b, 0);
+      return exps.map(e => e / sum);
+    }
+
+    function computeWeights() {
+      const { tokens, scores } = SENTENCES[sentenceIdx];
+      const weights = [];
+      for (let q = 0; q < tokens.length; q++) {
+        let raw = scores[q].slice();
+        if (causal) {
+          for (let k = q + 1; k < tokens.length; k++) raw[k] = -1e9;
+        }
+        weights.push(softmax(raw));
+      }
+      return weights;
+    }
+
+    function renderSentence() {
+      const { tokens } = SENTENCES[sentenceIdx];
+      const weights = computeWeights();
+      row.innerHTML = '';
+      tokens.forEach((tok, i) => {
+        const el = document.createElement('div');
+        el.className = 'token showing-weights';
+        if (i === queryIdx) el.classList.add('query');
+        const w = weights[queryIdx][i];
+        const alpha = Math.min(1, w * 1.6);
+        // tint background toward gold for high attention
+        const r = Math.round(239 - (239 - 184) * alpha);
+        const g = Math.round(229 - (229 - 137) * alpha);
+        const b = Math.round(204 - (204 - 46) * alpha);
+        el.style.background = `rgb(${r},${g},${b})`;
+        if (alpha > 0.5) el.style.color = '#fff';
+        el.innerHTML = `${tok}<span class="weight">${(w * 100).toFixed(0)}%</span>`;
+        el.addEventListener('click', () => {
+          queryIdx = i;
+          renderSentence();
+          renderHeatmap();
+        });
+        row.appendChild(el);
+      });
+    }
+
+    function renderHeatmap() {
+      const { tokens } = SENTENCES[sentenceIdx];
+      const weights = computeWeights();
+      const N = tokens.length;
+      const pad = 70;
+      const cellSize = Math.min(60, (520 - pad) / N);
+      const W = pad + cellSize * N + 20;
+      const H = pad + cellSize * N + 20;
+      canvas.width = W * 2; canvas.height = H * 2;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+
+      // background
+      ctx.fillStyle = '#FFF9E9';
+      ctx.fillRect(0, 0, W, H);
+
+      // cells
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          const w = weights[r][c];
+          const alpha = Math.min(1, w * 1.8);
+          const red = Math.round(255 - (255 - 139) * alpha);
+          const grn = Math.round(249 - (249 - 46) * alpha);
+          const blu = Math.round(233 - (233 - 62) * alpha);
+          ctx.fillStyle = `rgb(${red},${grn},${blu})`;
+          ctx.fillRect(pad + c * cellSize, pad + r * cellSize, cellSize - 1, cellSize - 1);
+
+          if (r === queryIdx) {
+            ctx.strokeStyle = '#2E4156'; ctx.lineWidth = 2;
+            ctx.strokeRect(pad + c * cellSize, pad + r * cellSize, cellSize - 1, cellSize - 1);
+          }
+          // text
+          if (w > 0.01) {
+            ctx.fillStyle = alpha > 0.55 ? '#FFF9E9' : '#2A221B';
+            ctx.font = "10px 'JetBrains Mono', monospace";
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText((w * 100).toFixed(0), pad + c * cellSize + cellSize / 2, pad + r * cellSize + cellSize / 2);
+          }
+        }
+      }
+
+      // labels
+      ctx.fillStyle = '#2A221B';
+      ctx.font = "11px 'JetBrains Mono', monospace";
+      // column labels (keys) on top, rotated
+      tokens.forEach((tok, c) => {
+        ctx.save();
+        ctx.translate(pad + c * cellSize + cellSize / 2, pad - 6);
+        ctx.rotate(-Math.PI / 4);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(tok, 0, 0);
+        ctx.restore();
+      });
+      // row labels (queries) on left
+      tokens.forEach((tok, r) => {
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = r === queryIdx ? '#2E4156' : '#2A221B';
+        ctx.font = r === queryIdx ? "bold 11px 'JetBrains Mono', monospace" : "11px 'JetBrains Mono', monospace";
+        ctx.fillText(tok, pad - 6, pad + r * cellSize + cellSize / 2);
+      });
+
+      // axis titles
+      ctx.fillStyle = '#7A6B5D';
+      ctx.font = "italic 11px 'Fraunces', serif";
+      ctx.textAlign = 'center';
+      ctx.fillText('keys (what can be attended to) →', pad + cellSize * N / 2, 16);
+      ctx.save();
+      ctx.translate(16, pad + cellSize * N / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('queries (who is asking) →', 0, 0);
+      ctx.restore();
+    }
+
+    document.getElementById('sentence-select').addEventListener('change', (e) => {
+      sentenceIdx = parseInt(e.target.value);
+      queryIdx = 0;
+      renderSentence();
+      renderHeatmap();
+    });
+    document.getElementById('causal-toggle').addEventListener('change', (e) => {
+      causal = e.target.checked;
+      renderSentence();
+      renderHeatmap();
+    });
+
+    renderSentence();
+    renderHeatmap();
+  </script>
+</body>
+</html>

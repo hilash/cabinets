@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Hero — Neuron Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #F5EEDC;
+      --bg-warm:     #EFE5CC;
+      --surface:     #FFF9E9;
+      --ink:         #2A221B;
+      --ink-muted:   #7A6B5D;
+      --line:        #D4C4B0;
+      --line-soft:   #E8DDC5;
+      --accent:      #8B5E3C;
+      --indigo:      #2E4156;
+      --burgundy:    #8B2E3E;
+      --gold:        #B8892E;
+      --sage:        #6B8E5A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(184, 137, 46, 0.07) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(46, 65, 86, 0.06) 0, transparent 50%);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      min-height: 100vh; padding: 40px 28px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    header { margin-bottom: 36px; border-bottom: 1px solid var(--line-soft); padding-bottom: 24px; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: 0.18em;
+      font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 144;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 500; letter-spacing: -0.02em; line-height: 1.05;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .tagline {
+      margin-top: 14px; font-size: 16px; color: var(--ink-muted);
+      font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 22px;
+    }
+    @media (max-width: 860px) { .main-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 26px 28px;
+    }
+    .card h2 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 20px; font-weight: 500;
+      margin-bottom: 6px; letter-spacing: -0.005em;
+    }
+    .card .helper {
+      font-size: 13px; color: var(--ink-muted); margin-bottom: 22px;
+      font-family: 'Fraunces', serif; font-style: italic;
+    }
+
+    .slider-row { margin-bottom: 18px; }
+    .slider-row label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 13px; color: var(--ink-muted); margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .slider-row label .val {
+      color: var(--ink); font-weight: 500;
+      background: var(--bg-warm); padding: 2px 9px; border-radius: 4px;
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%; height: 3px; background: var(--line);
+      border-radius: 2px; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); cursor: grab;
+      border: 2px solid var(--surface);
+      box-shadow: 0 1px 4px rgba(42, 34, 27, 0.2);
+    }
+    input[type=range]::-webkit-slider-thumb:active { cursor: grabbing; background: var(--accent); }
+    input[type=range]::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); cursor: grab;
+      border: 2px solid var(--surface);
+    }
+
+    .equation {
+      background: var(--bg-warm);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 18px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; line-height: 1.9;
+      color: var(--ink);
+    }
+    .equation .term { color: var(--indigo); font-weight: 500; }
+    .equation .w-term { color: var(--accent); font-weight: 500; }
+    .equation .result { color: var(--burgundy); font-weight: 600; }
+    .equation .arrow { color: var(--ink-muted); margin: 0 6px; }
+    .equation hr { border: none; border-top: 1px dashed var(--line); margin: 10px 0; }
+
+    .activation-switch {
+      display: flex; gap: 4px; background: var(--bg-warm);
+      padding: 4px; border-radius: 10px; margin-top: 8px;
+    }
+    .activation-switch button {
+      flex: 1; padding: 8px 10px;
+      background: transparent; border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--ink-muted);
+      cursor: pointer; border-radius: 7px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .activation-switch button.active {
+      background: var(--surface); color: var(--ink);
+      box-shadow: 0 1px 3px rgba(42, 34, 27, 0.08);
+    }
+
+    canvas { display: block; width: 100%; height: auto; border-radius: 10px; }
+
+    .readout {
+      margin-top: 22px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .readout .box {
+      background: var(--bg-warm); padding: 14px 16px; border-radius: 10px;
+    }
+    .readout .box .label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-muted); font-weight: 600; margin-bottom: 4px;
+    }
+    .readout .box .value {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 28px; font-weight: 500; color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    .quote {
+      margin-top: 34px;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 17px; line-height: 1.5;
+      color: var(--ink-muted);
+      padding-left: 18px; border-left: 2px solid var(--line);
+      max-width: 720px;
+    }
+    .quote strong { color: var(--ink); font-style: normal; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="eyebrow">Interactive — Intuition Stage</div>
+      <h1>Neuron <em>Playground</em></h1>
+      <p class="tagline">Move the sliders. Watch the neuron compute.</p>
+    </header>
+
+    <div class="main-grid">
+      <div class="card">
+        <h2>Inputs & weights</h2>
+        <p class="helper">Three input values, three learnable weights, one bias. This is every neuron, ever.</p>
+
+        <div class="slider-row">
+          <label>x₁ (input 1) <span class="val" id="x1-val">0.5</span></label>
+          <input type="range" id="x1" min="-2" max="2" step="0.01" value="0.5">
+        </div>
+        <div class="slider-row">
+          <label>x₂ (input 2) <span class="val" id="x2-val">-0.3</span></label>
+          <input type="range" id="x2" min="-2" max="2" step="0.01" value="-0.3">
+        </div>
+        <div class="slider-row">
+          <label>x₃ (input 3) <span class="val" id="x3-val">1.2</span></label>
+          <input type="range" id="x3" min="-2" max="2" step="0.01" value="1.2">
+        </div>
+
+        <div style="margin-top: 24px;"></div>
+
+        <div class="slider-row">
+          <label>w₁ (weight 1) <span class="val" id="w1-val">0.7</span></label>
+          <input type="range" id="w1" min="-2" max="2" step="0.01" value="0.7">
+        </div>
+        <div class="slider-row">
+          <label>w₂ (weight 2) <span class="val" id="w2-val">-0.4</span></label>
+          <input type="range" id="w2" min="-2" max="2" step="0.01" value="-0.4">
+        </div>
+        <div class="slider-row">
+          <label>w₃ (weight 3) <span class="val" id="w3-val">0.5</span></label>
+          <input type="range" id="w3" min="-2" max="2" step="0.01" value="0.5">
+        </div>
+        <div class="slider-row">
+          <label>b (bias) <span class="val" id="b-val">0.1</span></label>
+          <input type="range" id="b" min="-2" max="2" step="0.01" value="0.1">
+        </div>
+
+        <div style="margin-top: 20px;">
+          <label style="font-size:13px; color:var(--ink-muted); font-family:'JetBrains Mono', monospace;">Activation function</label>
+          <div class="activation-switch">
+            <button data-fn="tanh" class="active">tanh</button>
+            <button data-fn="sigmoid">sigmoid</button>
+            <button data-fn="relu">ReLU</button>
+            <button data-fn="identity">identity</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>The computation</h2>
+        <p class="helper">Live. Every slider change re-runs the neuron.</p>
+
+        <div class="equation" id="eq"></div>
+
+        <canvas id="chart" width="520" height="280"></canvas>
+
+        <div class="readout">
+          <div class="box">
+            <div class="label">Pre-activation (z)</div>
+            <div class="value" id="z-val">0.00</div>
+          </div>
+          <div class="box">
+            <div class="label">Output (y)</div>
+            <div class="value" id="y-val">0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="quote">
+      <strong>Every</strong> neural network is many of these stacked together. Change nothing conceptually — just run thousands of them in parallel, stack the layers, and train the weights with gradient descent. Everything else in this course is a detail on top of this one idea.
+    </p>
+  </div>
+
+  <script>
+    const ids = ['x1', 'x2', 'x3', 'w1', 'w2', 'w3', 'b'];
+    const sliders = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    const labels  = Object.fromEntries(ids.map(id => [id, document.getElementById(id + '-val')]));
+
+    const eq = document.getElementById('eq');
+    const zVal = document.getElementById('z-val');
+    const yVal = document.getElementById('y-val');
+    const canvas = document.getElementById('chart');
+    const ctx = canvas.getContext('2d');
+
+    let activation = 'tanh';
+    const fns = {
+      tanh: x => Math.tanh(x),
+      sigmoid: x => 1 / (1 + Math.exp(-x)),
+      relu: x => Math.max(0, x),
+      identity: x => x,
+    };
+    const fnLabel = { tanh: 'tanh', sigmoid: 'σ', relu: 'ReLU', identity: 'id' };
+    const fnBounds = { tanh: [-1.1, 1.1], sigmoid: [-0.1, 1.1], relu: [-0.5, 3.5], identity: [-3.5, 3.5] };
+
+    document.querySelectorAll('.activation-switch button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.activation-switch button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activation = btn.dataset.fn;
+        update();
+      });
+    });
+
+    function drawChart(z, y) {
+      const W = canvas.width, H = canvas.height;
+      const pad = { l: 40, r: 16, t: 16, b: 28 };
+      const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+      const xMin = -3, xMax = 3;
+      const [yMin, yMax] = fnBounds[activation];
+      const x2px = x => pad.l + (x - xMin) / (xMax - xMin) * plotW;
+      const y2py = y => pad.t + (1 - (y - yMin) / (yMax - yMin)) * plotH;
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#FFF9E9';
+      ctx.fillRect(pad.l, pad.t, plotW, plotH);
+
+      // grid
+      ctx.strokeStyle = '#E8DDC5';
+      ctx.lineWidth = 1;
+      for (let gx = Math.ceil(xMin); gx <= Math.floor(xMax); gx++) {
+        const px = x2px(gx);
+        ctx.beginPath(); ctx.moveTo(px, pad.t); ctx.lineTo(px, pad.t + plotH); ctx.stroke();
+      }
+      // axes
+      ctx.strokeStyle = '#D4C4B0';
+      ctx.lineWidth = 1;
+      if (yMin <= 0 && 0 <= yMax) {
+        const pxZero = y2py(0);
+        ctx.beginPath(); ctx.moveTo(pad.l, pxZero); ctx.lineTo(pad.l + plotW, pxZero); ctx.stroke();
+      }
+      const pxXZero = x2px(0);
+      ctx.beginPath(); ctx.moveTo(pxXZero, pad.t); ctx.lineTo(pxXZero, pad.t + plotH); ctx.stroke();
+
+      // curve
+      ctx.strokeStyle = '#8B5E3C';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      const fn = fns[activation];
+      for (let i = 0; i <= 200; i++) {
+        const x = xMin + (i / 200) * (xMax - xMin);
+        const py = y2py(fn(x));
+        if (i === 0) ctx.moveTo(x2px(x), py); else ctx.lineTo(x2px(x), py);
+      }
+      ctx.stroke();
+
+      // current point
+      const cx = x2px(Math.max(xMin, Math.min(xMax, z)));
+      const cy = y2py(Math.max(yMin, Math.min(yMax, y)));
+      // vertical line from x-axis to point
+      ctx.strokeStyle = '#2E4156';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(cx, y2py(0)); ctx.lineTo(cx, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad.l, cy); ctx.lineTo(cx, cy); ctx.stroke();
+      ctx.setLineDash([]);
+      // the dot
+      ctx.fillStyle = '#8B2E3E';
+      ctx.beginPath(); ctx.arc(cx, cy, 6, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = '#FFF9E9'; ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // axis labels
+      ctx.fillStyle = '#7A6B5D';
+      ctx.font = "11px 'JetBrains Mono', monospace";
+      ctx.textAlign = 'right';
+      ctx.fillText(yMax.toFixed(1), pad.l - 6, pad.t + 10);
+      ctx.fillText(yMin.toFixed(1), pad.l - 6, pad.t + plotH);
+      ctx.textAlign = 'center';
+      ctx.fillText('z', pad.l + plotW - 6, pad.t + plotH + 18);
+      ctx.fillText(fnLabel[activation] + '(z)', pad.l - 6, pad.t - 4);
+    }
+
+    function update() {
+      const v = Object.fromEntries(ids.map(id => [id, parseFloat(sliders[id].value)]));
+      ids.forEach(id => labels[id].textContent = v[id].toFixed(2));
+      const z = v.w1 * v.x1 + v.w2 * v.x2 + v.w3 * v.x3 + v.b;
+      const y = fns[activation](z);
+
+      const sign = (w, x) => {
+        const prod = w * x;
+        return (prod >= 0 ? '+ ' : '- ') + Math.abs(prod).toFixed(2);
+      };
+      eq.innerHTML = `
+        <span class="term">z</span> = <span class="w-term">w₁</span>·<span class="term">x₁</span> + <span class="w-term">w₂</span>·<span class="term">x₂</span> + <span class="w-term">w₃</span>·<span class="term">x₃</span> + <span class="w-term">b</span>
+        <hr>
+        <span class="term">z</span> = (${v.w1.toFixed(2)})(${v.x1.toFixed(2)}) + (${v.w2.toFixed(2)})(${v.x2.toFixed(2)}) + (${v.w3.toFixed(2)})(${v.x3.toFixed(2)}) + (${v.b.toFixed(2)})
+        <br>
+        <span class="term">z</span> = ${(v.w1*v.x1).toFixed(2)} ${sign(v.w2, v.x2)} ${sign(v.w3, v.x3)} ${(v.b >= 0 ? '+ ' : '- ')}${Math.abs(v.b).toFixed(2)}
+        <br>
+        <span class="term">z</span> = <span class="result">${z.toFixed(3)}</span>
+        <hr>
+        <span class="term">y</span> = ${fnLabel[activation]}(${z.toFixed(2)}) = <span class="result">${y.toFixed(3)}</span>
+      `;
+      zVal.textContent = z.toFixed(3);
+      yVal.textContent = y.toFixed(3);
+      drawChart(z, y);
+    }
+
+    ids.forEach(id => sliders[id].addEventListener('input', update));
+    update();
+  </script>
+</body>
+</html>

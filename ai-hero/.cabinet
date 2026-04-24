@@ -1,0 +1,10 @@
+schemaVersion: 1
+id: ai-hero-root
+name: AI Hero
+kind: root
+version: 0.1.0
+description: >
+  Self-paced AI course — 20 hours of math, intuition, theory, and hands-on LLM
+  construction. Build a neural net from pure Python up through GPT-2, with
+  embedded videos, interactive notebooks, checklists, and a progress dashboard.
+entry: index.md

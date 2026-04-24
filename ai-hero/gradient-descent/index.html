@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Hero — Gradient Descent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #F5EEDC;
+      --bg-warm:     #EFE5CC;
+      --surface:     #FFF9E9;
+      --ink:         #2A221B;
+      --ink-muted:   #7A6B5D;
+      --line:        #D4C4B0;
+      --line-soft:   #E8DDC5;
+      --accent:      #8B5E3C;
+      --indigo:      #2E4156;
+      --burgundy:    #8B2E3E;
+      --gold:        #B8892E;
+      --sage:        #6B8E5A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(184, 137, 46, 0.07) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(46, 65, 86, 0.06) 0, transparent 50%);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      min-height: 100vh; padding: 40px 28px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    header { margin-bottom: 32px; border-bottom: 1px solid var(--line-soft); padding-bottom: 24px; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: 0.18em;
+      font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 144;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 500; letter-spacing: -0.02em; line-height: 1.05;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .tagline {
+      margin-top: 14px; font-size: 16px; color: var(--ink-muted);
+      font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    }
+
+    .main-grid {
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 22px;
+    }
+    @media (max-width: 860px) { .main-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 24px 26px;
+    }
+    .card h2 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 20px; font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .helper {
+      font-size: 13px; color: var(--ink-muted);
+      font-family: 'Fraunces', serif; font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    canvas { display: block; width: 100%; height: auto; border-radius: 10px; cursor: crosshair; }
+    .canvas-hint {
+      font-size: 12px; color: var(--ink-muted); margin-top: 10px;
+      font-family: 'JetBrains Mono', monospace; text-align: center;
+    }
+
+    .slider-row { margin-bottom: 20px; }
+    .slider-row label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 13px; color: var(--ink-muted); margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .slider-row label .val {
+      color: var(--ink); font-weight: 500;
+      background: var(--bg-warm); padding: 2px 9px; border-radius: 4px;
+    }
+    input[type=range] {
+      -webkit-appearance: none; width: 100%; height: 3px;
+      background: var(--line); border-radius: 2px; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); cursor: grab;
+      border: 2px solid var(--surface);
+      box-shadow: 0 1px 4px rgba(42, 34, 27, 0.2);
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); cursor: grab;
+      border: 2px solid var(--surface);
+    }
+
+    .landscape-switch {
+      display: flex; gap: 4px; background: var(--bg-warm);
+      padding: 4px; border-radius: 10px; margin: 14px 0;
+    }
+    .landscape-switch button {
+      flex: 1; padding: 8px 10px; background: transparent; border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--ink-muted);
+      cursor: pointer; border-radius: 7px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .landscape-switch button.active {
+      background: var(--surface); color: var(--ink);
+      box-shadow: 0 1px 3px rgba(42, 34, 27, 0.08);
+    }
+
+    .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+    .btn {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      background: var(--bg-warm);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500;
+      border-radius: 8px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: var(--line-soft); border-color: var(--accent); }
+    .btn.primary { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+    .btn.primary:hover { background: #6B4524; }
+
+    .readout {
+      margin-top: 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .readout .box {
+      background: var(--bg-warm); padding: 11px 13px; border-radius: 8px;
+    }
+    .readout .box .label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ink-muted); font-weight: 600; margin-bottom: 4px;
+    }
+    .readout .box .value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px; color: var(--ink); font-weight: 500;
+    }
+
+    .quote {
+      margin-top: 28px;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 16px; line-height: 1.55;
+      color: var(--ink-muted);
+      padding-left: 18px; border-left: 2px solid var(--line);
+    }
+    .quote strong { color: var(--ink); font-style: normal; font-weight: 600; }
+    .warning {
+      background: rgba(139, 46, 62, 0.08); border-radius: 8px;
+      padding: 10px 14px; font-size: 12px; color: var(--burgundy);
+      margin-top: 14px; display: none;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .warning.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="eyebrow">Interactive — Intuition Stage</div>
+      <h1>Gradient <em>Descent</em></h1>
+      <p class="tagline">The marble, the landscape, the learning rate. Click anywhere to drop the ball.</p>
+    </header>
+
+    <div class="main-grid">
+      <div class="card">
+        <h2>The loss landscape</h2>
+        <p class="helper">Contours are level sets of the loss. Darker = lower. Gradient descent follows the steepest downhill direction.</p>
+        <canvas id="landscape" width="720" height="540"></canvas>
+        <div class="canvas-hint">Click anywhere on the canvas to reset the ball's starting position.</div>
+      </div>
+
+      <div class="card">
+        <h2>Controls</h2>
+        <p class="helper">Tune. Observe. Break it.</p>
+
+        <div class="slider-row">
+          <label>Learning rate <span class="val" id="lr-val">0.08</span></label>
+          <input type="range" id="lr" min="0.001" max="0.4" step="0.001" value="0.08">
+        </div>
+        <div class="slider-row">
+          <label>Momentum <span class="val" id="mom-val">0.00</span></label>
+          <input type="range" id="mom" min="0" max="0.95" step="0.01" value="0">
+        </div>
+
+        <label style="font-size:13px; color:var(--ink-muted); font-family:'JetBrains Mono', monospace;">Landscape</label>
+        <div class="landscape-switch">
+          <button data-ls="bowl" class="active">bowl</button>
+          <button data-ls="valley">valley</button>
+          <button data-ls="saddle">saddle</button>
+          <button data-ls="wavy">wavy</button>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" id="reset-btn">Reset</button>
+          <button class="btn primary" id="play-btn">▶ Play</button>
+        </div>
+
+        <div class="readout">
+          <div class="box"><div class="label">Step</div><div class="value" id="step-val">0</div></div>
+          <div class="box"><div class="label">Loss</div><div class="value" id="loss-val">—</div></div>
+          <div class="box"><div class="label">‖grad‖</div><div class="value" id="grad-val">—</div></div>
+          <div class="box"><div class="label">Speed</div><div class="value" id="speed-val">—</div></div>
+        </div>
+
+        <div class="warning" id="warn">⚠ diverging — lower the learning rate</div>
+      </div>
+    </div>
+
+    <p class="quote">
+      <strong>Small LR</strong> is slow but safe. <strong>Big LR</strong> can diverge — the ball overshoots and flies off a cliff. Momentum helps in long narrow valleys (try the <em>valley</em> landscape). In a real neural net, the landscape has millions of dimensions, but your intuition from this 2D toy will take you remarkably far.
+    </p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('landscape');
+    const ctx = canvas.getContext('2d');
+    const DPR = window.devicePixelRatio || 1;
+
+    // make hi-DPI
+    function setupCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * DPR;
+      canvas.height = rect.height * DPR;
+      canvas.style.height = (rect.width * 540 / 720) + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    setupCanvas();
+    window.addEventListener('resize', () => { setupCanvas(); draw(); });
+
+    const W = () => canvas.width / DPR;
+    const H = () => canvas.height / DPR;
+
+    // world coords: x in [-3, 3], y in [-2.25, 2.25]
+    const XMIN = -3, XMAX = 3;
+    const YMIN = -2.25, YMAX = 2.25;
+    const toPxX = x => (x - XMIN) / (XMAX - XMIN) * W();
+    const toPxY = y => (1 - (y - YMIN) / (YMAX - YMIN)) * H();
+    const toWorldX = px => XMIN + px / W() * (XMAX - XMIN);
+    const toWorldY = py => YMIN + (1 - py / H()) * (YMAX - YMIN);
+
+    const landscapes = {
+      bowl: {
+        loss: (x, y) => 0.5 * (x * x + y * y),
+        grad: (x, y) => [x, y],
+      },
+      valley: {
+        // long narrow (Rosenbrock-ish, but gentler)
+        loss: (x, y) => 0.05 * (x * x) + 1.5 * (y - 0.3 * x * x) ** 2,
+        grad: (x, y) => {
+          const t = y - 0.3 * x * x;
+          return [0.1 * x - 2 * 1.5 * t * 0.6 * x, 2 * 1.5 * t];
+        },
+      },
+      saddle: {
+        loss: (x, y) => 0.5 * (x * x - y * y) + 1.0,
+        grad: (x, y) => [x, -y],
+      },
+      wavy: {
+        loss: (x, y) => 0.3 * (x * x + y * y) + Math.sin(2.5 * x) * Math.cos(2.5 * y) * 0.4 + 0.6,
+        grad: (x, y) => [
+          0.6 * x + 2.5 * Math.cos(2.5 * x) * Math.cos(2.5 * y) * 0.4,
+          0.6 * y + Math.sin(2.5 * x) * (-2.5 * Math.sin(2.5 * y)) * 0.4,
+        ],
+      },
+    };
+
+    let landscape = 'bowl';
+    let ball = { x: 2.3, y: 1.8 };
+    let velocity = { x: 0, y: 0 };
+    let trail = [];
+    let step = 0;
+    let playing = false;
+    let rafId = null;
+    let diverged = false;
+
+    const lrSlider = document.getElementById('lr');
+    const momSlider = document.getElementById('mom');
+
+    function contourColor(lossValue) {
+      // parchment: low loss = warm gold, high loss = pale
+      const t = Math.min(1, Math.max(0, lossValue / 6));
+      // blend from bg-warm (#EFE5CC) at high to gold (#B8892E) at low
+      const r = Math.round(239 - (239 - 184) * (1 - t));
+      const g = Math.round(229 - (229 - 137) * (1 - t));
+      const b = Math.round(204 - (204 - 46) * (1 - t));
+      return `rgb(${r},${g},${b})`;
+    }
+
+    function drawLandscape() {
+      const res = 60;
+      const L = landscapes[landscape].loss;
+      const cellW = W() / res;
+      const cellH = H() / res;
+      for (let i = 0; i < res; i++) {
+        for (let j = 0; j < res; j++) {
+          const wx = XMIN + (i / res) * (XMAX - XMIN);
+          const wy = YMIN + (1 - j / res) * (YMAX - YMIN);
+          const val = L(wx, wy);
+          ctx.fillStyle = contourColor(val);
+          ctx.fillRect(i * cellW, j * cellH, cellW + 0.5, cellH + 0.5);
+        }
+      }
+      // contour lines
+      ctx.strokeStyle = 'rgba(42, 34, 27, 0.15)';
+      ctx.lineWidth = 0.6;
+      const levels = [0.2, 0.6, 1.2, 2, 3, 4.5];
+      const gridRes = 120;
+      for (const level of levels) {
+        ctx.beginPath();
+        for (let i = 0; i < gridRes; i++) {
+          for (let j = 0; j < gridRes; j++) {
+            const wx = XMIN + (i / gridRes) * (XMAX - XMIN);
+            const wy = YMIN + (1 - j / gridRes) * (YMAX - YMIN);
+            const v = L(wx, wy);
+            if (Math.abs(v - level) < 0.08) {
+              const px = toPxX(wx), py = toPxY(wy);
+              ctx.rect(px - 0.5, py - 0.5, 1, 1);
+            }
+          }
+        }
+        ctx.stroke();
+      }
+    }
+
+    function drawBall() {
+      // trail
+      ctx.strokeStyle = 'rgba(139, 46, 62, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      trail.forEach((p, idx) => {
+        const px = toPxX(p.x), py = toPxY(p.y);
+        if (idx === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+
+      // trail dots
+      ctx.fillStyle = 'rgba(139, 46, 62, 0.45)';
+      trail.forEach((p, idx) => {
+        if (idx % 2 !== 0) return;
+        const px = toPxX(p.x), py = toPxY(p.y);
+        ctx.beginPath();
+        ctx.arc(px, py, 2, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+
+      // current ball
+      const px = toPxX(ball.x), py = toPxY(ball.y);
+      // shadow
+      ctx.fillStyle = 'rgba(42, 34, 27, 0.15)';
+      ctx.beginPath();
+      ctx.ellipse(px + 1, py + 2, 11, 4, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      // ball
+      const grad = ctx.createRadialGradient(px - 3, py - 3, 1, px, py, 11);
+      grad.addColorStop(0, '#C75968');
+      grad.addColorStop(1, '#8B2E3E');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(px, py, 10, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#FFF9E9'; ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // gradient arrow at current point
+      const [gx, gy] = landscapes[landscape].grad(ball.x, ball.y);
+      const gmag = Math.sqrt(gx * gx + gy * gy);
+      if (gmag > 0.01) {
+        const scale = Math.min(0.6, 0.15 + gmag * 0.08);
+        const ax = -gx / gmag * scale;
+        const ay = -gy / gmag * scale;
+        const ex = toPxX(ball.x + ax);
+        const ey = toPxY(ball.y + ay);
+        ctx.strokeStyle = '#2E4156';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(px, py); ctx.lineTo(ex, ey);
+        ctx.stroke();
+        // arrowhead
+        const angle = Math.atan2(ey - py, ex - px);
+        ctx.fillStyle = '#2E4156';
+        ctx.beginPath();
+        ctx.moveTo(ex, ey);
+        ctx.lineTo(ex - 8 * Math.cos(angle - 0.35), ey - 8 * Math.sin(angle - 0.35));
+        ctx.lineTo(ex - 8 * Math.cos(angle + 0.35), ey - 8 * Math.sin(angle + 0.35));
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W(), H());
+      drawLandscape();
+      drawBall();
+      const L = landscapes[landscape].loss(ball.x, ball.y);
+      const [gx, gy] = landscapes[landscape].grad(ball.x, ball.y);
+      const gmag = Math.sqrt(gx * gx + gy * gy);
+      const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+      document.getElementById('step-val').textContent = step;
+      document.getElementById('loss-val').textContent = isFinite(L) ? L.toFixed(3) : '∞';
+      document.getElementById('grad-val').textContent = gmag.toFixed(3);
+      document.getElementById('speed-val').textContent = speed.toFixed(3);
+      document.getElementById('warn').classList.toggle('show', diverged);
+    }
+
+    function takeStep() {
+      const lr = parseFloat(lrSlider.value);
+      const mom = parseFloat(momSlider.value);
+      const [gx, gy] = landscapes[landscape].grad(ball.x, ball.y);
+      velocity.x = mom * velocity.x - lr * gx;
+      velocity.y = mom * velocity.y - lr * gy;
+      ball.x += velocity.x;
+      ball.y += velocity.y;
+      trail.push({ x: ball.x, y: ball.y });
+      if (trail.length > 200) trail.shift();
+      step++;
+      if (!isFinite(ball.x) || !isFinite(ball.y) ||
+          Math.abs(ball.x) > 20 || Math.abs(ball.y) > 20) {
+        diverged = true;
+        playing = false;
+        document.getElementById('play-btn').textContent = '▶ Play';
+      }
+    }
+
+    function loop() {
+      if (!playing) return;
+      for (let i = 0; i < 2; i++) takeStep();
+      draw();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function reset(to) {
+      ball = to || { x: 2.3, y: 1.8 };
+      velocity = { x: 0, y: 0 };
+      trail = [{ x: ball.x, y: ball.y }];
+      step = 0;
+      diverged = false;
+      draw();
+    }
+
+    document.getElementById('play-btn').addEventListener('click', (e) => {
+      playing = !playing;
+      e.target.textContent = playing ? '⏸ Pause' : '▶ Play';
+      if (playing) loop();
+    });
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      playing = false;
+      document.getElementById('play-btn').textContent = '▶ Play';
+      reset();
+    });
+    document.querySelectorAll('.landscape-switch button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.landscape-switch button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        landscape = btn.dataset.ls;
+        playing = false;
+        document.getElementById('play-btn').textContent = '▶ Play';
+        reset({ x: 2.3, y: 1.8 });
+      });
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const px = (e.clientX - rect.left);
+      const py = (e.clientY - rect.top);
+      const wx = toWorldX(px * (W() / rect.width));
+      const wy = toWorldY(py * (H() / rect.height));
+      playing = false;
+      document.getElementById('play-btn').textContent = '▶ Play';
+      reset({ x: wx, y: wy });
+    });
+
+    lrSlider.addEventListener('input', () => {
+      document.getElementById('lr-val').textContent = parseFloat(lrSlider.value).toFixed(3);
+    });
+    momSlider.addEventListener('input', () => {
+      document.getElementById('mom-val').textContent = parseFloat(momSlider.value).toFixed(2);
+    });
+
+    reset();
+  </script>
+</body>
+</html>

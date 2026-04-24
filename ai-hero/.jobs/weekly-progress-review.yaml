@@ -1,0 +1,26 @@
+id: weekly-progress-review
+name: Weekly Progress Review
+enabled: true
+schedule: 0 19 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: progress-tracker
+agentSlug: progress-tracker
+timeout: 600
+prompt: |-
+  Read progress/progress.csv and every section index.md to compute fresh totals.
+  Update progress/progress.csv items_done counts and status for each row.
+
+  Then append a weekly review section to progress/index.md using this exact format:
+
+  ## Week ending [YYYY-MM-DD]
+  - **Completion:** X/5 stages, Y% overall
+  - **Hours logged (est):** Z of 20
+  - **Pace:** (on-track | ahead | behind) — relative to the pacing plan the student selected in Getting Started (relaxed = 4 weeks, standard = 2 weeks, crunch = 1 week from install)
+  - **Stalled:** [list any section with 0 progress in 7+ days, or "none"]
+  - **Next week's must-do:** [one specific stage or section the student must hit]
+
+  Be factual. Do not add motivational fluff.
+cabinetPath: cabinetscopy/ai-hero
+createdAt: '2026-04-24T00:00:00.000Z'
+updatedAt: '2026-04-24T00:00:00.000Z'
