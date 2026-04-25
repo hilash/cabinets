@@ -1,0 +1,11 @@
+schemaVersion: 1
+id: physics-101-root
+name: Physics 101
+kind: root
+version: 0.1.0
+description: >
+  A 6-module beginner physics curriculum — Motion, Forces, Energy, Waves,
+  Electricity, Light. Each module follows the same pedagogy: hook, core
+  concepts, interactive element, worked example, practice questions, bridge
+  to the next module. No calculus assumed; algebra and basic geometry only.
+entry: index.md

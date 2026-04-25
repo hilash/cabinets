@@ -1,0 +1,19 @@
+id: weekly-stub-progress
+name: Weekly Stub Progress
+enabled: true
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: instructor
+agentSlug: instructor
+timeout: 300
+prompt: |-
+  Scan all module pages (module-1 through module-6). For each, check whether `status: stub` is in the frontmatter or whether any section body still says `_TBD._`.
+
+  If any module is still incomplete:
+  1. Pick the lowest-numbered incomplete module.
+  2. Draft *one* missing section in that module — the highest-priority one in this order: Hook → Core Concepts → Worked Example → Practice → Interactive → What's Next.
+  3. Match the tone, depth, and formatting of the equivalent section in Module 1 — Motion (the reference implementation).
+  4. If the module is now fully written (all six sections have real content, no `_TBD._` left), remove `status: stub` from the frontmatter.
+
+  Then update the top of `index.md` (the curriculum landing page) with a "## Curriculum status" block listing each module as ✅ complete or 🔲 stub. Replace any prior status block.
