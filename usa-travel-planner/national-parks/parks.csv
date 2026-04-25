@@ -1,0 +1,64 @@
+name,state,year_established,region,signature_feature,best_season,lat,lon,visited
+Acadia,ME,1919,East,Atlantic coast + Cadillac Mountain sunrise,Sep-Oct,44.350,-68.210,false
+American Samoa,AS,1988,Tropical,Coral reefs + rainforest,May-Sep,-14.260,-170.680,false
+Arches,UT,1971,West,2000+ sandstone arches incl. Delicate Arch,Apr-May or Sep-Oct,38.733,-109.592,false
+Badlands,SD,1978,West,Eroded buttes + bison + black-footed ferrets,May or Sep,43.855,-101.953,false
+Big Bend,TX,1944,West,Chihuahuan desert + Rio Grande canyons,Nov-Mar,29.250,-103.250,false
+Biscayne,FL,1980,East,95% underwater — coral reefs + shipwrecks,Dec-Apr,25.481,-80.211,false
+Black Canyon of the Gunnison,CO,1999,West,Sheer 2700-ft canyon walls,May-Sep,38.577,-107.743,false
+Bryce Canyon,UT,1928,West,Hoodoo amphitheaters,May-Oct,37.593,-112.187,false
+Canyonlands,UT,1964,West,Mesa-and-canyon labyrinths + Mesa Arch sunrise,Apr-May or Sep-Oct,38.328,-109.878,false
+Capitol Reef,UT,1971,West,100-mile Waterpocket Fold + orchards,Apr-Oct,38.280,-111.260,false
+Carlsbad Caverns,NM,1930,West,Massive limestone cave + bat flight,Year-round,32.175,-104.444,false
+Channel Islands,CA,1980,West,Five islands off SoCal — kelp forests + endemic species,Mar-Jun,34.005,-119.421,false
+Congaree,SC,2003,East,Old-growth bottomland hardwood forest,Mar-May or Oct-Nov,33.783,-80.781,false
+Crater Lake,OR,1902,West,Deepest US lake — collapsed volcano caldera,Jul-Sep,42.940,-122.108,false
+Cuyahoga Valley,OH,2000,East,Ohio & Erie Canal + Brandywine Falls,May-Oct,41.281,-81.561,false
+Death Valley,"CA, NV",1994,West,Lowest point in N America + Badwater Basin,Nov-Mar,36.508,-117.079,false
+Denali,AK,1917,Alaska,20310-ft Denali + tundra wildlife,Jun-Aug,63.073,-151.006,false
+Dry Tortugas,FL,1992,Tropical,Civil War fort on remote Gulf islands,Jan-May,24.628,-82.873,false
+Everglades,FL,1934,East,Subtropical wetland — gators + manatees,Dec-Apr,25.286,-80.899,false
+Gates of the Arctic,AK,1980,Alaska,No roads no trails — pure wilderness,Jun-Aug,67.781,-153.302,false
+Gateway Arch,MO,2018,East,Iconic 630-ft stainless steel arch,Year-round,38.624,-90.185,false
+Glacier,MT,1910,West,Going-to-the-Sun Road + 700+ lakes,Jul-Sep,48.696,-113.718,false
+Glacier Bay,AK,1980,Alaska,Tidewater glaciers from a cruise ship,Jun-Aug,58.665,-136.900,false
+Grand Canyon,AZ,1919,West,Mile-deep rim-to-rim spectacle,Mar-May or Sep-Nov,36.057,-112.144,false
+Grand Teton,WY,1929,West,Jagged Tetons rising 7000 ft from valley floor,Jun-Sep,43.790,-110.682,false
+Great Basin,NV,1986,West,Bristlecone pines + Wheeler Peak + Lehman Caves,Jun-Sep,38.983,-114.302,false
+Great Sand Dunes,CO,2004,West,750-ft sand dunes against the Sangre de Cristos,Apr-May or Sep-Oct,37.732,-105.512,false
+Great Smoky Mountains,"NC, TN",1934,East,Most-visited US park — Appalachian forest,Apr-Jun or Oct,35.611,-83.490,false
+Guadalupe Mountains,TX,1972,West,Highest point in TX + McKittrick Canyon,Oct-Nov,31.923,-104.866,false
+Haleakalā,HI,1916,Tropical,10000-ft volcano summit + sunrise,Year-round,20.720,-156.173,false
+Hawaiʻi Volcanoes,HI,1916,Tropical,Active Kilauea + Mauna Loa,Year-round,19.383,-155.203,false
+Hot Springs,AR,1921,East,47 thermal springs + bathhouse row,Year-round,34.514,-93.054,false
+Indiana Dunes,IN,2019,East,Lake Michigan dunes + bird migration,Apr-Oct,41.654,-87.057,false
+Isle Royale,MI,1940,East,Wolves + moose on a Lake Superior island,Jun-Aug,48.100,-88.550,false
+Joshua Tree,CA,1994,West,Where Mojave meets Colorado deserts,Oct-Apr,33.873,-115.901,false
+Katmai,AK,1980,Alaska,Brown bears catching salmon at Brooks Falls,Jul,58.500,-155.000,false
+Kenai Fjords,AK,1980,Alaska,Tidewater glaciers + sea kayaking,Jun-Aug,59.918,-149.650,false
+Kings Canyon,CA,1940,West,Giant sequoias + Sierra high country,Jun-Sep,36.887,-118.555,false
+Kobuk Valley,AK,1980,Alaska,Caribou migration across arctic sand dunes,Jun-Aug,67.550,-159.280,false
+Lake Clark,AK,1980,Alaska,Volcanoes lakes salmon — fly-in only,Jun-Aug,60.967,-153.417,false
+Lassen Volcanic,CA,1916,West,All four volcano types in one park,Jul-Sep,40.488,-121.510,false
+Mammoth Cave,KY,1941,East,Longest known cave system in the world,Year-round,37.187,-86.100,false
+Mesa Verde,CO,1906,West,Ancient Puebloan cliff dwellings,May-Oct,37.184,-108.487,false
+Mount Rainier,WA,1899,West,14411-ft active volcano + wildflower meadows,Jul-Aug,46.851,-121.760,false
+New River Gorge,WV,2020,East,Ancient river gorge + best-in-east climbing,Apr-Jun or Sep-Oct,37.953,-81.067,false
+North Cascades,WA,1968,West,300+ glaciers — the American Alps,Jul-Sep,48.778,-121.197,false
+Olympic,WA,1938,West,Three ecosystems: rainforest coast alpine,Jun-Sep,47.971,-123.498,false
+Petrified Forest,AZ,1962,West,Painted Desert + 200-million-yr-old logs,Mar-May or Sep-Oct,34.909,-109.806,false
+Pinnacles,CA,2013,West,Rock spires + condors + talus caves,Mar-May,36.491,-121.197,false
+Redwood,CA,1968,West,World's tallest trees,May-Sep,41.297,-124.005,false
+Rocky Mountain,CO,1915,West,Trail Ridge Road + 60 peaks above 12000 ft,Jun-Sep,40.343,-105.688,false
+Saguaro,AZ,1994,West,Iconic giant cacti east + west of Tucson,Nov-Mar,32.250,-110.500,false
+Sequoia,CA,1890,West,Largest trees on Earth incl. General Sherman,May-Oct,36.487,-118.566,false
+Shenandoah,VA,1935,East,Skyline Drive + Blue Ridge,May-Jun or Oct,38.533,-78.350,false
+Theodore Roosevelt,ND,1978,West,Badlands + bison + TR's ranch,May-Sep,46.969,-103.453,false
+Virgin Islands,VI,1956,Tropical,Caribbean beaches + Trunk Bay snorkel trail,Dec-Apr,18.343,-64.741,false
+Voyageurs,MN,1975,East,Boundary-water lakes — boat-in only,Jun-Sep,48.500,-92.880,false
+White Sands,NM,2019,West,275 sq mi of pure gypsum dunes,Oct-Apr,32.779,-106.171,false
+Wind Cave,SD,1903,West,Boxwork cave formations + plains bison,May-Sep,43.566,-103.479,false
+Wrangell-St. Elias,AK,1980,Alaska,Largest US national park (6x Yellowstone),Jun-Aug,61.710,-142.985,false
+Yellowstone,"WY, MT, ID",1872,West,World's first national park — geysers + wildlife,May-Jun or Sep,44.428,-110.588,false
+Yosemite,CA,1890,West,Granite walls + waterfalls + Half Dome,May-Jun or Sep,37.865,-119.538,false
+Zion,UT,1919,West,The Narrows + Angels Landing,Mar-May or Oct-Nov,37.298,-113.058,false

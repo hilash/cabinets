@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USA Travel — Parks Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <style>
+    :root {
+      --bg:          #F5EEDC;
+      --bg-warm:     #EFE5CC;
+      --surface:     #FFF9E9;
+      --ink:         #2A221B;
+      --ink-muted:   #7A6B5D;
+      --line:        #D4C4B0;
+      --line-soft:   #E8DDC5;
+      --accent:      #8B5E3C;
+      --indigo:      #2E4156;
+      --burgundy:    #8B2E3E;
+      --gold:        #B8892E;
+      --sage:        #6B8E5A;
+      --forest:      #3F6F44;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+    }
+
+    /* Top toolbar */
+    .toolbar {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 18px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: var(--bg-warm); border: 1px solid var(--line);
+      border-radius: 8px; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500; color: var(--ink);
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .back-btn:hover { background: var(--line-soft); border-color: var(--accent); }
+    .back-btn .arrow { font-size: 16px; line-height: 1; }
+
+    .title-block { flex: 1; min-width: 200px; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: 0.16em;
+      font-size: 9.5px; font-weight: 600; color: var(--accent);
+    }
+    .title {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 36;
+      font-size: 22px; font-weight: 500; letter-spacing: -0.01em;
+      color: var(--ink); margin-top: 1px;
+    }
+    .title em { font-style: italic; color: var(--forest); }
+
+    .stats {
+      display: flex; gap: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--ink-muted);
+    }
+    .stats .stat strong {
+      color: var(--ink); font-weight: 600; margin-right: 4px;
+    }
+    .stats .stat .v { color: var(--forest); font-weight: 600; }
+
+    .toolbar-actions { display: flex; gap: 6px; }
+    .btn {
+      padding: 8px 12px;
+      background: var(--bg-warm); border: 1px solid var(--line);
+      border-radius: 8px; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 500; color: var(--ink);
+      transition: all 0.15s;
+    }
+    .btn:hover { background: var(--line-soft); border-color: var(--accent); }
+    .btn.primary {
+      background: var(--accent); color: var(--surface); border-color: var(--accent);
+    }
+    .btn.primary:hover { background: #6B4524; }
+
+    /* Main split */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 0;
+      overflow: hidden;
+    }
+    @media (max-width: 900px) { .main { grid-template-columns: 1fr; } .sidebar { display: none; } }
+
+    #map {
+      width: 100%; height: 100%;
+      background: var(--bg-warm);
+    }
+
+    .sidebar {
+      background: var(--surface);
+      border-left: 1px solid var(--line);
+      display: grid; grid-template-rows: auto auto 1fr;
+      overflow: hidden;
+    }
+    .sidebar-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .sidebar-header h2 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 18px; font-weight: 500; letter-spacing: -0.005em;
+    }
+    .sidebar-header .helper {
+      font-size: 12px; color: var(--ink-muted);
+      font-family: 'Fraunces', serif; font-style: italic;
+      margin-top: 3px;
+    }
+    .filter-row {
+      display: flex; gap: 5px; flex-wrap: wrap;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .filter-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; padding: 4px 9px;
+      background: var(--bg-warm); color: var(--ink-muted);
+      border: 1px solid transparent;
+      border-radius: 100px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-pill.active {
+      background: var(--surface); color: var(--ink);
+      border-color: var(--accent);
+    }
+    .filter-pill:hover:not(.active) { background: var(--line-soft); }
+
+    .park-list {
+      overflow-y: auto;
+      padding: 8px 12px 12px;
+    }
+    .park-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 8px;
+      cursor: pointer; transition: background 0.12s;
+      border: 1px solid transparent;
+    }
+    .park-item:hover { background: var(--bg-warm); }
+    .park-item.highlighted { border-color: var(--accent); background: var(--bg-warm); }
+    .park-item .checkbox {
+      width: 16px; height: 16px; border-radius: 4px;
+      border: 1.5px solid var(--line);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.15s;
+    }
+    .park-item.visited .checkbox {
+      background: var(--forest); border-color: var(--forest);
+    }
+    .park-item.visited .checkbox::after {
+      content: "✓"; color: var(--surface); font-size: 11px; font-weight: 700;
+    }
+    .park-item .info { flex: 1; min-width: 0; }
+    .park-item .name {
+      font-size: 13px; font-weight: 500; color: var(--ink);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .park-item .state {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: var(--ink-muted);
+    }
+    .park-item.visited .name { color: var(--forest); }
+
+    /* Loading + error states */
+    .overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(245, 238, 220, 0.92);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      color: var(--ink-muted);
+    }
+    .overlay.error { color: var(--burgundy); }
+
+    /* Leaflet marker custom styles */
+    .park-marker-circle {
+      border-radius: 50%;
+      border: 2px solid #FFF9E9;
+      box-shadow: 0 1px 4px rgba(42, 34, 27, 0.35);
+      cursor: pointer;
+    }
+    .leaflet-popup-content-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(42, 34, 27, 0.15);
+    }
+    .leaflet-popup-content {
+      margin: 12px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .leaflet-popup-content .pn {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 16px; font-weight: 500;
+      letter-spacing: -0.005em;
+      margin-bottom: 4px;
+    }
+    .leaflet-popup-content .meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .leaflet-popup-content .feature {
+      font-style: italic;
+      color: var(--ink-muted);
+      margin-bottom: 8px;
+    }
+    .leaflet-popup-content .toggle {
+      display: inline-block;
+      padding: 5px 10px;
+      background: var(--accent);
+      color: var(--surface);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .leaflet-popup-content .toggle.visited {
+      background: var(--forest);
+    }
+    .leaflet-popup-tip { background: var(--surface); border-color: var(--line); }
+    .leaflet-popup-close-button { color: var(--ink-muted) !important; }
+
+    .legend {
+      position: absolute; bottom: 12px; left: 12px;
+      z-index: 500;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex; gap: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-muted);
+      box-shadow: 0 2px 8px rgba(42, 34, 27, 0.1);
+    }
+    .legend .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block; margin-right: 5px;
+      vertical-align: middle;
+      border: 1.5px solid #FFF9E9;
+    }
+
+    .leaflet-container { font-family: 'Inter', sans-serif; background: #d8e3d0; }
+    .map-wrap { position: relative; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button class="back-btn" id="back-btn" type="button">
+      <span class="arrow">←</span>
+      <span>Back to Travel Planner</span>
+    </button>
+    <div class="title-block">
+      <div class="eyebrow">Bucket List · Interactive</div>
+      <div class="title">National <em>Parks</em> — All 63</div>
+    </div>
+    <div class="stats">
+      <span class="stat"><strong>Visited</strong><span class="v" id="stat-visited">0</span> / 63</span>
+      <span class="stat"><strong>West</strong><span id="stat-west">0</span> / 38</span>
+      <span class="stat"><strong>AK</strong><span id="stat-ak">0</span> / 8</span>
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn" id="btn-export" title="Download an updated parks.csv with current visited values">
+        ⬇ Export CSV
+      </button>
+      <button class="btn" id="btn-reset" title="Clear all visited marks">
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="legend">
+        <span><span class="dot" style="background: #B8892E"></span>Not visited</span>
+        <span><span class="dot" style="background: #3F6F44"></span>Visited</span>
+      </div>
+      <div id="overlay" class="overlay">Loading parks…</div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>Parks list</h2>
+        <div class="helper">Click any item or marker to toggle visited.</div>
+      </div>
+      <div class="filter-row" id="filter-row">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="West">West</button>
+        <button class="filter-pill" data-filter="East">East</button>
+        <button class="filter-pill" data-filter="Alaska">AK</button>
+        <button class="filter-pill" data-filter="Tropical">Tropical</button>
+        <button class="filter-pill" data-filter="visited">Visited</button>
+        <button class="filter-pill" data-filter="unvisited">Unvisited</button>
+      </div>
+      <div class="park-list" id="park-list"></div>
+    </div>
+  </div>
+
+  <script>
+    const CSV_URL = "../national-parks/parks.csv";
+    const STORAGE_KEY = "usa-travel-parks-visited-v1";
+
+    // Persisted user state — visited IDs
+    let visited = new Set();
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) visited = new Set(JSON.parse(raw));
+    } catch { /* ignore */ }
+
+    function save() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...visited])); } catch {}
+    }
+
+    // ---------- CSV parsing (handles quoted fields with embedded commas) ----------
+    function parseCsv(text) {
+      const rows = [];
+      let row = [], field = "", inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+          else if (c === '"') { inQuotes = false; }
+          else { field += c; }
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === ",") { row.push(field); field = ""; }
+          else if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; }
+          else if (c === "\r") { /* skip */ }
+          else { field += c; }
+        }
+      }
+      if (field !== "" || row.length > 0) { row.push(field); rows.push(row); }
+      const headers = rows[0];
+      return rows.slice(1).filter(r => r.length === headers.length).map(r => {
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = r[idx]);
+        return obj;
+      });
+    }
+
+    function csvSafe(s) {
+      if (s == null) return "";
+      const needsQuotes = /[,"\n\r]/.test(s);
+      const escaped = String(s).replace(/"/g, '""');
+      return needsQuotes ? `"${escaped}"` : escaped;
+    }
+
+    function makeCsvFromParks(parks) {
+      const headers = ["name","state","year_established","region","signature_feature","best_season","lat","lon","visited"];
+      const lines = [headers.join(",")];
+      parks.forEach(p => {
+        lines.push([
+          csvSafe(p.name), csvSafe(p.state), csvSafe(p.year_established),
+          csvSafe(p.region), csvSafe(p.signature_feature), csvSafe(p.best_season),
+          p.lat, p.lon, visited.has(p.id) ? "true" : "false",
+        ].join(","));
+      });
+      return lines.join("\n") + "\n";
+    }
+
+    // ---------- App state ----------
+    let parks = [];          // canonical list, loaded from CSV
+    let markers = {};        // id -> Leaflet marker
+    let map;
+    let currentFilter = "all";
+
+    function parkId(name) {
+      return name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+    }
+
+    function colorFor(id) {
+      return visited.has(id) ? "#3F6F44" : "#B8892E";
+    }
+
+    function renderStats() {
+      const v = parks.filter(p => visited.has(p.id)).length;
+      const west = parks.filter(p => p.region === "West" && visited.has(p.id)).length;
+      const ak = parks.filter(p => p.region === "Alaska" && visited.has(p.id)).length;
+      document.getElementById("stat-visited").textContent = v;
+      document.getElementById("stat-west").textContent = west;
+      document.getElementById("stat-ak").textContent = ak;
+    }
+
+    function renderList() {
+      const list = document.getElementById("park-list");
+      list.innerHTML = "";
+      const filtered = parks.filter(p => {
+        if (currentFilter === "all") return true;
+        if (currentFilter === "visited") return visited.has(p.id);
+        if (currentFilter === "unvisited") return !visited.has(p.id);
+        return p.region === currentFilter;
+      }).sort((a, b) => a.name.localeCompare(b.name));
+
+      filtered.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "park-item" + (visited.has(p.id) ? " visited" : "");
+        item.dataset.park = p.id;
+        item.innerHTML = `
+          <div class="checkbox"></div>
+          <div class="info">
+            <div class="name">${escapeHtml(p.name)}</div>
+            <div class="state">${escapeHtml(p.state)} · ${p.region}</div>
+          </div>
+        `;
+        item.addEventListener("click", () => {
+          toggle(p.id);
+          map.flyTo([p.lat, p.lon], 6, { duration: 0.6 });
+          if (markers[p.id]) markers[p.id].openPopup();
+        });
+        list.appendChild(item);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+      }[c]));
+    }
+
+    function toggle(id) {
+      if (visited.has(id)) visited.delete(id); else visited.add(id);
+      save();
+      const m = markers[id];
+      if (m) {
+        m.setStyle({ fillColor: colorFor(id), radius: visited.has(id) ? 8 : 6 });
+        m.setPopupContent(popupHtml(parks.find(p => p.id === id)));
+      }
+      renderList();
+      renderStats();
+    }
+    // Expose for popup inline handlers
+    window.__toggleParkFromPopup = toggle;
+
+    function popupHtml(p) {
+      const isVisited = visited.has(p.id);
+      return `
+        <div class="pn">${escapeHtml(p.name)}</div>
+        <div class="meta">${escapeHtml(p.state)} · ${p.region} · est. ${escapeHtml(p.year_established)}</div>
+        <div class="feature">${escapeHtml(p.signature_feature)}</div>
+        <div class="meta">Best: ${escapeHtml(p.best_season)}</div>
+        <span class="toggle ${isVisited ? "visited" : ""}"
+              onclick="window.__toggleParkFromPopup('${p.id}')">
+          ${isVisited ? "✓ Visited" : "Mark visited"}
+        </span>
+      `;
+    }
+
+    function placeMarker(p) {
+      const m = L.circleMarker([p.lat, p.lon], {
+        radius: visited.has(p.id) ? 8 : 6,
+        color: "#FFF9E9",
+        weight: 2,
+        fillColor: colorFor(p.id),
+        fillOpacity: 0.95,
+      });
+      m.bindPopup(popupHtml(p), { maxWidth: 280 });
+      m.bindTooltip(`${p.name} (${p.state})`, { direction: "top", offset: [0, -8] });
+      m.on("mouseover", () => {
+        const item = document.querySelector(`.park-item[data-park="${p.id}"]`);
+        if (item) {
+          item.classList.add("highlighted");
+          item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+      });
+      m.on("mouseout", () => {
+        document.querySelectorAll(".park-item.highlighted").forEach(el => el.classList.remove("highlighted"));
+      });
+      m.addTo(map);
+      return m;
+    }
+
+    function buildMap() {
+      // Bounds covering CONUS + Alaska + Hawaii + Caribbean territories.
+      // Leaflet handles the rest; OSM tiles are global.
+      map = L.map("map", {
+        zoomControl: true,
+        attributionControl: true,
+        worldCopyJump: false,
+      });
+      // Initial view: continental US
+      map.setView([39.5, -98.35], 4);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 14,
+        minZoom: 2,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+    }
+
+    function fitToAllParks() {
+      if (!parks.length) return;
+      const group = L.featureGroup(Object.values(markers));
+      map.fitBounds(group.getBounds(), { padding: [40, 40] });
+    }
+
+    // Filter pills
+    document.getElementById("filter-row").addEventListener("click", (e) => {
+      const btn = e.target.closest(".filter-pill");
+      if (!btn) return;
+      document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      renderList();
+    });
+
+    // Back button — try parent history first; fall back gracefully
+    document.getElementById("back-btn").addEventListener("click", () => {
+      try {
+        if (window.top && window.top !== window) { window.top.history.back(); return; }
+      } catch { /* cross-origin — fall through */ }
+      try { window.parent.history.back(); return; } catch {}
+      history.back();
+    });
+
+    // Export updated CSV
+    document.getElementById("btn-export").addEventListener("click", () => {
+      const csv = makeCsvFromParks(parks);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "parks.csv";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("btn-reset").addEventListener("click", () => {
+      if (!confirm("Clear all visited marks? This can't be undone.")) return;
+      visited = new Set();
+      save();
+      Object.entries(markers).forEach(([id, m]) => {
+        m.setStyle({ fillColor: colorFor(id), radius: 6 });
+      });
+      // refresh popups
+      parks.forEach(p => {
+        if (markers[p.id]) markers[p.id].setPopupContent(popupHtml(p));
+      });
+      renderList();
+      renderStats();
+    });
+
+    // ---------- Boot: build map, fetch CSV, render everything ----------
+    buildMap();
+
+    fetch(CSV_URL)
+      .then(res => {
+        if (!res.ok) throw new Error(`Could not load parks.csv (HTTP ${res.status})`);
+        return res.text();
+      })
+      .then(text => {
+        const rows = parseCsv(text);
+        parks = rows
+          .filter(r => r.name && r.lat && r.lon)
+          .map(r => ({
+            id: parkId(r.name),
+            name: r.name,
+            state: r.state,
+            year_established: r.year_established,
+            region: r.region,
+            signature_feature: r.signature_feature,
+            best_season: r.best_season,
+            lat: parseFloat(r.lat),
+            lon: parseFloat(r.lon),
+          }));
+
+        // Migrate visited from CSV if user has never marked anything yet
+        if (visited.size === 0) {
+          rows.forEach(r => {
+            if (String(r.visited).toLowerCase() === "true") {
+              visited.add(parkId(r.name));
+            }
+          });
+          if (visited.size > 0) save();
+        }
+
+        parks.forEach(p => { markers[p.id] = placeMarker(p); });
+        fitToAllParks();
+        renderList();
+        renderStats();
+        document.getElementById("overlay").style.display = "none";
+      })
+      .catch(err => {
+        const overlay = document.getElementById("overlay");
+        overlay.classList.add("error");
+        overlay.innerHTML = `Couldn't load parks.csv from <code>${CSV_URL}</code><br><small>${escapeHtml(err.message)}</small>`;
+      });
+  </script>
+</body>
+</html>

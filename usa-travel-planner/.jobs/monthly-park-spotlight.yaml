@@ -1,0 +1,26 @@
+id: monthly-park-spotlight
+name: Monthly Park Spotlight
+enabled: true
+schedule: 0 9 1 * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: park-ranger
+agentSlug: park-ranger
+timeout: 600
+prompt: |-
+  Pick ONE national park to spotlight for the current month. Strongly prefer parks where /national-parks/parks.csv has visited=false. Prioritize parks that are exceptional in the CURRENT season (e.g. Big Bend in winter, Glacier in late summer, Acadia in October).
+
+  Read /national-parks/parks.csv. Pick the park. Append to /national-parks/index.md under a "🌟 Park Spotlight" section using exactly this format:
+
+    ### [YYYY-MM] — [Park Name], [State]
+    **Why this month:** [one sentence on the seasonal angle]
+    **Don't miss:** [the one signature trail / view / experience]
+    **Logistics:** [permit needs, lodging, gateway town]
+    **Plan:** [shortest meaningful visit length, e.g. "3 days minimum"]
+
+  Replace any previous month's spotlight with the new one — keep only the most recent at the top of the section. Move older spotlights to a "Past spotlights" subsection below if it doesn't exist already.
+
+  Do not touch other parts of /national-parks/index.md.
+cabinetPath: cabinetscopy/usa-travel-planner
+createdAt: '2026-04-25T00:00:00.000Z'
+updatedAt: '2026-04-25T00:00:00.000Z'

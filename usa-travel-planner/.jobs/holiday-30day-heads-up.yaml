@@ -1,0 +1,27 @@
+id: holiday-30day-heads-up
+name: Holiday 30-day Heads-Up
+enabled: true
+schedule: 0 10 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: holiday-keeper
+agentSlug: holiday-keeper
+timeout: 600
+prompt: |-
+  Read /holidays/holidays.csv. Compute today's date and find any holidays within 30 days from now.
+
+  For each upcoming holiday, append a block to the TOP of /holidays/index.md (under a "🎆 Coming up" section, creating if absent) using exactly this format:
+
+    ### [Holiday Name] — [date]
+    **Top 3 places to be:**
+    1. **[City, State]** — [why this is the canonical place, one sentence]
+    2. **[City, State]** — [alternate]
+    3. **[City, State]** — [wildcard / underrated pick]
+    **Book by:** [date — typically 2-3 weeks ahead for hotels, longer for big-ticket events]
+
+  Remove any previous "Coming up" blocks for holidays that have already passed. Don't touch the rest of /holidays/index.md.
+
+  If no holiday is within 30 days, do nothing — don't append a "no upcoming holidays" message.
+cabinetPath: cabinetscopy/usa-travel-planner
+createdAt: '2026-04-25T00:00:00.000Z'
+updatedAt: '2026-04-25T00:00:00.000Z'

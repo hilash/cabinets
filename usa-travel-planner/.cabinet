@@ -1,0 +1,11 @@
+schemaVersion: 1
+id: usa-travel-planner-root
+name: USA Travel Planner
+kind: root
+version: 0.1.0
+description: >
+  An inspiration board for exploring the United States — interactive map of all
+  63 national parks with been-there checklist, every state fair, federal
+  holidays, iconic regional fast-food chains, and a live event-hunter agent
+  that scans X and news for cool things happening across the country.
+entry: index.md

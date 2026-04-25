@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USA Travel — Bucket List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #F5EEDC;
+      --bg-warm:     #EFE5CC;
+      --surface:     #FFF9E9;
+      --ink:         #2A221B;
+      --ink-muted:   #7A6B5D;
+      --line:        #D4C4B0;
+      --line-soft:   #E8DDC5;
+      --accent:      #8B5E3C;
+      --indigo:      #2E4156;
+      --burgundy:    #8B2E3E;
+      --gold:        #B8892E;
+      --forest:      #3F6F44;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(184, 137, 46, 0.07) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(63, 111, 68, 0.06) 0, transparent 50%);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      min-height: 100vh; padding: 40px 28px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    header { margin-bottom: 36px; border-bottom: 1px solid var(--line-soft); padding-bottom: 26px; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: 0.18em;
+      font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 144;
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 500; letter-spacing: -0.02em; line-height: 1.05;
+    }
+    h1 em { font-style: italic; color: var(--burgundy); }
+    .tagline {
+      margin-top: 14px; font-size: 16px; color: var(--ink-muted);
+      font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+      max-width: 640px;
+    }
+
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 28px;
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px;
+      align-items: center;
+    }
+    @media (max-width: 720px) { .summary-card { grid-template-columns: 1fr; } }
+    .summary-left .label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--ink-muted); font-weight: 600; margin-bottom: 10px;
+    }
+    .big-number {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 144;
+      font-size: clamp(64px, 10vw, 96px);
+      font-weight: 500; line-height: 1; letter-spacing: -0.03em;
+      color: var(--burgundy);
+    }
+    .big-number .small { font-size: 0.4em; color: var(--ink-muted); margin-left: 8px; font-style: italic; font-weight: 300; }
+    .summary-right .quote {
+      font-family: 'Fraunces', serif;
+      font-style: italic; font-size: 18px; line-height: 1.5;
+      color: var(--ink-muted);
+      padding-left: 18px; border-left: 2px solid var(--line);
+    }
+
+    .categories {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 860px) { .categories { grid-template-columns: 1fr; } }
+
+    .cat-card {
+      background: var(--surface);
+      border: 1px solid var(--line-soft);
+      border-left: 4px solid var(--accent);
+      border-radius: 14px;
+      padding: 22px 24px;
+    }
+    .cat-card.parks { border-left-color: var(--forest); }
+    .cat-card.fairs { border-left-color: var(--gold); }
+    .cat-card.holidays { border-left-color: var(--burgundy); }
+
+    .cat-card .icon { font-size: 28px; margin-bottom: 10px; }
+    .cat-card h2 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 22px; font-weight: 500; letter-spacing: -0.005em;
+      margin-bottom: 4px;
+    }
+    .cat-card .blurb {
+      font-size: 13px; color: var(--ink-muted); margin-bottom: 14px;
+    }
+
+    .progress-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; margin-bottom: 8px;
+    }
+    .progress-row .count { color: var(--ink); font-weight: 500; }
+    .progress-row .pct { color: var(--ink-muted); }
+
+    .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .parks .bar-fill { background: linear-gradient(90deg, var(--forest), #5e9963); }
+    .fairs .bar-fill { background: linear-gradient(90deg, var(--gold), #d6a04a); }
+    .holidays .bar-fill { background: linear-gradient(90deg, var(--burgundy), #b8455a); }
+
+    .breakdown {
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid var(--line-soft);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--ink-muted);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    }
+    .breakdown .row { display: flex; justify-content: space-between; }
+
+    .actions-card {
+      background: var(--surface);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 28px;
+    }
+    .actions-card h2 {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 24;
+      font-size: 20px; font-weight: 500; margin-bottom: 16px;
+    }
+    .links-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    }
+    @media (max-width: 720px) { .links-grid { grid-template-columns: 1fr; } }
+    .link-tile {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-warm); border-radius: 10px;
+      text-decoration: none; color: var(--ink);
+      font-size: 14px;
+      transition: background 0.15s;
+      border: 1px solid transparent;
+    }
+    .link-tile:hover { background: var(--line-soft); border-color: var(--accent); }
+    .link-tile .emoji { font-size: 22px; }
+    .link-tile .meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--ink-muted);
+      margin-top: 2px;
+    }
+
+    .ornament {
+      text-align: center; color: var(--line);
+      font-size: 16px; letter-spacing: 1em; margin: 36px 0 20px;
+    }
+    .footnote {
+      text-align: center;
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-size: 13px; color: var(--ink-muted);
+    }
+    .footnote code {
+      font-family: 'JetBrains Mono', monospace;
+      font-style: normal; color: var(--accent);
+      background: var(--bg-warm);
+      padding: 1px 6px; border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button id="back-btn" type="button" style="
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 14px;margin-bottom:18px;
+      background:var(--surface);border:1px solid var(--line);border-radius:8px;
+      cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+      color:var(--ink);transition:all 0.15s;">
+      <span style="font-size:16px;line-height:1;">←</span>
+      <span>Back to USA Travel Planner</span>
+    </button>
+    <header>
+      <div class="eyebrow">USA Travel · Bucket List</div>
+      <h1>How much of <em>America</em> have you seen?</h1>
+      <p class="tagline">A consolidated view of your progress across national parks, state fairs, and federal holidays — pulled from the same data the agents read.</p>
+    </header>
+
+    <div class="summary-card">
+      <div class="summary-left">
+        <div class="label">Overall progress</div>
+        <div class="big-number" id="overall-pct">0<span class="small">%</span></div>
+      </div>
+      <div class="summary-right">
+        <div class="quote" id="quote">Start anywhere. The closest park you haven't been to is closer than you think.</div>
+      </div>
+    </div>
+
+    <div class="categories">
+      <div class="cat-card parks">
+        <div class="icon">🏞️</div>
+        <h2>National Parks</h2>
+        <p class="blurb">All 63 — open the parks map to mark them as you go.</p>
+        <div class="progress-row">
+          <span class="count"><span id="parks-done">0</span> / 63</span>
+          <span class="pct" id="parks-pct">0%</span>
+        </div>
+        <div class="bar"><div class="bar-fill" id="parks-bar" style="width:0%"></div></div>
+        <div class="breakdown">
+          <div class="row"><span>West</span><span><span id="region-west">0</span>/38</span></div>
+          <div class="row"><span>East</span><span><span id="region-east">0</span>/13</span></div>
+          <div class="row"><span>Alaska</span><span><span id="region-ak">0</span>/8</span></div>
+          <div class="row"><span>Tropical</span><span><span id="region-tr">0</span>/4</span></div>
+        </div>
+      </div>
+
+      <div class="cat-card fairs">
+        <div class="icon">🎡</div>
+        <h2>State Fairs</h2>
+        <p class="blurb">Every state's annual fair. Tick them off as you attend.</p>
+        <div class="progress-row">
+          <span class="count"><span id="fairs-done">0</span> / 50</span>
+          <span class="pct" id="fairs-pct">0%</span>
+        </div>
+        <div class="bar"><div class="bar-fill" id="fairs-bar" style="width:0%"></div></div>
+        <div class="breakdown">
+          <div class="row"><span>Edit</span><span style="font-style:italic;">in events/state-fairs.csv</span></div>
+        </div>
+      </div>
+
+      <div class="cat-card holidays">
+        <div class="icon">🎆</div>
+        <h2>Holidays at the Right Place</h2>
+        <p class="blurb">Federal + cultural. The canonical celebration for each.</p>
+        <div class="progress-row">
+          <span class="count"><span id="holidays-done">0</span> / 31</span>
+          <span class="pct" id="holidays-pct">0%</span>
+        </div>
+        <div class="bar"><div class="bar-fill" id="holidays-bar" style="width:0%"></div></div>
+        <div class="breakdown">
+          <div class="row"><span>Edit</span><span style="font-style:italic;">in holidays/holidays.csv</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-card">
+      <h2>Where to next</h2>
+      <div class="links-grid">
+        <a class="link-tile" href="#" data-target="parks-map" title="Open the parks map">
+          <span class="emoji">🗺️</span>
+          <div>
+            <div>Open the parks map</div>
+            <div class="meta">click markers to log visits</div>
+          </div>
+        </a>
+        <a class="link-tile" href="#" data-target="inspiration" title="Open Inspiration Feed">
+          <span class="emoji">📡</span>
+          <div>
+            <div>Inspiration Feed</div>
+            <div class="meta">Event Hunter's weekly finds</div>
+          </div>
+        </a>
+        <a class="link-tile" href="#" data-target="national-parks" title="Open Parks overview">
+          <span class="emoji">🏞️</span>
+          <div>
+            <div>Parks overview</div>
+            <div class="meta">all 63 + monthly spotlight</div>
+          </div>
+        </a>
+        <a class="link-tile" href="#" data-target="events" title="Open Events">
+          <span class="emoji">🎡</span>
+          <div>
+            <div>Events by category</div>
+            <div class="meta">music, food, sports, quirky</div>
+          </div>
+        </a>
+        <a class="link-tile" href="#" data-target="holidays" title="Open Holidays">
+          <span class="emoji">🎆</span>
+          <div>
+            <div>Holiday Keeper picks</div>
+            <div class="meta">where to be for each one</div>
+          </div>
+        </a>
+        <a class="link-tile" href="#" data-target="fast-food" title="Open Regional fast food">
+          <span class="emoji">🍔</span>
+          <div>
+            <div>Regional fast food</div>
+            <div class="meta">iconic chain in each state</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="ornament">· · ·</div>
+    <p class="footnote">
+      Parks data syncs from <code>parks-map</code> via localStorage. Fairs and holidays counts
+      come from the <code>visited</code> column in their CSV files — edit those CSVs in Cabinet to update.
+    </p>
+  </div>
+
+  <script>
+    const PARKS_KEY = "usa-travel-parks-visited-v1";
+    const PARKS_TOTAL = 63;
+    const REGION_TOTALS = { West: 38, East: 13, Alaska: 8, Tropical: 4 };
+
+    // Park ID → region map (must mirror parks-map/index.html)
+    const PARK_REGION = {
+      acadia:"East", arches:"West", badlands:"West", bigbend:"West", biscayne:"East",
+      blackcanyon:"West", bryce:"West", canyonlands:"West", capitolreef:"West",
+      carlsbad:"West", channelislands:"West", congaree:"East", craterlake:"West",
+      cuyahoga:"East", deathvalley:"West", denali:"Alaska", drytortugas:"East",
+      everglades:"East", gates:"Alaska", gateway:"East", glacier:"West",
+      glacierbay:"Alaska", grandcanyon:"West", grandteton:"West", greatbasin:"West",
+      greatsanddunes:"West", smokies:"East", guadalupe:"West", haleakala:"Tropical",
+      hawaii:"Tropical", hotsprings:"East", indianadunes:"East", isleroyale:"East",
+      joshuatree:"West", katmai:"Alaska", kenai:"Alaska", kingscanyon:"West",
+      kobuk:"Alaska", lakeclark:"Alaska", lassen:"West", mammothcave:"East",
+      mesaverde:"West", rainier:"West", newriver:"East", northcascades:"West",
+      olympic:"West", petrified:"West", pinnacles:"West", redwood:"West",
+      rockymtn:"West", saguaro:"West", sequoia:"West", shenandoah:"East",
+      theodore:"West", virginislands:"Tropical", voyageurs:"East", whitesands:"West",
+      windcave:"West", wrangell:"Alaska", yellowstone:"West", yosemite:"West",
+      zion:"West", americansamoa:"Tropical",
+    };
+
+    let visited = new Set();
+    try {
+      const raw = localStorage.getItem(PARKS_KEY);
+      if (raw) visited = new Set(JSON.parse(raw));
+    } catch { /* ignore */ }
+
+    // Parks
+    const parksDone = visited.size;
+    const parksPct = Math.round(100 * parksDone / PARKS_TOTAL);
+    document.getElementById("parks-done").textContent = parksDone;
+    document.getElementById("parks-pct").textContent = parksPct + "%";
+    document.getElementById("parks-bar").style.width = parksPct + "%";
+
+    const regionCounts = { West: 0, East: 0, Alaska: 0, Tropical: 0 };
+    visited.forEach(id => {
+      const r = PARK_REGION[id];
+      if (r) regionCounts[r]++;
+    });
+    document.getElementById("region-west").textContent = regionCounts.West;
+    document.getElementById("region-east").textContent = regionCounts.East;
+    document.getElementById("region-ak").textContent   = regionCounts.Alaska;
+    document.getElementById("region-tr").textContent   = regionCounts.Tropical;
+
+    // Fairs and holidays — these aren't editable in this webapp; they reflect
+    // CSV-stored counts. For now they default to 0 since the CSVs ship as
+    // visited=false on every row. When the user edits those CSVs in Cabinet,
+    // they can manually update the stored numbers via the link below, OR we
+    // can read the CSVs via fetch (which works in Cabinet because they live
+    // alongside this webapp on disk).
+    const FAIRS_TOTAL = 50;
+    const HOLIDAYS_TOTAL = 31;
+
+    async function tryFetchCsvCount(url, total, label, doneEl, pctEl, barEl) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("not found");
+        const text = await res.text();
+        const lines = text.trim().split("\n").slice(1);
+        let trueCount = 0;
+        lines.forEach(l => {
+          const cols = l.match(/("([^"]|"")*"|[^,]*)(,|$)/g);
+          if (l.toLowerCase().includes(",true")) trueCount++;
+        });
+        const pct = Math.round(100 * trueCount / total);
+        doneEl.textContent = trueCount;
+        pctEl.textContent  = pct + "%";
+        barEl.style.width  = pct + "%";
+        return trueCount;
+      } catch {
+        // silently leave at 0 — this is fine for first-load before CSVs are touched
+        return 0;
+      }
+    }
+
+    Promise.all([
+      tryFetchCsvCount(
+        "../events/state-fairs.csv", FAIRS_TOTAL, "fairs",
+        document.getElementById("fairs-done"),
+        document.getElementById("fairs-pct"),
+        document.getElementById("fairs-bar"),
+      ),
+      tryFetchCsvCount(
+        "../holidays/holidays.csv", HOLIDAYS_TOTAL, "holidays",
+        document.getElementById("holidays-done"),
+        document.getElementById("holidays-pct"),
+        document.getElementById("holidays-bar"),
+      ),
+    ]).then(([fairsDone, holidaysDone]) => {
+      const overallDone = parksDone + fairsDone + holidaysDone;
+      const overallTotal = PARKS_TOTAL + FAIRS_TOTAL + HOLIDAYS_TOTAL;
+      const overallPct = Math.round(100 * overallDone / overallTotal);
+      document.getElementById("overall-pct").innerHTML = overallPct + '<span class="small">%</span>';
+
+      const q = document.getElementById("quote");
+      if (overallPct === 0)        q.textContent = "Start anywhere. The closest park you haven't been to is closer than you think.";
+      else if (overallPct < 10)    q.textContent = "Off the starting line. Pick a state and go.";
+      else if (overallPct < 25)    q.textContent = "You've earned the road-trip stickers.";
+      else if (overallPct < 50)    q.textContent = "More America in your rearview than ahead of you on this list.";
+      else if (overallPct < 75)    q.textContent = "Most people will never see this much of their own country. Keep going.";
+      else if (overallPct < 100)   q.textContent = "Home stretch. Plan the hard ones — Alaska, the territories.";
+      else                          q.textContent = "🇺🇸 Done. Genuinely done. Go pick a country next.";
+    });
+
+    // ─── Cabinet shell navigation ──────────────────────────────────────────────
+    // Cabinet's hash routes look like:
+    //     #/cabinet/<cabinet-slug-encoded>/data/<page-path-encoded>
+    //   or
+    //     #/cabinet/./data/<page-path-encoded>
+    //
+    // Since this webapp is rendered inside a full-screen iframe, clicking
+    // an <a> inside it doesn't navigate the parent. We have to write to
+    // window.top.location directly.
+    //
+    // We try three escalating strategies and surface a visible status so
+    // it's obvious whether the click reached us, whether we matched the
+    // hash, and whether navigation went through.
+
+    // Visible status banner (top of the page, only shows after a click)
+    function ensureStatusBanner() {
+      let s = document.getElementById("nav-status");
+      if (s) return s;
+      s = document.createElement("div");
+      s.id = "nav-status";
+      s.style.cssText = [
+        "position:fixed","top:12px","left:50%","transform:translateX(-50%)",
+        "background:var(--surface)","border:1px solid var(--line)",
+        "border-radius:10px","padding:10px 14px",
+        "font-family:'JetBrains Mono',monospace","font-size:12px",
+        "color:var(--ink)","z-index:9999",
+        "box-shadow:0 4px 14px rgba(42,34,27,0.15)",
+        "max-width:90vw","white-space:nowrap","overflow:hidden",
+        "text-overflow:ellipsis"
+      ].join(";");
+      document.body.appendChild(s);
+      return s;
+    }
+    function status(msg, kind) {
+      const s = ensureStatusBanner();
+      s.textContent = msg;
+      s.style.borderColor = kind === "err" ? "#8B2E3E" : kind === "ok" ? "#3F6F44" : "var(--line)";
+      s.style.color       = kind === "err" ? "#8B2E3E" : kind === "ok" ? "#3F6F44" : "var(--ink)";
+      console.log("[bucket-list nav]", msg);
+    }
+
+    function getTopWindow() {
+      try { if (window.top && window.top !== window) return window.top; } catch {}
+      try { if (window.parent && window.parent !== window) return window.parent; } catch {}
+      return window;
+    }
+
+    function navigateToSibling(target) {
+      console.log("[bucket-list nav] click target=", target);
+      const topWin = getTopWindow();
+
+      // Step 1 — read parent hash
+      let parentHash = "";
+      try {
+        parentHash = topWin.location.hash || "";
+        console.log("[bucket-list nav] parent hash:", parentHash);
+      } catch (err) {
+        status("⚠ Can't read parent — same-origin? " + err.message, "err");
+        // Worst-case fallback
+        window.location.href = "../" + target + "/";
+        return;
+      }
+
+      // Step 2 — match #/...?/data/<path> pattern
+      const m = parentHash.match(/^(#.*\/data\/)([^?]+)(\?.*)?$/);
+      if (!m) {
+        status("⚠ Hash didn't match /data/ pattern: " + parentHash, "err");
+        // Try a direct URL replacement on the iframe as last resort
+        window.location.href = "../" + target + "/";
+        return;
+      }
+      const prefix    = m[1];
+      const encPath   = m[2];
+      const querytail = m[3] || "";
+
+      // Step 3 — build new hash with last segment swapped
+      let decoded;
+      try { decoded = decodeURIComponent(encPath); }
+      catch { decoded = encPath; }
+      const parts = decoded.split("/");
+      parts.pop();
+      parts.push(target);
+      const newPath = parts.join("/");
+      const newHash = prefix + encodeURIComponent(newPath) + querytail;
+
+      console.log("[bucket-list nav] navigating →", newHash);
+      status("→ " + decodeURIComponent(newHash.slice(1)), "ok");
+
+      // Step 4 — try several methods, in order of "most likely to trigger
+      // Cabinet's router". Some routers only listen for specific events.
+      try {
+        // a) Use full URL to ensure both location and history are updated
+        const base = topWin.location.href.split("#")[0];
+        topWin.location.href = base + newHash;
+      } catch (err1) {
+        try {
+          // b) Direct hash assignment
+          topWin.location.hash = newHash;
+        } catch (err2) {
+          status("⚠ All nav strategies failed: " + err2.message, "err");
+          return;
+        }
+      }
+
+      // c) Belt-and-braces: dispatch a hashchange event in case the router
+      //    only listens for the event, not for property writes.
+      try {
+        const evt = new topWin.HashChangeEvent("hashchange", {
+          oldURL: topWin.location.href,
+          newURL: topWin.location.href,
+        });
+        topWin.dispatchEvent(evt);
+      } catch { /* not all browsers expose HashChangeEvent on window — ignore */ }
+    }
+
+    // Wire up tile clicks
+    document.querySelectorAll(".link-tile[data-target]").forEach(tile => {
+      tile.addEventListener("click", (e) => {
+        e.preventDefault();
+        navigateToSibling(tile.dataset.target);
+      });
+    });
+
+    // Back button → parent's previous hash route
+    document.getElementById("back-btn").addEventListener("click", () => {
+      try {
+        const topWin = getTopWindow();
+        topWin.history.back();
+        status("← back", "ok");
+      } catch (err) {
+        status("⚠ back failed: " + err.message, "err");
+        history.back();
+      }
+    });
+  </script>
+</body>
+</html>
