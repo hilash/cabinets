@@ -3,8 +3,9 @@ name: Daily Portal Scan
 enabled: true
 schedule: 0 7 * * 1-5
 provider: claude-code
-ownerAgent: scanner
-agentSlug: scanner
+adapterType: claude_local
+ownerAgent: pipeline-conductor
+agentSlug: pipeline-conductor
 timeout: 600
 prompt: |-
   Run the daily portal scan across all companies in /portals/portals.yaml.

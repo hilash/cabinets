@@ -35,27 +35,14 @@ This cabinet adapts that methodology into a structured, visual, agent-driven sys
 6. **Prep for interviews** using [[interview-prep]] — STAR+R stories, negotiation scripts, company research
 7. **Analyze patterns** in [[analytics]] — rejection patterns, channel ROI, pipeline velocity
 
-## Your Team — 10 Agents
+## Your Team — 2 Agents
 
-Adapted from the 16 modes in the original career-ops system, organized into 10 specialized agents:
+Adapted from the 16 modes of the original career-ops system into two leads — one for operations, one for analysis:
 
-### Core Pipeline
-- **Pipeline Conductor** — orchestrates the full auto-pipeline: URL → evaluation → CV → application → tracker. Also handles batch processing and pipeline integrity.
-- **Evaluator** — runs the 6-block A-F+G evaluation on every job offer, multi-offer comparison, and scoring
-- **CV Tailor** — generates ATS-optimized, keyword-injected CVs per application with proof point selection
-- **Scanner** — discovers new roles across 30+ company portals using 3-level scanning (Playwright, API, WebSearch)
+- **🎛️ Pipeline Conductor** — owns execution end-to-end: portal scanning across Greenhouse / Ashby / Lever / Wellfound / career pages, auto-pipeline orchestration (URL → eval → CV → application → tracker), CV tailoring (ATS-optimized, keyword-injected), application form drafting, LinkedIn outreach (4 contact-type frameworks), follow-up cadence, and tracker integrity.
+- **🔬 Evaluator** — owns analysis and judgment: the 6-block A–F evaluation on every offer, deep 6-axis company research, STAR+R story bank and negotiation playbooks, rejection-pattern analysis (conversion funnel, archetype performance, channel ROI), and training/project investment evaluation.
 
-### Interview & Negotiation
-- **Interview Strategist** — builds STAR+R stories, company-specific prep packets, negotiation playbooks
-- **Application Assistant** — helps fill application forms with personalized answers, cover letters, and tone calibration
-
-### Intelligence & Networking
-- **Researcher** — deep company research across 6 axes: strategy, movements, culture, challenges, competitors, candidate angle
-- **Outreach Specialist** — LinkedIn outreach (4 contact-type frameworks) and follow-up cadence management
-
-### Strategy & Growth
-- **Pattern Analyst** — rejection pattern detection, funnel analysis, channel ROI, archetype performance, strategic recommendations
-- **Career Advisor** — evaluates courses/certifications and portfolio projects against career goals and skill gaps
+The split: Conductor *acts*; Evaluator *judges*.
 
 ## The 6-Block Evaluation System
 

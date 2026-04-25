@@ -3,8 +3,9 @@ name: Follow-up Cadence
 enabled: true
 schedule: 0 10 * * 2,4
 provider: claude-code
-ownerAgent: interview-strategist
-agentSlug: interview-strategist
+adapterType: claude_local
+ownerAgent: pipeline-conductor
+agentSlug: pipeline-conductor
 timeout: 600
 prompt: |-
   Review /pipeline/tracker.csv and /outreach/index.md for follow-up actions:
