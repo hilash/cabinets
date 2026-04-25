@@ -54,7 +54,7 @@ icon: 🇺🇸
 <div style="background:#FFF9E9;border:1px solid #E8DDC5;border-left:4px solid #8B2E3E;border-radius:12px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;">
   <span style="font-size:32px;line-height:1;flex-shrink:0;">🎆</span>
   <div>
-    <div style="font-family:'Fraunces',serif;font-size:17px;font-weight:600;letter-spacing:-0.005em;margin-bottom:4px;">[[holidays/index|Holiday Keeper picks]]</div>
+    <div style="font-family:'Fraunces',serif;font-size:17px;font-weight:600;letter-spacing:-0.005em;margin-bottom:4px;">[[holidays/index|Holidays — where to be]]</div>
     <div style="font-size:12.5px;color:#7A6B5D;font-family:'JetBrains Mono',monospace;">where to be for each one</div>
   </div>
 </div>
@@ -79,13 +79,10 @@ icon: 🇺🇸
 
 ## Your team
 
-Five agents. Ask any of them anything in the AI panel.
+Two agents. Ask either anything in the AI panel.
 
-- 🧭 **Travel Curator** — plans trips, stitches multi-stop itineraries, balances your bucket list against your calendar
-- 🏞️ **Park Ranger** — knows every trail, the best season for each park, what to do if you only have 3 hours
+- 🧭 **Travel Curator** — plans trips, stitches multi-stop itineraries, balances your bucket list against your calendar. Also covers national parks (trails, seasons, permits), regional food (iconic chains by state, BBQ regions), and holidays (where to be for each one).
 - 📡 **Event Hunter** — scans X / news / Reddit / Eventbrite weekly, appends finds to the [[inspiration/index|Inspiration Feed]]
-- 🍔 **Foodie Scout** — regional cuisine, must-try chains, "what should I eat in [state]"
-- 🎆 **Holiday Keeper** — when the parade is, where the best fireworks are, which town does the holiday best
 
 ## Pick your starting point
 

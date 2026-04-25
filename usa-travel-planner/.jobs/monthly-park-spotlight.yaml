@@ -4,8 +4,8 @@ enabled: true
 schedule: 0 9 1 * *
 provider: claude-code
 adapterType: claude_local
-ownerAgent: park-ranger
-agentSlug: park-ranger
+ownerAgent: travel-curator
+agentSlug: travel-curator
 timeout: 600
 prompt: |-
   Pick ONE national park to spotlight for the current month. Strongly prefer parks where /national-parks/parks.csv has visited=false. Prioritize parks that are exceptional in the CURRENT season (e.g. Big Bend in winter, Glacier in late summer, Acadia in October).
@@ -21,6 +21,6 @@ prompt: |-
   Replace any previous month's spotlight with the new one — keep only the most recent at the top of the section. Move older spotlights to a "Past spotlights" subsection below if it doesn't exist already.
 
   Do not touch other parts of /national-parks/index.md.
-cabinetPath: cabinetscopy/usa-travel-planner
+cabinetPath: getting-started/usa-travel-planner
 createdAt: '2026-04-25T00:00:00.000Z'
 updatedAt: '2026-04-25T00:00:00.000Z'

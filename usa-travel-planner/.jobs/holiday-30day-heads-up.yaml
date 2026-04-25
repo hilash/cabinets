@@ -4,8 +4,8 @@ enabled: true
 schedule: 0 10 * * 0
 provider: claude-code
 adapterType: claude_local
-ownerAgent: holiday-keeper
-agentSlug: holiday-keeper
+ownerAgent: travel-curator
+agentSlug: travel-curator
 timeout: 600
 prompt: |-
   Read /holidays/holidays.csv. Compute today's date and find any holidays within 30 days from now.
@@ -22,6 +22,6 @@ prompt: |-
   Remove any previous "Coming up" blocks for holidays that have already passed. Don't touch the rest of /holidays/index.md.
 
   If no holiday is within 30 days, do nothing — don't append a "no upcoming holidays" message.
-cabinetPath: cabinetscopy/usa-travel-planner
+cabinetPath: getting-started/usa-travel-planner
 createdAt: '2026-04-25T00:00:00.000Z'
 updatedAt: '2026-04-25T00:00:00.000Z'
