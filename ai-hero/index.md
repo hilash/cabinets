@@ -59,12 +59,10 @@ Five live webapps, cabinet parchment theme, editorial typography. Play with them
 
 ## Your team
 
-Four agents live in this cabinet — ask any of them anything. They are **not ChatGPT**: do not ask them to do your exercises for you. They are study partners, not spoiler machines.
+Two agents live in this cabinet — ask either anything. They are **not ChatGPT**: do not ask them to do your exercises for you. They are study partners, not spoiler machines.
 
-- **🎓 Mentor** — plans your week, sets pace, flags when you're behind
-- **📐 Math Tutor** — explains matrix ops, chain rule, probability intuitions
+- **🎓 Mentor** — plans your week, sets pace, flags when you're behind, explains math intuitions (matrix ops, chain rule, probability), and owns `progress/progress.csv` + the dashboard
 - **💻 Code Tutor** — reviews your notebook attempts; explains PyTorch + Python patterns
-- **📊 Progress Tracker** — owns `progress/progress.csv` and the dashboard
 
 ## Ground rules
 
