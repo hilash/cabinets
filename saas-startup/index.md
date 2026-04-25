@@ -26,8 +26,7 @@ A product-led B2B SaaS company building developer tools. The company runs a free
 
 ## Active Root Team
 
-- CEO for company strategy, fundraising, and cross-team alignment
-- CTO for architecture decisions, tech debt management, and engineering culture
+- CEO for strategy, fundraising, cross-team alignment, and technical direction (architecture, tech debt, engineering hiring)
 - Head of Growth for acquisition funnels, activation experiments, and expansion revenue
 
 ## Child Cabinets
