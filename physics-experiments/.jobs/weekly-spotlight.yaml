@@ -1,0 +1,18 @@
+id: weekly-spotlight
+name: Weekly Experiment Spotlight
+enabled: true
+schedule: 0 10 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: curator
+agentSlug: curator
+timeout: 180
+prompt: |-
+  Pick one experiment from this cabinet to feature this week. Rotate fairly — do not pick the same one as last week (check the recent edit history of index.md).
+
+  Update index.md so the chosen experiment appears in a "## This week's spotlight" block at the top, with:
+  - The experiment name and a one-line "what to play with" hook
+  - A single concrete parameter the reader should try first (e.g., "Drop the cycloid path height to 200px and watch the gap widen")
+  - One sentence on the underlying physics
+
+  Remove any prior spotlight block so only this week's shows. Do not modify the rest of the page.

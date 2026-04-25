@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projectile Motion</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #14171f;
+    --ink: #e8eaf0;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --accent-2: #ffcc66;
+    --danger: #ff7a7a;
+    --border: #222734;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; }
+  .wrap { display: grid; grid-template-columns: 1fr 320px; gap: 1px; background: var(--border); height: 100vh; }
+  .stage { background: var(--bg); position: relative; }
+  canvas { width: 100%; height: 100%; display: block; }
+  .panel { background: var(--panel); padding: 24px; overflow: auto; }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 24px; line-height: 1.5; }
+  .control { margin-bottom: 18px; }
+  .control label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .control label .val { color: var(--accent); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .stats { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.8; }
+  .stats b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .btn { background: transparent; border: 1px solid var(--border); color: var(--ink); padding: 8px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; font-family: inherit; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: #0b0d12; border-color: var(--accent); }
+  .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 4px; cursor: pointer; }
+  .toggle input { accent-color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage"><canvas id="c"></canvas></div>
+  <div class="panel">
+    <h1>Projectile Motion</h1>
+    <div class="sub">Classical ballistics in 2D. Position: x = v₀cosθ·t, y = v₀sinθ·t − ½gt². With drag on, velocity decays as dv/dt = −kv, requiring numerical integration.</div>
+
+    <div class="control">
+      <label>Launch angle <span class="val" id="vAngle">45°</span></label>
+      <input type="range" id="angle" min="0" max="90" value="45" />
+    </div>
+    <div class="control">
+      <label>Initial velocity <span class="val" id="vVel">30 m/s</span></label>
+      <input type="range" id="vel" min="5" max="80" value="30" />
+    </div>
+    <div class="control">
+      <label>Gravity <span class="val" id="vG">9.81 m/s²</span></label>
+      <input type="range" id="g" min="10" max="250" value="98" />
+    </div>
+    <div class="control">
+      <label>Launch height <span class="val" id="vH">0 m</span></label>
+      <input type="range" id="h" min="0" max="40" value="0" />
+    </div>
+    <div class="control">
+      <label>Air drag coefficient <span class="val" id="vK">0.00</span></label>
+      <input type="range" id="k" min="0" max="50" value="0" />
+    </div>
+
+    <label class="toggle"><input type="checkbox" id="trace" checked />Show trajectory trail</label>
+    <label class="toggle"><input type="checkbox" id="compare" />Overlay drag-free (dashed) for comparison</label>
+
+    <div class="btn-row">
+      <button class="btn primary" id="fire">Fire</button>
+      <button class="btn" id="clear">Clear traces</button>
+    </div>
+
+    <div class="stats">
+      <div>Range: <b id="range">—</b></div>
+      <div>Peak height: <b id="peak">—</b></div>
+      <div>Flight time: <b id="time">—</b></div>
+      <div>Impact speed: <b id="impact">—</b></div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  const state = {
+    angle: 45,
+    velocity: 30,
+    g: 9.81,
+    height: 0,
+    k: 0,
+    showTrace: true,
+    compare: false,
+    projectiles: [],   // {x,y,vx,vy,path:[{x,y}], drag:bool, color}
+    traces: [],
+    lastStats: null,
+  };
+
+  let W, H, DPR = 1;
+  // World units: px per metre
+  function PX_PER_M() { return Math.min(W / 150, H / 80); }
+  function resize() {
+    DPR = window.devicePixelRatio || 1;
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+
+  const originX = 60;
+  function originY() { return H - 60; }
+
+  function worldToScreen(x, y) {
+    const s = PX_PER_M();
+    return [originX + x * s, originY() - y * s];
+  }
+
+  function fire() {
+    const rad = state.angle * Math.PI / 180;
+    const vx = state.velocity * Math.cos(rad);
+    const vy = state.velocity * Math.sin(rad);
+    const projectiles = [];
+    projectiles.push({
+      x: 0, y: state.height, vx, vy, path: [{x:0, y:state.height}], drag: state.k > 0, color: '#ffcc66', alive: true,
+    });
+    if (state.compare && state.k > 0) {
+      projectiles.push({
+        x: 0, y: state.height, vx, vy, path: [{x:0, y:state.height}], drag: false, color: '#7ab7ff', alive: true, dashed: true,
+      });
+    }
+    state.projectiles = projectiles;
+    state.lastStats = null;
+  }
+
+  function step(p, dt) {
+    if (!p.alive) return;
+    if (p.drag) {
+      const k = state.k / 100;
+      const v = Math.hypot(p.vx, p.vy);
+      const ax = -k * v * p.vx;
+      const ay = -state.g - k * v * p.vy;
+      p.vx += ax * dt;
+      p.vy += ay * dt;
+    } else {
+      p.vy -= state.g * dt;
+    }
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.path.push({ x: p.x, y: p.y });
+    if (p.y <= 0 && p.path.length > 2) {
+      // Linear interpolate to y=0
+      const prev = p.path[p.path.length - 2];
+      const t = prev.y / (prev.y - p.y);
+      const xLand = prev.x + t * (p.x - prev.x);
+      p.path[p.path.length - 1] = { x: xLand, y: 0 };
+      p.x = xLand; p.y = 0; p.vy = -p.vy; // stop
+      p.alive = false;
+
+      if (p.color === '#ffcc66') {
+        const peak = p.path.reduce((m, pt) => Math.max(m, pt.y), 0);
+        const flight = (p.path.length - 1) * 0.016;
+        const impact = Math.hypot(p.vx, p.vy);
+        state.lastStats = { range: xLand, peak, flight, impact };
+        state.traces.push({ path: p.path.slice(), color: 'rgba(255,204,102,0.25)' });
+      }
+    }
+  }
+
+  function grid() {
+    const s = PX_PER_M();
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    // Vertical lines every 10 m
+    for (let x = 0; x * s < W; x += 10) {
+      const [sx] = worldToScreen(x, 0);
+      ctx.beginPath();
+      ctx.moveTo(sx, 0);
+      ctx.lineTo(sx, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y * s < H; y += 10) {
+      const [, sy] = worldToScreen(0, y);
+      ctx.beginPath();
+      ctx.moveTo(0, sy);
+      ctx.lineTo(W, sy);
+      ctx.stroke();
+    }
+    // Ground
+    ctx.strokeStyle = '#3a4156';
+    ctx.beginPath();
+    ctx.moveTo(0, originY());
+    ctx.lineTo(W, originY());
+    ctx.stroke();
+    // Axes labels
+    ctx.fillStyle = '#8b93a7';
+    ctx.font = '11px system-ui';
+    ctx.fillText('x (m)', W - 40, originY() - 6);
+    for (let x = 0; x * s < W - 80; x += 20) {
+      if (x === 0) continue;
+      const [sx] = worldToScreen(x, 0);
+      ctx.fillText(x + '', sx - 6, originY() + 16);
+    }
+    for (let y = 10; y * s < H - 80; y += 10) {
+      const [, sy] = worldToScreen(0, y);
+      ctx.fillText(y + '', 10, sy + 4);
+    }
+  }
+
+  function drawPath(path, color, dashed) {
+    if (!path.length) return;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    if (dashed) ctx.setLineDash([4, 4]); else ctx.setLineDash([]);
+    ctx.beginPath();
+    for (let i = 0; i < path.length; i++) {
+      const [x, y] = worldToScreen(path[i].x, path[i].y);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawCannon() {
+    const [cx, cy] = worldToScreen(0, state.height);
+    const rad = state.angle * Math.PI / 180;
+    const len = 36;
+    ctx.strokeStyle = '#2a2f3d';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(rad) * len, cy - Math.sin(rad) * len);
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+    ctx.fillStyle = '#3a4156';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 9, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function tick(dt) {
+    ctx.fillStyle = '#0b0d12';
+    ctx.fillRect(0, 0, W, H);
+    grid();
+
+    if (state.showTrace) {
+      for (const t of state.traces) drawPath(t.path, t.color, false);
+    }
+
+    drawCannon();
+
+    for (const p of state.projectiles) {
+      const substeps = 4;
+      for (let i = 0; i < substeps; i++) step(p, dt / substeps);
+      drawPath(p.path, p.color, p.dashed);
+      if (p.alive) {
+        const [sx, sy] = worldToScreen(p.x, p.y);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 5, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    if (state.lastStats) {
+      document.getElementById('range').textContent = state.lastStats.range.toFixed(1) + ' m';
+      document.getElementById('peak').textContent = state.lastStats.peak.toFixed(1) + ' m';
+      document.getElementById('time').textContent = state.lastStats.flight.toFixed(2) + ' s';
+      document.getElementById('impact').textContent = state.lastStats.impact.toFixed(1) + ' m/s';
+    }
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+    tick(dt);
+    requestAnimationFrame(frame);
+  }
+
+  function bind(id, stateKey, format, divisor = 1) {
+    const el = document.getElementById(id);
+    const lbl = document.getElementById('v' + id.charAt(0).toUpperCase() + id.slice(1));
+    const apply = () => {
+      state[stateKey] = Number(el.value) / divisor;
+      if (lbl) lbl.textContent = format(Number(el.value) / divisor);
+    };
+    el.addEventListener('input', apply);
+    apply();
+  }
+  bind('angle', 'angle', v => v + '°');
+  bind('vel', 'velocity', v => v.toFixed(0) + ' m/s');
+  bind('g', 'g', v => v.toFixed(2) + ' m/s²', 10);
+  bind('h', 'height', v => v + ' m');
+  bind('k', 'k', v => (v / 100).toFixed(3));
+
+  document.getElementById('trace').addEventListener('change', (e) => state.showTrace = e.target.checked);
+  document.getElementById('compare').addEventListener('change', (e) => state.compare = e.target.checked);
+
+  document.getElementById('fire').addEventListener('click', fire);
+  document.getElementById('clear').addEventListener('click', () => { state.traces = []; state.projectiles = []; state.lastStats = null;
+    document.getElementById('range').textContent = '—';
+    document.getElementById('peak').textContent = '—';
+    document.getElementById('time').textContent = '—';
+    document.getElementById('impact').textContent = '—';
+  });
+
+  resize();
+  fire();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pendulum Wave</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #14171f;
+    --ink: #e8eaf0;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --border: #222734;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; }
+  .wrap { display: grid; grid-template-columns: 1fr 320px; gap: 1px; background: var(--border); height: 100vh; }
+  .stage { background: var(--bg); position: relative; }
+  canvas { width: 100%; height: 100%; display: block; }
+  .panel { background: var(--panel); padding: 24px; overflow: auto; }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 24px; line-height: 1.5; }
+  .control { margin-bottom: 18px; }
+  .control label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .control label .val { color: var(--accent); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .stats { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.8; }
+  .stats b { color: var(--ink); font-weight: 500; }
+  .btn { background: transparent; border: 1px solid var(--border); color: var(--ink); padding: 8px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; font-family: inherit; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage"><canvas id="c"></canvas></div>
+  <div class="panel">
+    <h1>Pendulum Wave</h1>
+    <div class="sub">15 pendulums with carefully tuned lengths oscillate together, creating a mesmerizing progression of waves, chaos, and phase-locked reconvergence — a full cycle every 60 seconds.</div>
+
+    <div class="control">
+      <label>Number of pendulums <span class="val" id="vN">15</span></label>
+      <input type="range" id="N" min="5" max="30" value="15" />
+    </div>
+    <div class="control">
+      <label>Cycle period (s) <span class="val" id="vT">60</span></label>
+      <input type="range" id="T" min="20" max="120" value="60" />
+    </div>
+    <div class="control">
+      <label>Minimum cycles in period <span class="val" id="vK">51</span></label>
+      <input type="range" id="K" min="20" max="80" value="51" />
+    </div>
+    <div class="control">
+      <label>Amplitude (deg) <span class="val" id="vA">40</span></label>
+      <input type="range" id="A" min="5" max="60" value="40" />
+    </div>
+    <div class="control">
+      <label>Time scale <span class="val" id="vS">1.0×</span></label>
+      <input type="range" id="S" min="10" max="300" value="100" />
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="reset">Reset phase</button>
+      <button class="btn" id="pause">Pause</button>
+    </div>
+
+    <div class="stats">
+      <div>Elapsed: <b id="elapsed">0.0 s</b></div>
+      <div>Progress: <b id="progress">0%</b></div>
+      <div style="margin-top:8px">Each pendulum completes <b id="kn">K..K+N−1</b> swings per cycle. Length L = g/(2π × f)² with f = (K+i)/T.</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  const state = {
+    N: 15,
+    T: 60,
+    K: 51,
+    amplitudeDeg: 40,
+    timeScale: 1.0,
+    t: 0,
+    paused: false,
+    pivotStart: null,
+    pivotEnd: null,
+  };
+
+  let W, H, DPR = 1;
+  function resize() {
+    DPR = window.devicePixelRatio || 1;
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const pad = 60;
+    state.pivotStart = { x: pad, y: pad };
+    state.pivotEnd = { x: W - pad, y: pad };
+  }
+  window.addEventListener('resize', resize);
+
+  // Physics: each pendulum is a simple harmonic oscillator.
+  // Pendulum i has frequency f_i = (K + i) / T swings per T seconds
+  // Period τ_i = T / (K + i), angular frequency ω_i = 2π / τ_i
+  // Length L_i = g / ω_i² (not strictly needed for rendering, but we show it)
+
+  function drawPendulum(i, x, y0, length, angle) {
+    const bobX = x + length * Math.sin(angle);
+    const bobY = y0 + length * Math.cos(angle);
+
+    // Pivot
+    ctx.fillStyle = '#3a4156';
+    ctx.beginPath();
+    ctx.arc(x, y0, 3, 0, Math.PI*2);
+    ctx.fill();
+
+    // String
+    ctx.strokeStyle = 'rgba(139,147,167,0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, y0);
+    ctx.lineTo(bobX, bobY);
+    ctx.stroke();
+
+    // Bob — color by index (rainbow-ish)
+    const hue = (i / state.N) * 300;
+    const color = `hsl(${hue}, 80%, 62%)`;
+
+    // Halo
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath();
+    ctx.arc(bobX, bobY, 14, 0, Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Core
+    ctx.beginPath();
+    ctx.arc(bobX, bobY, 8, 0, Math.PI*2);
+    ctx.fill();
+
+    // Highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.beginPath();
+    ctx.arc(bobX - 2, bobY - 2, 2.5, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function tick(dt) {
+    if (!state.paused) {
+      state.t += dt * state.timeScale;
+    }
+    ctx.fillStyle = '#0b0d12';
+    ctx.fillRect(0, 0, W, H);
+
+    // Top rail
+    ctx.strokeStyle = '#1a1e2a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, 60);
+    ctx.lineTo(W - 40, 60);
+    ctx.stroke();
+
+    // Supports
+    ctx.fillStyle = '#1a1e2a';
+    ctx.fillRect(30, 20, 14, 50);
+    ctx.fillRect(W - 44, 20, 14, 50);
+
+    const N = state.N;
+    const amp = state.amplitudeDeg * Math.PI / 180;
+    const pivotY = 60;
+    const xs = (i) => 60 + (W - 120) * (N === 1 ? 0.5 : i / (N - 1));
+    const maxLen = Math.min(H - 120, 500);
+
+    for (let i = 0; i < N; i++) {
+      const f = (state.K + i) / state.T;
+      const omega = 2 * Math.PI * f;
+      // length from ω² = g/L  → L = g/ω². Rescale so largest = maxLen
+      const g = 9.81;
+      const L = g / (omega * omega);
+      // longest pendulum is i=0 (lowest frequency); normalize to maxLen
+      const Lmax = g / ((2 * Math.PI * state.K / state.T) ** 2);
+      const scaledL = L / Lmax * maxLen;
+
+      const angle = amp * Math.cos(omega * state.t);
+      drawPendulum(i, xs(i), pivotY, scaledL, angle);
+    }
+
+    document.getElementById('elapsed').textContent = state.t.toFixed(1) + ' s';
+    const progress = ((state.t % state.T) / state.T * 100).toFixed(0);
+    document.getElementById('progress').textContent = progress + '%';
+    document.getElementById('kn').textContent = `${state.K}..${state.K + N - 1}`;
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    tick(dt);
+    requestAnimationFrame(frame);
+  }
+
+  function bind(id, stateKey, format, isFloat = false) {
+    const el = document.getElementById(id);
+    const lbl = document.getElementById('v' + id);
+    const apply = () => {
+      state[stateKey] = isFloat ? Number(el.value) / 100 : Number(el.value);
+      if (lbl) lbl.textContent = format(isFloat ? (Number(el.value) / 100) : el.value);
+    };
+    el.addEventListener('input', apply);
+    apply();
+  }
+  bind('N', 'N', v => v);
+  bind('T', 'T', v => v);
+  bind('K', 'K', v => v);
+  bind('A', 'amplitudeDeg', v => v);
+  bind('S', 'timeScale', v => v.toFixed(1) + '×', true);
+
+  document.getElementById('reset').addEventListener('click', () => state.t = 0);
+  document.getElementById('pause').addEventListener('click', (e) => {
+    state.paused = !state.paused;
+    e.target.textContent = state.paused ? 'Resume' : 'Pause';
+  });
+
+  resize();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Double-Slit Experiment</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #14171f;
+    --ink: #e8eaf0;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --accent-2: #ffcc66;
+    --border: #222734;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; }
+  .wrap { display: grid; grid-template-columns: 1fr 320px; gap: 1px; background: var(--border); height: 100vh; }
+  .stage { background: var(--bg); position: relative; overflow: hidden; }
+  canvas { width: 100%; height: 100%; display: block; }
+  .panel { background: var(--panel); padding: 24px; overflow: auto; }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 24px; line-height: 1.5; }
+  .control { margin-bottom: 18px; }
+  .control label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .control label .val { color: var(--accent); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .stats { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.8; }
+  .stats b { color: var(--ink); font-weight: 500; }
+  .btn { background: transparent; border: 1px solid var(--border); color: var(--ink); padding: 8px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; font-family: inherit; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+  .legend { font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 16px; }
+  .legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin-right: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage"><canvas id="c"></canvas></div>
+  <div class="panel">
+    <h1>Double-Slit Experiment</h1>
+    <div class="sub">Photons fired one at a time through two narrow slits build up an interference pattern — as if each particle passes through both slits and interferes with itself.</div>
+
+    <div class="control">
+      <label>Wavelength <span class="val" id="vWave">550 nm</span></label>
+      <input type="range" id="wave" min="380" max="750" value="550" />
+    </div>
+    <div class="control">
+      <label>Slit separation <span class="val" id="vSep">0.15 mm</span></label>
+      <input type="range" id="sep" min="50" max="300" value="150" />
+    </div>
+    <div class="control">
+      <label>Slit width <span class="val" id="vSlit">0.05 mm</span></label>
+      <input type="range" id="slit" min="10" max="100" value="50" />
+    </div>
+    <div class="control">
+      <label>Photons / sec <span class="val" id="vRate">200</span></label>
+      <input type="range" id="rate" min="10" max="2000" value="200" />
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="clear">Clear screen</button>
+      <button class="btn" id="pause">Pause</button>
+    </div>
+
+    <div class="stats">
+      <div>Photons: <b id="count">0</b></div>
+      <div>Peak fringe: <b id="fringe">—</b></div>
+    </div>
+
+    <div class="legend">
+      <div><span style="background:var(--accent-2)"></span>Photon hit</div>
+      <div><span style="background:var(--accent)"></span>Expected intensity</div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  const state = {
+    wavelength: 550,
+    separation: 150,
+    slitWidth: 50,
+    rate: 200,
+    photons: 0,
+    hits: new Float32Array(1),
+    paused: false,
+  };
+
+  let W = 0, H = 0, DPR = 1;
+  function resize() {
+    DPR = window.devicePixelRatio || 1;
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    state.hits = new Float32Array(Math.max(1, Math.floor(W)));
+  }
+  window.addEventListener('resize', resize);
+
+  // The screen is on the right. Slits on the left. We compute a 1D intensity
+  // distribution along the screen and sample from it for each "photon" hit.
+  function intensityAt(yFromCenter) {
+    // Fraunhofer double-slit: I(θ) = I0 * cos²(π d sinθ / λ) * sinc²(π a sinθ / λ)
+    // where d = separation, a = slit width, θ ≈ y / L (small angle)
+    const L = 400; // screen distance (mm-ish, arbitrary units)
+    const lambda = state.wavelength * 1e-6; // nm -> mm
+    const d = state.separation * 1e-3; // µm-scale sliders -> mm
+    const a = state.slitWidth * 1e-3;
+    const theta = yFromCenter / L;
+    const piDL = Math.PI * d * Math.sin(theta) / lambda;
+    const piAL = Math.PI * a * Math.sin(theta) / lambda;
+    const cos2 = Math.cos(piDL) ** 2;
+    const sinc2 = piAL === 0 ? 1 : (Math.sin(piAL) / piAL) ** 2;
+    return cos2 * sinc2;
+  }
+
+  function samplePhoton() {
+    // Rejection sampling within the visible screen region
+    const half = H / 2;
+    for (let tries = 0; tries < 30; tries++) {
+      const y = (Math.random() - 0.5) * H;
+      // convert canvas y to angular offset — pretend screen height = 200 mm
+      const yMM = y / H * 200;
+      const I = intensityAt(yMM);
+      if (Math.random() < I) return y + half;
+    }
+    return half;
+  }
+
+  function wavelengthToColor(nm) {
+    // Approximate visible spectrum to RGB
+    let r=0,g=0,b=0;
+    if (nm >= 380 && nm < 440) { r = -(nm-440)/60; g = 0; b = 1; }
+    else if (nm < 490) { r = 0; g = (nm-440)/50; b = 1; }
+    else if (nm < 510) { r = 0; g = 1; b = -(nm-510)/20; }
+    else if (nm < 580) { r = (nm-510)/70; g = 1; b = 0; }
+    else if (nm < 645) { r = 1; g = -(nm-645)/65; b = 0; }
+    else if (nm <= 780) { r = 1; g = 0; b = 0; }
+    const a = nm < 420 ? 0.3 + 0.7*(nm-380)/40 : nm > 700 ? 0.3 + 0.7*(780-nm)/80 : 1;
+    return `rgba(${(r*255)|0},${(g*255)|0},${(b*255)|0},${a.toFixed(2)})`;
+  }
+
+  function drawDiagram() {
+    // Left: source + slits + screen schematic
+    ctx.fillStyle = '#0b0d12';
+    ctx.fillRect(0, 0, W, H);
+
+    const screenX = W * 0.78;
+    const slitX = W * 0.22;
+    const srcX = W * 0.05;
+
+    // Beam
+    const grad = ctx.createLinearGradient(srcX, 0, slitX, 0);
+    grad.addColorStop(0, 'rgba(122,183,255,0.0)');
+    grad.addColorStop(1, 'rgba(122,183,255,0.15)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(srcX, H/2 - 30, slitX - srcX, 60);
+
+    // Source
+    ctx.fillStyle = '#ffcc66';
+    ctx.beginPath();
+    ctx.arc(srcX, H/2, 6, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#ffcc66';
+    ctx.font = '11px system-ui';
+    ctx.fillText('source', srcX - 10, H/2 + 24);
+
+    // Barrier with two slits
+    const slitGap = Math.max(6, state.separation / 10);
+    const slitW = Math.max(2, state.slitWidth / 15);
+    ctx.fillStyle = '#2a2f3d';
+    ctx.fillRect(slitX - 3, 0, 6, H/2 - slitGap - slitW);
+    ctx.fillRect(slitX - 3, H/2 - slitGap + slitW, 6, 2*(slitGap - slitW));
+    ctx.fillRect(slitX - 3, H/2 + slitGap + slitW, 6, H - (H/2 + slitGap + slitW));
+
+    // Waves from slits (decorative)
+    ctx.strokeStyle = 'rgba(122,183,255,0.10)';
+    ctx.lineWidth = 1;
+    const waveCount = 8;
+    for (let s = -1; s <= 1; s += 2) {
+      const sy = H/2 + s * slitGap;
+      for (let i = 1; i <= waveCount; i++) {
+        const r = i * (screenX - slitX) / waveCount;
+        ctx.beginPath();
+        ctx.arc(slitX, sy, r, -Math.PI/3, Math.PI/3);
+        ctx.stroke();
+      }
+    }
+
+    // Screen line
+    ctx.fillStyle = '#1a1e2a';
+    ctx.fillRect(screenX, 0, 3, H);
+
+    // Expected intensity curve
+    ctx.strokeStyle = 'rgba(122,183,255,0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    const curveRight = W - 10;
+    for (let y = 0; y < H; y += 2) {
+      const yMM = (y - H/2) / H * 200;
+      const I = intensityAt(yMM);
+      const x = screenX + 6 + I * (curveRight - screenX - 6);
+      if (y === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Accumulated hits as vertical bars on the screen
+    const maxHit = state.hits.reduce((a,b)=>Math.max(a,b), 1);
+    ctx.strokeStyle = wavelengthToColor(state.wavelength);
+    ctx.lineWidth = 1;
+    for (let y = 0; y < H; y++) {
+      const v = state.hits[y] / maxHit;
+      if (v > 0.01) {
+        ctx.globalAlpha = Math.min(1, v);
+        ctx.beginPath();
+        ctx.moveTo(screenX + 3, y);
+        ctx.lineTo(screenX + 3 + v * 14, y);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    // Labels
+    ctx.fillStyle = '#8b93a7';
+    ctx.font = '11px system-ui';
+    ctx.fillText('slits', slitX - 14, 18);
+    ctx.fillText('screen', screenX - 20, 18);
+  }
+
+  let last = performance.now();
+  let acc = 0;
+  function tick(now) {
+    const dt = (now - last) / 1000;
+    last = now;
+    if (!state.paused) {
+      acc += dt * state.rate;
+      while (acc >= 1) {
+        acc -= 1;
+        const y = samplePhoton();
+        const iy = Math.max(0, Math.min(state.hits.length - 1, Math.floor(y)));
+        state.hits[iy] += 1;
+        state.photons++;
+      }
+    }
+    drawDiagram();
+    document.getElementById('count').textContent = state.photons.toLocaleString();
+    // Fringe spacing y = λL / d (small-angle)
+    const fringe = state.wavelength * 1e-6 * 400 / (state.separation * 1e-3);
+    document.getElementById('fringe').textContent = fringe.toFixed(2) + ' mm';
+    requestAnimationFrame(tick);
+  }
+
+  // Controls
+  function bind(id, stateKey, format) {
+    const el = document.getElementById(id);
+    const lbl = document.getElementById('v' + id.charAt(0).toUpperCase() + id.slice(1));
+    const apply = () => {
+      state[stateKey] = Number(el.value);
+      if (lbl) lbl.textContent = format(el.value);
+      // Reset hits when geometry changes
+      if (stateKey !== 'rate') state.hits = new Float32Array(state.hits.length);
+      if (stateKey !== 'rate') state.photons = 0;
+    };
+    el.addEventListener('input', apply);
+    apply();
+  }
+  bind('wave', 'wavelength', v => v + ' nm');
+  bind('sep', 'separation', v => (v / 1000).toFixed(3) + ' mm');
+  bind('slit', 'slitWidth', v => (v / 1000).toFixed(3) + ' mm');
+  bind('rate', 'rate', v => v);
+
+  document.getElementById('clear').addEventListener('click', () => {
+    state.hits = new Float32Array(state.hits.length);
+    state.photons = 0;
+  });
+  document.getElementById('pause').addEventListener('click', (e) => {
+    state.paused = !state.paused;
+    e.target.textContent = state.paused ? 'Resume' : 'Pause';
+  });
+
+  resize();
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

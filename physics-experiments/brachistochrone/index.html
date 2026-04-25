@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Brachistochrone</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #14171f;
+    --ink: #e8eaf0;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --gold: #ffcc66;
+    --red: #ff7a7a;
+    --green: #5dd39e;
+    --border: #222734;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; }
+  .wrap { display: grid; grid-template-columns: 1fr 320px; gap: 1px; background: var(--border); height: 100vh; }
+  .stage { background: var(--bg); position: relative; }
+  canvas { width: 100%; height: 100%; display: block; }
+  .panel { background: var(--panel); padding: 24px; overflow: auto; }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 24px; line-height: 1.5; }
+  .control { margin-bottom: 18px; }
+  .control label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .control label .val { color: var(--accent); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .stats { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .row { display: flex; justify-content: space-between; padding: 4px 0; align-items: center; }
+  .row .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+  .row b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .btn { background: transparent; border: 1px solid var(--border); color: var(--ink); padding: 8px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; font-family: inherit; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: #0b0d12; border-color: var(--accent); }
+  .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+  .winner { color: var(--gold); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage"><canvas id="c"></canvas></div>
+  <div class="panel">
+    <h1>Brachistochrone</h1>
+    <div class="sub">In 1696 Johann Bernoulli asked: what's the fastest path for a ball rolling under gravity from A to B? Not a straight line. Not a circular arc. It's a <b style="color:var(--gold)">cycloid</b> — a curve that dips below B and curls back up.</div>
+
+    <div class="control">
+      <label>Horizontal distance <span class="val" id="vDx">500 px</span></label>
+      <input type="range" id="dx" min="200" max="900" value="500" />
+    </div>
+    <div class="control">
+      <label>Vertical drop <span class="val" id="vDy">300 px</span></label>
+      <input type="range" id="dy" min="50" max="500" value="300" />
+    </div>
+    <div class="control">
+      <label>Gravity <span class="val" id="vG">1.0×</span></label>
+      <input type="range" id="g" min="20" max="300" value="100" />
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary" id="start">Start race</button>
+      <button class="btn" id="reset">Reset</button>
+    </div>
+
+    <div class="stats">
+      <div class="row"><span><span class="dot" style="background:var(--red)"></span>Straight line</span><b id="tLine">—</b></div>
+      <div class="row"><span><span class="dot" style="background:var(--accent)"></span>Circular arc</span><b id="tArc">—</b></div>
+      <div class="row"><span><span class="dot" style="background:var(--gold)"></span>Cycloid</span><b id="tCyc">—</b></div>
+      <div class="row"><span><span class="dot" style="background:var(--green)"></span>Parabola</span><b id="tPar">—</b></div>
+    </div>
+    <div class="hint">Energy conservation: v = √(2gy). Travel time is ∫ ds / v along each curve. The cycloid is the stationary point of this functional — proven via calculus of variations.</div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  const state = {
+    dx: 500,
+    dy: 300,
+    gScale: 1.0,
+    g: 2000, // base gravity px/s²
+    t: 0,
+    running: false,
+    startTime: 0,
+    balls: [],
+  };
+
+  let W, H, DPR = 1;
+  function resize() {
+    DPR = window.devicePixelRatio || 1;
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width = Math.floor(W * DPR);
+    canvas.height = Math.floor(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+
+  function start() { return { x: (W - state.dx) / 2, y: 100 }; }
+  function end() { const s = start(); return { x: s.x + state.dx, y: s.y + state.dy }; }
+
+  // ---------- Paths ----------
+  // All paths parameterised by arc-length samples: [{x,y,s}].
+  // We sample densely, then simulate a ball at discrete velocity v=√(2g·Δy).
+
+  function samplePath(fn, N) {
+    const pts = [];
+    let acc = 0;
+    let px, py;
+    for (let i = 0; i <= N; i++) {
+      const u = i / N;
+      const [x, y] = fn(u);
+      if (i === 0) { px = x; py = y; }
+      acc += Math.hypot(x - px, y - py);
+      px = x; py = y;
+      pts.push({ x, y, s: acc });
+    }
+    return pts;
+  }
+
+  function pathLine() {
+    const s = start(), e = end();
+    return samplePath(u => [s.x + (e.x - s.x) * u, s.y + (e.y - s.y) * u], 400);
+  }
+
+  function pathArc() {
+    // Circular arc from start to end, passing through a point below line.
+    // Pick the arc tangent to horizontal at start (rolls down like a slide).
+    const s = start(), e = end();
+    const dx = e.x - s.x, dy = e.y - s.y;
+    // Centre lies directly below the start point on the vertical through start
+    // and equidistant from end. That means cx = s.x, cy = s.y + R, with
+    // R² = (e.x-s.x)² + (e.y-(s.y+R))². Solve:
+    // (dy - R)² + dx² = R² → dx² + dy² - 2·dy·R = 0 → R = (dx² + dy²) / (2·dy)
+    const R = (dx * dx + dy * dy) / (2 * dy);
+    const cx = s.x, cy = s.y + R;
+    const startAngle = -Math.PI / 2; // pointing up from centre to start
+    const endAngle = Math.atan2(e.y - cy, e.x - cx);
+    // Sweep clockwise (positive sweep for dx>0)
+    const sweep = endAngle - startAngle;
+    return samplePath(u => {
+      const a = startAngle + sweep * u;
+      return [cx + R * Math.cos(a), cy + R * Math.sin(a)];
+    }, 400);
+  }
+
+  function pathParabola() {
+    // y = s.y + (e.y - s.y) * u² (starts horizontal-ish, accelerates down)
+    const s = start(), e = end();
+    return samplePath(u => [s.x + (e.x - s.x) * u, s.y + (e.y - s.y) * (u * u)], 400);
+  }
+
+  function pathCycloid() {
+    // Parametric cycloid: x = a(θ - sin θ), y = a(1 - cos θ), starting
+    // at (0,0) tangent to horizontal. We need to fit it through (dx, dy).
+    const s = start(), e = end();
+    const DX = e.x - s.x, DY = e.y - s.y;
+
+    // Find θ_end and a such that: a(θ - sin θ) = DX, a(1 - cos θ) = DY
+    // Ratio: (θ - sin θ) / (1 - cos θ) = DX / DY
+    const target = DX / DY;
+    let lo = 0.001, hi = 2 * Math.PI - 0.001;
+    for (let i = 0; i < 60; i++) {
+      const mid = (lo + hi) / 2;
+      const r = (mid - Math.sin(mid)) / (1 - Math.cos(mid));
+      if (r < target) lo = mid; else hi = mid;
+    }
+    const theta1 = (lo + hi) / 2;
+    const a = DY / (1 - Math.cos(theta1));
+
+    return samplePath(u => {
+      const th = theta1 * u;
+      return [s.x + a * (th - Math.sin(th)), s.y + a * (1 - Math.cos(th))];
+    }, 400);
+  }
+
+  function buildBalls() {
+    const s = start();
+    const mk = (path, color, label) => ({ path, color, label, idx: 0, v: 0, finished: false, finishTime: null });
+    return [
+      mk(pathLine(),      '#ff7a7a', 'line'),
+      mk(pathArc(),       '#7ab7ff', 'arc'),
+      mk(pathCycloid(),   '#ffcc66', 'cycloid'),
+      mk(pathParabola(),  '#5dd39e', 'parabola'),
+    ];
+  }
+
+  function start_race() {
+    state.balls = buildBalls();
+    state.running = true;
+    state.startTime = performance.now();
+    document.getElementById('tLine').textContent = '—';
+    document.getElementById('tArc').textContent = '—';
+    document.getElementById('tCyc').textContent = '—';
+    document.getElementById('tPar').textContent = '—';
+  }
+
+  function advance(ball, dt) {
+    if (ball.finished) return;
+    const s0 = start();
+    // Integrate ds/dt = v = √(2g·(y - y0)), with tiny floor to avoid stall at start.
+    // Use substeps for stability.
+    const steps = 6;
+    const sub = dt / steps;
+    for (let k = 0; k < steps; k++) {
+      const cur = ball.path[ball.idx];
+      const yDrop = Math.max(0, cur.y - s0.y);
+      const v = Math.sqrt(2 * state.g * state.gScale * yDrop) + 8; // +8 = mild push to leave rest
+      const ds = v * sub;
+      let next = ball.idx;
+      let remaining = ds;
+      while (next < ball.path.length - 1) {
+        const seg = ball.path[next + 1].s - ball.path[next].s;
+        if (remaining < seg) {
+          // interpolate within this segment? For simplicity we just advance the index
+          // when we've travelled enough cumulative arc.
+          break;
+        }
+        remaining -= seg;
+        next++;
+      }
+      ball.idx = next;
+      if (ball.idx >= ball.path.length - 1) {
+        ball.finished = true;
+        ball.finishTime = (performance.now() - state.startTime) / 1000;
+        const id = { 'line': 'tLine', 'arc': 'tArc', 'cycloid': 'tCyc', 'parabola': 'tPar' }[ball.label];
+        const el = document.getElementById(id);
+        // Winner highlight
+        const times = state.balls.filter(b => b.finished).map(b => b.finishTime);
+        const minT = Math.min(...times);
+        el.textContent = ball.finishTime.toFixed(2) + ' s';
+        if (ball.finishTime === minT) el.classList.add('winner'); else el.classList.remove('winner');
+        break;
+      }
+    }
+  }
+
+  function drawPath(pts, color, withRails) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = withRails ? 3 : 2;
+    ctx.beginPath();
+    for (let i = 0; i < pts.length; i++) {
+      if (i === 0) ctx.moveTo(pts[i].x, pts[i].y);
+      else ctx.lineTo(pts[i].x, pts[i].y);
+    }
+    ctx.stroke();
+  }
+
+  function drawMarkers() {
+    const s = start(), e = end();
+    ctx.fillStyle = '#8b93a7';
+    ctx.font = '12px system-ui';
+    // Start
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 8, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.fill();
+    ctx.fillStyle = '#e8eaf0';
+    ctx.fillText('A', s.x - 3, s.y - 14);
+    // End
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, 8, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.fill();
+    ctx.fillStyle = '#e8eaf0';
+    ctx.fillText('B', e.x - 3, e.y + 22);
+  }
+
+  function tick(dt) {
+    ctx.fillStyle = '#0b0d12';
+    ctx.fillRect(0, 0, W, H);
+
+    // Faint grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.lineWidth = 1;
+    for (let y = 0; y < H; y += 40) {
+      ctx.beginPath();
+      ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+    if (state.balls.length === 0) state.balls = buildBalls();
+
+    for (const b of state.balls) drawPath(b.path, b.color + '55');
+    for (const b of state.balls) {
+      if (state.running && !b.finished) advance(b, dt);
+      const p = b.path[b.idx];
+      ctx.fillStyle = b.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 7, 0, Math.PI*2);
+      ctx.fill();
+      // Inner highlight
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.beginPath();
+      ctx.arc(p.x - 2, p.y - 2, 2, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    drawMarkers();
+
+    // Check all finished
+    if (state.running && state.balls.every(b => b.finished)) {
+      state.running = false;
+    }
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+    tick(dt);
+    requestAnimationFrame(frame);
+  }
+
+  function bind(id, stateKey, format, divisor = 1) {
+    const el = document.getElementById(id);
+    const lbl = document.getElementById('v' + id.charAt(0).toUpperCase() + id.slice(1));
+    const apply = () => {
+      state[stateKey] = Number(el.value) / divisor;
+      if (lbl) lbl.textContent = format(Number(el.value) / divisor);
+      state.balls = buildBalls();
+      state.running = false;
+    };
+    el.addEventListener('input', apply);
+    apply();
+  }
+  bind('dx', 'dx', v => v.toFixed(0) + ' px');
+  bind('dy', 'dy', v => v.toFixed(0) + ' px');
+  bind('g', 'gScale', v => v.toFixed(1) + '×', 100);
+
+  document.getElementById('start').addEventListener('click', start_race);
+  document.getElementById('reset').addEventListener('click', () => {
+    state.balls = buildBalls();
+    state.running = false;
+    document.getElementById('tLine').textContent = '—';
+    document.getElementById('tArc').textContent = '—';
+    document.getElementById('tCyc').textContent = '—';
+    document.getElementById('tPar').textContent = '—';
+    document.querySelectorAll('.winner').forEach(el => el.classList.remove('winner'));
+  });
+
+  resize();
+  // Small delay so canvas size is known
+  setTimeout(() => { state.balls = buildBalls(); }, 0);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

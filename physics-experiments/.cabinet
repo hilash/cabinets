@@ -1,0 +1,12 @@
+schemaVersion: 1
+id: physics-experiments-root
+name: Physics Experiments
+kind: root
+version: 0.1.0
+description: >
+  Five interactive, self-contained simulations of classic physics experiments —
+  double-slit, pendulum wave, projectile motion, wave interference, and the
+  brachistochrone race. Vanilla JS + Canvas 2D, zero build step, runs entirely
+  in the browser. Each experiment is a full-screen Cabinet app you can open
+  from the sidebar.
+entry: index.md

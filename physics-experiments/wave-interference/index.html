@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wave Interference</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #14171f;
+    --ink: #e8eaf0;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --border: #222734;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; }
+  .wrap { display: grid; grid-template-columns: 1fr 320px; gap: 1px; background: var(--border); height: 100vh; }
+  .stage { background: #000; position: relative; }
+  canvas { width: 100%; height: 100%; display: block; }
+  .panel { background: var(--panel); padding: 24px; overflow: auto; }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 24px; line-height: 1.5; }
+  .control { margin-bottom: 18px; }
+  .control label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .control label .val { color: var(--accent); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .stats { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.8; }
+  .btn { background: transparent; border: 1px solid var(--border); color: var(--ink); padding: 8px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; font-family: inherit; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 4px; cursor: pointer; }
+  .toggle input { accent-color: var(--accent); }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage"><canvas id="c"></canvas></div>
+  <div class="panel">
+    <h1>Wave Interference</h1>
+    <div class="sub">Two coherent point sources emit circular waves. Where crests meet crests, amplitude doubles (constructive); where crest meets trough, they cancel (destructive). The hyperbolic fringes you see are loci of constant path difference.</div>
+
+    <div class="control">
+      <label>Wavelength <span class="val" id="vWL">40 px</span></label>
+      <input type="range" id="wl" min="10" max="120" value="40" />
+    </div>
+    <div class="control">
+      <label>Source separation <span class="val" id="vSep">180 px</span></label>
+      <input type="range" id="sep" min="20" max="500" value="180" />
+    </div>
+    <div class="control">
+      <label>Phase difference <span class="val" id="vPhase">0°</span></label>
+      <input type="range" id="phase" min="0" max="360" value="0" />
+    </div>
+    <div class="control">
+      <label>Wave speed <span class="val" id="vSpeed">1.0×</span></label>
+      <input type="range" id="speed" min="0" max="300" value="100" />
+    </div>
+    <div class="control">
+      <label>Damping <span class="val" id="vDamp">0.0</span></label>
+      <input type="range" id="damp" min="0" max="100" value="0" />
+    </div>
+
+    <label class="toggle"><input type="checkbox" id="showSources" checked />Show sources</label>
+    <label class="toggle"><input type="checkbox" id="showNodes" />Show nodal lines (destructive)</label>
+
+    <div class="btn-row">
+      <button class="btn" id="pause">Pause</button>
+      <button class="btn" id="swapMode">Mode: ripple</button>
+    </div>
+
+    <div class="stats">
+      <div>Drag the sources to reposition them.</div>
+    </div>
+    <div class="hint">Ripple mode shows instantaneous displacement. Intensity mode shows time-averaged |ψ|² — the pattern a long-exposure camera would capture.</div>
+  </div>
+</div>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  const state = {
+    wl: 40,
+    sep: 180,
+    phaseDeg: 0,
+    speed: 1.0,
+    damping: 0,
+    t: 0,
+    paused: false,
+    showSources: true,
+    showNodes: false,
+    mode: 'ripple', // 'ripple' | 'intensity'
+    s1: null,
+    s2: null,
+    dragging: null,
+  };
+
+  let W, H, DPR = 1, img;
+  function resize() {
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    // Render at lower resolution for performance, then upscale.
+    const scale = 0.5; // half-res
+    canvas.width = Math.floor(W * scale);
+    canvas.height = Math.floor(H * scale);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    img = ctx.createImageData(canvas.width, canvas.height);
+    if (!state.s1) {
+      state.s1 = { x: canvas.width * 0.5 - state.sep * scale / 2, y: canvas.height * 0.5 };
+      state.s2 = { x: canvas.width * 0.5 + state.sep * scale / 2, y: canvas.height * 0.5 };
+    }
+  }
+  window.addEventListener('resize', resize);
+
+  function render(dt) {
+    if (!state.paused) state.t += dt * state.speed;
+    const cw = canvas.width, ch = canvas.height;
+    const data = img.data;
+    const wl = state.wl * 0.5; // account for half-res render scale
+    const omega = 2 * Math.PI / wl * 1.0; // phase speed of 1 px/unit time
+    const phase = state.phaseDeg * Math.PI / 180;
+    const damp = state.damping / 500;
+
+    const s1x = state.s1.x, s1y = state.s1.y;
+    const s2x = state.s2.x, s2y = state.s2.y;
+    const t = state.t;
+
+    for (let y = 0; y < ch; y++) {
+      for (let x = 0; x < cw; x++) {
+        const d1 = Math.hypot(x - s1x, y - s1y) + 1;
+        const d2 = Math.hypot(x - s2x, y - s2y) + 1;
+
+        const a1 = Math.exp(-damp * d1) / Math.sqrt(d1);
+        const a2 = Math.exp(-damp * d2) / Math.sqrt(d2);
+
+        let v;
+        if (state.mode === 'ripple') {
+          v = a1 * Math.sin(omega * (d1 - t)) + a2 * Math.sin(omega * (d2 - t) + phase);
+          v *= 10; // amplify for visibility
+        } else {
+          // Time-averaged intensity: |A1+A2|² where A1,A2 are complex phasors
+          // I = a1² + a2² + 2 a1 a2 cos(k(d1 - d2) - phase)
+          const I = a1*a1 + a2*a2 + 2*a1*a2*Math.cos(omega*(d1-d2) - phase);
+          v = I * 60;
+        }
+
+        const idx = (y * cw + x) * 4;
+        if (state.mode === 'ripple') {
+          // Blue for negative, red for positive, dark for zero
+          const n = Math.max(-1, Math.min(1, v));
+          if (n > 0) {
+            data[idx  ] = 255 * n;
+            data[idx+1] = 150 * n;
+            data[idx+2] = 60 * n;
+          } else {
+            data[idx  ] = 60 * -n;
+            data[idx+1] = 140 * -n;
+            data[idx+2] = 255 * -n;
+          }
+          data[idx+3] = 255;
+        } else {
+          const i = Math.max(0, Math.min(255, v));
+          data[idx  ] = i * 0.35;
+          data[idx+1] = i * 0.7;
+          data[idx+2] = i;
+          data[idx+3] = 255;
+        }
+
+        if (state.showNodes && state.mode === 'ripple') {
+          // Highlight nodal lines: |d1 - d2 - (n + 0.5)λ| < ε
+          const diff = d1 - d2 - (phase / (2*Math.PI)) * wl;
+          const r = diff / wl;
+          const frac = Math.abs(r - Math.round(r) - 0.5);
+          if (Math.abs(frac - 0.5) < 0.03) {
+            data[idx  ] = 255;
+            data[idx+1] = 255;
+            data[idx+2] = 255;
+          }
+        }
+      }
+    }
+
+    ctx.putImageData(img, 0, 0);
+
+    if (state.showSources) {
+      const mark = (sx, sy, label) => {
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 5, 0, Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 10px system-ui';
+        ctx.fillText(label, sx + 8, sy - 8);
+      };
+      mark(s1x, s1y, 'S₁');
+      mark(s2x, s2y, 'S₂');
+    }
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000) * 60; // frames per unit
+    last = now;
+    render(dt);
+    requestAnimationFrame(frame);
+  }
+
+  function bind(id, stateKey, format, divisor = 1) {
+    const el = document.getElementById(id);
+    const lblId = 'v' + id.charAt(0).toUpperCase() + id.slice(1);
+    const lbl = document.getElementById(lblId);
+    const apply = () => {
+      state[stateKey] = Number(el.value) / divisor;
+      if (lbl) lbl.textContent = format(Number(el.value) / divisor);
+      if (stateKey === 'sep' && state.s1 && state.s2) {
+        const cx = (state.s1.x + state.s2.x) / 2;
+        const cy = (state.s1.y + state.s2.y) / 2;
+        const halfSep = state.sep * 0.5 / 2; // account for half-res render
+        state.s1 = { x: cx - halfSep, y: cy };
+        state.s2 = { x: cx + halfSep, y: cy };
+      }
+    };
+    el.addEventListener('input', apply);
+    apply();
+  }
+  bind('wl', 'wl', v => v + ' px');
+  bind('sep', 'sep', v => v.toFixed(0) + ' px');
+  bind('phase', 'phaseDeg', v => v + '°');
+  bind('speed', 'speed', v => v.toFixed(1) + '×', 100);
+  bind('damp', 'damping', v => v.toFixed(2), 100);
+
+  document.getElementById('showSources').addEventListener('change', e => state.showSources = e.target.checked);
+  document.getElementById('showNodes').addEventListener('change', e => state.showNodes = e.target.checked);
+  document.getElementById('pause').addEventListener('click', (e) => {
+    state.paused = !state.paused;
+    e.target.textContent = state.paused ? 'Resume' : 'Pause';
+  });
+  document.getElementById('swapMode').addEventListener('click', (e) => {
+    state.mode = state.mode === 'ripple' ? 'intensity' : 'ripple';
+    e.target.textContent = 'Mode: ' + state.mode;
+  });
+
+  // Drag sources
+  function getCanvasCoords(ev) {
+    const rect = canvas.getBoundingClientRect();
+    const x = (ev.clientX - rect.left) / rect.width * canvas.width;
+    const y = (ev.clientY - rect.top) / rect.height * canvas.height;
+    return { x, y };
+  }
+  canvas.addEventListener('pointerdown', (ev) => {
+    const p = getCanvasCoords(ev);
+    const d1 = Math.hypot(p.x - state.s1.x, p.y - state.s1.y);
+    const d2 = Math.hypot(p.x - state.s2.x, p.y - state.s2.y);
+    const thr = 20;
+    if (d1 < thr && d1 <= d2) state.dragging = 's1';
+    else if (d2 < thr) state.dragging = 's2';
+  });
+  window.addEventListener('pointermove', (ev) => {
+    if (!state.dragging) return;
+    const p = getCanvasCoords(ev);
+    state[state.dragging] = { x: p.x, y: p.y };
+  });
+  window.addEventListener('pointerup', () => state.dragging = null);
+
+  resize();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
