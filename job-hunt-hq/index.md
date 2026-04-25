@@ -25,10 +25,8 @@ You are not "applying to jobs." You are running a pipeline with sourcing, qualif
 
 ## Your Team
 
-- **Career Strategist** — positioning, target selection, overall search strategy
+- **Career Strategist** — positioning, target selection, overall search strategy, interview prep (STAR stories, prep packets, debriefs), and networking outreach (warm paths, follow-up cadence)
 - **Resume Tailor** — customizes your resume for each application using keywords and framing
-- **Interview Coach** — prep packets, mock questions, debrief and feedback capture
-- **Networking Scout** — identifies warm paths, drafts outreach, tracks relationship momentum
 
 ## Jobs That Run
 
