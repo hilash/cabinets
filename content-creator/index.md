@@ -27,6 +27,5 @@ A solo content creator running a multi-platform content operation. No child cabi
 
 ## Active Team
 
-- Content Strategist for ideation, topic research, and editorial calendar
+- Content Strategist for ideation, editorial calendar, and performance review
 - Editor for drafting, polishing, and format adaptation across platforms
-- Analytics Reviewer for performance tracking and content optimization

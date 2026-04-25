@@ -1,7 +1,7 @@
 id: weekly-performance-digest
 name: Weekly Performance Digest
 description: Analyzes content performance from the past week and recommends adjustments.
-ownerAgent: analytics-reviewer
+ownerAgent: content-strategist
 enabled: true
 schedule: "0 8 * * 1"
 prompt: |-
