@@ -27,8 +27,7 @@ A specialty cabinet for running a ketogenic protocol. Installs standalone or alo
 
 ## Team
 
-- **Keto Coach** — weekly brief, adherence review, stall diagnostics, adjustments.
-- **Electrolyte Manager** — sodium, potassium, magnesium. The keto-flu prevention + maintenance layer.
+- **Keto Coach** — weekly brief, adherence review, stall diagnostics, adjustments, electrolyte floor (sodium / potassium / magnesium).
 - **Meal Architect** — meal rotation, macro-hit planning, pantry staples, grocery lists.
 
 ## Plugs into Personal OS
@@ -53,7 +52,7 @@ State your goal in `profile.md` — agents calibrate recommendations accordingly
 ## Weekly rhythm
 
 - **Sunday 9am** — Keto Coach writes the weekly brief.
-- **Sunday 9:30am** — Electrolyte Manager reviews last week's intake + symptoms.
+- **Sunday 9:30am** — Keto Coach reviews last week's electrolyte intake + symptoms.
 - **Monday 10am** — Meal Architect publishes the week's meal rotation + grocery list.
 
 ## First-use checklist

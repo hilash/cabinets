@@ -1,7 +1,7 @@
 id: weekly-electrolyte-review
 name: Weekly Electrolyte Review
 description: Sunday 9:30am — intake estimates, symptom review, one adjustment.
-ownerAgent: electrolyte-manager
+ownerAgent: keto-coach
 enabled: true
 schedule: "30 9 * * 0"
 prompt: |-
