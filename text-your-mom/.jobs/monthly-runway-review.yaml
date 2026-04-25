@@ -1,7 +1,7 @@
 id: monthly-runway-review
 name: Monthly Runway Review
 description: Reviews subscription economics, paid conversion, and the current runway story for leadership.
-ownerAgent: cfo
+ownerAgent: ceo
 enabled: true
 schedule: "0 10 1 * *"
 prompt: |-

@@ -30,10 +30,8 @@ Text Your Mom is a playful consumer app that helps people stay close to family a
 
 ## Active Root Team
 
-- CEO for strategic alignment and executive communication
-- COO for operational reviews and process health
-- CFO for subscription economics and runway
-- CTO for technical direction and reliability
+- CEO for strategic alignment, executive communication, and subscription economics & runway
+- COO for operational reviews, process health, and technical direction & reliability
 
 ## Child Cabinets
 
