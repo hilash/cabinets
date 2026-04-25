@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hershey-Chase Experiment</title>
+<style>
+  :root {
+    --bg: #0d1114;
+    --panel: #151b20;
+    --panel-2: #1b2329;
+    --panel-3: #202a31;
+    --line: #34414a;
+    --line-bright: #53636f;
+    --ink: #f2f7ee;
+    --muted: #a9b7b4;
+    --dim: #73817f;
+    --dna: #4fd1c5;
+    --dna-soft: rgba(79, 209, 197, 0.2);
+    --protein: #f4b860;
+    --protein-soft: rgba(244, 184, 96, 0.2);
+    --cell: #9ad56f;
+    --danger: #ef6f65;
+    --shadow: rgba(0, 0, 0, 0.38);
+    --radius: 8px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(79, 209, 197, 0.15), transparent 28rem),
+      radial-gradient(circle at 86% 18%, rgba(244, 184, 96, 0.12), transparent 26rem),
+      radial-gradient(circle at 58% 92%, rgba(154, 213, 111, 0.1), transparent 24rem),
+      linear-gradient(135deg, #0d1114 0%, #12191e 52%, #10130f 100%);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 22px;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  button {
+    min-height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    color: var(--ink);
+    background: #1d252b;
+    cursor: pointer;
+    transition: transform 120ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease;
+  }
+
+  button:hover:not(:disabled) {
+    border-color: var(--line-bright);
+    background: #263039;
+  }
+
+  button:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    color: #77827f;
+    background: #14191d;
+    border-color: #253039;
+  }
+
+  .shell {
+    width: min(1460px, 100%);
+    min-height: calc(100vh - 44px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 16px;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .eyebrow {
+    margin: 0 0 6px;
+    color: var(--cell);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(1.9rem, 3.4vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .lede {
+    max-width: 790px;
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  .top-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .ghost-button {
+    padding: 0 14px;
+    background: rgba(21, 27, 32, 0.82);
+    box-shadow: 0 12px 34px var(--shadow);
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 370px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  .panel,
+  .stage-panel,
+  .readout-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(21, 27, 32, 0.9);
+    box-shadow: 0 18px 52px var(--shadow);
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  .panel + .panel {
+    margin-top: 12px;
+  }
+
+  .panel-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.86rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 27px;
+    padding: 3px 9px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: rgba(0, 0, 0, 0.16);
+    font-size: 0.78rem;
+    font-weight: 750;
+    white-space: nowrap;
+  }
+
+  .label-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .label-option {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    min-height: 78px;
+    padding: 12px;
+    text-align: left;
+    background: var(--panel-2);
+  }
+
+  .label-option[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--active-color) 72%, white 4%);
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--active-color) 18%, transparent), transparent),
+      var(--panel-2);
+  }
+
+  .label-option .isotope {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--active-color) 68%, var(--line));
+    border-radius: 8px;
+    color: #0e1517;
+    background: var(--active-color);
+    font-size: 1.02rem;
+    font-weight: 900;
+    box-shadow: 0 0 24px color-mix(in srgb, var(--active-color) 34%, transparent);
+  }
+
+  .label-option strong,
+  .label-option span {
+    display: block;
+  }
+
+  .label-option strong {
+    margin-bottom: 3px;
+    font-size: 0.98rem;
+  }
+
+  .label-option span {
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.38;
+  }
+
+  .dna-choice {
+    --active-color: var(--dna);
+  }
+
+  .protein-choice {
+    --active-color: var(--protein);
+  }
+
+  .step-list {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    min-height: 52px;
+    padding: 9px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.14);
+  }
+
+  .step-number {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: var(--muted);
+    background: #10161a;
+    border: 1px solid var(--line);
+    font-weight: 850;
+    font-size: 0.82rem;
+  }
+
+  .step strong,
+  .step span {
+    display: block;
+  }
+
+  .step strong {
+    font-size: 0.9rem;
+  }
+
+  .step span {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.34;
+  }
+
+  .step.is-done {
+    border-color: rgba(154, 213, 111, 0.46);
+  }
+
+  .step.is-done .step-number {
+    color: #102014;
+    background: var(--cell);
+    border-color: var(--cell);
+  }
+
+  .step.is-current {
+    border-color: color-mix(in srgb, var(--focus-color) 72%, var(--line));
+    background: color-mix(in srgb, var(--focus-color) 12%, rgba(0, 0, 0, 0.16));
+  }
+
+  .step.is-current .step-number {
+    color: #0f1518;
+    background: var(--focus-color);
+    border-color: var(--focus-color);
+  }
+
+  body[data-label="dna"] {
+    --focus-color: var(--dna);
+  }
+
+  body[data-label="protein"] {
+    --focus-color: var(--protein);
+  }
+
+  .protocol-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .protocol-actions button {
+    min-height: 48px;
+    font-weight: 800;
+  }
+
+  .protocol-actions button.is-next {
+    color: #081113;
+    border-color: var(--focus-color);
+    background: var(--focus-color);
+  }
+
+  .reset-button {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .stage-column {
+    min-width: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  .stage-panel {
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(28, 38, 44, 0.96), rgba(13, 17, 20, 0.97)),
+      #0a0f12;
+  }
+
+  .stage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  .stage-header strong {
+    display: block;
+    font-size: 0.95rem;
+  }
+
+  .stage-header span {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .status-pill {
+    min-width: 108px;
+    text-align: center;
+    border-color: color-mix(in srgb, var(--focus-color) 58%, var(--line));
+    color: var(--ink);
+    background: color-mix(in srgb, var(--focus-color) 16%, rgba(0, 0, 0, 0.28));
+  }
+
+  .stage {
+    position: relative;
+    min-height: 520px;
+    aspect-ratio: 16 / 9;
+  }
+
+  .stage svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 520px;
+  }
+
+  .grid-line {
+    stroke: rgba(255, 255, 255, 0.045);
+    stroke-width: 1;
+  }
+
+  .bench {
+    fill: #11191d;
+  }
+
+  .glass {
+    fill: rgba(155, 185, 198, 0.08);
+    stroke: rgba(177, 213, 224, 0.3);
+    stroke-width: 2;
+  }
+
+  .liquid {
+    fill: rgba(82, 135, 151, 0.15);
+  }
+
+  .cell-body {
+    fill: #33442f;
+    stroke: rgba(154, 213, 111, 0.72);
+    stroke-width: 3;
+  }
+
+  .cell-highlight {
+    fill: rgba(154, 213, 111, 0.18);
+  }
+
+  .phage-head {
+    fill: #24313a;
+    stroke: #94a7ad;
+    stroke-width: 2.2;
+  }
+
+  .phage-tail,
+  .phage-leg {
+    stroke: #94a7ad;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+  }
+
+  .dna-mark {
+    fill: var(--dna);
+    filter: drop-shadow(0 0 8px rgba(79, 209, 197, 0.72));
+  }
+
+  .protein-mark {
+    fill: none;
+    stroke: var(--protein);
+    stroke-width: 4;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 8px rgba(244, 184, 96, 0.74));
+  }
+
+  body[data-label="dna"] .protein-mark,
+  body[data-label="protein"] .dna-mark {
+    opacity: 0.2;
+    filter: none;
+  }
+
+  .syringe-line {
+    stroke: var(--dna);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 10 8;
+    filter: drop-shadow(0 0 7px rgba(79, 209, 197, 0.62));
+  }
+
+  body[data-label="protein"] .syringe-line {
+    opacity: 0.22;
+    filter: none;
+  }
+
+  .coat-fragment {
+    fill: none;
+    stroke: #aab8bc;
+    stroke-width: 2.3;
+    stroke-linecap: round;
+    opacity: 0;
+  }
+
+  body[data-step="blended"] .coat-fragment,
+  body[data-step="spun"] .coat-fragment {
+    opacity: 0.84;
+  }
+
+  .radio-dots .dot {
+    opacity: 0;
+    transform-origin: center;
+  }
+
+  body[data-step="infected"][data-label="dna"] .radio-dots .cell-dot,
+  body[data-step="blended"][data-label="dna"] .radio-dots .cell-dot,
+  body[data-step="spun"][data-label="dna"] .radio-dots .pellet-dot,
+  body[data-step="infected"][data-label="protein"] .radio-dots .coat-dot,
+  body[data-step="blended"][data-label="protein"] .radio-dots .coat-dot,
+  body[data-step="spun"][data-label="protein"] .radio-dots .sup-dot {
+    opacity: 1;
+    animation: pulse 1.35s ease-in-out infinite;
+  }
+
+  body[data-step="loaded"][data-label="dna"] .radio-dots .phage-dna-dot,
+  body[data-step="loaded"][data-label="protein"] .radio-dots .phage-protein-dot {
+    opacity: 1;
+    animation: pulse 1.35s ease-in-out infinite;
+  }
+
+  .infection-group,
+  .blend-group,
+  .tube-group,
+  .centrifuge-group {
+    opacity: 0.14;
+    transition: opacity 180ms ease;
+  }
+
+  body[data-step="infected"] .infection-group,
+  body[data-step="blended"] .infection-group,
+  body[data-step="spun"] .infection-group,
+  body[data-step="blended"] .blend-group,
+  body[data-step="spun"] .blend-group,
+  body[data-step="spun"] .tube-group,
+  body[data-step="spun"] .centrifuge-group {
+    opacity: 1;
+  }
+
+  .phage-free {
+    transition: transform 260ms ease, opacity 220ms ease;
+  }
+
+  body[data-step="blended"] .phage-free,
+  body[data-step="spun"] .phage-free {
+    opacity: 0.36;
+  }
+
+  .blade {
+    fill: #95a8ad;
+  }
+
+  .blade-wheel {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  body[data-step="blended"] .blade-wheel,
+  body[data-step="spun"] .blade-wheel {
+    animation: spinBlade 0.58s linear infinite;
+  }
+
+  .swirl {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.35);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-dasharray: 18 14;
+    opacity: 0;
+  }
+
+  body[data-step="blended"] .swirl,
+  body[data-step="spun"] .swirl {
+    opacity: 0.75;
+    animation: dash 1.05s linear infinite;
+  }
+
+  .tube-supernatant {
+    fill: rgba(82, 135, 151, 0.2);
+  }
+
+  body[data-label="protein"][data-step="spun"] .tube-supernatant {
+    fill: rgba(244, 184, 96, 0.32);
+  }
+
+  body[data-label="dna"][data-step="spun"] .tube-pellet {
+    fill: rgba(79, 209, 197, 0.62);
+  }
+
+  body[data-label="protein"][data-step="spun"] .tube-pellet {
+    fill: rgba(154, 213, 111, 0.52);
+  }
+
+  .tube-pellet {
+    fill: rgba(154, 213, 111, 0.36);
+  }
+
+  .stage-note {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    min-height: 64px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(8, 12, 14, 0.78);
+    backdrop-filter: blur(10px);
+  }
+
+  .stage-note strong,
+  .stage-note span {
+    display: block;
+  }
+
+  .stage-note strong {
+    margin-bottom: 3px;
+    font-size: 0.96rem;
+  }
+
+  .stage-note span {
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.38;
+  }
+
+  .mini-meter {
+    width: 136px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background:
+      linear-gradient(90deg, rgba(79, 209, 197, 0.22), rgba(244, 184, 96, 0.23)),
+      #11181d;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mini-meter::before {
+    content: "";
+    position: absolute;
+    inset: 9px 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.34);
+  }
+
+  .meter-needle {
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    width: 2px;
+    height: 30px;
+    background: var(--ink);
+    transform-origin: bottom center;
+    transform: rotate(var(--needle-angle, -45deg));
+    transition: transform 520ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  }
+
+  .readout-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 12px;
+  }
+
+  .readout-card {
+    padding: 14px;
+  }
+
+  .readout-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .bar-stack {
+    display: grid;
+    gap: 12px;
+  }
+
+  .readout-row {
+    display: grid;
+    gap: 7px;
+  }
+
+  .readout-row header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 0.84rem;
+  }
+
+  .readout-row strong {
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bar-track {
+    height: 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.24);
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: var(--value, 0%);
+    border-radius: inherit;
+    background: var(--focus-color);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--focus-color) 48%, transparent);
+    transition: width 640ms cubic-bezier(0.2, 0.85, 0.2, 1);
+  }
+
+  .conclusion {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 9px;
+  }
+
+  .conclusion-result {
+    min-height: 78px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.48;
+  }
+
+  .verdict {
+    align-self: end;
+    min-height: 58px;
+    padding: 11px;
+    border: 1px solid color-mix(in srgb, var(--focus-color) 52%, var(--line));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--focus-color) 13%, rgba(0, 0, 0, 0.18));
+    color: var(--ink);
+    font-weight: 820;
+    line-height: 1.35;
+  }
+
+  .about-backdrop {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    padding: 18px;
+    background: rgba(4, 7, 9, 0.68);
+    z-index: 20;
+  }
+
+  .about-backdrop.is-open {
+    display: grid;
+  }
+
+  .about-panel {
+    width: min(760px, 100%);
+    max-height: min(760px, calc(100vh - 36px));
+    overflow: auto;
+    border: 1px solid var(--line-bright);
+    border-radius: 8px;
+    background: #141b20;
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.58);
+  }
+
+  .about-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(20, 27, 32, 0.96);
+  }
+
+  .about-header h2 {
+    font-size: 0.98rem;
+  }
+
+  .about-body {
+    padding: 16px;
+    color: var(--muted);
+    line-height: 1.58;
+  }
+
+  .about-body p {
+    margin: 0 0 12px;
+  }
+
+  .about-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .about-body strong {
+    color: var(--ink);
+  }
+
+  .about-facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  .about-fact {
+    min-height: 94px;
+    padding: 11px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  .about-fact span {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--cell);
+    font-size: 0.72rem;
+    font-weight: 820;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .about-fact strong {
+    display: block;
+    font-size: 0.98rem;
+    line-height: 1.32;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(0.92);
+    }
+    50% {
+      transform: scale(1.25);
+    }
+  }
+
+  @keyframes spinBlade {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -64;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .app-grid,
+    .readout-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .controls-column {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .panel + .panel {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 760px) {
+    body {
+      padding: 14px;
+    }
+
+    .shell {
+      min-height: calc(100vh - 28px);
+    }
+
+    .topbar {
+      grid-template-columns: 1fr;
+      align-items: stretch;
+    }
+
+    .top-actions {
+      justify-content: stretch;
+    }
+
+    .top-actions button {
+      flex: 1;
+    }
+
+    .controls-column {
+      grid-template-columns: 1fr;
+    }
+
+    .protocol-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .stage,
+    .stage svg {
+      min-height: 440px;
+    }
+
+    .stage-note {
+      grid-template-columns: 1fr;
+    }
+
+    .mini-meter {
+      width: 100%;
+    }
+
+    .about-facts {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    body {
+      padding: 10px;
+    }
+
+    .stage,
+    .stage svg {
+      min-height: 390px;
+    }
+
+    .stage-header,
+    .readout-title,
+    .readout-row header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+<body data-label="dna" data-step="loaded">
+<div class="shell">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Bacteriophage genetics</p>
+      <h1>Hershey-Chase Experiment</h1>
+      <p class="lede">Trace the radioactive label through infection, blending, and centrifugation to identify which phage molecule enters E. coli.</p>
+    </div>
+    <div class="top-actions">
+      <button id="aboutButton" class="ghost-button" type="button">About</button>
+    </div>
+  </header>
+
+  <main class="app-grid">
+    <div class="controls-column">
+      <section class="panel" aria-labelledby="label-title">
+        <div class="panel-title">
+          <h2 id="label-title">Radiolabel</h2>
+          <span id="labelChip" class="chip">32P DNA</span>
+        </div>
+        <div class="label-options" role="group" aria-label="Choose radiolabeled phage component">
+          <button id="dnaLabel" class="label-option dna-choice" type="button" aria-pressed="true">
+            <span class="isotope">32P</span>
+            <span>
+              <strong>Label DNA</strong>
+              <span>Phosphorus marks the phage genome.</span>
+            </span>
+          </button>
+          <button id="proteinLabel" class="label-option protein-choice" type="button" aria-pressed="false">
+            <span class="isotope">35S</span>
+            <span>
+              <strong>Label protein coat</strong>
+              <span>Sulfur marks the outside capsid.</span>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="protocol-title">
+        <div class="panel-title">
+          <h2 id="protocol-title">Protocol</h2>
+          <span id="stepChip" class="chip">Loaded</span>
+        </div>
+        <div class="step-list" aria-live="polite">
+          <div id="stepInfect" class="step is-current">
+            <span class="step-number">1</span>
+            <span>
+              <strong>Infect E. coli</strong>
+              <span>Phage attach and inject genetic material.</span>
+            </span>
+          </div>
+          <div id="stepBlend" class="step">
+            <span class="step-number">2</span>
+            <span>
+              <strong>Blend</strong>
+              <span>Shear empty phage coats from bacteria.</span>
+            </span>
+          </div>
+          <div id="stepSpin" class="step">
+            <span class="step-number">3</span>
+            <span>
+              <strong>Centrifuge</strong>
+              <span>Pellet bacteria; leave coats in supernatant.</span>
+            </span>
+          </div>
+        </div>
+        <div class="protocol-actions">
+          <button id="infectButton" class="is-next" type="button">Infect</button>
+          <button id="blendButton" type="button" disabled>Blender</button>
+          <button id="spinButton" type="button" disabled>Centrifuge</button>
+        </div>
+        <button id="resetButton" class="reset-button" type="button">Reset sample</button>
+      </section>
+    </div>
+
+    <div class="stage-column">
+      <section class="stage-panel" aria-label="Hershey-Chase experiment visualization">
+        <div class="stage-header">
+          <div>
+            <strong id="stageTitle">Prepared T2 phage sample</strong>
+            <span id="stageSubtitle">The chosen isotope is visible on the phage before infection.</span>
+          </div>
+          <span id="sampleStatus" class="chip status-pill">Ready</span>
+        </div>
+        <div class="stage">
+          <svg viewBox="0 0 1120 630" role="img" aria-labelledby="svgTitle svgDesc">
+            <title id="svgTitle">Hershey-Chase protocol diagram</title>
+            <desc id="svgDesc">Labeled bacteriophages infect E. coli, are sheared in a blender, then separated into pellet and supernatant after centrifugation.</desc>
+            <defs>
+              <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <linearGradient id="jarGradient" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#b7d6de" stop-opacity="0.14" />
+                <stop offset="1" stop-color="#36505d" stop-opacity="0.08" />
+              </linearGradient>
+            </defs>
+
+            <rect width="1120" height="630" fill="#0b1013" />
+            <g opacity="0.8">
+              <path class="grid-line" d="M80 0V630M160 0V630M240 0V630M320 0V630M400 0V630M480 0V630M560 0V630M640 0V630M720 0V630M800 0V630M880 0V630M960 0V630M1040 0V630" />
+              <path class="grid-line" d="M0 70H1120M0 140H1120M0 210H1120M0 280H1120M0 350H1120M0 420H1120M0 490H1120M0 560H1120" />
+            </g>
+            <rect class="bench" x="0" y="506" width="1120" height="124" />
+
+            <g transform="translate(58 90)">
+              <text x="0" y="0" fill="#a9b7b4" font-size="15" font-weight="800" letter-spacing="1.6">1. INFECTION</text>
+              <ellipse class="cell-body" cx="155" cy="246" rx="82" ry="34" transform="rotate(-12 155 246)" />
+              <ellipse class="cell-highlight" cx="127" cy="235" rx="34" ry="10" transform="rotate(-12 127 235)" />
+              <ellipse class="cell-body" cx="288" cy="320" rx="76" ry="31" transform="rotate(15 288 320)" />
+              <ellipse class="cell-highlight" cx="262" cy="309" rx="31" ry="9" transform="rotate(15 262 309)" />
+
+              <g class="phage-free" transform="translate(34 68)">
+                <polygon class="phage-head" points="44,0 69,15 69,45 44,60 18,45 18,15" />
+                <line class="phage-tail" x1="44" y1="60" x2="44" y2="112" />
+                <line class="phage-leg" x1="44" y1="112" x2="22" y2="132" />
+                <line class="phage-leg" x1="44" y1="112" x2="66" y2="132" />
+                <line class="phage-leg" x1="44" y1="100" x2="20" y2="102" />
+                <line class="phage-leg" x1="44" y1="100" x2="68" y2="102" />
+                <circle class="dna-mark" cx="44" cy="30" r="8" />
+                <path class="protein-mark" d="M26 10L20 19M63 12L70 22M20 42L11 49M68 43L78 50" stroke="currentColor" />
+              </g>
+
+              <g class="phage-free" transform="translate(218 44) rotate(16)">
+                <polygon class="phage-head" points="38,0 62,14 62,42 38,56 14,42 14,14" />
+                <line class="phage-tail" x1="38" y1="56" x2="38" y2="102" />
+                <line class="phage-leg" x1="38" y1="102" x2="18" y2="119" />
+                <line class="phage-leg" x1="38" y1="102" x2="58" y2="119" />
+                <line class="phage-leg" x1="38" y1="92" x2="17" y2="94" />
+                <line class="phage-leg" x1="38" y1="92" x2="59" y2="94" />
+                <circle class="dna-mark" cx="38" cy="28" r="7" />
+                <path class="protein-mark" d="M21 10L14 19M56 11L63 20M14 40L5 47M62 40L71 47" stroke="currentColor" />
+              </g>
+
+              <g class="infection-group">
+                <path class="syringe-line" d="M118 172C128 190 134 207 139 225" />
+                <path class="syringe-line" d="M274 149C277 184 279 210 281 286" />
+                <path class="coat-fragment coat-dot" d="M77 214Q94 204 109 219" />
+                <path class="coat-fragment coat-dot" d="M319 224Q337 214 352 232" />
+              </g>
+
+              <g class="radio-dots" filter="url(#softGlow)">
+                <circle class="dot phage-dna-dot" cx="78" cy="98" r="8" fill="var(--dna)" />
+                <circle class="dot phage-dna-dot" cx="256" cy="78" r="7" fill="var(--dna)" />
+                <circle class="dot phage-protein-dot" cx="91" cy="113" r="7" fill="var(--protein)" />
+                <circle class="dot phage-protein-dot" cx="276" cy="90" r="7" fill="var(--protein)" />
+                <circle class="dot cell-dot" cx="151" cy="243" r="9" fill="var(--dna)" />
+                <circle class="dot cell-dot" cx="289" cy="319" r="9" fill="var(--dna)" />
+                <circle class="dot coat-dot" cx="104" cy="214" r="8" fill="var(--protein)" />
+                <circle class="dot coat-dot" cx="344" cy="230" r="8" fill="var(--protein)" />
+              </g>
+            </g>
+
+            <g class="blend-group" transform="translate(405 86)">
+              <text x="0" y="0" fill="#a9b7b4" font-size="15" font-weight="800" letter-spacing="1.6">2. BLENDER</text>
+              <path class="glass" d="M92 65H292L263 383H122Z" fill="url(#jarGradient)" />
+              <path class="liquid" d="M119 252H265L254 365H132Z" />
+              <path class="swirl" d="M139 214C185 184 240 208 252 238C263 269 224 292 176 286C136 281 120 251 146 232" />
+              <path class="swirl" d="M140 304C182 275 234 292 250 318" />
+              <g transform="translate(139 210)">
+                <ellipse class="cell-body" cx="54" cy="85" rx="52" ry="20" transform="rotate(-8 54 85)" />
+                <ellipse class="cell-body" cx="118" cy="130" rx="48" ry="19" transform="rotate(16 118 130)" />
+                <path class="coat-fragment coat-dot" d="M37 38Q59 24 80 39" />
+                <path class="coat-fragment coat-dot" d="M129 53Q151 41 172 58" />
+                <path class="coat-fragment coat-dot" d="M72 172Q94 159 115 176" />
+              </g>
+              <g transform="translate(560 350)">
+                <g class="blade-wheel">
+                  <path class="blade" d="M-6 -8L-96 -24Q-112 -27 -115 -15Q-116 -7 -101 -3L-6 6Z" />
+                  <path class="blade" d="M6 8L96 24Q112 27 115 15Q116 7 101 3L6 -6Z" />
+                  <circle cx="0" cy="0" r="14" fill="#d7e3e5" />
+                </g>
+              </g>
+              <g class="radio-dots" filter="url(#softGlow)">
+                <circle class="dot cell-dot" cx="192" cy="295" r="8" fill="var(--dna)" />
+                <circle class="dot cell-dot" cx="255" cy="340" r="8" fill="var(--dna)" />
+                <circle class="dot coat-dot" cx="220" cy="249" r="8" fill="var(--protein)" />
+                <circle class="dot coat-dot" cx="306" cy="262" r="8" fill="var(--protein)" />
+                <circle class="dot coat-dot" cx="256" cy="382" r="8" fill="var(--protein)" />
+              </g>
+            </g>
+
+            <g class="centrifuge-group" transform="translate(764 90)">
+              <text x="0" y="0" fill="#a9b7b4" font-size="15" font-weight="800" letter-spacing="1.6">3. CENTRIFUGE</text>
+              <circle cx="128" cy="206" r="94" fill="#131b20" stroke="#34414a" stroke-width="3" />
+              <circle cx="128" cy="206" r="22" fill="#263039" stroke="#53636f" stroke-width="2" />
+              <g transform="rotate(-25 128 206)">
+                <rect x="55" y="178" width="146" height="56" rx="14" fill="#22303a" stroke="#53636f" stroke-width="2" />
+                <circle cx="72" cy="206" r="12" fill="#9ad56f" />
+                <circle cx="184" cy="206" r="12" fill="#9ad56f" />
+              </g>
+              <g transform="rotate(65 128 206)">
+                <rect x="55" y="178" width="146" height="56" rx="14" fill="#22303a" stroke="#53636f" stroke-width="2" />
+                <circle cx="72" cy="206" r="12" fill="#9ad56f" />
+                <circle cx="184" cy="206" r="12" fill="#9ad56f" />
+              </g>
+            </g>
+
+            <g class="tube-group" transform="translate(960 142)">
+              <text x="-20" y="-52" fill="#a9b7b4" font-size="15" font-weight="800" letter-spacing="1.6">READOUT</text>
+              <path class="glass" d="M0 0H88L78 286Q76 329 44 329Q12 329 10 286Z" />
+              <path class="tube-supernatant" d="M10 64H78L70 270Q69 293 44 293Q19 293 18 270Z" />
+              <ellipse class="tube-pellet" cx="44" cy="292" rx="31" ry="17" />
+              <line x1="99" y1="95" x2="164" y2="95" stroke="#53636f" stroke-width="2" />
+              <line x1="99" y1="289" x2="164" y2="289" stroke="#53636f" stroke-width="2" />
+              <text x="172" y="100" fill="#a9b7b4" font-size="16">Supernatant</text>
+              <text x="172" y="294" fill="#a9b7b4" font-size="16">Pellet</text>
+              <g class="radio-dots" filter="url(#softGlow)">
+                <circle class="dot sup-dot" cx="44" cy="96" r="9" fill="var(--protein)" />
+                <circle class="dot sup-dot" cx="34" cy="148" r="7" fill="var(--protein)" />
+                <circle class="dot sup-dot" cx="55" cy="205" r="8" fill="var(--protein)" />
+                <circle class="dot pellet-dot" cx="34" cy="291" r="9" fill="var(--dna)" />
+                <circle class="dot pellet-dot" cx="52" cy="297" r="8" fill="var(--dna)" />
+              </g>
+            </g>
+          </svg>
+
+          <div class="stage-note">
+            <div>
+              <strong id="noteTitle">Choose a label and infect the bacteria.</strong>
+              <span id="noteBody">With 32P, the isotope sits in DNA. With 35S, it sits in the protein coat.</span>
+            </div>
+            <div class="mini-meter" aria-hidden="true">
+              <span id="meterNeedle" class="meter-needle"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="readout-grid" aria-label="Radioactivity readout and conclusion">
+        <div class="readout-card">
+          <div class="readout-title">
+            <h2>Radioactivity readout</h2>
+            <span id="countChip" class="chip">Waiting for centrifuge</span>
+          </div>
+          <div class="bar-stack" aria-live="polite">
+            <div class="readout-row">
+              <header>
+                <span>Pellet: infected E. coli cells</span>
+                <strong id="pelletValue">0 cpm</strong>
+              </header>
+              <div class="bar-track"><div id="pelletBar" class="bar-fill"></div></div>
+            </div>
+            <div class="readout-row">
+              <header>
+                <span>Supernatant: sheared phage coats</span>
+                <strong id="superValue">0 cpm</strong>
+              </header>
+              <div class="bar-track"><div id="superBar" class="bar-fill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="readout-card conclusion">
+          <div class="readout-title">
+            <h2>Inference</h2>
+            <span id="inferenceChip" class="chip">Pending</span>
+          </div>
+          <p id="resultText" class="conclusion-result">Separate the mixture to see whether the radioactive label travels with cells or with phage coats.</p>
+          <div id="verdict" class="verdict">Conclusion appears after centrifugation.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="aboutPanel" class="about-backdrop" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-hidden="true">
+  <div class="about-panel">
+    <div class="about-header">
+      <h2 id="aboutTitle">About This Experiment</h2>
+      <button id="closeAbout" type="button">Close</button>
+    </div>
+    <div class="about-body">
+      <p><strong>Hershey and Chase tested whether DNA or protein carried phage genetic information.</strong> They used T2 bacteriophages because a phage injects material into E. coli while most of its outer coat remains outside the cell.</p>
+      <div class="about-facts">
+        <div class="about-fact">
+          <span>32P</span>
+          <strong>Labels DNA, because DNA contains phosphorus.</strong>
+        </div>
+        <div class="about-fact">
+          <span>35S</span>
+          <strong>Labels protein, because phage coat proteins contain sulfur.</strong>
+        </div>
+        <div class="about-fact">
+          <span>Pellet</span>
+          <strong>Contains the infected E. coli cells after centrifugation.</strong>
+        </div>
+      </div>
+      <p>After infection, the blender shears empty phage coats away from the bacterial surfaces. Centrifugation then separates the heavy infected cells into the pellet and leaves lighter phage coats in the supernatant.</p>
+      <p>When DNA is labeled, radioactivity follows the E. coli pellet. When protein is labeled, radioactivity mostly remains in the supernatant. The paired results support the conclusion that <strong>DNA is the genetic material</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const outcomes = {
+    dna: {
+      labelChip: "32P DNA",
+      countChip: "DNA label",
+      pellet: 88,
+      supernatant: 12,
+      result: "Most radioactivity is in the pellet, which contains the infected E. coli cells.",
+      verdict: "32P-labeled DNA entered the bacteria. DNA is the genetic material.",
+      preface: "The radioactive marker is in the DNA core of each phage."
+    },
+    protein: {
+      labelChip: "35S protein",
+      countChip: "Protein label",
+      pellet: 18,
+      supernatant: 82,
+      result: "Most radioactivity is in the supernatant, which contains the sheared phage coats.",
+      verdict: "35S-labeled protein stayed outside the bacteria. DNA, not protein, is the genetic material.",
+      preface: "The radioactive marker is on the protein coat of each phage."
+    }
+  };
+
+  const copy = {
+    loaded: {
+      chip: "Loaded",
+      status: "Ready",
+      title: "Prepared T2 phage sample",
+      subtitle: "The chosen isotope is visible on the phage before infection.",
+      noteTitle: "Choose a label and infect the bacteria.",
+      noteBody: "With 32P, the isotope sits in DNA. With 35S, it sits in the protein coat.",
+      inference: "Pending"
+    },
+    infected: {
+      chip: "Infected",
+      status: "Attached",
+      title: "Phage have infected E. coli",
+      subtitle: "Phage attach to bacteria and deliver genetic material through the tail.",
+      noteTitle: "The phage have attached to E. coli.",
+      noteBody: "Only DNA is injected into the cells; the protein coats remain outside.",
+      inference: "Attached"
+    },
+    blended: {
+      chip: "Blended",
+      status: "Sheared",
+      title: "Blender shears off phage coats",
+      subtitle: "The mixture now contains infected cells plus detached phage coats.",
+      noteTitle: "The blender separates coats from cell surfaces.",
+      noteBody: "Centrifugation will reveal whether the isotope follows the cells or the coats.",
+      inference: "Sheared"
+    },
+    spun: {
+      chip: "Separated",
+      status: "Separated",
+      title: "Pellet and supernatant are separated",
+      subtitle: "The counter now reads radioactivity in each fraction.",
+      noteTitle: "The radioactive fraction identifies what entered E. coli.",
+      noteBody: "Pellet means label entered cells. Supernatant means label stayed with phage coats.",
+      inference: "Result"
+    }
+  };
+
+  const state = {
+    label: "dna",
+    step: "loaded",
+    displayPellet: 0,
+    displaySuper: 0,
+    animationFrame: 0
+  };
+
+  const els = {
+    body: document.body,
+    dnaLabel: document.getElementById("dnaLabel"),
+    proteinLabel: document.getElementById("proteinLabel"),
+    infect: document.getElementById("infectButton"),
+    blend: document.getElementById("blendButton"),
+    spin: document.getElementById("spinButton"),
+    reset: document.getElementById("resetButton"),
+    aboutButton: document.getElementById("aboutButton"),
+    aboutPanel: document.getElementById("aboutPanel"),
+    closeAbout: document.getElementById("closeAbout"),
+    labelChip: document.getElementById("labelChip"),
+    stepChip: document.getElementById("stepChip"),
+    sampleStatus: document.getElementById("sampleStatus"),
+    stageTitle: document.getElementById("stageTitle"),
+    stageSubtitle: document.getElementById("stageSubtitle"),
+    noteTitle: document.getElementById("noteTitle"),
+    noteBody: document.getElementById("noteBody"),
+    pelletValue: document.getElementById("pelletValue"),
+    superValue: document.getElementById("superValue"),
+    pelletBar: document.getElementById("pelletBar"),
+    superBar: document.getElementById("superBar"),
+    countChip: document.getElementById("countChip"),
+    inferenceChip: document.getElementById("inferenceChip"),
+    resultText: document.getElementById("resultText"),
+    verdict: document.getElementById("verdict"),
+    needle: document.getElementById("meterNeedle"),
+    steps: {
+      infect: document.getElementById("stepInfect"),
+      blend: document.getElementById("stepBlend"),
+      spin: document.getElementById("stepSpin")
+    }
+  };
+
+  function targetCounts() {
+    if (state.step !== "spun") {
+      return { pellet: 0, supernatant: 0 };
+    }
+    return outcomes[state.label];
+  }
+
+  function setLabel(label) {
+    if (state.label === label) {
+      return;
+    }
+    state.label = label;
+    resetStep();
+  }
+
+  function resetStep() {
+    state.step = "loaded";
+    animateCounts(0, 0);
+    render();
+  }
+
+  function nextStep(step) {
+    const allowed = {
+      infected: state.step === "loaded",
+      blended: state.step === "infected",
+      spun: state.step === "blended"
+    };
+
+    if (!allowed[step]) {
+      return;
+    }
+
+    state.step = step;
+    if (step === "spun") {
+      const outcome = outcomes[state.label];
+      animateCounts(outcome.pellet, outcome.supernatant);
+    } else {
+      animateCounts(0, 0);
+    }
+    render();
+  }
+
+  function animateCounts(targetPellet, targetSuper) {
+    cancelAnimationFrame(state.animationFrame);
+    const startPellet = state.displayPellet;
+    const startSuper = state.displaySuper;
+    const start = performance.now();
+    const duration = 560;
+
+    function tick(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      state.displayPellet = startPellet + (targetPellet - startPellet) * eased;
+      state.displaySuper = startSuper + (targetSuper - startSuper) * eased;
+      renderCounts();
+
+      if (t < 1) {
+        state.animationFrame = requestAnimationFrame(tick);
+      } else {
+        state.displayPellet = targetPellet;
+        state.displaySuper = targetSuper;
+        renderCounts();
+      }
+    }
+
+    state.animationFrame = requestAnimationFrame(tick);
+  }
+
+  function renderCounts() {
+    const pellet = Math.round(state.displayPellet);
+    const sup = Math.round(state.displaySuper);
+    els.pelletValue.textContent = `${pellet} cpm`;
+    els.superValue.textContent = `${sup} cpm`;
+    els.pelletBar.style.setProperty("--value", `${pellet}%`);
+    els.superBar.style.setProperty("--value", `${sup}%`);
+
+    const high = Math.max(pellet, sup);
+    const angle = state.step === "spun" ? -44 + high * 0.88 : -45;
+    els.needle.style.setProperty("--needle-angle", `${angle}deg`);
+  }
+
+  function renderSteps() {
+    const order = ["loaded", "infected", "blended", "spun"];
+    const index = order.indexOf(state.step);
+    const stepState = {
+      infect: index > 0 ? "done" : index === 0 ? "current" : "",
+      blend: index > 1 ? "done" : index === 1 ? "current" : "",
+      spin: index > 2 ? "done" : index === 2 ? "current" : ""
+    };
+
+    Object.entries(els.steps).forEach(([key, element]) => {
+      element.classList.toggle("is-done", stepState[key] === "done");
+      element.classList.toggle("is-current", stepState[key] === "current");
+    });
+  }
+
+  function renderButtons() {
+    els.dnaLabel.setAttribute("aria-pressed", String(state.label === "dna"));
+    els.proteinLabel.setAttribute("aria-pressed", String(state.label === "protein"));
+
+    els.infect.disabled = state.step !== "loaded";
+    els.blend.disabled = state.step !== "infected";
+    els.spin.disabled = state.step !== "blended";
+
+    els.infect.classList.toggle("is-next", state.step === "loaded");
+    els.blend.classList.toggle("is-next", state.step === "infected");
+    els.spin.classList.toggle("is-next", state.step === "blended");
+  }
+
+  function render() {
+    const outcome = outcomes[state.label];
+    const stage = copy[state.step];
+
+    els.body.dataset.label = state.label;
+    els.body.dataset.step = state.step;
+
+    els.labelChip.textContent = outcome.labelChip;
+    els.stepChip.textContent = stage.chip;
+    els.sampleStatus.textContent = stage.status;
+    els.stageTitle.textContent = stage.title;
+    els.stageSubtitle.textContent = stage.subtitle;
+    els.noteTitle.textContent = state.step === "loaded" ? stage.noteTitle : stage.noteTitle;
+    els.noteBody.textContent = state.step === "loaded" ? outcome.preface : stage.noteBody;
+    els.inferenceChip.textContent = stage.inference;
+
+    if (state.step === "spun") {
+      els.countChip.textContent = outcome.countChip;
+      els.resultText.textContent = outcome.result;
+      els.verdict.textContent = outcome.verdict;
+    } else {
+      els.countChip.textContent = "Waiting for centrifuge";
+      els.resultText.textContent = "Separate the mixture to see whether the radioactive label travels with cells or with phage coats.";
+      els.verdict.textContent = "Conclusion appears after centrifugation.";
+    }
+
+    renderButtons();
+    renderSteps();
+    renderCounts();
+  }
+
+  function openAbout() {
+    els.aboutPanel.classList.add("is-open");
+    els.aboutPanel.setAttribute("aria-hidden", "false");
+    els.closeAbout.focus();
+  }
+
+  function closeAbout() {
+    els.aboutPanel.classList.remove("is-open");
+    els.aboutPanel.setAttribute("aria-hidden", "true");
+    els.aboutButton.focus();
+  }
+
+  els.dnaLabel.addEventListener("click", () => setLabel("dna"));
+  els.proteinLabel.addEventListener("click", () => setLabel("protein"));
+  els.infect.addEventListener("click", () => nextStep("infected"));
+  els.blend.addEventListener("click", () => nextStep("blended"));
+  els.spin.addEventListener("click", () => nextStep("spun"));
+  els.reset.addEventListener("click", resetStep);
+  els.aboutButton.addEventListener("click", openAbout);
+  els.closeAbout.addEventListener("click", closeAbout);
+  els.aboutPanel.addEventListener("click", event => {
+    if (event.target === els.aboutPanel) {
+      closeAbout();
+    }
+  });
+  window.addEventListener("keydown", event => {
+    if (event.key === "Escape" && els.aboutPanel.classList.contains("is-open")) {
+      closeAbout();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

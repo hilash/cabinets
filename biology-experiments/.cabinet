@@ -1,0 +1,12 @@
+schemaVersion: 1
+id: biology-experiments-root
+name: Biology Experiments
+kind: root
+version: 0.1.0
+description: >
+  Five interactive simulations of landmark biology experiments — Griffith's
+  transformation, Hershey-Chase, Mendel's peas, Meselson-Stahl, and Miller-Urey.
+  The experiments that proved DNA is the genetic material, that inheritance is
+  particulate, that DNA replication is semiconservative, and that life's
+  building blocks form from a primordial soup. Vanilla JS, runs in the browser.
+entry: index.md

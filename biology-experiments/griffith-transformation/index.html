@@ -1,0 +1,1848 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Griffith Transformation Experiment</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0f12;
+      --surface: #15191d;
+      --surface-2: #1d2328;
+      --surface-3: #242b30;
+      --ink: #f3f5ee;
+      --muted: #a8b3aa;
+      --line: #354046;
+      --line-soft: rgba(160, 176, 166, 0.18);
+      --teal: #4fd5c8;
+      --amber: #f2b44b;
+      --green: #8ed56c;
+      --red: #ef7467;
+      --violet: #a58cff;
+      --blue: #75a8ff;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+        linear-gradient(135deg, #111418 0%, #0d0f12 52%, #17140f 100%);
+      background-size: 42px 42px, 42px 42px, auto;
+      color: var(--ink);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1440px, 100%);
+      min-height: 100dvh;
+      margin: 0 auto;
+      padding: clamp(16px, 2.5vw, 30px);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--teal);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: clamp(1.85rem, 3.2vw, 3.45rem);
+      line-height: 0.98;
+      font-weight: 820;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+      line-height: 1.45;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(29, 35, 40, 0.9);
+      color: var(--ink);
+      cursor: pointer;
+      padding: 0 14px;
+      font-weight: 760;
+      transition:
+        border-color 150ms ease,
+        background 150ms ease,
+        color 150ms ease,
+        transform 120ms ease;
+    }
+
+    .btn:hover {
+      border-color: rgba(79, 213, 200, 0.64);
+      background: #263038;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.primary {
+      border-color: rgba(79, 213, 200, 0.52);
+      background: rgba(79, 213, 200, 0.16);
+      color: #ecfffc;
+    }
+
+    .workspace {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(270px, 320px) minmax(420px, 1fr) minmax(290px, 360px);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(21, 25, 29, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .control-panel,
+    .data-panel {
+      align-self: start;
+      padding: 16px;
+    }
+
+    .panel-title {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .panel-copy {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.42;
+    }
+
+    .experiment-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .experiment-option {
+      width: 100%;
+      min-height: 78px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 11px;
+      align-items: center;
+      padding: 11px;
+      text-align: left;
+      cursor: pointer;
+      transition:
+        border-color 150ms ease,
+        background 150ms ease,
+        transform 120ms ease;
+    }
+
+    .experiment-option:hover {
+      border-color: rgba(242, 180, 75, 0.62);
+      background: #252d33;
+    }
+
+    .experiment-option:active {
+      transform: translateY(1px);
+    }
+
+    .experiment-option[aria-pressed="true"] {
+      border-color: rgba(79, 213, 200, 0.75);
+      background: linear-gradient(135deg, rgba(79, 213, 200, 0.18), rgba(165, 140, 255, 0.14));
+      box-shadow: inset 0 0 0 1px rgba(79, 213, 200, 0.16);
+    }
+
+    .strain-mark {
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--line-soft);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 850;
+      font-size: 0.98rem;
+      color: #07100f;
+    }
+
+    .strain-mark.r {
+      background: var(--amber);
+    }
+
+    .strain-mark.s {
+      background: var(--teal);
+    }
+
+    .strain-mark.dead-s {
+      background:
+        linear-gradient(135deg, transparent 44%, rgba(16, 18, 20, 0.72) 45% 55%, transparent 56%),
+        var(--violet);
+      color: #f7f4ff;
+    }
+
+    .strain-mark.mix {
+      background:
+        linear-gradient(90deg, var(--amber) 0 49%, var(--violet) 50% 100%);
+      color: #0c0e11;
+    }
+
+    .option-title {
+      display: block;
+      font-weight: 820;
+      line-height: 1.2;
+    }
+
+    .option-meta {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.32;
+    }
+
+    .key {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 9px;
+    }
+
+    .key-row {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 9px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .dot {
+      width: 13px;
+      height: 13px;
+      margin-top: 2px;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .dot.s {
+      background: var(--teal);
+      box-shadow: 0 0 0 3px rgba(79, 213, 200, 0.16);
+    }
+
+    .dot.dead {
+      background: var(--violet);
+      position: relative;
+    }
+
+    .dot.dead::after {
+      content: "";
+      position: absolute;
+      inset: 5px -3px;
+      height: 2px;
+      background: #101216;
+      transform: rotate(-45deg);
+    }
+
+    .stage-panel {
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(520px, 1fr);
+    }
+
+    .stage-header {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(29, 35, 40, 0.72);
+    }
+
+    .stage-header h2 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .status-badge {
+      min-width: 112px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 11px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(13, 15, 18, 0.62);
+      font-size: 0.82rem;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    .status-badge.injecting {
+      color: var(--amber);
+      border-color: rgba(242, 180, 75, 0.48);
+    }
+
+    .status-badge.live {
+      color: var(--green);
+      border-color: rgba(142, 213, 108, 0.48);
+    }
+
+    .status-badge.dead {
+      color: var(--red);
+      border-color: rgba(239, 116, 103, 0.48);
+    }
+
+    .stage {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0)),
+        #101316;
+    }
+
+    .lab-bench {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 38%;
+      border-top: 1px solid rgba(168, 179, 170, 0.22);
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(180deg, #1b211f, #121514);
+      background-size: 34px 34px, auto;
+    }
+
+    .source-label {
+      position: absolute;
+      left: 22px;
+      top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: rgba(13, 15, 18, 0.7);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 740;
+      max-width: calc(100% - 44px);
+    }
+
+    .source-label strong {
+      color: var(--ink);
+      font-weight: 820;
+    }
+
+    .culture-rack {
+      position: absolute;
+      left: clamp(18px, 4vw, 46px);
+      top: 94px;
+      width: 178px;
+      height: 164px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      align-items: end;
+      padding: 12px 12px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(21, 25, 29, 0.72);
+    }
+
+    .tube {
+      position: relative;
+      height: 128px;
+      border: 2px solid rgba(243, 245, 238, 0.28);
+      border-top: 0;
+      border-radius: 0 0 15px 15px;
+      background: rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .tube::before {
+      content: "";
+      position: absolute;
+      left: -3px;
+      right: -3px;
+      top: 0;
+      height: 8px;
+      border: 2px solid rgba(243, 245, 238, 0.28);
+      border-bottom: 0;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .liquid {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      bottom: 4px;
+      height: 66%;
+      border-radius: 0 0 10px 10px;
+      background: rgba(242, 180, 75, 0.35);
+    }
+
+    .tube.s .liquid {
+      background: rgba(79, 213, 200, 0.36);
+    }
+
+    .tube.dead-s .liquid {
+      background: rgba(165, 140, 255, 0.34);
+    }
+
+    .tube.mix .liquid {
+      background:
+        linear-gradient(90deg, rgba(242, 180, 75, 0.38) 0 52%, rgba(165, 140, 255, 0.38) 53% 100%);
+    }
+
+    .tube-label {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.66rem;
+      font-weight: 850;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .selected-r .tube.r,
+    .selected-s .tube.s,
+    .selected-heat .tube.dead-s,
+    .selected-mix .tube.mix {
+      border-color: rgba(255, 255, 255, 0.62);
+      box-shadow: 0 0 0 3px rgba(79, 213, 200, 0.14);
+    }
+
+    .syringe {
+      position: absolute;
+      left: clamp(84px, 18vw, 190px);
+      top: 295px;
+      width: 198px;
+      height: 42px;
+      transform: rotate(-4deg);
+      transform-origin: 88% 50%;
+      transition: transform 780ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 4;
+    }
+
+    .stage.is-injecting .syringe {
+      transform: translateX(clamp(140px, 24vw, 330px)) translateY(13px) rotate(-2deg);
+    }
+
+    .barrel {
+      position: absolute;
+      left: 34px;
+      top: 9px;
+      width: 114px;
+      height: 24px;
+      border: 2px solid rgba(243, 245, 238, 0.7);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, transparent 0 70%, rgba(243, 245, 238, 0.18) 70% 100%),
+        rgba(117, 168, 255, 0.15);
+    }
+
+    .barrel::before,
+    .barrel::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      width: 1px;
+      height: 14px;
+      background: rgba(243, 245, 238, 0.44);
+    }
+
+    .barrel::before {
+      left: 34px;
+    }
+
+    .barrel::after {
+      left: 70px;
+    }
+
+    .plunger {
+      position: absolute;
+      left: 0;
+      top: 18px;
+      width: 38px;
+      height: 5px;
+      background: rgba(243, 245, 238, 0.72);
+      border-radius: 999px;
+    }
+
+    .plunger::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: -8px;
+      width: 8px;
+      height: 21px;
+      border-radius: 4px;
+      background: rgba(243, 245, 238, 0.72);
+    }
+
+    .needle {
+      position: absolute;
+      left: 146px;
+      top: 20px;
+      width: 52px;
+      height: 2px;
+      background: #d9e1dc;
+      box-shadow: 42px 0 0 -0.5px #d9e1dc;
+    }
+
+    .needle::after {
+      content: "";
+      position: absolute;
+      right: -9px;
+      top: -2px;
+      border-left: 10px solid #d9e1dc;
+      border-top: 3px solid transparent;
+      border-bottom: 3px solid transparent;
+    }
+
+    .particle-track {
+      position: absolute;
+      left: clamp(318px, 43%, 510px);
+      top: 328px;
+      width: clamp(150px, 20vw, 260px);
+      height: 54px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      left: 0;
+      top: calc(18px + var(--offset));
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      opacity: 0;
+      background: var(--amber);
+      box-shadow: 0 0 12px rgba(242, 180, 75, 0.5);
+    }
+
+    .selected-s .particle,
+    .selected-heat .particle {
+      background: var(--teal);
+      box-shadow: 0 0 12px rgba(79, 213, 200, 0.5);
+    }
+
+    .selected-mix .particle:nth-child(even) {
+      background: var(--violet);
+      box-shadow: 0 0 12px rgba(165, 140, 255, 0.5);
+    }
+
+    .stage.is-injecting .particle {
+      animation: particleMove 760ms ease-out forwards;
+      animation-delay: calc(var(--i) * 55ms);
+    }
+
+    .mouse-zone {
+      position: absolute;
+      right: clamp(38px, 7vw, 94px);
+      top: 256px;
+      width: min(320px, 41%);
+      min-width: 238px;
+      height: 220px;
+      z-index: 3;
+    }
+
+    .mouse {
+      position: absolute;
+      left: 50%;
+      top: 70px;
+      width: 210px;
+      height: 96px;
+      transform: translateX(-50%);
+      transition:
+        transform 420ms ease,
+        filter 320ms ease,
+        opacity 320ms ease;
+    }
+
+    .mouse-body {
+      position: absolute;
+      left: 34px;
+      top: 19px;
+      width: 140px;
+      height: 72px;
+      border-radius: 48% 54% 46% 50%;
+      background: linear-gradient(180deg, #d8d4c8, #aaa69d);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: inset -18px -14px 24px rgba(47, 47, 43, 0.14);
+    }
+
+    .mouse-head {
+      position: absolute;
+      right: 8px;
+      top: 30px;
+      width: 54px;
+      height: 43px;
+      border-radius: 48% 56% 44% 50%;
+      background: linear-gradient(180deg, #d8d4c8, #b2aea4);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .ear {
+      position: absolute;
+      right: 46px;
+      top: 17px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #c5beb0;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .ear::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: rgba(239, 116, 103, 0.26);
+    }
+
+    .tail {
+      position: absolute;
+      left: 4px;
+      top: 60px;
+      width: 52px;
+      height: 20px;
+      border: 4px solid #d2a0a1;
+      border-right: 0;
+      border-top: 0;
+      border-radius: 0 0 0 32px;
+      transform: rotate(8deg);
+    }
+
+    .eye {
+      position: absolute;
+      right: 22px;
+      top: 43px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #1b1d1f;
+    }
+
+    .nose {
+      position: absolute;
+      right: 4px;
+      top: 50px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #7a4b52;
+    }
+
+    .chest {
+      position: absolute;
+      left: 76px;
+      top: 38px;
+      width: 34px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      opacity: 0;
+    }
+
+    .result-live .mouse {
+      animation: mouseBreathe 1350ms ease-in-out infinite;
+    }
+
+    .result-live .chest {
+      opacity: 1;
+      animation: pulseChest 1350ms ease-in-out infinite;
+    }
+
+    .result-dead .mouse {
+      transform: translateX(-50%) rotate(7deg) translateY(18px);
+      filter: saturate(0.56) brightness(0.78);
+    }
+
+    .result-dead .eye {
+      background: transparent;
+      width: 15px;
+      height: 15px;
+      right: 17px;
+      top: 38px;
+    }
+
+    .result-dead .eye::before,
+    .result-dead .eye::after {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 7px;
+      width: 14px;
+      height: 2px;
+      background: #272a2e;
+      border-radius: 999px;
+    }
+
+    .result-dead .eye::before {
+      transform: rotate(45deg);
+    }
+
+    .result-dead .eye::after {
+      transform: rotate(-45deg);
+    }
+
+    .outcome-stamp {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      min-width: 182px;
+      max-width: 100%;
+      transform: translateX(-50%);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 13px;
+      background: rgba(13, 15, 18, 0.82);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.91rem;
+      line-height: 1.25;
+      font-weight: 820;
+    }
+
+    .result-live .outcome-stamp {
+      color: var(--green);
+      border-color: rgba(142, 213, 108, 0.55);
+    }
+
+    .result-dead .outcome-stamp {
+      color: var(--red);
+      border-color: rgba(239, 116, 103, 0.58);
+    }
+
+    .bacteria-cloud {
+      position: absolute;
+      left: 50%;
+      top: 44px;
+      width: 230px;
+      height: 138px;
+      transform: translateX(-50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 240ms ease;
+    }
+
+    .stage.is-observing .bacteria-cloud,
+    .stage.is-recovery .bacteria-cloud,
+    .result-live .bacteria-cloud,
+    .result-dead .bacteria-cloud {
+      opacity: 1;
+    }
+
+    .bacterium {
+      position: absolute;
+      width: 14px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--amber);
+      opacity: 0.82;
+      transform: rotate(var(--rot));
+    }
+
+    .bacterium.s {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 0 4px rgba(79, 213, 200, 0.14);
+    }
+
+    .bacterium.dead-s {
+      background: var(--violet);
+      opacity: 0.58;
+    }
+
+    .selected-r .bacterium.s,
+    .selected-r .bacterium.dead-s,
+    .selected-s .bacterium.r,
+    .selected-s .bacterium.dead-s,
+    .selected-heat .bacterium.r,
+    .selected-heat .bacterium.s,
+    .selected-mix:not(.is-recovery):not(.result-dead) .bacterium.s {
+      opacity: 0;
+    }
+
+    .selected-heat .bacterium.dead-s {
+      opacity: 0.7;
+      filter: grayscale(0.2);
+    }
+
+    .selected-mix .bacterium.r,
+    .selected-mix .bacterium.dead-s {
+      opacity: 0.82;
+    }
+
+    .selected-mix.result-dead .bacterium.s {
+      opacity: 1;
+      animation: transformedPop 760ms ease-out both;
+    }
+
+    .dna-field {
+      position: absolute;
+      left: 245px;
+      top: 145px;
+      width: 230px;
+      height: 120px;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .selected-mix.is-observing .dna-field,
+    .selected-mix.result-dead .dna-field {
+      opacity: 1;
+    }
+
+    .dna-fragment {
+      position: absolute;
+      left: 0;
+      top: calc(var(--y) * 1px);
+      width: 34px;
+      height: 8px;
+      border-top: 2px solid var(--violet);
+      border-bottom: 2px solid var(--violet);
+      transform: rotate(var(--rot));
+      opacity: 0;
+    }
+
+    .dna-fragment::before,
+    .dna-fragment::after {
+      content: "";
+      position: absolute;
+      top: -4px;
+      width: 2px;
+      height: 12px;
+      background: var(--violet);
+    }
+
+    .dna-fragment::before {
+      left: 8px;
+    }
+
+    .dna-fragment::after {
+      left: 22px;
+    }
+
+    .selected-mix.is-observing .dna-fragment,
+    .selected-mix.result-dead .dna-fragment {
+      animation: dnaDrift 1300ms ease-out forwards;
+      animation-delay: calc(var(--i) * 120ms);
+    }
+
+    .recovery-zone {
+      position: absolute;
+      left: clamp(20px, 3.8vw, 54px);
+      right: clamp(20px, 3.8vw, 54px);
+      bottom: 22px;
+      display: grid;
+      grid-template-columns: minmax(210px, 310px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      z-index: 6;
+    }
+
+    .petri {
+      position: relative;
+      width: min(300px, 100%);
+      aspect-ratio: 1 / 0.58;
+      border-radius: 50%;
+      border: 2px solid rgba(243, 245, 238, 0.34);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.03)),
+        rgba(181, 200, 184, 0.12);
+      box-shadow:
+        inset 0 0 0 9px rgba(255, 255, 255, 0.04),
+        0 16px 28px rgba(0, 0, 0, 0.26);
+      overflow: hidden;
+    }
+
+    .petri::before {
+      content: "Recovery plate";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(243, 245, 238, 0.42);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .petri.has-colonies::before {
+      display: none;
+    }
+
+    .colony {
+      position: absolute;
+      width: var(--size);
+      height: var(--size);
+      left: var(--x);
+      top: var(--y);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0.2);
+      animation: colonyGrow 560ms ease-out forwards;
+      animation-delay: var(--delay);
+    }
+
+    .colony.s {
+      background: rgba(79, 213, 200, 0.86);
+      box-shadow: 0 0 0 4px rgba(79, 213, 200, 0.14), 0 0 16px rgba(79, 213, 200, 0.34);
+    }
+
+    .colony.r {
+      width: calc(var(--size) * 1.35);
+      height: calc(var(--size) * 0.72);
+      border-radius: 999px;
+      background: rgba(242, 180, 75, 0.86);
+      box-shadow: 0 0 14px rgba(242, 180, 75, 0.24);
+    }
+
+    .recovery-copy {
+      min-width: 0;
+      border-left: 1px solid rgba(168, 179, 170, 0.2);
+      padding-left: 16px;
+    }
+
+    .recovery-copy h3 {
+      margin: 0 0 6px;
+      color: var(--amber);
+      font-size: 0.78rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .recovery-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.42;
+    }
+
+    .data-panel {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      background: rgba(21, 25, 29, 0.95);
+    }
+
+    .readout {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .readout:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .observation-list {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 9px;
+    }
+
+    .observation-list li {
+      border: 1px solid rgba(168, 179, 170, 0.16);
+      border-radius: 7px;
+      padding: 10px 11px;
+      background: rgba(13, 15, 18, 0.42);
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.38;
+    }
+
+    .observation-list strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--ink);
+      font-size: 0.79rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .conclusion-box {
+      border: 1px solid rgba(79, 213, 200, 0.24);
+      border-radius: 8px;
+      padding: 13px;
+      background: linear-gradient(135deg, rgba(79, 213, 200, 0.1), rgba(242, 180, 75, 0.07));
+    }
+
+    .conclusion-box h2 {
+      color: var(--teal);
+    }
+
+    .conclusion-box p {
+      margin-bottom: 0;
+      color: #dce5dc;
+      font-size: 0.94rem;
+      line-height: 1.48;
+    }
+
+    .logic-chain {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .logic-pill {
+      min-height: 38px;
+      border: 1px solid rgba(168, 179, 170, 0.18);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      text-align: center;
+      background: rgba(13, 15, 18, 0.36);
+      font-weight: 780;
+    }
+
+    .logic-arrow {
+      color: var(--amber);
+      font-weight: 900;
+    }
+
+    .about-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(4, 6, 8, 0.72);
+      backdrop-filter: blur(8px);
+    }
+
+    .about-overlay[hidden] {
+      display: none;
+    }
+
+    .about-panel {
+      width: min(680px, 100%);
+      max-height: min(760px, calc(100dvh - 36px));
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #15191d;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+      padding: 18px;
+    }
+
+    .about-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .about-heading h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      line-height: 1.18;
+    }
+
+    .about-panel p,
+    .about-panel li {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .about-panel ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    .about-panel strong {
+      color: var(--ink);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes particleMove {
+      0% {
+        opacity: 0;
+        transform: translateX(0) scale(0.5);
+      }
+
+      18% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+      }
+    }
+
+    @keyframes mouseBreathe {
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(-4px);
+      }
+    }
+
+    @keyframes pulseChest {
+      0%,
+      100% {
+        transform: scale(0.92);
+        opacity: 0.35;
+      }
+
+      50% {
+        transform: scale(1.14);
+        opacity: 0.9;
+      }
+    }
+
+    @keyframes colonyGrow {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes dnaDrift {
+      0% {
+        opacity: 0;
+        transform: translateX(0) translateY(0) rotate(var(--rot)) scale(0.7);
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.92;
+        transform: translateX(190px) translateY(var(--drift)) rotate(calc(var(--rot) + 80deg)) scale(1);
+      }
+    }
+
+    @keyframes transformedPop {
+      0% {
+        transform: rotate(var(--rot)) scale(0.2);
+      }
+
+      80% {
+        transform: rotate(var(--rot)) scale(1.25);
+      }
+
+      100% {
+        transform: rotate(var(--rot)) scale(1);
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .workspace {
+        grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+      }
+
+      .data-panel {
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .readout {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .topbar {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .header-actions .btn {
+        flex: 1;
+      }
+
+      .workspace,
+      .data-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .stage-panel {
+        grid-template-rows: auto minmax(610px, 1fr);
+      }
+
+      .stage {
+        min-height: 610px;
+      }
+
+      .culture-rack {
+        top: 76px;
+      }
+
+      .syringe {
+        left: 28px;
+        top: 274px;
+      }
+
+      .stage.is-injecting .syringe {
+        transform: translateX(clamp(92px, 33vw, 180px)) translateY(14px) rotate(-2deg);
+      }
+
+      .particle-track {
+        left: 206px;
+        top: 306px;
+        width: min(210px, calc(100% - 226px));
+      }
+
+      .mouse-zone {
+        right: 12px;
+        top: 246px;
+        width: 260px;
+        min-width: 220px;
+      }
+
+      .dna-field {
+        left: 165px;
+        top: 132px;
+        width: 180px;
+      }
+
+      .recovery-zone {
+        grid-template-columns: 1fr;
+        bottom: 18px;
+      }
+
+      .recovery-copy {
+        border-left: 0;
+        padding-left: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shell {
+        padding: 12px;
+      }
+
+      .control-panel,
+      .data-panel {
+        padding: 13px;
+      }
+
+      .stage-header {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .status-badge {
+        min-width: 0;
+      }
+
+      .experiment-option {
+        grid-template-columns: 40px 1fr;
+      }
+
+      .strain-mark {
+        width: 40px;
+        height: 40px;
+      }
+
+      .stage {
+        min-height: 660px;
+      }
+
+      .source-label {
+        left: 12px;
+        top: 12px;
+      }
+
+      .culture-rack {
+        left: 12px;
+        top: 72px;
+        width: 164px;
+        gap: 6px;
+      }
+
+      .syringe {
+        left: 10px;
+        top: 294px;
+        width: 176px;
+      }
+
+      .stage.is-injecting .syringe {
+        transform: translateX(70px) translateY(18px) rotate(-2deg);
+      }
+
+      .barrel {
+        width: 98px;
+      }
+
+      .needle {
+        left: 132px;
+        width: 42px;
+      }
+
+      .particle-track {
+        left: 164px;
+        top: 326px;
+        width: calc(100% - 176px);
+      }
+
+      .mouse-zone {
+        right: -10px;
+        top: 276px;
+        transform: scale(0.82);
+        transform-origin: right top;
+      }
+
+      .dna-field {
+        display: none;
+      }
+
+      .recovery-zone {
+        left: 14px;
+        right: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Biology experiment | 1928</p>
+        <h1>Griffith Transformation</h1>
+        <p class="subtitle">
+          Inject mice with rough R cells, smooth S cells, heat-killed S cells, or a live R plus heat-killed S mixture to reproduce Griffith's transforming-principle result.
+        </p>
+      </div>
+      <div class="header-actions" aria-label="Page actions">
+        <button class="btn" id="aboutBtn" type="button" aria-haspopup="dialog" aria-expanded="false">About</button>
+        <button class="btn primary" id="resetBtn" type="button">Reset</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel control-panel" aria-labelledby="injectionTitle">
+        <h2 class="panel-title" id="injectionTitle">Injection</h2>
+        <p class="panel-copy">Choose one preparation. Each click runs the injection, observes the mouse, and cultures bacteria if the mouse dies.</p>
+
+        <div class="experiment-list" aria-label="Injection options">
+          <button class="experiment-option" type="button" data-experiment="r" aria-pressed="false">
+            <span class="strain-mark r" aria-hidden="true">R</span>
+            <span>
+              <span class="option-title">Live R-strain</span>
+              <span class="option-meta">Rough colonies, no capsule, nonvirulent.</span>
+            </span>
+          </button>
+
+          <button class="experiment-option" type="button" data-experiment="s" aria-pressed="false">
+            <span class="strain-mark s" aria-hidden="true">S</span>
+            <span>
+              <span class="option-title">Live S-strain</span>
+              <span class="option-meta">Smooth encapsulated cells, virulent.</span>
+            </span>
+          </button>
+
+          <button class="experiment-option" type="button" data-experiment="heat" aria-pressed="false">
+            <span class="strain-mark dead-s" aria-hidden="true">S</span>
+            <span>
+              <span class="option-title">Heat-killed S</span>
+              <span class="option-meta">S cells killed before injection.</span>
+            </span>
+          </button>
+
+          <button class="experiment-option" type="button" data-experiment="mix" aria-pressed="false">
+            <span class="strain-mark mix" aria-hidden="true">R+S</span>
+            <span>
+              <span class="option-title">Live R + heat-killed S</span>
+              <span class="option-meta">The decisive transformation mixture.</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="key" aria-label="Strain key">
+          <div class="key-row">
+            <span class="dot" aria-hidden="true"></span>
+            <span><strong>R strain:</strong> rough cells lack the protective capsule and do not kill the mouse.</span>
+          </div>
+          <div class="key-row">
+            <span class="dot s" aria-hidden="true"></span>
+            <span><strong>S strain:</strong> smooth cells have a capsule and are virulent.</span>
+          </div>
+          <div class="key-row">
+            <span class="dot dead" aria-hidden="true"></span>
+            <span><strong>Heat-killed S:</strong> dead S cells cannot grow, but their cell material remains in the mixture.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel stage-panel" aria-labelledby="stageTitle">
+        <div class="stage-header">
+          <h2 id="stageTitle">Injection chamber</h2>
+          <div class="status-badge" id="statusBadge" aria-live="polite">Ready</div>
+        </div>
+
+        <div class="stage" id="stage">
+          <div class="lab-bench" aria-hidden="true"></div>
+          <div class="source-label" id="sourceLabel"><span>Selected:</span> <strong>none</strong></div>
+
+          <div class="culture-rack" aria-hidden="true">
+            <div class="tube r"><div class="liquid"></div><span class="tube-label">R</span></div>
+            <div class="tube s"><div class="liquid"></div><span class="tube-label">S</span></div>
+            <div class="tube dead-s"><div class="liquid"></div><span class="tube-label">killed S</span></div>
+            <div class="tube mix"><div class="liquid"></div><span class="tube-label">mix</span></div>
+          </div>
+
+          <div class="syringe" aria-hidden="true">
+            <div class="plunger"></div>
+            <div class="barrel"></div>
+            <div class="needle"></div>
+          </div>
+
+          <div class="particle-track" aria-hidden="true">
+            <span class="particle" style="--i: 0; --offset: -10px"></span>
+            <span class="particle" style="--i: 1; --offset: 8px"></span>
+            <span class="particle" style="--i: 2; --offset: -1px"></span>
+            <span class="particle" style="--i: 3; --offset: 14px"></span>
+            <span class="particle" style="--i: 4; --offset: -7px"></span>
+            <span class="particle" style="--i: 5; --offset: 4px"></span>
+            <span class="particle" style="--i: 6; --offset: 12px"></span>
+          </div>
+
+          <div class="dna-field" aria-hidden="true">
+            <span class="dna-fragment" style="--i: 0; --y: 8; --drift: 18px; --rot: -12deg"></span>
+            <span class="dna-fragment" style="--i: 1; --y: 38; --drift: -12px; --rot: 9deg"></span>
+            <span class="dna-fragment" style="--i: 2; --y: 68; --drift: 10px; --rot: -24deg"></span>
+          </div>
+
+          <div class="mouse-zone">
+            <div class="outcome-stamp" id="outcomeStamp" aria-live="polite">Choose an injection</div>
+
+            <div class="bacteria-cloud" aria-hidden="true">
+              <span class="bacterium r" style="left: 28px; top: 66px; --rot: -14deg"></span>
+              <span class="bacterium r" style="left: 70px; top: 52px; --rot: 24deg"></span>
+              <span class="bacterium r" style="left: 112px; top: 70px; --rot: -38deg"></span>
+              <span class="bacterium r" style="left: 153px; top: 58px; --rot: 12deg"></span>
+              <span class="bacterium s" style="left: 52px; top: 22px; --rot: 0deg"></span>
+              <span class="bacterium s" style="left: 128px; top: 28px; --rot: 0deg"></span>
+              <span class="bacterium s" style="left: 180px; top: 83px; --rot: 0deg"></span>
+              <span class="bacterium dead-s" style="left: 84px; top: 96px; --rot: -10deg"></span>
+              <span class="bacterium dead-s" style="left: 166px; top: 26px; --rot: 18deg"></span>
+            </div>
+
+            <div class="mouse" aria-hidden="true">
+              <div class="tail"></div>
+              <div class="mouse-body"></div>
+              <div class="mouse-head"></div>
+              <div class="ear"></div>
+              <div class="eye"></div>
+              <div class="nose"></div>
+              <div class="chest"></div>
+            </div>
+          </div>
+
+          <div class="recovery-zone">
+            <div class="petri" id="petri" aria-label="Recovery plate"></div>
+            <div class="recovery-copy">
+              <h3 id="recoveryTitle">Recovery</h3>
+              <p id="recoveryText">No culture yet. Dead mice are sampled to identify which bacteria are recovered.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel data-panel" aria-label="Experiment readout">
+        <section class="readout">
+          <h2 class="panel-title">Observations</h2>
+          <p class="panel-copy">The log records the same sequence Griffith used: injection, survival outcome, and culture from dead mice.</p>
+          <ol class="observation-list" id="observationList" aria-live="polite">
+            <li><strong>Ready</strong>Select an injection to start the experiment.</li>
+          </ol>
+        </section>
+
+        <section class="readout conclusion-box">
+          <h2 class="panel-title">Transforming principle</h2>
+          <p id="conclusionText">
+            Run the four preparations. The key result appears when live R cells are mixed with heat-killed S cells.
+          </p>
+          <div class="logic-chain" aria-hidden="true">
+            <span class="logic-pill">Dead S material</span>
+            <span class="logic-arrow">+</span>
+            <span class="logic-pill">Live R cells</span>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div class="about-overlay" id="aboutOverlay" hidden>
+    <section class="about-panel" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+      <div class="about-heading">
+        <h2 id="aboutTitle">About Griffith's experiment</h2>
+        <button class="btn" id="closeAboutBtn" type="button">Close</button>
+      </div>
+      <p>
+        Frederick Griffith worked with two forms of <strong>Streptococcus pneumoniae</strong>. Smooth S cells have a capsule that lets them evade host defenses, while rough R cells lack that capsule and are nonvirulent.
+      </p>
+      <ul>
+        <li><strong>Live R:</strong> mouse lives, so R cells alone are not virulent.</li>
+        <li><strong>Live S:</strong> mouse dies, and live S cells are recovered.</li>
+        <li><strong>Heat-killed S:</strong> mouse lives, showing killed S cells cannot cause disease by themselves.</li>
+        <li><strong>Live R + heat-killed S:</strong> mouse dies, and live S cells are recovered. A stable material from dead S cells transformed live R cells into heritable S cells.</li>
+      </ul>
+      <p>
+        Griffith called the unknown material the transforming principle. Later experiments by Avery, MacLeod, and McCarty identified that material as DNA.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const experiments = {
+      r: {
+        className: "selected-r",
+        label: "Live R-strain",
+        status: "Mouse lives",
+        statusTone: "live",
+        outcome: "Mouse lives",
+        recoveryTitle: "No dead mouse",
+        recoveryText: "No recovery culture is taken from a dead mouse. R cells do not produce lethal pneumonia here.",
+        recoveredKind: null,
+        conclusion: "Live R cells are rough, nonencapsulated, and nonvirulent in this experiment.",
+        observations: [
+          ["Injection", "Live rough R-strain cells enter the mouse."],
+          ["Outcome", "The mouse lives."],
+          ["Culture", "Because the mouse survives, no bacteria are recovered from a dead mouse."]
+        ]
+      },
+      s: {
+        className: "selected-s",
+        label: "Live S-strain",
+        status: "Mouse dies",
+        statusTone: "dead",
+        outcome: "Mouse dies",
+        recoveryTitle: "Live S recovered",
+        recoveryText: "Smooth encapsulated S-strain colonies grow from the dead mouse sample.",
+        recoveredKind: "s",
+        conclusion: "The live S strain is virulent. Its capsule protects it well enough to kill the mouse.",
+        observations: [
+          ["Injection", "Live smooth S-strain cells enter the mouse."],
+          ["Outcome", "The mouse dies."],
+          ["Culture", "Live S-strain bacteria are recovered from the dead mouse."]
+        ]
+      },
+      heat: {
+        className: "selected-heat",
+        label: "Heat-killed S",
+        status: "Mouse lives",
+        statusTone: "live",
+        outcome: "Mouse lives",
+        recoveryTitle: "No live S recovered",
+        recoveryText: "The S cells were killed before injection, so they do not grow or kill the mouse.",
+        recoveredKind: null,
+        conclusion: "Heat-killed S cells cannot cause disease alone, even though their cellular material remains present.",
+        observations: [
+          ["Injection", "Dead S-strain cell material enters the mouse."],
+          ["Outcome", "The mouse lives."],
+          ["Culture", "No dead mouse is available for recovery, and killed S cells do not regrow."]
+        ]
+      },
+      mix: {
+        className: "selected-mix",
+        label: "Live R + heat-killed S",
+        status: "Mouse dies",
+        statusTone: "dead",
+        outcome: "Mouse dies",
+        recoveryTitle: "Live S recovered",
+        recoveryText: "Smooth live S-strain colonies grow, even though the only living cells injected were R cells.",
+        recoveredKind: "s",
+        conclusion: "A stable material from the heat-killed S cells transformed live R cells into heritable, encapsulated S cells. Griffith inferred a transforming principle; later work identified it as DNA.",
+        observations: [
+          ["Injection", "Live R cells mix with material from heat-killed S cells."],
+          ["Transformation", "Material from dead S cells changes some live R cells into S-type cells."],
+          ["Outcome", "The mouse dies."],
+          ["Culture", "Live S-strain bacteria are recovered from the dead mouse."]
+        ]
+      }
+    };
+
+    const stage = document.getElementById("stage");
+    const buttons = Array.from(document.querySelectorAll(".experiment-option"));
+    const statusBadge = document.getElementById("statusBadge");
+    const sourceLabel = document.getElementById("sourceLabel");
+    const outcomeStamp = document.getElementById("outcomeStamp");
+    const recoveryTitle = document.getElementById("recoveryTitle");
+    const recoveryText = document.getElementById("recoveryText");
+    const observationList = document.getElementById("observationList");
+    const conclusionText = document.getElementById("conclusionText");
+    const petri = document.getElementById("petri");
+    const aboutBtn = document.getElementById("aboutBtn");
+    const closeAboutBtn = document.getElementById("closeAboutBtn");
+    const aboutOverlay = document.getElementById("aboutOverlay");
+    const resetBtn = document.getElementById("resetBtn");
+    const stageClasses = [
+      "selected-r",
+      "selected-s",
+      "selected-heat",
+      "selected-mix",
+      "is-injecting",
+      "is-observing",
+      "is-recovery",
+      "result-live",
+      "result-dead"
+    ];
+    let timers = [];
+
+    function clearTimers() {
+      timers.forEach((timer) => window.clearTimeout(timer));
+      timers = [];
+    }
+
+    function wait(callback, delay) {
+      const timer = window.setTimeout(callback, delay);
+      timers.push(timer);
+    }
+
+    function setStatus(text, tone) {
+      statusBadge.textContent = text;
+      statusBadge.className = "status-badge";
+      if (tone) {
+        statusBadge.classList.add(tone);
+      }
+    }
+
+    function setActiveButton(id) {
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.experiment === id));
+      });
+    }
+
+    function setObservations(items) {
+      observationList.innerHTML = "";
+      items.forEach(([title, body]) => {
+        const item = document.createElement("li");
+        const heading = document.createElement("strong");
+        heading.textContent = title;
+        item.append(heading, document.createTextNode(body));
+        observationList.append(item);
+      });
+    }
+
+    function clearPetri() {
+      petri.className = "petri";
+      petri.innerHTML = "";
+    }
+
+    function populatePetri(kind) {
+      clearPetri();
+      if (!kind) {
+        return;
+      }
+
+      petri.classList.add("has-colonies");
+      const positions = [
+        [19, 34, 18], [33, 20, 14], [48, 42, 20], [63, 25, 15],
+        [73, 52, 17], [25, 58, 13], [39, 68, 19], [58, 63, 14],
+        [81, 36, 20], [16, 50, 14], [45, 24, 12], [68, 72, 16],
+        [30, 43, 20], [54, 53, 13], [76, 66, 12], [86, 48, 15]
+      ];
+
+      positions.forEach(([x, y, size], index) => {
+        const colony = document.createElement("span");
+        colony.className = `colony ${kind}`;
+        colony.style.setProperty("--x", `${x}%`);
+        colony.style.setProperty("--y", `${y}%`);
+        colony.style.setProperty("--size", `${size}px`);
+        colony.style.setProperty("--delay", `${index * 42}ms`);
+        petri.append(colony);
+      });
+    }
+
+    function resetStage() {
+      clearTimers();
+      stage.classList.remove(...stageClasses);
+      setActiveButton("");
+      setStatus("Ready", "");
+      sourceLabel.innerHTML = "<span>Selected:</span> <strong>none</strong>";
+      outcomeStamp.textContent = "Choose an injection";
+      recoveryTitle.textContent = "Recovery";
+      recoveryText.textContent = "No culture yet. Dead mice are sampled to identify which bacteria are recovered.";
+      conclusionText.textContent = "Run the four preparations. The key result appears when live R cells are mixed with heat-killed S cells.";
+      setObservations([["Ready", "Select an injection to start the experiment."]]);
+      clearPetri();
+    }
+
+    function runExperiment(id) {
+      const experiment = experiments[id];
+      clearTimers();
+      stage.classList.remove(...stageClasses);
+      clearPetri();
+      setActiveButton(id);
+      stage.classList.add(experiment.className, "is-injecting");
+      setStatus("Injecting", "injecting");
+      sourceLabel.innerHTML = `<span>Selected:</span> <strong>${experiment.label}</strong>`;
+      outcomeStamp.textContent = "Injection in progress";
+      recoveryTitle.textContent = "Recovery";
+      recoveryText.textContent = "Waiting for the survival outcome before culturing bacteria.";
+      conclusionText.textContent = "Observe the survival outcome, then compare what can be recovered from dead mice.";
+      setObservations([[experiment.label, "Injection is in progress."]]);
+
+      wait(() => {
+        stage.classList.remove("is-injecting");
+        stage.classList.add("is-observing");
+        setStatus("Observing", "injecting");
+        outcomeStamp.textContent = "Observing mouse";
+        setObservations(experiment.observations.slice(0, Math.min(2, experiment.observations.length)));
+      }, 930);
+
+      wait(() => {
+        const dies = experiment.statusTone === "dead";
+        stage.classList.add(dies ? "result-dead" : "result-live");
+        setStatus(experiment.status, experiment.statusTone);
+        outcomeStamp.textContent = experiment.outcome;
+        setObservations(experiment.observations);
+        conclusionText.textContent = experiment.conclusion;
+      }, 1680);
+
+      wait(() => {
+        stage.classList.add("is-recovery");
+        recoveryTitle.textContent = experiment.recoveryTitle;
+        recoveryText.textContent = experiment.recoveryText;
+        populatePetri(experiment.recoveredKind);
+      }, 2350);
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => runExperiment(button.dataset.experiment));
+    });
+
+    resetBtn.addEventListener("click", resetStage);
+
+    function openAbout() {
+      aboutOverlay.hidden = false;
+      aboutBtn.setAttribute("aria-expanded", "true");
+      closeAboutBtn.focus();
+    }
+
+    function closeAbout() {
+      aboutOverlay.hidden = true;
+      aboutBtn.setAttribute("aria-expanded", "false");
+      aboutBtn.focus();
+    }
+
+    aboutBtn.addEventListener("click", openAbout);
+    closeAboutBtn.addEventListener("click", closeAbout);
+    aboutOverlay.addEventListener("click", (event) => {
+      if (event.target === aboutOverlay) {
+        closeAbout();
+      }
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !aboutOverlay.hidden) {
+        closeAbout();
+      }
+    });
+
+    resetStage();
+  </script>
+</body>
+</html>
