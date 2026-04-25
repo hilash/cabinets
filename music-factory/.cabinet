@@ -1,0 +1,12 @@
+schemaVersion: 1
+id: music-factory-root
+name: Music Factory
+kind: root
+version: 0.1.0
+description: >
+  Compose songs in Python, render them as MIDI, and play them in the browser
+  with a live note-by-note visualizer. Includes the Portal song "Still Alive"
+  as a full-screen Cabinet app, NSync's "Bye Bye Bye" as a Python script that
+  emits a MIDI file, and a how-to guide for writing your own song from
+  scratch with mido + pygame.
+entry: index.md

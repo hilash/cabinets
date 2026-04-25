@@ -1,0 +1,1290 @@
+{
+  "title": "Still Alive",
+  "composer": "Jonathan Coulton",
+  "source": "Portal (Valve, 2007) \u2014 intro excerpt + extended arrangement",
+  "bpm": 120,
+  "duration": 35.0,
+  "notes": [
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 0.0,
+      "duration": 0.234,
+      "role": "melody"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 0.249,
+      "duration": 0.2315,
+      "role": "melody"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 0.4955,
+      "duration": 0.246,
+      "role": "melody"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 0.742,
+      "duration": 0.2325,
+      "role": "melody"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 0.9915,
+      "duration": 0.512,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 0.9915,
+      "duration": 0.512,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 1.2565,
+      "duration": 0.2625,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 1.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 1.751,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 2.0,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 2.249,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 2.4955,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 2.742,
+      "duration": 0.262,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 2.9915,
+      "duration": 0.2795,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 3.2565,
+      "duration": 0.2625,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 3.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 3.751,
+      "duration": 0.2635,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 3.751,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 4.0,
+      "duration": 0.2635,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 4.0,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 4.249,
+      "duration": 0.261,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 4.249,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 4.4955,
+      "duration": 0.261,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 4.4955,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 4.742,
+      "duration": 0.499,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 4.742,
+      "duration": 0.499,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 4.9915,
+      "duration": 0.2795,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 5.2565,
+      "duration": 0.2625,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 5.2565,
+      "duration": 0.2625,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 5.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 5.751,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 6.0,
+      "duration": 0.495,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 6.0,
+      "duration": 0.495,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 6.249,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 6.4955,
+      "duration": 0.261,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 6.4955,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 6.742,
+      "duration": 0.262,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 6.742,
+      "duration": 0.262,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 6.9915,
+      "duration": 0.2795,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 7.2565,
+      "duration": 0.2625,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 7.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 7.751,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 8.0,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 8.249,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 8.4955,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 8.742,
+      "duration": 0.262,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 8.742,
+      "duration": 0.262,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 8.9915,
+      "duration": 0.512,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 8.9915,
+      "duration": 0.512,
+      "role": "bass"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 9.2565,
+      "duration": 0.2625,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 9.5045,
+      "duration": 0.261,
+      "role": "melody"
+    },
+    {
+      "name": "G4",
+      "midi": 67,
+      "start": 9.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 9.751,
+      "duration": 0.744,
+      "role": "melody"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 9.751,
+      "duration": 0.744,
+      "role": "bass"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 10.0,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 10.249,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 10.4955,
+      "duration": 0.261,
+      "role": "melody"
+    },
+    {
+      "name": "G4",
+      "midi": 67,
+      "start": 10.4955,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "C#5",
+      "midi": 73,
+      "start": 10.742,
+      "duration": 0.499,
+      "role": "melody"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 10.742,
+      "duration": 0.499,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 10.9915,
+      "duration": 0.2795,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 11.2565,
+      "duration": 0.743,
+      "role": "melody"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 11.2565,
+      "duration": 0.743,
+      "role": "bass"
+    },
+    {
+      "name": "G4",
+      "midi": 67,
+      "start": 11.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 11.751,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 12.0,
+      "duration": 0.495,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 12.0,
+      "duration": 0.495,
+      "role": "bass"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 12.249,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 12.4955,
+      "duration": 0.261,
+      "role": "melody"
+    },
+    {
+      "name": "G4",
+      "midi": 67,
+      "start": 12.4955,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 12.742,
+      "duration": 0.529,
+      "role": "melody"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 12.742,
+      "duration": 0.529,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 12.9915,
+      "duration": 0.2795,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 13.2565,
+      "duration": 0.494,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 13.2565,
+      "duration": 0.494,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 13.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 13.751,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 14.0,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 14.249,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 14.4955,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 14.742,
+      "duration": 0.262,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 14.9915,
+      "duration": 0.2795,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 15.2565,
+      "duration": 0.2625,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 15.5045,
+      "duration": 0.261,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 15.751,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 16.0,
+      "duration": 0.2635,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 16.0,
+      "duration": 0.2635,
+      "role": "bass"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 17.0,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 17.25,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "A5",
+      "midi": 81,
+      "start": 17.5,
+      "duration": 0.48,
+      "role": "melody"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 18.0,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 18.0,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 18.25,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 18.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 18.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 18.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 18.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 18.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 19.0,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 19.0,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "C#5",
+      "midi": 73,
+      "start": 19.25,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 19.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 19.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 19.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 19.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 19.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 20.0,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 20.0,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 20.25,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 20.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 20.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 20.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 20.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 20.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 21.0,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 21.0,
+      "duration": 0.23,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 21.25,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 21.25,
+      "duration": 0.23,
+      "role": "bass"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 21.5,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 21.5,
+      "duration": 0.23,
+      "role": "bass"
+    },
+    {
+      "name": "A5",
+      "midi": 81,
+      "start": 21.75,
+      "duration": 0.48,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 21.75,
+      "duration": 0.48,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 22.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 22.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 22.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 22.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 22.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 23.0,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 23.0,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 23.25,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 23.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 23.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 23.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "C#5",
+      "midi": 73,
+      "start": 23.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 23.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 24.0,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 24.0,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 24.25,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 24.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 24.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 24.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 24.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 24.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "G5",
+      "midi": 79,
+      "start": 25.0,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 25.25,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 25.5,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 25.75,
+      "duration": 0.23,
+      "role": "melody"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 26.0,
+      "duration": 0.51,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 26.0,
+      "duration": 0.51,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 26.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 26.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 27.0,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 27.25,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 27.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 27.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 27.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 27.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 27.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "E5",
+      "midi": 76,
+      "start": 28.0,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 28.0,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 28.25,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 28.25,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "F#5",
+      "midi": 78,
+      "start": 28.5,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 28.5,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "A5",
+      "midi": 81,
+      "start": 28.75,
+      "duration": 0.26,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 28.75,
+      "duration": 0.26,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 29.0,
+      "duration": 0.48,
+      "role": "melody"
+    },
+    {
+      "name": "B3",
+      "midi": 59,
+      "start": 29.0,
+      "duration": 0.48,
+      "role": "bass"
+    },
+    {
+      "name": "C#5",
+      "midi": 73,
+      "start": 29.5,
+      "duration": 0.48,
+      "role": "melody"
+    },
+    {
+      "name": "E4",
+      "midi": 64,
+      "start": 29.5,
+      "duration": 0.48,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 30.0,
+      "duration": 0.98,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 30.0,
+      "duration": 0.98,
+      "role": "bass"
+    },
+    {
+      "name": "B4",
+      "midi": 71,
+      "start": 31.0,
+      "duration": 0.98,
+      "role": "melody"
+    },
+    {
+      "name": "G3",
+      "midi": 55,
+      "start": 31.0,
+      "duration": 0.98,
+      "role": "bass"
+    },
+    {
+      "name": "C#5",
+      "midi": 73,
+      "start": 32.0,
+      "duration": 0.98,
+      "role": "melody"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 32.0,
+      "duration": 0.98,
+      "role": "melody"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 32.0,
+      "duration": 0.98,
+      "role": "bass"
+    },
+    {
+      "name": "D5",
+      "midi": 74,
+      "start": 33.0,
+      "duration": 2.0,
+      "role": "melody"
+    },
+    {
+      "name": "A4",
+      "midi": 69,
+      "start": 33.0,
+      "duration": 2.0,
+      "role": "melody"
+    },
+    {
+      "name": "F#4",
+      "midi": 66,
+      "start": 33.0,
+      "duration": 2.0,
+      "role": "bass"
+    },
+    {
+      "name": "D4",
+      "midi": 62,
+      "start": 33.0,
+      "duration": 2.0,
+      "role": "bass"
+    },
+    {
+      "name": "A3",
+      "midi": 57,
+      "start": 33.0,
+      "duration": 2.0,
+      "role": "bass"
+    },
+    {
+      "name": "D3",
+      "midi": 50,
+      "start": 33.0,
+      "duration": 2.0,
+      "role": "bass"
+    }
+  ]
+}

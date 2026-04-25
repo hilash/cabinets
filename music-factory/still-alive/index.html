@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Still Alive — Portal MIDI Player</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0d10;
+    --panel: #13171c;
+    --text: #e6e9ef;
+    --muted: #7b8696;
+    --accent: #ff8a3c;         /* Portal orange */
+    --accent-2: #3ca7ff;        /* Portal blue */
+    --grid: #1c222a;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background: radial-gradient(ellipse at top, #1a1f27 0%, #0b0d10 60%);
+    color: var(--text);
+    font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    overflow: hidden;
+  }
+
+  #app {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    height: 100dvh;
+    width: 100vw;
+    padding: 24px 32px 16px;
+    gap: 16px;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--grid);
+    padding-bottom: 14px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  header .subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ---- HUGE note stage ---- */
+  .stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 48px;
+    min-height: 0;
+  }
+  .side-note {
+    font-size: clamp(32px, 7vw, 96px);
+    color: var(--muted);
+    opacity: 0.45;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+  .side-note .arrow {
+    color: var(--accent);
+    opacity: 0.5;
+    margin: 0 12px;
+  }
+  .current-note {
+    font-size: clamp(180px, 28vw, 420px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+    text-shadow:
+      0 0 40px rgba(255, 138, 60, 0.35),
+      0 0 120px rgba(255, 138, 60, 0.18);
+    transition: transform 0.05s ease-out, color 0.1s;
+    will-change: transform, color;
+    user-select: none;
+  }
+  .current-note.off {
+    color: var(--muted);
+    text-shadow: none;
+    opacity: 0.5;
+  }
+  .current-note .sharp {
+    font-size: 0.55em;
+    vertical-align: 0.4em;
+  }
+  .current-note .octave {
+    font-size: 0.42em;
+    vertical-align: -0.12em;
+    color: var(--accent-2);
+    margin-left: 0.05em;
+  }
+
+  /* ---- Piano roll ---- */
+  .roll-wrap {
+    position: relative;
+    height: 120px;
+    background: var(--panel);
+    border: 1px solid var(--grid);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  canvas.roll {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .playhead {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 20%;
+    width: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(255, 138, 60, 0.8);
+    pointer-events: none;
+  }
+
+  /* ---- Controls ---- */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 4px 0;
+  }
+  button.btn {
+    appearance: none;
+    border: 1px solid var(--grid);
+    background: var(--panel);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  button.btn:hover { border-color: var(--accent); color: var(--accent); }
+  button.btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0b0d10;
+  }
+  button.btn.primary:hover {
+    background: #ffa15b;
+    border-color: #ffa15b;
+    color: #0b0d10;
+  }
+  .progress {
+    flex: 1;
+    height: 6px;
+    background: var(--grid);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress > .bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transition: width 0.08s linear;
+  }
+  .time {
+    color: var(--muted);
+    font-size: 12px;
+    min-width: 80px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .download {
+    color: var(--accent-2);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--grid);
+    padding: 10px 14px;
+    border-radius: 6px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .download:hover { border-color: var(--accent-2); color: #7fc5ff; }
+
+  @media (max-width: 720px) {
+    #app { padding: 16px 16px 12px; }
+    .stage { grid-template-columns: 1fr; }
+    .side-note { display: none; }
+    .current-note { font-size: clamp(140px, 40vw, 320px); }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1 id="title">Still Alive</h1>
+    <span class="subtitle" id="subtitle">Portal &middot; Jonathan Coulton</span>
+  </header>
+
+  <main class="stage">
+    <div class="side-note" id="prev-note">&nbsp;</div>
+    <div class="current-note off" id="current-note">&mdash;</div>
+    <div class="side-note" id="next-note">&nbsp;</div>
+  </main>
+
+  <div class="roll-wrap">
+    <canvas class="roll" id="roll"></canvas>
+    <div class="playhead"></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn primary" id="play-btn">Play</button>
+    <button class="btn" id="restart-btn">Restart</button>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="time" id="time">0:00 / 0:00</div>
+    <a class="download" href="still-alive.mid" download>Download MIDI</a>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const playBtn = $("play-btn");
+  const restartBtn = $("restart-btn");
+  const bar = $("bar");
+  const timeEl = $("time");
+  const currentEl = $("current-note");
+  const prevEl = $("prev-note");
+  const nextEl = $("next-note");
+  const roll = $("roll");
+  const ctx2d = roll.getContext("2d");
+
+  let song = null;            // { notes, bpm, ... }
+  let totalDuration = 0;
+  let audioCtx = null;
+  let masterGain = null;
+  let state = "idle";         // idle | playing | paused
+  let startTimeCtx = 0;       // audioCtx.currentTime when play started
+  let offset = 0;             // seconds into song at (re)start
+  let scheduled = [];         // { stop: () => void }
+  let rafId = 0;
+
+  // ---- Note rendering ----
+
+  function renderNoteName(el, name) {
+    if (!name) { el.innerHTML = "&mdash;"; return; }
+    const letter = name[0];
+    const rest = name.slice(1);
+    const hasSharp = rest.includes("#");
+    const octave = rest.replace("#", "");
+    el.innerHTML =
+      `${letter}` +
+      (hasSharp ? `<span class="sharp">&#9839;</span>` : ``) +
+      `<span class="octave">${octave}</span>`;
+  }
+
+  // ---- Audio synthesis ----
+
+  function midiToHz(midi) {
+    return 440 * Math.pow(2, (midi - 69) / 12);
+  }
+
+  function ensureAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.35;
+    masterGain.connect(audioCtx.destination);
+  }
+
+  function scheduleNote(note, startAtCtx) {
+    // GLaDOS-ish: dual-oscillator (sine + triangle) with short ADSR
+    const freq = midiToHz(note.midi);
+    const attack = 0.015;
+    const decay = 0.08;
+    const sustain = 0.55;
+    const release = 0.12;
+    const dur = Math.max(0.06, note.duration);
+
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.0, startAtCtx);
+    gain.gain.linearRampToValueAtTime(1.0, startAtCtx + attack);
+    gain.gain.linearRampToValueAtTime(sustain, startAtCtx + attack + decay);
+    gain.gain.setValueAtTime(sustain, startAtCtx + dur);
+    gain.gain.linearRampToValueAtTime(0.0, startAtCtx + dur + release);
+
+    const osc1 = audioCtx.createOscillator();
+    osc1.type = "sine";
+    osc1.frequency.value = freq;
+    const osc2 = audioCtx.createOscillator();
+    osc2.type = "triangle";
+    osc2.frequency.value = freq;
+    const o2gain = audioCtx.createGain();
+    o2gain.gain.value = 0.35;
+
+    osc1.connect(gain);
+    osc2.connect(o2gain);
+    o2gain.connect(gain);
+    gain.connect(masterGain);
+
+    osc1.start(startAtCtx);
+    osc2.start(startAtCtx);
+    const stopAt = startAtCtx + dur + release + 0.02;
+    osc1.stop(stopAt);
+    osc2.stop(stopAt);
+
+    return {
+      stop: () => {
+        try { osc1.stop(); osc2.stop(); } catch (_) {}
+        try { gain.disconnect(); } catch (_) {}
+      },
+    };
+  }
+
+  function scheduleAllFrom(offsetSeconds) {
+    scheduled.forEach((s) => s.stop());
+    scheduled = [];
+    const now = audioCtx.currentTime + 0.05;
+    song.notes.forEach((note) => {
+      const relative = note.start - offsetSeconds;
+      if (relative + note.duration < 0) return; // already past
+      const at = now + Math.max(0, relative);
+      scheduled.push(scheduleNote(note, at));
+    });
+  }
+
+  // ---- Playback loop / UI ----
+
+  function currentSongTime() {
+    if (state !== "playing") return offset;
+    return offset + (audioCtx.currentTime - startTimeCtx);
+  }
+
+  function findActiveMelodyIndex(t) {
+    // Among all currently-sounding notes, return the index of the highest-pitched one
+    // (that's the melody). Returns -1 if nothing is sounding.
+    const notes = song.notes;
+    let best = -1;
+    let bestMidi = -Infinity;
+    for (let i = 0; i < notes.length; i++) {
+      const n = notes[i];
+      if (n.start > t + 0.01) break; // notes are sorted by start — we're past the window
+      if (t >= n.start && t < n.start + n.duration) {
+        if (n.midi > bestMidi) { bestMidi = n.midi; best = i; }
+      }
+    }
+    return best;
+  }
+
+  function findNextMelodyNote(t) {
+    // Next melody-role note strictly after t, else next note of any role.
+    let fallback = null;
+    for (const n of song.notes) {
+      if (n.start <= t) continue;
+      if (n.role === "melody") return n;
+      if (!fallback) fallback = n;
+    }
+    return fallback;
+  }
+
+  function findPrevMelodyNote(t) {
+    let last = null;
+    for (const n of song.notes) {
+      if (n.start >= t) break;
+      if (n.role === "melody" && n.start + n.duration <= t) last = n;
+    }
+    return last;
+  }
+
+  function formatTime(s) {
+    s = Math.max(0, s | 0);
+    const m = (s / 60) | 0;
+    const sec = (s % 60).toString().padStart(2, "0");
+    return `${m}:${sec}`;
+  }
+
+  function tick() {
+    const t = currentSongTime();
+
+    // Huge current-note display — pick the melody (highest active pitch)
+    const idx = findActiveMelodyIndex(t);
+    if (idx >= 0) {
+      const n = song.notes[idx];
+      renderNoteName(currentEl, n.name);
+      currentEl.classList.remove("off");
+      const pulse = 1 - Math.min(1, (t - n.start) / Math.max(0.05, n.duration));
+      const scale = 1 + 0.08 * pulse;
+      currentEl.style.transform = `scale(${scale.toFixed(3)})`;
+      const prev = findPrevMelodyNote(n.start);
+      const next = findNextMelodyNote(n.start + n.duration * 0.5);
+      renderNoteName(prevEl, prev ? prev.name : null);
+      renderNoteName(nextEl, next ? next.name : null);
+    } else {
+      currentEl.innerHTML = "&mdash;";
+      currentEl.classList.add("off");
+      currentEl.style.transform = "scale(1)";
+      renderNoteName(prevEl, (findPrevMelodyNote(t) || {}).name || null);
+      renderNoteName(nextEl, (findNextMelodyNote(t) || {}).name || null);
+    }
+
+    // Progress
+    const pct = Math.min(100, (t / totalDuration) * 100);
+    bar.style.width = pct + "%";
+    timeEl.textContent = `${formatTime(t)} / ${formatTime(totalDuration)}`;
+
+    drawRoll(t);
+
+    if (state === "playing" && t >= totalDuration) {
+      stop();
+      offset = 0;
+      playBtn.textContent = "Play";
+    }
+
+    if (state === "playing") {
+      rafId = requestAnimationFrame(tick);
+    }
+  }
+
+  // ---- Piano roll ----
+
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = roll.getBoundingClientRect();
+    roll.width = rect.width * dpr;
+    roll.height = rect.height * dpr;
+    ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function drawRoll(t) {
+    const rect = roll.getBoundingClientRect();
+    const W = rect.width;
+    const H = rect.height;
+    ctx2d.clearRect(0, 0, W, H);
+
+    // Time window: 2 seconds behind the playhead, 8 seconds ahead.
+    const WINDOW_BEFORE = 2;
+    const WINDOW_AFTER = 8;
+    const totalWindow = WINDOW_BEFORE + WINDOW_AFTER;
+    const playheadX = (WINDOW_BEFORE / totalWindow) * W;
+
+    // Determine MIDI range for y-mapping (use all notes in song)
+    const mins = Math.min(...song.notes.map((n) => n.midi));
+    const maxs = Math.max(...song.notes.map((n) => n.midi));
+    const span = Math.max(12, maxs - mins + 4);
+    const top = maxs + 2;
+    const yFor = (m) => ((top - m) / span) * (H - 12) + 6;
+
+    // Horizontal grid (semitones)
+    ctx2d.strokeStyle = "rgba(255,255,255,0.04)";
+    ctx2d.lineWidth = 1;
+    for (let m = mins - 2; m <= maxs + 2; m++) {
+      const y = yFor(m);
+      ctx2d.beginPath();
+      ctx2d.moveTo(0, y);
+      ctx2d.lineTo(W, y);
+      ctx2d.stroke();
+    }
+
+    // Notes
+    const windowStart = t - WINDOW_BEFORE;
+    const windowEnd = t + WINDOW_AFTER;
+    for (const n of song.notes) {
+      const end = n.start + n.duration;
+      if (end < windowStart || n.start > windowEnd) continue;
+      const x1 = ((n.start - windowStart) / totalWindow) * W;
+      const x2 = ((end - windowStart) / totalWindow) * W;
+      const y = yFor(n.midi);
+      const active = t >= n.start && t < end;
+      const upcoming = n.start > t;
+
+      const isBass = n.role === "bass";
+      if (active) {
+        ctx2d.fillStyle = isBass ? "#3ca7ff" : "#ff8a3c";
+      } else if (upcoming) {
+        ctx2d.fillStyle = isBass ? "rgba(60,167,255,0.55)" : "rgba(255,138,60,0.75)";
+      } else {
+        ctx2d.fillStyle = "rgba(123,134,150,0.3)";
+      }
+      roundedRect(ctx2d, x1, y - 5, Math.max(2, x2 - x1), 10, 3);
+      ctx2d.fill();
+      if (active) {
+        ctx2d.shadowColor = isBass ? "rgba(60,167,255,0.8)" : "rgba(255,138,60,0.8)";
+        ctx2d.shadowBlur = 12;
+        roundedRect(ctx2d, x1, y - 5, Math.max(2, x2 - x1), 10, 3);
+        ctx2d.fill();
+        ctx2d.shadowBlur = 0;
+      }
+    }
+  }
+
+  function roundedRect(c, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    c.beginPath();
+    c.moveTo(x + rr, y);
+    c.arcTo(x + w, y, x + w, y + h, rr);
+    c.arcTo(x + w, y + h, x, y + h, rr);
+    c.arcTo(x, y + h, x, y, rr);
+    c.arcTo(x, y, x + w, y, rr);
+    c.closePath();
+  }
+
+  // ---- Transport ----
+
+  function play() {
+    ensureAudio();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    startTimeCtx = audioCtx.currentTime;
+    scheduleAllFrom(offset);
+    state = "playing";
+    playBtn.textContent = "Pause";
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function pause() {
+    if (state !== "playing") return;
+    offset = currentSongTime();
+    stop();
+    state = "paused";
+    playBtn.textContent = "Play";
+  }
+
+  function stop() {
+    scheduled.forEach((s) => s.stop());
+    scheduled = [];
+    cancelAnimationFrame(rafId);
+    state = state === "playing" ? "paused" : state;
+  }
+
+  function restart() {
+    stop();
+    offset = 0;
+    state = "idle";
+    playBtn.textContent = "Play";
+    // Draw a single idle frame
+    currentEl.innerHTML = "&mdash;";
+    currentEl.classList.add("off");
+    renderNoteName(prevEl, null);
+    const firstMelody = song.notes.find((n) => n.role === "melody") || song.notes[0];
+    renderNoteName(nextEl, firstMelody ? firstMelody.name : null);
+    bar.style.width = "0%";
+    timeEl.textContent = `0:00 / ${formatTime(totalDuration)}`;
+    drawRoll(0);
+  }
+
+  playBtn.addEventListener("click", () => {
+    if (state === "playing") pause();
+    else play();
+  });
+  restartBtn.addEventListener("click", restart);
+  document.addEventListener("keydown", (e) => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
+    if (e.key === "r" || e.key === "R") restart();
+  });
+  window.addEventListener("resize", () => { resizeCanvas(); drawRoll(currentSongTime()); });
+
+  // ---- Load song data ----
+
+  async function load() {
+    const res = await fetch("still-alive.json", { cache: "no-store" });
+    song = await res.json();
+    $("title").textContent = song.title;
+    $("subtitle").textContent = `${song.source} · ${song.composer} · ${song.bpm} BPM`;
+    const last = song.notes[song.notes.length - 1];
+    totalDuration = last.start + last.duration + 1;
+    resizeCanvas();
+    restart();
+  }
+  load().catch((e) => {
+    currentEl.innerHTML = "ERR";
+    currentEl.classList.add("off");
+    console.error(e);
+  });
+})();
+</script>
+</body>
+</html>
