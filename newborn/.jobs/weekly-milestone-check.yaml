@@ -1,0 +1,31 @@
+id: weekly-milestone-check
+name: Weekly Milestone Check (Newborn)
+enabled: true
+schedule: 0 19 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: martha
+agentSlug: martha
+timeout: 240
+prompt: |-
+  You are Martha, newborn counselor. Read milestones.csv and ../mom-command/baby-profile.md to compute baby's current age in weeks. Read where-am-i.md for the parent's stated wins/photo prompts.
+
+  For each milestone where:
+    - typical_age_weeks_low <= current_age + 1 AND
+    - typical_age_weeks_high >= current_age - 1 AND
+    - achieved_date is empty
+
+  ...this is a "watch this week" milestone.
+
+  Update the "## Stage milestones" section in index.md so each milestone shows its status:
+    ✅ achieved (with date)
+    ⏳ due this week (highlight)
+    ⚠️ overdue (in window's high end + still empty) — flag gently for next pediatrician visit
+    🔮 upcoming (later than next 2 weeks)
+
+  Also append a "## This week's photo prompt" block to where-am-i.md with one specific suggestion:
+    - If social smile window: "Get the smile on video. Hold the camera at eye-level, talk to her, wait."
+    - If head-control window: "Tummy time photo from baby's eye level — chin up, face camera."
+    - etc. (Stage-appropriate. Don't be generic.)
+
+  Replace any prior weekly milestone block. Keep the photo-prompt block additive — these capture memory over time.

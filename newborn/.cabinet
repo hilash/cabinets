@@ -1,0 +1,13 @@
+schemaVersion: 1
+id: newborn-root
+name: Newborn (0–3 months)
+kind: root
+version: 0.1.0
+description: >
+  The survival cabinet for weeks 0–12 with a brand-new baby. Pairs with
+  mom-command (the always-installed root). One agent: Martha, your newborn
+  counselor — same Martha as every other Mom & Baby cabinet, just titled for
+  this stage. Full-screen Survival Tracker webapp, 20 short wiki pages on
+  newborn essentials, milestone CSV, and a clear red-flags page for when to
+  call the doctor.
+entry: index.md
