@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galileo's Inclined Plane</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #edf2f7;
+      --ink: #152033;
+      --muted: #607086;
+      --line: #d7dee8;
+      --axis: #8390a4;
+      --blue: #2563eb;
+      --orange: #e85d04;
+      --green: #178f5c;
+      --red: #c2410c;
+      --shadow: 0 18px 42px rgba(25, 37, 55, 0.11);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1280px, 100%);
+      min-height: 100dvh;
+      margin: 0 auto;
+      padding: clamp(16px, 2.6vw, 32px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: clamp(1.45rem, 2.2vw, 2.15rem);
+      line-height: 1.08;
+    }
+
+    h2 {
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+
+    .status {
+      min-width: 132px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 13px;
+      background: var(--surface);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 720;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(25, 37, 55, 0.06);
+    }
+
+    .status.running {
+      color: var(--green);
+      border-color: rgba(23, 143, 92, 0.28);
+    }
+
+    .status.held,
+    .status.finished {
+      color: var(--red);
+      border-color: rgba(194, 65, 12, 0.28);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+      grid-template-areas:
+        "simulation sidebar"
+        "graph graph";
+      gap: 16px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .simulation-panel {
+      grid-area: simulation;
+      display: grid;
+      grid-template-rows: minmax(320px, 1fr) auto;
+      overflow: hidden;
+    }
+
+    .stage {
+      min-height: 320px;
+      height: min(54vh, 560px);
+      background: #fbfcfe;
+      border-bottom: 1px solid var(--line);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      flex-wrap: wrap;
+      background: var(--surface);
+    }
+
+    .btn {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      padding: 0 15px;
+      font-weight: 760;
+      transition:
+        border-color 0.16s ease,
+        background 0.16s ease,
+        color 0.16s ease,
+        transform 0.16s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
+    .btn.primary:hover {
+      background: #1d4ed8;
+      color: white;
+    }
+
+    .toggle {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 680;
+      min-height: 40px;
+      user-select: none;
+    }
+
+    .toggle input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--blue);
+    }
+
+    .sidebar {
+      grid-area: sidebar;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .control-panel,
+    .metrics-panel {
+      padding: 16px;
+    }
+
+    .control-head,
+    .graph-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .equation {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .control {
+      display: grid;
+      gap: 8px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .control:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 720;
+    }
+
+    output {
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    .scale-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--axis);
+      font-size: 0.72rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .metric {
+      min-height: 86px;
+      padding: 13px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 760;
+    }
+
+    .metric strong {
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      line-height: 1.05;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .graph-panel {
+      grid-area: graph;
+      display: grid;
+      grid-template-rows: auto minmax(230px, 28vh);
+      overflow: hidden;
+    }
+
+    .graph-head {
+      margin: 0;
+      padding: 16px 16px 0;
+    }
+
+    .graph-range {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+
+    .graph-canvas-wrap {
+      min-height: 230px;
+      padding: 4px 10px 10px;
+    }
+
+    @media (max-width: 860px) {
+      .workspace {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "simulation"
+          "sidebar"
+          "graph";
+      }
+
+      .stage {
+        height: 430px;
+      }
+
+      .sidebar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shell {
+        padding: 12px;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .status {
+        width: 100%;
+      }
+
+      .stage {
+        min-height: 300px;
+        height: 340px;
+      }
+
+      .toolbar {
+        align-items: stretch;
+      }
+
+      .btn {
+        flex: 1 1 120px;
+      }
+
+      .toggle {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <h1>Galileo's Inclined Plane</h1>
+      <div class="status" id="motionState" aria-live="polite">Ready</div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel simulation-panel" aria-label="Inclined plane simulation">
+        <div class="stage">
+          <canvas id="planeCanvas" aria-label="Animated ball rolling on an inclined plane"></canvas>
+        </div>
+        <div class="toolbar">
+          <button class="btn primary" type="button" id="toggleButton">Release</button>
+          <button class="btn" type="button" id="resetButton">Reset</button>
+          <label class="toggle">
+            <input type="checkbox" id="repeatToggle" />
+            Repeat run
+          </label>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="panel control-panel" aria-label="Simulation controls">
+          <div class="control-head">
+            <h2>Controls</h2>
+            <div class="equation">a = g(sin(theta) - mu cos(theta))</div>
+          </div>
+
+          <label class="control" for="angleControl">
+            <div class="label-row">
+              <span>Angle</span>
+              <output id="angleValue">8.0 deg</output>
+            </div>
+            <input id="angleControl" type="range" min="2" max="32" value="8" step="0.5" />
+            <div class="scale-row"><span>2 deg</span><span>32 deg</span></div>
+          </label>
+
+          <label class="control" for="frictionControl">
+            <div class="label-row">
+              <span>Friction &mu;</span>
+              <output id="frictionValue">0.020</output>
+            </div>
+            <input id="frictionControl" type="range" min="0" max="0.45" value="0.02" step="0.005" />
+            <div class="scale-row"><span>0.000</span><span>0.450</span></div>
+          </label>
+        </section>
+
+        <section class="panel metrics-panel" aria-label="Real-time readouts">
+          <div class="control-head">
+            <h2>Readouts</h2>
+            <div class="equation">track: 6.00 m</div>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <span>Time</span>
+              <strong id="timeReadout">0.00 s</strong>
+            </div>
+            <div class="metric">
+              <span>Velocity</span>
+              <strong id="velocityReadout">0.00 m/s</strong>
+            </div>
+            <div class="metric">
+              <span>Acceleration</span>
+              <strong id="accelReadout">1.17 m/s^2</strong>
+            </div>
+            <div class="metric">
+              <span>Position</span>
+              <strong id="positionReadout">0.00 m</strong>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="panel graph-panel" aria-label="Position versus time graph">
+        <div class="graph-head">
+          <h2>Position vs Time</h2>
+          <div class="graph-range" id="graphRange">0-5 s</div>
+        </div>
+        <div class="graph-canvas-wrap">
+          <canvas id="graphCanvas" aria-label="Position plotted against elapsed time"></canvas>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const G = 9.81;
+      const TRACK_LENGTH = 6;
+      const SAMPLE_INTERVAL = 0.035;
+
+      const planeCanvas = document.getElementById("planeCanvas");
+      const graphCanvas = document.getElementById("graphCanvas");
+      const angleControl = document.getElementById("angleControl");
+      const frictionControl = document.getElementById("frictionControl");
+      const angleValue = document.getElementById("angleValue");
+      const frictionValue = document.getElementById("frictionValue");
+      const toggleButton = document.getElementById("toggleButton");
+      const resetButton = document.getElementById("resetButton");
+      const repeatToggle = document.getElementById("repeatToggle");
+      const motionState = document.getElementById("motionState");
+      const graphRange = document.getElementById("graphRange");
+      const timeReadout = document.getElementById("timeReadout");
+      const velocityReadout = document.getElementById("velocityReadout");
+      const accelReadout = document.getElementById("accelReadout");
+      const positionReadout = document.getElementById("positionReadout");
+
+      const state = {
+        running: false,
+        finished: false,
+        restartAt: null,
+        t: 0,
+        x: 0,
+        v: 0,
+        lastSample: 0,
+        history: [{ t: 0, x: 0 }]
+      };
+
+      let previousFrame = performance.now();
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function angleDeg() {
+        return Number(angleControl.value);
+      }
+
+      function angleRad() {
+        return angleDeg() * Math.PI / 180;
+      }
+
+      function friction() {
+        return Number(frictionControl.value);
+      }
+
+      function netAcceleration() {
+        const theta = angleRad();
+        return G * (Math.sin(theta) - friction() * Math.cos(theta));
+      }
+
+      function effectiveAcceleration() {
+        const net = netAcceleration();
+        if (state.v <= 0.0001 && net <= 0) {
+          return 0;
+        }
+        return net;
+      }
+
+      function readoutAcceleration() {
+        if (state.finished || state.x >= TRACK_LENGTH) {
+          return 0;
+        }
+        return effectiveAcceleration();
+      }
+
+      function format(value, digits) {
+        return value.toFixed(digits);
+      }
+
+      function resetState(shouldRun = false) {
+        state.running = shouldRun;
+        state.finished = false;
+        state.restartAt = null;
+        state.t = 0;
+        state.x = 0;
+        state.v = 0;
+        state.lastSample = 0;
+        state.history = [{ t: 0, x: 0 }];
+        syncButtons();
+      }
+
+      function releaseOrPause() {
+        if (state.running) {
+          state.running = false;
+          state.restartAt = null;
+        } else {
+          if (state.finished || state.x >= TRACK_LENGTH) {
+            resetState(false);
+          }
+          state.running = true;
+        }
+        syncButtons();
+      }
+
+      function syncControls() {
+        angleValue.textContent = `${format(angleDeg(), 1)} deg`;
+        frictionValue.textContent = format(friction(), 3);
+      }
+
+      function syncButtons() {
+        toggleButton.textContent = state.running ? "Pause" : state.finished ? "Run Again" : "Release";
+        toggleButton.classList.toggle("primary", !state.running);
+      }
+
+      function step(dt, now) {
+        const a = effectiveAcceleration();
+        state.t += dt;
+
+        if (a !== 0 || state.v > 0) {
+          state.v = Math.max(0, state.v + a * dt);
+          state.x = clamp(state.x + state.v * dt, 0, TRACK_LENGTH);
+        }
+
+        if (state.t - state.lastSample >= SAMPLE_INTERVAL || state.x >= TRACK_LENGTH) {
+          state.history.push({ t: state.t, x: state.x });
+          state.lastSample = state.t;
+        }
+
+        if (state.x >= TRACK_LENGTH) {
+          state.x = TRACK_LENGTH;
+          state.v = 0;
+          state.running = false;
+          state.finished = true;
+          state.restartAt = repeatToggle.checked ? now + 800 : null;
+          syncButtons();
+        }
+      }
+
+      function updateLoopRestart(now) {
+        if (!state.finished || !repeatToggle.checked) {
+          return;
+        }
+        if (state.restartAt === null) {
+          state.restartAt = now + 800;
+        }
+        if (now >= state.restartAt) {
+          resetState(true);
+        }
+      }
+
+      function resizeCanvas(canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const ratio = window.devicePixelRatio || 1;
+        const width = Math.max(1, Math.floor(rect.width));
+        const height = Math.max(1, Math.floor(rect.height));
+        const pixelWidth = Math.floor(width * ratio);
+        const pixelHeight = Math.floor(height * ratio);
+
+        if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+          canvas.width = pixelWidth;
+          canvas.height = pixelHeight;
+        }
+
+        const ctx = canvas.getContext("2d");
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        return { ctx, width, height };
+      }
+
+      function drawArrow(ctx, fromX, fromY, toX, toY, color) {
+        const angle = Math.atan2(toY - fromY, toX - fromX);
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 3;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(fromX, fromY);
+        ctx.lineTo(toX, toY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(toX, toY);
+        ctx.lineTo(toX - 10 * Math.cos(angle - 0.45), toY - 10 * Math.sin(angle - 0.45));
+        ctx.lineTo(toX - 10 * Math.cos(angle + 0.45), toY - 10 * Math.sin(angle + 0.45));
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawPlane() {
+        const { ctx, width, height } = resizeCanvas(planeCanvas);
+        const theta = angleRad();
+        const sin = Math.sin(theta);
+        const cos = Math.cos(theta);
+        const padX = clamp(width * 0.08, 36, 86);
+        const padY = clamp(height * 0.13, 38, 82);
+        const lengthPx = Math.min(
+          (width - padX * 2) / Math.max(cos, 0.2),
+          (height - padY * 2) / Math.max(sin, 0.18)
+        );
+        const horizontal = lengthPx * cos;
+        const drop = lengthPx * sin;
+        const startX = (width - horizontal) / 2;
+        const startY = (height - drop) / 2 - 18;
+        const endX = startX + horizontal;
+        const endY = startY + drop;
+        const groundY = Math.min(height - 30, Math.max(endY + 58, startY + 92));
+        const nx = sin;
+        const ny = -cos;
+        const ux = cos;
+        const uy = sin;
+        const ballRadius = clamp(width * 0.022, 14, 24);
+        const progress = clamp(state.x / TRACK_LENGTH, 0, 1);
+        const railX = startX + horizontal * progress;
+        const railY = startY + drop * progress;
+        const ballX = railX + nx * (ballRadius + 5);
+        const ballY = railY + ny * (ballRadius + 5);
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#fbfcfe";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.strokeStyle = "#e1e7f0";
+        ctx.lineWidth = 1;
+        for (let x = 36; x < width; x += 44) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+        }
+        for (let y = 36; y < height; y += 44) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = "#eef3f8";
+        ctx.beginPath();
+        ctx.moveTo(startX - 26, groundY);
+        ctx.lineTo(endX + 32, groundY);
+        ctx.lineTo(endX + nx * 12, endY + ny * 12);
+        ctx.lineTo(startX + nx * 12, startY + ny * 12);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "#d7dee8";
+        ctx.fillRect(startX - 5, startY, 10, groundY - startY);
+        ctx.fillRect(endX - 5, endY, 10, groundY - endY);
+
+        ctx.strokeStyle = "#c7d1de";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(startX - 28, groundY);
+        ctx.lineTo(endX + 36, groundY);
+        ctx.stroke();
+
+        ctx.strokeStyle = "#152033";
+        ctx.lineWidth = 7;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        ctx.strokeStyle = "#f59e0b";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY - 7);
+        ctx.lineTo(endX, endY - 7);
+        ctx.stroke();
+
+        ctx.font = "12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        for (let i = 0; i <= 6; i += 1) {
+          const p = i / 6;
+          const tx = startX + horizontal * p;
+          const ty = startY + drop * p;
+          ctx.strokeStyle = "#6b778a";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(tx + nx * 11, ty + ny * 11);
+          ctx.lineTo(tx - nx * 11, ty - ny * 11);
+          ctx.stroke();
+          ctx.fillStyle = "#607086";
+          ctx.fillText(`${i} m`, tx - nx * 30, ty - ny * 30);
+        }
+
+        if (state.v > 0.05) {
+          const arrowLength = clamp(34 + state.v * 13, 38, 108);
+          drawArrow(
+            ctx,
+            ballX + ux * (ballRadius + 7),
+            ballY + uy * (ballRadius + 7),
+            ballX + ux * (ballRadius + arrowLength),
+            ballY + uy * (ballRadius + arrowLength),
+            "#178f5c"
+          );
+        }
+
+        ctx.save();
+        ctx.translate(ballX, ballY);
+        ctx.rotate(state.x / 0.18);
+        const ballGradient = ctx.createRadialGradient(
+          -ballRadius * 0.38,
+          -ballRadius * 0.42,
+          ballRadius * 0.12,
+          0,
+          0,
+          ballRadius
+        );
+        ballGradient.addColorStop(0, "#ffe8c2");
+        ballGradient.addColorStop(0.48, "#f59e0b");
+        ballGradient.addColorStop(1, "#b45309");
+        ctx.fillStyle = ballGradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, ballRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(21, 32, 51, 0.35)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-ballRadius * 0.62, 0);
+        ctx.quadraticCurveTo(0, -ballRadius * 0.48, ballRadius * 0.62, 0);
+        ctx.quadraticCurveTo(0, ballRadius * 0.48, -ballRadius * 0.62, 0);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.fillStyle = "#152033";
+        ctx.font = "700 13px Inter, ui-sans-serif, system-ui, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText(`${format(angleDeg(), 1)} deg`, startX, groundY + 8 <= height ? groundY + 8 : groundY - 24);
+      }
+
+      function niceCeil(value) {
+        if (value <= 5) {
+          return 5;
+        }
+        const power = Math.pow(10, Math.floor(Math.log10(value)));
+        const normalized = value / power;
+        const step = normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+        return step * power;
+      }
+
+      function drawGraph() {
+        const { ctx, width, height } = resizeCanvas(graphCanvas);
+        const margin = {
+          top: 22,
+          right: 22,
+          bottom: 42,
+          left: 58
+        };
+        const plotW = Math.max(10, width - margin.left - margin.right);
+        const plotH = Math.max(10, height - margin.top - margin.bottom);
+        const net = netAcceleration();
+        const predicted = net > 0 ? Math.sqrt((2 * TRACK_LENGTH) / net) : state.t + 2;
+        const tMax = niceCeil(Math.max(5, state.t, predicted) * 1.08);
+        const yMax = TRACK_LENGTH;
+        const liveHistory = state.history.concat([{ t: state.t, x: state.x }]);
+
+        graphRange.textContent = `0-${format(tMax, tMax < 10 ? 1 : 0)} s`;
+
+        function xToPx(t) {
+          return margin.left + (t / tMax) * plotW;
+        }
+
+        function yToPx(x) {
+          return margin.top + plotH - (x / yMax) * plotH;
+        }
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.strokeStyle = "#e1e7f0";
+        ctx.lineWidth = 1;
+        ctx.font = "12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+        ctx.fillStyle = "#607086";
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+
+        for (let i = 0; i <= 6; i += 1) {
+          const yValue = (yMax / 6) * i;
+          const y = yToPx(yValue);
+          ctx.beginPath();
+          ctx.moveTo(margin.left, y);
+          ctx.lineTo(margin.left + plotW, y);
+          ctx.stroke();
+          ctx.fillText(`${format(yValue, 1)}`, margin.left - 10, y);
+        }
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        for (let i = 0; i <= 5; i += 1) {
+          const t = (tMax / 5) * i;
+          const x = xToPx(t);
+          ctx.beginPath();
+          ctx.moveTo(x, margin.top);
+          ctx.lineTo(x, margin.top + plotH);
+          ctx.stroke();
+          ctx.fillText(`${format(t, tMax < 10 ? 1 : 0)}`, x, margin.top + plotH + 10);
+        }
+
+        ctx.strokeStyle = "#8390a4";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(margin.left, margin.top);
+        ctx.lineTo(margin.left, margin.top + plotH);
+        ctx.lineTo(margin.left + plotW, margin.top + plotH);
+        ctx.stroke();
+
+        ctx.fillStyle = "#607086";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText("time (s)", margin.left + plotW / 2, height - 4);
+        ctx.save();
+        ctx.translate(15, margin.top + plotH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText("position (m)", 0, 0);
+        ctx.restore();
+
+        if (liveHistory.length > 1) {
+          ctx.beginPath();
+          liveHistory.forEach((point, index) => {
+            const x = xToPx(point.t);
+            const y = yToPx(point.x);
+            if (index === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          });
+          ctx.strokeStyle = "#2563eb";
+          ctx.lineWidth = 3;
+          ctx.lineJoin = "round";
+          ctx.lineCap = "round";
+          ctx.stroke();
+
+          const last = liveHistory[liveHistory.length - 1];
+          const dotX = xToPx(last.t);
+          const dotY = yToPx(last.x);
+          ctx.fillStyle = "#e85d04";
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      function updateReadouts() {
+        const a = readoutAcceleration();
+        const atRestHeld = state.running && state.v <= 0.0001 && netAcceleration() <= 0;
+        const statusText = state.finished
+          ? "Finished"
+          : atRestHeld
+            ? "Held by friction"
+            : state.running
+              ? "Rolling"
+              : state.t > 0
+                ? "Paused"
+                : "Ready";
+
+        motionState.textContent = statusText;
+        motionState.className = "status";
+        if (statusText === "Rolling") {
+          motionState.classList.add("running");
+        } else if (statusText === "Held by friction") {
+          motionState.classList.add("held");
+        } else if (statusText === "Finished") {
+          motionState.classList.add("finished");
+        }
+
+        timeReadout.textContent = `${format(state.t, 2)} s`;
+        velocityReadout.textContent = `${format(state.v, 2)} m/s`;
+        accelReadout.textContent = `${format(a, 2)} m/s^2`;
+        positionReadout.textContent = `${format(state.x, 2)} m`;
+      }
+
+      function render() {
+        drawPlane();
+        drawGraph();
+        updateReadouts();
+      }
+
+      function frame(now) {
+        const dt = Math.min((now - previousFrame) / 1000, 0.04);
+        previousFrame = now;
+
+        if (state.running) {
+          step(dt, now);
+        } else {
+          updateLoopRestart(now);
+        }
+
+        render();
+        requestAnimationFrame(frame);
+      }
+
+      angleControl.addEventListener("input", () => {
+        syncControls();
+        render();
+      });
+
+      frictionControl.addEventListener("input", () => {
+        syncControls();
+        render();
+      });
+
+      toggleButton.addEventListener("click", releaseOrPause);
+      resetButton.addEventListener("click", () => resetState(false));
+      repeatToggle.addEventListener("change", () => {
+        if (!repeatToggle.checked) {
+          state.restartAt = null;
+        }
+      });
+      window.addEventListener("resize", render);
+
+      syncControls();
+      syncButtons();
+      render();
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

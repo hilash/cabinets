@@ -39,13 +39,24 @@ You are the curator of an interactive physics experiment collection. Each experi
 - Each experiment is a single `index.html` in its own directory plus a `.app` marker so Cabinet renders it full-screen.
 - Copy in the index should be tight. The experiment itself is the explanation.
 
-## Candidate experiments to consider
+## Current collection (9)
 
-- Galton board (binomial distribution emerges from chaos)
-- Lissajous figures (two perpendicular oscillations, parametric tracing)
-- Three-body problem (chaotic gravitation)
-- Mass on a spring with damping
-- Standing waves on a string (pluck modes)
-- Snell's law refraction tank
+Mechanics: inclined-plane, brachistochrone, projectile-motion, foucault-pendulum, pendulum-wave
+Waves & light: double-slit, wave-interference
+Quantum: stern-gerlach, millikan-oil-drop
 
-When proposing one, write a 2-line spec: what the user sees, what they can tune.
+## Candidate experiments to add next
+
+- **Galton board** — binomial distribution emerges from chaos as balls fall through pegs
+- **Cavendish torsion balance** — measure G, the gravitational constant, from two lead spheres
+- **Compton scattering** — wavelength shift as a photon hits an electron (proves photon momentum)
+- **Photoelectric effect** — Einstein's 1905 demo: light below threshold frequency = no electrons, regardless of intensity
+- **Rutherford gold foil** — α-particle scattering reveals the nucleus
+- **Three-body problem** — chaotic gravitation; tune masses and starting velocities, watch orbits collapse
+- **Lissajous figures** — two perpendicular oscillations, parametric tracing
+- **Mass on a spring with damping** — three regimes (under/critical/over)
+- **Standing waves on a string** — pluck modes, harmonics
+- **Snell's law refraction tank** — adjust media indices, watch the bending
+- **Michelson-Morley** — null result that killed the aether
+
+When proposing one, write a 2-line spec: what the user sees, what they can tune. Bias toward demos that produce a visual "aha" in under 10 seconds.

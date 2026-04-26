@@ -1,0 +1,1735 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stern-Gerlach Lab</title>
+    <style>
+      :root {
+        --bg: #11100e;
+        --ink: #f5f0df;
+        --muted: #b8ad9a;
+        --dim: #756e64;
+        --panel: #1a1917;
+        --panel-2: #22201d;
+        --line: #3a352e;
+        --line-bright: #5a5145;
+        --cyan: #29b8b2;
+        --cyan-soft: #8ae8de;
+        --orange: #f0954f;
+        --rose: #e2536d;
+        --gold: #e7c454;
+        --green: #81c76b;
+        --shadow: #00000070;
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        background: var(--bg);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 18% 12%, #26332f 0, transparent 24rem),
+          radial-gradient(circle at 86% 3%, #3a241e 0, transparent 23rem),
+          linear-gradient(135deg, #11100e 0%, #171411 55%, #101317 100%);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      button,
+      select,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 1px solid var(--line-bright);
+        border-radius: 7px;
+        color: var(--ink);
+        background: #25221e;
+        cursor: pointer;
+        transition:
+          transform 0.12s ease,
+          border-color 0.12s ease,
+          background 0.12s ease;
+      }
+
+      button:hover {
+        border-color: #807260;
+        background: #302b25;
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .shell {
+        width: min(1480px, 100%);
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow {
+        margin-bottom: 7px;
+        color: var(--gold);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2.15rem;
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .lede {
+        max-width: 760px;
+        margin: 9px 0 0;
+        color: var(--muted);
+        font-size: 0.98rem;
+        line-height: 1.55;
+      }
+
+      .mode-switch {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 330px;
+        padding: 4px;
+        gap: 4px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #0f0f0e;
+      }
+
+      .mode-switch button {
+        min-height: 38px;
+        border-color: transparent;
+        color: var(--muted);
+        background: transparent;
+      }
+
+      .mode-switch button.is-active {
+        color: var(--bg);
+        background: var(--gold);
+        border-color: var(--gold);
+        font-weight: 800;
+      }
+
+      .app-grid {
+        display: grid;
+        grid-template-columns: 390px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .panel,
+      .lab-panel,
+      .readout-panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        background: color-mix(in srgb, var(--panel) 92%, #000 8%);
+        box-shadow: 0 18px 50px var(--shadow);
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .panel-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 3px 9px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: #11100e;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .control-stack {
+        display: grid;
+        gap: 14px;
+      }
+
+      .control-group {
+        display: grid;
+        gap: 9px;
+      }
+
+      .control-line {
+        display: grid;
+        grid-template-columns: 118px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+      }
+
+      label,
+      .label {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      select,
+      input[type="range"] {
+        width: 100%;
+      }
+
+      select {
+        min-height: 36px;
+        padding: 0 10px;
+        border: 1px solid var(--line-bright);
+        border-radius: 7px;
+        color: var(--ink);
+        background: #11100e;
+      }
+
+      input[type="range"] {
+        accent-color: var(--cyan);
+      }
+
+      .range-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 60px;
+        gap: 9px;
+        align-items: center;
+      }
+
+      output {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 30px;
+        padding: 0 7px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--cyan-soft);
+        background: #11100e;
+        font-size: 0.78rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .axis-block {
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-2);
+      }
+
+      .axis-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .axis-name {
+        font-size: 0.82rem;
+        font-weight: 900;
+      }
+
+      .axis-tag {
+        color: var(--dim);
+        font-size: 0.75rem;
+        font-weight: 800;
+      }
+
+      .preset-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .preset-row button {
+        min-height: 31px;
+        padding: 0 6px;
+        color: var(--muted);
+        font-size: 0.75rem;
+        font-weight: 800;
+      }
+
+      .preset-row button.is-selected {
+        border-color: var(--cyan);
+        color: var(--cyan-soft);
+        background: #112828;
+      }
+
+      .filter-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .action-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .action-row button {
+        min-height: 38px;
+        padding: 0 9px;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .primary-action {
+        color: #11100e;
+        background: var(--cyan);
+        border-color: var(--cyan);
+      }
+
+      .primary-action:hover {
+        background: var(--cyan-soft);
+        border-color: var(--cyan-soft);
+      }
+
+      .lab-panel {
+        overflow: hidden;
+      }
+
+      .canvas-shell {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1200 / 640;
+        background: #090909;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .status-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid var(--line);
+        background: #141311;
+      }
+
+      .status-item {
+        min-width: 0;
+        padding: 13px 15px;
+        border-right: 1px solid var(--line);
+      }
+
+      .status-item:last-child {
+        border-right: 0;
+      }
+
+      .status-label {
+        color: var(--dim);
+        font-size: 0.7rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .status-value {
+        margin-top: 5px;
+        color: var(--ink);
+        font-size: 1.05rem;
+        font-weight: 900;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .readout-panel {
+        margin-top: 18px;
+        padding: 16px;
+      }
+
+      .readout-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .readout-card {
+        min-height: 118px;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #151411;
+      }
+
+      .readout-kicker {
+        color: var(--gold);
+        font-size: 0.7rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .readout-card strong {
+        display: block;
+        margin-top: 7px;
+        color: var(--ink);
+        font-size: 1.15rem;
+      }
+
+      .readout-card p {
+        margin: 7px 0 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.45;
+      }
+
+      .meter {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .meter div {
+        min-height: 8px;
+        border-radius: 999px;
+        background: var(--line);
+        overflow: hidden;
+      }
+
+      .meter span {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+      }
+
+      .meter .plus span {
+        background: var(--cyan);
+      }
+
+      .meter .minus span {
+        background: var(--orange);
+      }
+
+      .note {
+        margin-top: 13px;
+        padding-top: 13px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+      }
+
+      .note strong {
+        color: var(--ink);
+      }
+
+      body[data-mode="single"] .sequence-only,
+      body[data-mode="sequence"] .single-only {
+        display: none;
+      }
+
+      @media (max-width: 1120px) {
+        .app-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .control-stack {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 820px) {
+        .shell {
+          padding: 16px;
+        }
+
+        .topbar {
+          grid-template-columns: 1fr;
+          align-items: stretch;
+        }
+
+        .mode-switch {
+          width: 100%;
+        }
+
+        .control-stack,
+        .readout-grid,
+        .status-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .status-item {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .status-item:last-child {
+          border-bottom: 0;
+        }
+
+      }
+
+      @media (max-width: 520px) {
+        h1 {
+          font-size: 1.72rem;
+        }
+
+        .control-line,
+        .filter-grid,
+        .action-row {
+          grid-template-columns: 1fr;
+        }
+
+        .preset-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body data-mode="single">
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Quantum beamline</div>
+          <h1>Stern-Gerlach Lab</h1>
+          <p class="lede">
+            Silver atoms leave the oven as a beam, enter an inhomogeneous
+            magnetic field, and arrive as discrete spin-up or spin-down spots.
+          </p>
+        </div>
+        <div class="mode-switch" role="tablist" aria-label="Simulation mode">
+          <button class="is-active" type="button" data-mode="single" role="tab" aria-selected="true">
+            Single SG
+          </button>
+          <button type="button" data-mode="sequence" role="tab" aria-selected="false">
+            Sequential SG
+          </button>
+        </div>
+      </header>
+
+      <div class="app-grid">
+        <aside class="panel" aria-labelledby="controls-title">
+          <div class="panel-title">
+            <h2 id="controls-title">Controls</h2>
+            <span class="pill" id="run-state">Running</span>
+          </div>
+
+          <div class="control-stack">
+            <div class="control-group">
+              <div class="control-line">
+                <label for="source">Source</label>
+                <select id="source">
+                  <option value="mixed">Thermal silver beam</option>
+                  <option value="zplus">Prepared +Z</option>
+                  <option value="zminus">Prepared -Z</option>
+                </select>
+              </div>
+
+              <div class="control-line">
+                <label for="atoms">Atoms</label>
+                <div class="range-row">
+                  <input id="atoms" type="range" min="120" max="1200" value="520" step="20" />
+                  <output id="atoms-out">520</output>
+                </div>
+              </div>
+
+              <div class="control-line">
+                <label for="field">Field split</label>
+                <div class="range-row">
+                  <input id="field" type="range" min="35" max="100" value="72" step="1" />
+                  <output id="field-out">72%</output>
+                </div>
+              </div>
+
+              <div class="control-line">
+                <label for="speed">Beam speed</label>
+                <div class="range-row">
+                  <input id="speed" type="range" min="20" max="180" value="86" step="1" />
+                  <output id="speed-out">86%</output>
+                </div>
+              </div>
+            </div>
+
+            <div class="axis-block" data-axis-card="0">
+              <div class="axis-head">
+                <div>
+                  <div class="axis-name">Analyzer A</div>
+                  <div class="axis-tag">first magnetic field</div>
+                </div>
+                <output id="axis0-out">+Z</output>
+              </div>
+              <div class="preset-row">
+                <button type="button" data-axis="0" data-angle="0">+Z</button>
+                <button type="button" data-axis="0" data-angle="45">45 deg</button>
+                <button type="button" data-axis="0" data-angle="90">+X</button>
+                <button type="button" data-axis="0" data-angle="180">-Z</button>
+              </div>
+              <input id="axis0" type="range" min="0" max="180" value="0" step="1" />
+            </div>
+
+            <div class="axis-block sequence-only" data-axis-card="1">
+              <div class="axis-head">
+                <div>
+                  <div class="axis-name">Analyzer B</div>
+                  <div class="axis-tag">after selected A branch</div>
+                </div>
+                <output id="axis1-out">+X</output>
+              </div>
+              <div class="preset-row">
+                <button type="button" data-axis="1" data-angle="0">+Z</button>
+                <button type="button" data-axis="1" data-angle="45">45 deg</button>
+                <button type="button" data-axis="1" data-angle="90">+X</button>
+                <button type="button" data-axis="1" data-angle="180">-Z</button>
+              </div>
+              <input id="axis1" type="range" min="0" max="180" value="90" step="1" />
+            </div>
+
+            <div class="axis-block sequence-only" data-axis-card="2">
+              <div class="axis-head">
+                <div>
+                  <div class="axis-name">Analyzer C</div>
+                  <div class="axis-tag">final detector split</div>
+                </div>
+                <output id="axis2-out">+Z</output>
+              </div>
+              <div class="preset-row">
+                <button type="button" data-axis="2" data-angle="0">+Z</button>
+                <button type="button" data-axis="2" data-angle="45">45 deg</button>
+                <button type="button" data-axis="2" data-angle="90">+X</button>
+                <button type="button" data-axis="2" data-angle="180">-Z</button>
+              </div>
+              <input id="axis2" type="range" min="0" max="180" value="0" step="1" />
+            </div>
+
+            <div class="control-group sequence-only">
+              <div class="filter-grid">
+                <div>
+                  <label for="filter0">A branch sent to B</label>
+                  <select id="filter0">
+                    <option value="1">Pass +</option>
+                    <option value="-1">Pass -</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="filter1">B branch sent to C</label>
+                  <select id="filter1">
+                    <option value="1">Pass +</option>
+                    <option value="-1">Pass -</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="action-row">
+                <button class="primary-action" id="play" type="button">Pause beam</button>
+                <button id="resample" type="button">New atoms</button>
+              </div>
+              <div class="action-row">
+                <button id="classic" type="button">Classic split</button>
+                <button id="erase" type="button">Z then X then Z</button>
+              </div>
+              <div class="action-row sequence-only">
+                <button id="same-axis" type="button">Same-axis check</button>
+                <button id="rotate" type="button">Rotate B</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section>
+          <div class="lab-panel">
+            <div class="canvas-shell">
+              <canvas id="lab" width="1200" height="640" aria-label="Animated Stern-Gerlach beamline"></canvas>
+            </div>
+            <div class="status-strip" aria-live="polite">
+              <div class="status-item">
+                <div class="status-label">Mode</div>
+                <div class="status-value" id="mode-status">Single SG</div>
+              </div>
+              <div class="status-item">
+                <div class="status-label">Input state</div>
+                <div class="status-value" id="source-status">Thermal silver beam</div>
+              </div>
+              <div class="status-item">
+                <div class="status-label">Final + spot</div>
+                <div class="status-value" id="plus-status">0</div>
+              </div>
+              <div class="status-item">
+                <div class="status-label">Final - spot</div>
+                <div class="status-value" id="minus-status">0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="readout-panel" aria-labelledby="readout-title">
+            <div class="panel-title">
+              <h2 id="readout-title">Measurement Readout</h2>
+              <span class="pill" id="expected-pill">P(+)=50%</span>
+            </div>
+            <div class="readout-grid" id="readout-grid"></div>
+            <div class="note" id="interpretation"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const canvas = document.getElementById("lab");
+      const ctx = canvas.getContext("2d");
+      const W = 1200;
+      const H = 640;
+      const CY = 322;
+
+      const controls = {
+        source: document.getElementById("source"),
+        atoms: document.getElementById("atoms"),
+        atomsOut: document.getElementById("atoms-out"),
+        field: document.getElementById("field"),
+        fieldOut: document.getElementById("field-out"),
+        speed: document.getElementById("speed"),
+        speedOut: document.getElementById("speed-out"),
+        axis: [
+          document.getElementById("axis0"),
+          document.getElementById("axis1"),
+          document.getElementById("axis2"),
+        ],
+        axisOut: [
+          document.getElementById("axis0-out"),
+          document.getElementById("axis1-out"),
+          document.getElementById("axis2-out"),
+        ],
+        filter: [document.getElementById("filter0"), document.getElementById("filter1")],
+      };
+
+      const ui = {
+        modeButtons: Array.from(document.querySelectorAll("[data-mode]")),
+        presetButtons: Array.from(document.querySelectorAll("[data-axis][data-angle]")),
+        runState: document.getElementById("run-state"),
+        play: document.getElementById("play"),
+        resample: document.getElementById("resample"),
+        classic: document.getElementById("classic"),
+        erase: document.getElementById("erase"),
+        sameAxis: document.getElementById("same-axis"),
+        rotate: document.getElementById("rotate"),
+        modeStatus: document.getElementById("mode-status"),
+        sourceStatus: document.getElementById("source-status"),
+        plusStatus: document.getElementById("plus-status"),
+        minusStatus: document.getElementById("minus-status"),
+        expectedPill: document.getElementById("expected-pill"),
+        readoutGrid: document.getElementById("readout-grid"),
+        interpretation: document.getElementById("interpretation"),
+      };
+
+      const palette = {
+        plus: "#29b8b2",
+        plusSoft: "#8ae8de",
+        minus: "#f0954f",
+        minusSoft: "#ffd0a7",
+        blocked: "#756e64",
+        field: "#e7c454",
+        ink: "#f5f0df",
+        muted: "#b8ad9a",
+      };
+
+      const state = {
+        mode: "single",
+        running: true,
+        seed: 98431,
+        spinClock: 0,
+      };
+
+      let simulation = null;
+      let lastFrame = performance.now();
+      let devicePixelRatioCached = 1;
+
+      function mulberry32(seed) {
+        return function random() {
+          let t = (seed += 0x6d2b79f5);
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function degToRad(value) {
+        return (value * Math.PI) / 180;
+      }
+
+      function cosDeg(value) {
+        return Math.cos(degToRad(value));
+      }
+
+      function axisLabel(angle) {
+        const rounded = Math.round(angle);
+        if (rounded === 0) return "+Z";
+        if (rounded === 90) return "+X";
+        if (rounded === 180) return "-Z";
+        return `${rounded} deg`;
+      }
+
+      function signLabel(sign) {
+        return sign > 0 ? "+" : "-";
+      }
+
+      function sourceLabel(value) {
+        if (value === "zplus") return "Prepared +Z";
+        if (value === "zminus") return "Prepared -Z";
+        return "Thermal silver beam";
+      }
+
+      function percent(value) {
+        if (!Number.isFinite(value)) return "0%";
+        return `${Math.round(value * 100)}%`;
+      }
+
+      function currentConfig() {
+        return {
+          mode: state.mode,
+          source: controls.source.value,
+          atoms: Number(controls.atoms.value),
+          field: Number(controls.field.value),
+          speed: Number(controls.speed.value),
+          axes: controls.axis.map((input) => Number(input.value)),
+          filters: controls.filter.map((select) => Number(select.value)),
+        };
+      }
+
+      function initialSpin(source) {
+        if (source === "zplus") return { axis: 0, sign: 1 };
+        if (source === "zminus") return { axis: 0, sign: -1 };
+        return null;
+      }
+
+      function probabilityPlus(spin, analyzerAxis) {
+        if (!spin) return 0.5;
+        return clamp((1 + spin.sign * cosDeg(analyzerAxis - spin.axis)) / 2, 0, 1);
+      }
+
+      function measure(spin, analyzerAxis, random) {
+        const pPlus = probabilityPlus(spin, analyzerAxis);
+        const outcome = random() < pPlus ? 1 : -1;
+        return {
+          outcome,
+          pPlus,
+          spin: { axis: analyzerAxis, sign: outcome },
+        };
+      }
+
+      function jitter(random, amount) {
+        return (random() + random() + random() - 1.5) * amount;
+      }
+
+      function branchY(outcome, sep) {
+        return CY - outcome * sep;
+      }
+
+      function layoutFor(config) {
+        const sep = 48 + config.field * 0.96;
+        if (config.mode === "single") {
+          return {
+            sep,
+            source: { x: 82, y: CY },
+            analyzers: [{ x: 470, y: CY, label: "A", axis: config.axes[0] }],
+            detector: { x: 1102, y: CY },
+          };
+        }
+
+        return {
+          sep,
+          source: { x: 70, y: CY },
+          analyzers: [
+            { x: 235, y: CY, label: "A", axis: config.axes[0] },
+            { x: 535, y: CY, label: "B", axis: config.axes[1] },
+            { x: 835, y: CY, label: "C", axis: config.axes[2] },
+          ],
+          detector: { x: 1115, y: CY },
+        };
+      }
+
+      function makeSinglePath(layout, outcome, random) {
+        const spot = {
+          x: layout.detector.x + jitter(random, 8),
+          y: branchY(outcome, layout.sep) + jitter(random, 13),
+        };
+        return {
+          points: [
+            { x: layout.source.x, y: layout.source.y + jitter(random, 5) },
+            { x: layout.analyzers[0].x - 58, y: CY + jitter(random, 4) },
+            { x: layout.analyzers[0].x, y: CY + jitter(random, 3) },
+            { x: layout.detector.x - 36, y: branchY(outcome, layout.sep) + jitter(random, 8) },
+            spot,
+          ],
+          spot,
+        };
+      }
+
+      function makeSequencePath(layout, measurements, filters, stopStage, random) {
+        const xs = layout.analyzers.map((analyzer) => analyzer.x);
+        const points = [
+          { x: layout.source.x, y: CY + jitter(random, 5) },
+          { x: xs[0] - 42, y: CY + jitter(random, 4) },
+          { x: xs[0], y: CY + jitter(random, 3) },
+        ];
+
+        const y0 = branchY(measurements[0].outcome, layout.sep);
+        points.push({ x: xs[0] + 74, y: y0 + jitter(random, 5) });
+        if (stopStage === 0) {
+          const spot = { x: xs[0] + 116 + jitter(random, 5), y: y0 + jitter(random, 12) };
+          points.push(spot);
+          return { points, spot };
+        }
+
+        points.push(
+          { x: xs[1] - 92, y: y0 + jitter(random, 5) },
+          { x: xs[1] - 42, y: CY + jitter(random, 4) },
+          { x: xs[1], y: CY + jitter(random, 3) },
+        );
+
+        const y1 = branchY(measurements[1].outcome, layout.sep);
+        points.push({ x: xs[1] + 74, y: y1 + jitter(random, 5) });
+        if (stopStage === 1) {
+          const spot = { x: xs[1] + 116 + jitter(random, 5), y: y1 + jitter(random, 12) };
+          points.push(spot);
+          return { points, spot };
+        }
+
+        points.push(
+          { x: xs[2] - 92, y: y1 + jitter(random, 5) },
+          { x: xs[2] - 42, y: CY + jitter(random, 4) },
+          { x: xs[2], y: CY + jitter(random, 3) },
+        );
+
+        const y2 = branchY(measurements[2].outcome, layout.sep);
+        const spot = {
+          x: layout.detector.x + jitter(random, 8),
+          y: y2 + jitter(random, 13),
+        };
+        points.push({ x: layout.detector.x - 36, y: y2 + jitter(random, 8) }, spot);
+        return { points, spot };
+      }
+
+      function emptyStage(axis, filter = null) {
+        return {
+          axis,
+          filter,
+          enter: 0,
+          plus: 0,
+          minus: 0,
+          pass: 0,
+          blocked: 0,
+        };
+      }
+
+      function simulate() {
+        const config = currentConfig();
+        const random = mulberry32(state.seed);
+        const layout = layoutFor(config);
+        const atoms = [];
+        const stages = [
+          emptyStage(config.axes[0], config.mode === "sequence" ? config.filters[0] : null),
+          emptyStage(config.axes[1], config.mode === "sequence" ? config.filters[1] : null),
+          emptyStage(config.axes[2], null),
+        ];
+        const final = { plus: 0, minus: 0, total: 0, blocked: 0 };
+
+        for (let i = 0; i < config.atoms; i += 1) {
+          let spin = initialSpin(config.source);
+          const phase = random();
+          const radius = 1.6 + random() * 1.8;
+
+          if (config.mode === "single") {
+            stages[0].enter += 1;
+            const m = measure(spin, config.axes[0], random);
+            stages[0][m.outcome > 0 ? "plus" : "minus"] += 1;
+            final[m.outcome > 0 ? "plus" : "minus"] += 1;
+            final.total += 1;
+            const path = makeSinglePath(layout, m.outcome, random);
+            atoms.push({
+              outcome: m.outcome,
+              color: m.outcome > 0 ? palette.plus : palette.minus,
+              phase,
+              radius,
+              points: path.points,
+              spot: path.spot,
+              status: "final",
+            });
+            continue;
+          }
+
+          const measurements = [];
+          let stopStage = null;
+          for (let stageIndex = 0; stageIndex < 3; stageIndex += 1) {
+            stages[stageIndex].enter += 1;
+            const m = measure(spin, config.axes[stageIndex], random);
+            measurements.push(m);
+            stages[stageIndex][m.outcome > 0 ? "plus" : "minus"] += 1;
+            spin = m.spin;
+
+            if (stageIndex < 2) {
+              if (m.outcome === config.filters[stageIndex]) {
+                stages[stageIndex].pass += 1;
+              } else {
+                stages[stageIndex].blocked += 1;
+                final.blocked += 1;
+                stopStage = stageIndex;
+                break;
+              }
+            } else {
+              final[m.outcome > 0 ? "plus" : "minus"] += 1;
+              final.total += 1;
+            }
+          }
+
+          const path = makeSequencePath(layout, measurements, config.filters, stopStage, random);
+          const lastMeasurement = measurements[measurements.length - 1];
+          atoms.push({
+            outcome: lastMeasurement.outcome,
+            color:
+              stopStage === null
+                ? lastMeasurement.outcome > 0
+                  ? palette.plus
+                  : palette.minus
+                : palette.blocked,
+            phase,
+            radius,
+            points: path.points,
+            spot: path.spot,
+            status: stopStage === null ? "final" : "blocked",
+            stopStage,
+          });
+        }
+
+        simulation = { config, layout, atoms, stages, final };
+        updateUi();
+      }
+
+      function resizeCanvas() {
+        const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        if (dpr === devicePixelRatioCached && canvas.width === W * dpr) return;
+        devicePixelRatioCached = dpr;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function drawRoundedRect(x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+      }
+
+      function drawText(text, x, y, options = {}) {
+        ctx.save();
+        ctx.fillStyle = options.color || palette.ink;
+        ctx.font = `${options.weight || 700} ${options.size || 14}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = options.align || "left";
+        ctx.textBaseline = options.baseline || "alphabetic";
+        ctx.fillText(text, x, y);
+        ctx.restore();
+      }
+
+      function drawBackground() {
+        const gradient = ctx.createLinearGradient(0, 0, W, H);
+        gradient.addColorStop(0, "#0e0f10");
+        gradient.addColorStop(0.55, "#15120f");
+        gradient.addColorStop(1, "#0d1114");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.save();
+        ctx.strokeStyle = "#2c2822";
+        ctx.globalAlpha = 0.34;
+        ctx.lineWidth = 1;
+        for (let x = 60; x < W; x += 60) {
+          ctx.beginPath();
+          ctx.moveTo(x, 48);
+          ctx.lineTo(x, H - 56);
+          ctx.stroke();
+        }
+        for (let y = 82; y < H; y += 60) {
+          ctx.beginPath();
+          ctx.moveTo(46, y);
+          ctx.lineTo(W - 44, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.strokeStyle = "#514331";
+        ctx.globalAlpha = 0.7;
+        ctx.setLineDash([7, 12]);
+        ctx.beginPath();
+        ctx.moveTo(42, CY);
+        ctx.lineTo(W - 38, CY);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawSource(layout) {
+        ctx.save();
+        const x = layout.source.x;
+        const y = layout.source.y;
+        const glow = ctx.createRadialGradient(x, y, 5, x, y, 70);
+        glow.addColorStop(0, "#f0954f88");
+        glow.addColorStop(1, "#f0954f00");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(x, y, 70, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawRoundedRect(x - 48, y - 34, 72, 68, 8);
+        ctx.fillStyle = "#211b14";
+        ctx.fill();
+        ctx.strokeStyle = "#6c4f31";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "#f0954f";
+        ctx.beginPath();
+        ctx.arc(x + 22, y, 9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#ffd0a7";
+        ctx.beginPath();
+        ctx.arc(x + 22, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawText("Ag oven", x - 44, y - 50, { size: 13, color: palette.muted });
+        drawText("collimator", x + 42, y + 5, { size: 12, color: "#756e64" });
+
+        ctx.strokeStyle = "#7c6b54";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(x + 32, y - 10);
+        ctx.lineTo(x + 55, y - 10);
+        ctx.moveTo(x + 32, y + 10);
+        ctx.lineTo(x + 55, y + 10);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawAnalyzer(analyzer, index, active = true) {
+        const x = analyzer.x;
+        const y = analyzer.y;
+        ctx.save();
+        ctx.globalAlpha = active ? 1 : 0.42;
+
+        const fieldGradient = ctx.createLinearGradient(x - 46, y - 86, x + 46, y + 86);
+        fieldGradient.addColorStop(0, "#e7c45400");
+        fieldGradient.addColorStop(0.45, "#e7c45438");
+        fieldGradient.addColorStop(0.55, "#29b8b238");
+        fieldGradient.addColorStop(1, "#29b8b200");
+        ctx.fillStyle = fieldGradient;
+        drawRoundedRect(x - 54, y - 94, 108, 188, 10);
+        ctx.fill();
+
+        drawRoundedRect(x - 58, y - 118, 116, 52, 8);
+        ctx.fillStyle = "#322412";
+        ctx.fill();
+        ctx.strokeStyle = "#8a6430";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        drawRoundedRect(x - 58, y + 66, 116, 52, 8);
+        ctx.fillStyle = "#123032";
+        ctx.fill();
+        ctx.strokeStyle = "#2f7d7b";
+        ctx.stroke();
+
+        drawText("N", x, y - 84, { align: "center", size: 20, color: palette.gold, weight: 900 });
+        drawText("S", x, y + 101, { align: "center", size: 20, color: palette.plusSoft, weight: 900 });
+
+        ctx.strokeStyle = "#e7c45480";
+        ctx.lineWidth = 1.2;
+        for (let i = -2; i <= 2; i += 1) {
+          ctx.beginPath();
+          ctx.moveTo(x - 28 + i * 14, y - 58);
+          ctx.bezierCurveTo(x - 18 + i * 10, y - 16, x + 18 - i * 10, y + 16, x + 28 - i * 14, y + 58);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = "#11100e";
+        ctx.beginPath();
+        ctx.arc(x, y, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#d8c89b";
+        ctx.stroke();
+
+        drawText(`SG ${analyzer.label}`, x, y - 135, {
+          align: "center",
+          size: 13,
+          color: active ? palette.ink : palette.dim,
+          weight: 900,
+        });
+        drawText(axisLabel(analyzer.axis), x, y - 18, {
+          align: "center",
+          size: 12,
+          color: palette.gold,
+          weight: 900,
+        });
+        drawText(index === 2 ? "detect" : "split", x, y + 27, {
+          align: "center",
+          size: 11,
+          color: palette.muted,
+          weight: 800,
+        });
+        ctx.restore();
+      }
+
+      function drawDetector(layout) {
+        const x = layout.detector.x;
+        const sep = layout.sep;
+        ctx.save();
+        drawRoundedRect(x + 26, CY - sep - 76, 38, sep * 2 + 152, 8);
+        ctx.fillStyle = "#171511";
+        ctx.fill();
+        ctx.strokeStyle = "#5a5145";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        drawText("detector", x + 44, CY - sep - 90, {
+          align: "center",
+          size: 12,
+          color: palette.muted,
+        });
+        drawText("+", x + 78, CY - sep + 4, {
+          align: "left",
+          size: 18,
+          color: palette.plusSoft,
+          weight: 900,
+        });
+        drawText("-", x + 80, CY + sep + 5, {
+          align: "left",
+          size: 20,
+          color: palette.minusSoft,
+          weight: 900,
+        });
+        ctx.restore();
+      }
+
+      function drawBlockers(layout) {
+        if (simulation.config.mode !== "sequence") return;
+        const sep = layout.sep;
+        const stages = layout.analyzers.slice(0, 2);
+        stages.forEach((analyzer, index) => {
+          const filter = simulation.config.filters[index];
+          const passY = branchY(filter, sep);
+          const blockY = branchY(-filter, sep);
+          ctx.save();
+          ctx.strokeStyle = "#736453";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(analyzer.x + 104, blockY - 30);
+          ctx.lineTo(analyzer.x + 104, blockY + 30);
+          ctx.stroke();
+          drawText("blocked", analyzer.x + 115, blockY + 4, {
+            size: 11,
+            color: "#756e64",
+          });
+          drawText(`pass ${signLabel(filter)}`, analyzer.x + 92, passY - 14, {
+            size: 11,
+            color: filter > 0 ? palette.plusSoft : palette.minusSoft,
+            weight: 900,
+          });
+          ctx.restore();
+        });
+      }
+
+      function drawPath(points, color, alpha, width) {
+        if (points.length < 2) return;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = alpha;
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i += 1) {
+          const mid = {
+            x: (points[i - 1].x + points[i].x) / 2,
+            y: (points[i - 1].y + points[i].y) / 2,
+          };
+          ctx.quadraticCurveTo(points[i - 1].x, points[i - 1].y, mid.x, mid.y);
+        }
+        const last = points[points.length - 1];
+        ctx.lineTo(last.x, last.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function pathLength(points) {
+        let length = 0;
+        for (let i = 1; i < points.length; i += 1) {
+          length += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+        }
+        return length;
+      }
+
+      function pointOnPath(points, t) {
+        if (points.length === 1) return points[0];
+        const total = pathLength(points);
+        let distance = total * clamp(t, 0, 1);
+        for (let i = 1; i < points.length; i += 1) {
+          const start = points[i - 1];
+          const end = points[i];
+          const segment = Math.hypot(end.x - start.x, end.y - start.y);
+          if (distance <= segment) {
+            const local = segment === 0 ? 0 : distance / segment;
+            return {
+              x: start.x + (end.x - start.x) * local,
+              y: start.y + (end.y - start.y) * local,
+            };
+          }
+          distance -= segment;
+        }
+        return points[points.length - 1];
+      }
+
+      function drawHitSpots() {
+        const layout = simulation.layout;
+        const sep = layout.sep;
+        const finalTotal = Math.max(1, simulation.final.total);
+        const spotInfo = [
+          {
+            sign: 1,
+            count: simulation.final.plus,
+            y: branchY(1, sep),
+            color: palette.plus,
+            soft: palette.plusSoft,
+          },
+          {
+            sign: -1,
+            count: simulation.final.minus,
+            y: branchY(-1, sep),
+            color: palette.minus,
+            soft: palette.minusSoft,
+          },
+        ];
+
+        spotInfo.forEach((spot) => {
+          const ratio = spot.count / finalTotal;
+          const radius = 16 + Math.sqrt(spot.count) * 1.15;
+          const glow = ctx.createRadialGradient(layout.detector.x + 32, spot.y, 3, layout.detector.x + 32, spot.y, radius);
+          glow.addColorStop(0, `${spot.soft}cc`);
+          glow.addColorStop(0.4, `${spot.color}66`);
+          glow.addColorStop(1, `${spot.color}00`);
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(layout.detector.x + 32, spot.y, radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          drawText(`${signLabel(spot.sign)} ${spot.count}`, layout.detector.x + 76, spot.y - 17, {
+            size: 13,
+            color: spot.soft,
+            weight: 900,
+          });
+          drawText(percent(ratio), layout.detector.x + 76, spot.y + 1, {
+            size: 12,
+            color: palette.muted,
+            weight: 800,
+          });
+        });
+
+        simulation.atoms.forEach((atom) => {
+          if (atom.status !== "final") return;
+          ctx.save();
+          ctx.globalAlpha = 0.48;
+          ctx.fillStyle = atom.outcome > 0 ? palette.plusSoft : palette.minusSoft;
+          ctx.beginPath();
+          ctx.arc(atom.spot.x + 32, atom.spot.y, 1.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+      }
+
+      function drawBlockedSpots() {
+        if (simulation.config.mode !== "sequence") return;
+        simulation.atoms.forEach((atom) => {
+          if (atom.status !== "blocked") return;
+          ctx.save();
+          ctx.globalAlpha = 0.35;
+          ctx.fillStyle = "#a09586";
+          ctx.beginPath();
+          ctx.arc(atom.spot.x, atom.spot.y, 1.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+      }
+
+      function drawBeams() {
+        const maxAtoms = Math.max(1, simulation.config.atoms);
+        const step = Math.max(1, Math.floor(simulation.atoms.length / 420));
+        for (let i = 0; i < simulation.atoms.length; i += step) {
+          const atom = simulation.atoms[i];
+          const alpha = atom.status === "blocked" ? 0.025 : 0.04;
+          drawPath(atom.points, atom.color, alpha, 1.1 + (simulation.config.atoms / maxAtoms) * 0.9);
+        }
+      }
+
+      function drawParticles(elapsed) {
+        const config = simulation.config;
+        const speed = 0.045 + (config.speed / 100) * 0.105;
+        const limit = Math.min(simulation.atoms.length, 360);
+        const step = Math.max(1, Math.floor(simulation.atoms.length / limit));
+
+        for (let i = 0; i < simulation.atoms.length; i += step) {
+          const atom = simulation.atoms[i];
+          const t = (atom.phase + state.spinClock * speed) % 1;
+          const point = pointOnPath(atom.points, t);
+          ctx.save();
+          ctx.globalAlpha = atom.status === "blocked" && t > 0.92 ? 0.25 : 0.9;
+          ctx.fillStyle = atom.color;
+          ctx.shadowColor = atom.color;
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, atom.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      function drawScene(timestamp) {
+        resizeCanvas();
+        const delta = Math.min(80, timestamp - lastFrame);
+        lastFrame = timestamp;
+        if (state.running) {
+          state.spinClock += delta / 1000;
+        }
+
+        if (!simulation) simulate();
+        drawBackground();
+        drawSource(simulation.layout);
+        simulation.layout.analyzers.forEach((analyzer, index) => {
+          const active = simulation.config.mode === "sequence" || index === 0;
+          drawAnalyzer(analyzer, index, active);
+        });
+        drawDetector(simulation.layout);
+        drawBlockers(simulation.layout);
+        drawBeams();
+        drawParticles(delta);
+        drawHitSpots();
+        drawBlockedSpots();
+        drawCanvasLabels();
+
+        requestAnimationFrame(drawScene);
+      }
+
+      function drawCanvasLabels() {
+        const layout = simulation.layout;
+        drawText("silver atom beam", 150, CY - 22, { size: 12, color: palette.muted });
+        if (simulation.config.mode === "single") {
+          drawText("inhomogeneous magnetic field", layout.analyzers[0].x - 88, 82, {
+            size: 12,
+            color: palette.gold,
+          });
+          drawText("two discrete detector spots", layout.detector.x - 104, 82, {
+            size: 12,
+            color: palette.muted,
+          });
+        } else {
+          drawText("selected branches feed the next analyzer", 318, 82, {
+            size: 12,
+            color: palette.muted,
+          });
+          drawText("final SG C measures the state prepared by SG B", 760, 82, {
+            size: 12,
+            color: palette.gold,
+          });
+        }
+      }
+
+      function ratioBar(plus, minus) {
+        const total = Math.max(1, plus + minus);
+        const plusPct = (plus / total) * 100;
+        const minusPct = (minus / total) * 100;
+        return `
+          <div class="meter" aria-hidden="true">
+            <div class="plus"><span style="width:${plusPct}%"></span></div>
+            <div class="minus"><span style="width:${minusPct}%"></span></div>
+          </div>
+        `;
+      }
+
+      function stageCard(title, stage, detail) {
+        const total = Math.max(1, stage.enter);
+        const plusPct = percent(stage.plus / total);
+        const minusPct = percent(stage.minus / total);
+        return `
+          <article class="readout-card">
+            <div class="readout-kicker">${title}</div>
+            <strong>${axisLabel(stage.axis)} axis</strong>
+            <p>${stage.enter} enter: +${stage.plus} (${plusPct}) / -${stage.minus} (${minusPct}).</p>
+            ${stage.filter ? `<p>Filter passes ${signLabel(stage.filter)}: ${stage.pass} continue, ${stage.blocked} stop.</p>` : ""}
+            ${detail ? `<p>${detail}</p>` : ""}
+            ${ratioBar(stage.plus, stage.minus)}
+          </article>
+        `;
+      }
+
+      function updateUi() {
+        const config = simulation.config;
+        document.body.dataset.mode = config.mode;
+        controls.atomsOut.value = config.atoms;
+        controls.fieldOut.value = `${config.field}%`;
+        controls.speedOut.value = `${config.speed}%`;
+        controls.axisOut.forEach((output, index) => {
+          output.value = axisLabel(config.axes[index]);
+        });
+
+        ui.modeButtons.forEach((button) => {
+          const isActive = button.dataset.mode === config.mode;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-selected", String(isActive));
+        });
+
+        ui.presetButtons.forEach((button) => {
+          const axisIndex = Number(button.dataset.axis);
+          const angle = Number(button.dataset.angle);
+          button.classList.toggle("is-selected", Math.round(config.axes[axisIndex]) === angle);
+        });
+
+        ui.runState.textContent = state.running ? "Running" : "Paused";
+        ui.play.textContent = state.running ? "Pause beam" : "Run beam";
+        ui.modeStatus.textContent = config.mode === "single" ? "Single SG" : "Sequential SG";
+        ui.sourceStatus.textContent = sourceLabel(config.source);
+        ui.plusStatus.textContent = `${simulation.final.plus} (${percent(simulation.final.plus / Math.max(1, simulation.final.total))})`;
+        ui.minusStatus.textContent = `${simulation.final.minus} (${percent(simulation.final.minus / Math.max(1, simulation.final.total))})`;
+
+        const expected = expectedFinalPlus(config);
+        ui.expectedPill.textContent = `Expected final P(+): ${percent(expected)}`;
+        ui.readoutGrid.innerHTML = readoutHtml(config);
+        ui.interpretation.innerHTML = interpretationHtml(config, expected);
+      }
+
+      function expectedFinalPlus(config) {
+        if (config.mode === "single") {
+          return probabilityPlus(initialSpin(config.source), config.axes[0]);
+        }
+        return probabilityPlus({ axis: config.axes[1], sign: config.filters[1] }, config.axes[2]);
+      }
+
+      function readoutHtml(config) {
+        if (config.mode === "single") {
+          const stage = simulation.stages[0];
+          return [
+            stageCard("Analyzer A", stage, "The magnet field gradient turns spin into vertical position."),
+            `
+              <article class="readout-card">
+                <div class="readout-kicker">Detector</div>
+                <strong>${simulation.final.total} atoms recorded</strong>
+                <p>Final +${simulation.final.plus} and -${simulation.final.minus} form two separated spots.</p>
+                ${ratioBar(simulation.final.plus, simulation.final.minus)}
+              </article>
+            `,
+            `
+              <article class="readout-card">
+                <div class="readout-kicker">State update</div>
+                <strong>Each spot is a measured spin state</strong>
+                <p>An atom found in the + spot leaves the analyzer as + along the selected axis.</p>
+              </article>
+            `,
+            `
+              <article class="readout-card">
+                <div class="readout-kicker">Rule</div>
+                <strong>P(+) from angle delta</strong>
+                <p>For a prepared state, P(+) = (1 + s cos(delta)) / 2. A thermal beam gives 50/50.</p>
+              </article>
+            `,
+          ].join("");
+        }
+
+        return [
+          stageCard("Analyzer A", simulation.stages[0], "A selected branch prepares the input for B."),
+          stageCard("Analyzer B", simulation.stages[1], "B performs a new measurement and prepares its passed branch."),
+          stageCard("Analyzer C", simulation.stages[2], "C measures the state that survived B."),
+          `
+            <article class="readout-card">
+              <div class="readout-kicker">Final detector</div>
+              <strong>${simulation.final.total} arrive, ${simulation.final.blocked} blocked</strong>
+              <p>Final +${simulation.final.plus} and -${simulation.final.minus} are counted after the C analyzer.</p>
+              ${ratioBar(simulation.final.plus, simulation.final.minus)}
+            </article>
+          `,
+        ].join("");
+      }
+
+      function interpretationHtml(config, expected) {
+        if (config.mode === "single") {
+          if (config.source === "mixed") {
+            return `<strong>Classic result:</strong> the thermal silver beam does not smear into a band. It separates into two spots because the spin-1/2 projection has only two measured outcomes.`;
+          }
+          return `<strong>Prepared beam:</strong> the selected analyzer axis is ${axisLabel(config.axes[0])}. Changing the angle changes the + probability through the spin-1/2 cosine rule.`;
+        }
+
+        const a = axisLabel(config.axes[0]);
+        const b = axisLabel(config.axes[1]);
+        const c = axisLabel(config.axes[2]);
+        const sameBC = Math.abs(config.axes[1] - config.axes[2]) < 0.5;
+        const sameAC = Math.abs(config.axes[0] - config.axes[2]) < 0.5;
+        if (sameBC) {
+          return `<strong>Repeat measurement:</strong> B passes ${signLabel(config.filters[1])} along ${b}; C uses the same axis, so the final result is deterministic apart from sampling noise.`;
+        }
+        if (sameAC && Math.abs(config.axes[0] - config.axes[1]) > 35) {
+          return `<strong>Measurement changes the state:</strong> A and C are both ${a}, but the intervening ${b} analyzer prepares a new state. C therefore returns about ${percent(expected)} + instead of remembering the A result.`;
+        }
+        return `<strong>Sequential rule:</strong> once B passes ${signLabel(config.filters[1])} along ${b}, the C probabilities depend on the B-to-C angle. The earlier ${a} measurement only affects how many atoms reach B.`;
+      }
+
+      function setMode(mode) {
+        state.mode = mode;
+        state.seed += 17;
+        simulate();
+      }
+
+      function setControlValues(values) {
+        if (values.mode) state.mode = values.mode;
+        if (values.source) controls.source.value = values.source;
+        if (values.atoms) controls.atoms.value = values.atoms;
+        if (values.field) controls.field.value = values.field;
+        if (values.speed) controls.speed.value = values.speed;
+        if (values.axes) {
+          values.axes.forEach((axis, index) => {
+            controls.axis[index].value = axis;
+          });
+        }
+        if (values.filters) {
+          values.filters.forEach((filter, index) => {
+            controls.filter[index].value = String(filter);
+          });
+        }
+        state.seed += 101;
+        simulate();
+      }
+
+      function bindEvents() {
+        ui.modeButtons.forEach((button) => {
+          button.addEventListener("click", () => setMode(button.dataset.mode));
+        });
+
+        [...document.querySelectorAll("input, select")].forEach((input) => {
+          const handleInput = () => {
+            state.seed += 3;
+            simulate();
+          };
+          input.addEventListener("input", handleInput);
+          input.addEventListener("change", handleInput);
+        });
+
+        ui.presetButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const axisIndex = Number(button.dataset.axis);
+            controls.axis[axisIndex].value = button.dataset.angle;
+            state.seed += 5;
+            simulate();
+          });
+        });
+
+        ui.play.addEventListener("click", () => {
+          state.running = !state.running;
+          updateUi();
+        });
+
+        ui.resample.addEventListener("click", () => {
+          state.seed += 997;
+          simulate();
+        });
+
+        ui.classic.addEventListener("click", () => {
+          setControlValues({
+            mode: "single",
+            source: "mixed",
+            atoms: 640,
+            field: 76,
+            axes: [0, 90, 0],
+            filters: [1, 1],
+          });
+        });
+
+        ui.erase.addEventListener("click", () => {
+          setControlValues({
+            mode: "sequence",
+            source: "mixed",
+            atoms: 900,
+            field: 72,
+            axes: [0, 90, 0],
+            filters: [1, 1],
+          });
+        });
+
+        ui.sameAxis.addEventListener("click", () => {
+          setControlValues({
+            mode: "sequence",
+            source: "mixed",
+            atoms: 900,
+            field: 72,
+            axes: [0, 0, 0],
+            filters: [1, 1],
+          });
+        });
+
+        ui.rotate.addEventListener("click", () => {
+          const next = (Number(controls.axis[1].value) + 15) % 181;
+          controls.axis[1].value = next;
+          state.mode = "sequence";
+          state.seed += 47;
+          simulate();
+        });
+
+        window.addEventListener("resize", resizeCanvas);
+      }
+
+      bindEvents();
+      simulate();
+      requestAnimationFrame(drawScene);
+    </script>
+  </body>
+</html>

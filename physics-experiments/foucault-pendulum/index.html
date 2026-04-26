@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foucault Pendulum</title>
+    <style>
+      :root {
+        --bg: #111412;
+        --ink: #f3eee3;
+        --muted: #b8b1a3;
+        --line: #343a35;
+        --panel: #1b201d;
+        --panel-strong: #242b27;
+        --teal: #45d4c4;
+        --gold: #f2c14e;
+        --rust: #db6b44;
+        --violet: #a78bfa;
+        --shadow: rgba(0, 0, 0, 0.36);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(69, 212, 196, 0.12), transparent 28rem),
+          linear-gradient(135deg, #111412 0%, #181712 48%, #101616 100%);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .shell {
+        width: min(1480px, 100%);
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 20px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 16px;
+      }
+
+      .eyebrow {
+        margin: 0 0 4px;
+        color: var(--teal);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 3vw, 2.8rem);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .readout {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+        gap: 8px;
+        min-width: min(420px, 100%);
+      }
+
+      .metric {
+        border: 1px solid var(--line);
+        background: rgba(27, 32, 29, 0.82);
+        border-radius: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 10px 24px var(--shadow);
+      }
+
+      .metric-label {
+        color: var(--muted);
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .metric-value {
+        display: block;
+        margin-top: 3px;
+        font-size: clamp(1rem, 1.5vw, 1.35rem);
+        font-variant-numeric: tabular-nums;
+        font-weight: 800;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .stage {
+        min-height: min(74vh, 780px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #141815;
+        box-shadow: 0 18px 40px var(--shadow);
+        overflow: hidden;
+        position: relative;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .canvas-badge {
+        position: absolute;
+        left: 14px;
+        bottom: 14px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        pointer-events: none;
+      }
+
+      .chip {
+        border: 1px solid rgba(243, 238, 227, 0.14);
+        background: rgba(17, 20, 18, 0.78);
+        color: var(--muted);
+        border-radius: 8px;
+        padding: 7px 9px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        backdrop-filter: blur(8px);
+      }
+
+      .chip strong {
+        color: var(--ink);
+      }
+
+      .controls {
+        border: 1px solid var(--line);
+        background: rgba(27, 32, 29, 0.86);
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 18px 40px var(--shadow);
+      }
+
+      .control-group + .control-group {
+        margin-top: 18px;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+      }
+
+      .label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      label,
+      .group-label {
+        color: var(--muted);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      output {
+        color: var(--ink);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--teal);
+      }
+
+      .ticks {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        color: var(--muted);
+        font-size: 0.72rem;
+        margin-top: 6px;
+      }
+
+      .ticks span {
+        text-align: center;
+      }
+
+      .ticks span:first-child {
+        text-align: left;
+      }
+
+      .ticks span:last-child {
+        text-align: right;
+      }
+
+      .button-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .speed-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      button {
+        min-height: 40px;
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        color: var(--ink);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      button:hover {
+        border-color: rgba(69, 212, 196, 0.64);
+      }
+
+      button[aria-pressed="true"],
+      button.primary {
+        border-color: rgba(69, 212, 196, 0.86);
+        background: rgba(69, 212, 196, 0.16);
+        color: #dffbf7;
+      }
+
+      .data-grid {
+        display: grid;
+        gap: 8px;
+      }
+
+      .data-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid rgba(52, 58, 53, 0.72);
+        padding: 8px 0;
+      }
+
+      .data-row:last-child {
+        border-bottom: 0;
+      }
+
+      .data-name {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .data-value {
+        color: var(--ink);
+        font-size: 0.86rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+      }
+
+      @media (max-width: 980px) {
+        header,
+        main {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          display: grid;
+        }
+
+        .readout {
+          width: 100%;
+        }
+
+        .stage {
+          min-height: 62vh;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .shell {
+          padding: 14px;
+        }
+
+        .readout {
+          grid-template-columns: 1fr;
+        }
+
+        .button-row,
+        .speed-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stage {
+          min-height: 58vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <div>
+          <p class="eyebrow">Top-down lab</p>
+          <h1>Foucault Pendulum</h1>
+        </div>
+        <div class="readout">
+          <div class="metric">
+            <span class="metric-label">Elapsed</span>
+            <span class="metric-value" id="elapsed">0d 00:00:00</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Plane angle</span>
+            <span class="metric-value" id="angleReadout">0.0 deg</span>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="stage" aria-label="Top-down canvas view of the pendulum swing plane">
+          <canvas id="pendulum" aria-label="Foucault pendulum top-down simulation"></canvas>
+          <div class="canvas-badge">
+            <span class="chip">Lat <strong id="latBadge">48 N</strong></span>
+            <span class="chip">Rate <strong id="rateBadge">11.2 deg/h</strong></span>
+            <span class="chip">Trace <strong id="traceBadge">last 12h</strong></span>
+          </div>
+        </section>
+
+        <aside class="controls">
+          <div class="control-group">
+            <div class="label-row">
+              <label for="latitude">Latitude</label>
+              <output id="latitudeValue" for="latitude">48 N</output>
+            </div>
+            <input id="latitude" type="range" min="-90" max="90" step="1" value="48" />
+            <div class="ticks" aria-hidden="true">
+              <span>90 S</span>
+              <span>45 S</span>
+              <span>0</span>
+              <span>45 N</span>
+              <span>90 N</span>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <span class="group-label">Time scale</span>
+              <output id="scaleValue">4h/s</output>
+            </div>
+            <div class="speed-grid" id="speedControls">
+              <button type="button" data-scale="900">15m/s</button>
+              <button type="button" data-scale="3600">1h/s</button>
+              <button type="button" data-scale="14400" aria-pressed="true">4h/s</button>
+              <button type="button" data-scale="86400">1d/s</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="button-row">
+              <button type="button" class="primary" id="pauseButton">Pause</button>
+              <button type="button" id="resetButton">Reset</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="data-grid">
+              <div class="data-row">
+                <span class="data-name">Precession rate</span>
+                <span class="data-value" id="rateValue">11.2 deg/h</span>
+              </div>
+              <div class="data-row">
+                <span class="data-name">Full turn</span>
+                <span class="data-value" id="periodValue">32.0 h</span>
+              </div>
+              <div class="data-row">
+                <span class="data-name">Direction</span>
+                <span class="data-value" id="directionValue">clockwise</span>
+              </div>
+              <div class="data-row">
+                <span class="data-name">Model</span>
+                <span class="data-value">15.04 deg/h x sin(lat)</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("pendulum");
+      const ctx = canvas.getContext("2d");
+
+      const latitudeInput = document.getElementById("latitude");
+      const latitudeValue = document.getElementById("latitudeValue");
+      const elapsedEl = document.getElementById("elapsed");
+      const angleReadout = document.getElementById("angleReadout");
+      const rateValue = document.getElementById("rateValue");
+      const rateBadge = document.getElementById("rateBadge");
+      const latBadge = document.getElementById("latBadge");
+      const periodValue = document.getElementById("periodValue");
+      const directionValue = document.getElementById("directionValue");
+      const traceBadge = document.getElementById("traceBadge");
+      const scaleValue = document.getElementById("scaleValue");
+      const pauseButton = document.getElementById("pauseButton");
+      const resetButton = document.getElementById("resetButton");
+      const speedControls = document.getElementById("speedControls");
+
+      const SIDEREAL_HOURS = 23.9344696;
+      const EARTH_RATE_DEG_PER_HOUR = 360 / SIDEREAL_HOURS;
+      const state = {
+        latitude: Number(latitudeInput.value),
+        running: true,
+        simSeconds: 0,
+        bobPhase: 0,
+        timeScale: 14400,
+        lastFrame: performance.now()
+      };
+
+      function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function formatLatitude(value) {
+        const abs = Math.abs(value);
+        if (abs === 0) return "Equator";
+        return `${abs} ${value > 0 ? "N" : "S"}`;
+      }
+
+      function formatDuration(totalSeconds) {
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = Math.floor(totalSeconds % 60);
+        return `${days}d ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      function formatScale(secondsPerSecond) {
+        if (secondsPerSecond >= 86400) return `${secondsPerSecond / 86400}d/s`;
+        if (secondsPerSecond >= 3600) return `${secondsPerSecond / 3600}h/s`;
+        return `${secondsPerSecond / 60}m/s`;
+      }
+
+      function precessionRateDegPerHour(latitude) {
+        return EARTH_RATE_DEG_PER_HOUR * Math.sin((latitude * Math.PI) / 180);
+      }
+
+      function precessionAngleRadians(simSeconds, latitude) {
+        const elapsedHours = simSeconds / 3600;
+        return (precessionRateDegPerHour(latitude) * elapsedHours * Math.PI) / 180;
+      }
+
+      function normalizeDegrees(value) {
+        return ((value % 360) + 360) % 360;
+      }
+
+      function updateReadouts() {
+        const latitudeLabel = formatLatitude(state.latitude);
+        const rate = precessionRateDegPerHour(state.latitude);
+        const rateAbs = Math.abs(rate);
+        const angleDeg = normalizeDegrees((precessionAngleRadians(state.simSeconds, state.latitude) * 180) / Math.PI);
+        const periodHours = rateAbs < 0.001 ? Infinity : 360 / rateAbs;
+        const direction = rateAbs < 0.001 ? "none" : rate > 0 ? "clockwise" : "counterclockwise";
+        const traceHours = Math.min(24, Math.max(6, Math.round(12 + rateAbs / 2)));
+
+        latitudeValue.value = latitudeLabel;
+        latitudeValue.textContent = latitudeLabel;
+        latBadge.textContent = latitudeLabel;
+        elapsedEl.textContent = formatDuration(state.simSeconds);
+        angleReadout.textContent = `${angleDeg.toFixed(1)} deg`;
+        rateValue.textContent = `${rateAbs.toFixed(2)} deg/h`;
+        rateBadge.textContent = `${rateAbs.toFixed(1)} deg/h`;
+        periodValue.textContent = Number.isFinite(periodHours) ? `${periodHours.toFixed(1)} h` : "infinite";
+        directionValue.textContent = direction;
+        traceBadge.textContent = `last ${traceHours}h`;
+        scaleValue.value = formatScale(state.timeScale);
+        scaleValue.textContent = formatScale(state.timeScale);
+      }
+
+      function drawGrid(cx, cy, radius) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.strokeStyle = "rgba(243, 238, 227, 0.12)";
+        ctx.lineWidth = 1;
+
+        for (let ring = 0.25; ring <= 1; ring += 0.25) {
+          ctx.beginPath();
+          ctx.arc(0, 0, radius * ring, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        for (let i = 0; i < 24; i += 1) {
+          const angle = (i / 24) * Math.PI * 2;
+          const inner = i % 6 === 0 ? radius * 0.05 : radius * 0.88;
+          const outer = radius;
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
+          ctx.lineTo(Math.cos(angle) * outer, Math.sin(angle) * outer);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = "rgba(243, 238, 227, 0.68)";
+        ctx.font = "800 13px Inter, system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("N", 0, -radius - 18);
+        ctx.fillText("S", 0, radius + 18);
+        ctx.fillText("E", radius + 18, 0);
+        ctx.fillText("W", -radius - 18, 0);
+        ctx.restore();
+      }
+
+      function drawTraces(cx, cy, radius, currentAngle) {
+        const rateAbs = Math.abs(precessionRateDegPerHour(state.latitude));
+        const traceHours = Math.min(24, Math.max(6, Math.round(12 + rateAbs / 2)));
+        const steps = 18;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        for (let i = steps; i >= 0; i -= 1) {
+          const t = i / steps;
+          const secondsAgo = t * traceHours * 3600;
+          const angle = precessionAngleRadians(Math.max(0, state.simSeconds - secondsAgo), state.latitude);
+          const alpha = 0.05 + (1 - t) * 0.19;
+          const length = radius * (0.68 + (1 - t) * 0.14);
+
+          ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(angle) * -length, Math.sin(angle) * -length);
+          ctx.lineTo(Math.cos(angle) * length, Math.sin(angle) * length);
+          ctx.stroke();
+        }
+
+        ctx.strokeStyle = "rgba(69, 212, 196, 0.96)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(currentAngle) * -radius * 0.84, Math.sin(currentAngle) * -radius * 0.84);
+        ctx.lineTo(Math.cos(currentAngle) * radius * 0.84, Math.sin(currentAngle) * radius * 0.84);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawPrecessionArc(cx, cy, radius, currentAngle) {
+        const rate = precessionRateDegPerHour(state.latitude);
+        if (Math.abs(rate) < 0.001) return;
+
+        const clockwise = rate > 0;
+        const arcRadius = radius * 1.08;
+        const start = currentAngle + (clockwise ? -0.9 : 0.9);
+        const end = currentAngle + (clockwise ? 0.55 : -0.55);
+        const headAngle = end;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.strokeStyle = "rgba(242, 193, 78, 0.88)";
+        ctx.fillStyle = "rgba(242, 193, 78, 0.88)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, arcRadius, start, end, !clockwise);
+        ctx.stroke();
+
+        const tangent = headAngle + (clockwise ? Math.PI / 2 : -Math.PI / 2);
+        const x = Math.cos(headAngle) * arcRadius;
+        const y = Math.sin(headAngle) * arcRadius;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - Math.cos(tangent - 0.45) * 13, y - Math.sin(tangent - 0.45) * 13);
+        ctx.lineTo(x - Math.cos(tangent + 0.45) * 13, y - Math.sin(tangent + 0.45) * 13);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawBob(cx, cy, radius, currentAngle) {
+        const amplitude = Math.sin(state.bobPhase) * radius * 0.74;
+        const bobX = cx + Math.cos(currentAngle) * amplitude;
+        const bobY = cy + Math.sin(currentAngle) * amplitude;
+        const pivotRadius = 7;
+        const bobRadius = Math.max(11, radius * 0.042);
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(243, 238, 227, 0.48)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(bobX, bobY);
+        ctx.stroke();
+
+        ctx.fillStyle = "#f2c14e";
+        ctx.beginPath();
+        ctx.arc(cx, cy, pivotRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        const gradient = ctx.createRadialGradient(
+          bobX - bobRadius * 0.35,
+          bobY - bobRadius * 0.35,
+          bobRadius * 0.2,
+          bobX,
+          bobY,
+          bobRadius
+        );
+        gradient.addColorStop(0, "#fff2b8");
+        gradient.addColorStop(0.45, "#f2c14e");
+        gradient.addColorStop(1, "#db6b44");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(bobX, bobY, bobRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(17, 20, 18, 0.55)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function draw() {
+        const rect = canvas.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        const cx = width / 2;
+        const cy = height / 2;
+        const radius = Math.max(120, Math.min(width, height) * 0.36);
+        const currentAngle = precessionAngleRadians(state.simSeconds, state.latitude);
+
+        ctx.clearRect(0, 0, width, height);
+
+        ctx.fillStyle = "#141815";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        const floorGradient = ctx.createRadialGradient(0, 0, radius * 0.12, 0, 0, radius * 1.25);
+        floorGradient.addColorStop(0, "rgba(36, 43, 39, 0.96)");
+        floorGradient.addColorStop(0.64, "rgba(27, 32, 29, 0.92)");
+        floorGradient.addColorStop(1, "rgba(17, 20, 18, 0)");
+        ctx.fillStyle = floorGradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius * 1.22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        drawGrid(cx, cy, radius);
+        drawTraces(cx, cy, radius, currentAngle);
+        drawPrecessionArc(cx, cy, radius, currentAngle);
+        drawBob(cx, cy, radius, currentAngle);
+      }
+
+      function frame(now) {
+        const delta = Math.min(0.05, (now - state.lastFrame) / 1000);
+        state.lastFrame = now;
+
+        if (state.running) {
+          state.simSeconds += delta * state.timeScale;
+          state.bobPhase += delta * (Math.PI * 2) / 3.2;
+        }
+
+        updateReadouts();
+        draw();
+        requestAnimationFrame(frame);
+      }
+
+      latitudeInput.addEventListener("input", () => {
+        state.latitude = Number(latitudeInput.value);
+        updateReadouts();
+      });
+
+      speedControls.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-scale]");
+        if (!button) return;
+
+        state.timeScale = Number(button.dataset.scale);
+        speedControls.querySelectorAll("button").forEach((speedButton) => {
+          speedButton.setAttribute("aria-pressed", String(speedButton === button));
+        });
+        updateReadouts();
+      });
+
+      pauseButton.addEventListener("click", () => {
+        state.running = !state.running;
+        pauseButton.textContent = state.running ? "Pause" : "Resume";
+        pauseButton.classList.toggle("primary", state.running);
+      });
+
+      resetButton.addEventListener("click", () => {
+        state.simSeconds = 0;
+        state.bobPhase = 0;
+        updateReadouts();
+        draw();
+      });
+
+      window.addEventListener("resize", () => {
+        resizeCanvas();
+        draw();
+      });
+
+      resizeCanvas();
+      updateReadouts();
+      requestAnimationFrame(frame);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Millikan Oil Drop Simulator</title>
+<style>
+  :root {
+    --bg: #f4f2ec;
+    --ink: #181b20;
+    --muted: #5f6772;
+    --panel: #fffdf8;
+    --line: #d9d1c3;
+    --plate: #2e3238;
+    --amber: #c77a14;
+    --amber-soft: #fff0d6;
+    --teal: #147a76;
+    --teal-soft: #dff3f1;
+    --green: #2f7d32;
+    --red: #b83a32;
+    --blue: #2c63b7;
+    --shadow: 0 14px 36px rgba(40, 37, 31, 0.12);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  .app {
+    width: min(1440px, 100%);
+    margin: 0 auto;
+    padding: 18px;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .identity {
+    min-width: 240px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: 750;
+  }
+
+  .subtitle {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .status-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(118px, 1fr));
+    gap: 8px;
+    min-width: min(520px, 100%);
+  }
+
+  .status-tile {
+    border: 1px solid var(--line);
+    background: rgba(255, 253, 248, 0.82);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .status-tile span {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .status-tile strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 18px;
+    line-height: 22px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 92px 110px 116px 118px;
+    gap: 10px;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+
+  .voltage-control,
+  .control-button {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(40, 37, 31, 0.07);
+  }
+
+  .voltage-control {
+    display: grid;
+    grid-template-columns: 130px minmax(160px, 1fr) 112px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+  }
+
+  label {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 650;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--amber);
+  }
+
+  input[type="number"] {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fffaf0;
+    color: var(--ink);
+    padding: 8px 9px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .control-button {
+    cursor: pointer;
+    color: var(--ink);
+    min-height: 54px;
+    padding: 8px 10px;
+    font-weight: 700;
+    transition: border-color 140ms ease, background 140ms ease, transform 120ms ease;
+  }
+
+  .control-button:hover {
+    border-color: #b9ac99;
+    background: #fff7e8;
+  }
+
+  .control-button:active {
+    transform: translateY(1px);
+  }
+
+  .control-button.primary {
+    background: var(--ink);
+    color: #fffdf8;
+    border-color: var(--ink);
+  }
+
+  .control-button.primary:hover {
+    background: #2b3037;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 14px;
+    align-items: start;
+  }
+
+  .chamber-panel,
+  .side-panel {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .chamber-panel {
+    overflow: hidden;
+  }
+
+  .canvas-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    min-height: 420px;
+    background: #eee7db;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .meter-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(130px, 1fr));
+    gap: 1px;
+    border-top: 1px solid var(--line);
+    background: var(--line);
+  }
+
+  .meter {
+    background: #fffaf0;
+    padding: 12px 14px;
+  }
+
+  .meter span {
+    color: var(--muted);
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .meter strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 16px;
+    line-height: 21px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .side-panel {
+    overflow: hidden;
+  }
+
+  .panel-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .panel-section:last-child {
+    border-bottom: 0;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .section-title h2 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    border-radius: 6px;
+    padding: 3px 8px;
+    background: var(--teal-soft);
+    color: var(--teal);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .big-readout {
+    display: grid;
+    gap: 8px;
+  }
+
+  .charge-line {
+    display: grid;
+    grid-template-columns: 126px minmax(0, 1fr);
+    gap: 10px;
+    align-items: baseline;
+    min-height: 30px;
+  }
+
+  .charge-line span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .charge-line strong {
+    font-size: 18px;
+    line-height: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .quantized {
+    color: var(--teal);
+  }
+
+  .force-stack {
+    display: grid;
+    gap: 10px;
+  }
+
+  .force-bar {
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr) 74px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .force-label {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .bar-track {
+    height: 10px;
+    border-radius: 999px;
+    background: #ece2d2;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: var(--amber);
+  }
+
+  .bar-fill.gravity {
+    background: var(--red);
+  }
+
+  .force-value {
+    text-align: right;
+    font-size: 12px;
+    line-height: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .drop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .drop-button {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fffaf0;
+    padding: 9px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .drop-button[aria-pressed="true"] {
+    border-color: var(--teal);
+    background: var(--teal-soft);
+  }
+
+  .drop-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(24, 27, 32, 0.28);
+  }
+
+  .drop-name {
+    display: block;
+    font-size: 13px;
+    line-height: 17px;
+    font-weight: 750;
+  }
+
+  .drop-meta {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .log-table th,
+  .log-table td {
+    padding: 7px 6px;
+    border-bottom: 1px solid #e8dfd0;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .log-table th {
+    color: var(--muted);
+    font-weight: 750;
+  }
+
+  .empty-log {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 19px;
+    margin: 0;
+  }
+
+  .mini-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .mini-button {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fffaf0;
+    min-height: 38px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .mini-button:hover {
+    background: #fff4df;
+  }
+
+  .balance-good {
+    color: var(--green);
+  }
+
+  .balance-low,
+  .balance-high {
+    color: var(--red);
+  }
+
+  @media (max-width: 1100px) {
+    .topbar,
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .topbar {
+      display: grid;
+    }
+
+    .layout {
+      display: grid;
+    }
+
+    .side-panel {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .app {
+      padding: 12px;
+    }
+
+    h1 {
+      font-size: 23px;
+      line-height: 29px;
+    }
+
+    .status-strip,
+    .controls,
+    .voltage-control,
+    .meter-row,
+    .charge-line,
+    .force-bar {
+      grid-template-columns: 1fr;
+    }
+
+    .controls {
+      gap: 8px;
+    }
+
+    .canvas-wrap {
+      min-height: 330px;
+    }
+
+    .meter-row {
+      background: transparent;
+    }
+
+    .meter {
+      border-top: 1px solid var(--line);
+    }
+
+    .force-value {
+      text-align: left;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="identity">
+      <h1>Millikan Oil Drop</h1>
+      <div class="subtitle">Charged droplets between capacitor plates</div>
+    </div>
+    <div class="status-strip" aria-live="polite">
+      <div class="status-tile">
+        <span>Selected drop</span>
+        <strong id="selectedName">Drop A</strong>
+      </div>
+      <div class="status-tile">
+        <span>Balance state</span>
+        <strong id="balanceState">falling</strong>
+      </div>
+      <div class="status-tile">
+        <span>Nearest charge</span>
+        <strong id="nearestCharge">--</strong>
+      </div>
+    </div>
+  </header>
+
+  <section class="controls" aria-label="Experiment controls">
+    <div class="voltage-control">
+      <label for="voltageRange">Plate voltage</label>
+      <input id="voltageRange" type="range" min="0" max="700" value="210" step="1" />
+      <input id="voltageNumber" type="number" min="0" max="700" value="210" step="1" aria-label="Plate voltage in volts" />
+    </div>
+    <button id="toggleRun" class="control-button primary" type="button">Pause</button>
+    <button id="balanceBtn" class="control-button" type="button">Balance</button>
+    <button id="sprayBtn" class="control-button" type="button">Spray</button>
+    <button id="captureBtn" class="control-button" type="button">Capture</button>
+  </section>
+
+  <div class="layout">
+    <section class="chamber-panel" aria-label="Oil drop chamber">
+      <div class="canvas-wrap">
+        <canvas id="chamber"></canvas>
+      </div>
+      <div class="meter-row">
+        <div class="meter">
+          <span>Electric field</span>
+          <strong id="fieldReadout">42.0 kV/m</strong>
+        </div>
+        <div class="meter">
+          <span>Plate gap</span>
+          <strong>5.00 mm</strong>
+        </div>
+        <div class="meter">
+          <span>Vertical speed</span>
+          <strong id="speedReadout">0.00 mm/s</strong>
+        </div>
+        <div class="meter">
+          <span>Balance voltage</span>
+          <strong id="balanceVoltage">-- V</strong>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-panel" aria-label="Measurement readouts">
+      <section class="panel-section">
+        <div class="section-title">
+          <h2>Measured charge</h2>
+          <span id="dropPill" class="pill">Drop A</span>
+        </div>
+        <div class="big-readout">
+          <div class="charge-line">
+            <span>From mg/E</span>
+            <strong id="rawCharge">-- C</strong>
+          </div>
+          <div class="charge-line">
+            <span>In units of e</span>
+            <strong id="chargeUnits">-- e</strong>
+          </div>
+          <div class="charge-line">
+            <span>Quantized</span>
+            <strong id="quantizedCharge" class="quantized">--</strong>
+          </div>
+          <div class="charge-line">
+            <span>Step error</span>
+            <strong id="stepError">--</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <div class="section-title">
+          <h2>Forces on selected drop</h2>
+          <span id="forceRatio" class="pill">0.00</span>
+        </div>
+        <div class="force-stack">
+          <div class="force-bar">
+            <div class="force-label">Electric</div>
+            <div class="bar-track"><div id="electricBar" class="bar-fill"></div></div>
+            <div id="electricForce" class="force-value">-- pN</div>
+          </div>
+          <div class="force-bar">
+            <div class="force-label">Gravity</div>
+            <div class="bar-track"><div id="gravityBar" class="bar-fill gravity"></div></div>
+            <div id="gravityForce" class="force-value">-- pN</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-section">
+        <div class="section-title">
+          <h2>Droplets</h2>
+          <span id="dropCount" class="pill">5 live</span>
+        </div>
+        <div id="dropGrid" class="drop-grid"></div>
+      </section>
+
+      <section class="panel-section">
+        <div class="section-title">
+          <h2>Captured measurements</h2>
+          <span id="sampleCount" class="pill">0 rows</span>
+        </div>
+        <div id="logMount">
+          <p class="empty-log">Capture a near-balanced drop to log the inferred charge multiple.</p>
+        </div>
+        <div class="mini-actions">
+          <button id="clearLogBtn" class="mini-button" type="button">Clear log</button>
+          <button id="newMistBtn" class="mini-button" type="button">New mist</button>
+        </div>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const ELEMENTARY_CHARGE = 1.602176634e-19;
+  const GRAVITY = 9.80665;
+  const OIL_DENSITY = 850;
+  const AIR_VISCOSITY = 1.81e-5;
+  const PLATE_GAP = 0.005;
+  const MOTION_GAIN = 7.5;
+
+  const canvas = document.getElementById("chamber");
+  const ctx = canvas.getContext("2d");
+  const refs = {
+    voltageRange: document.getElementById("voltageRange"),
+    voltageNumber: document.getElementById("voltageNumber"),
+    toggleRun: document.getElementById("toggleRun"),
+    balanceBtn: document.getElementById("balanceBtn"),
+    sprayBtn: document.getElementById("sprayBtn"),
+    captureBtn: document.getElementById("captureBtn"),
+    selectedName: document.getElementById("selectedName"),
+    balanceState: document.getElementById("balanceState"),
+    nearestCharge: document.getElementById("nearestCharge"),
+    fieldReadout: document.getElementById("fieldReadout"),
+    speedReadout: document.getElementById("speedReadout"),
+    balanceVoltage: document.getElementById("balanceVoltage"),
+    dropPill: document.getElementById("dropPill"),
+    rawCharge: document.getElementById("rawCharge"),
+    chargeUnits: document.getElementById("chargeUnits"),
+    quantizedCharge: document.getElementById("quantizedCharge"),
+    stepError: document.getElementById("stepError"),
+    forceRatio: document.getElementById("forceRatio"),
+    electricBar: document.getElementById("electricBar"),
+    gravityBar: document.getElementById("gravityBar"),
+    electricForce: document.getElementById("electricForce"),
+    gravityForce: document.getElementById("gravityForce"),
+    dropGrid: document.getElementById("dropGrid"),
+    dropCount: document.getElementById("dropCount"),
+    logMount: document.getElementById("logMount"),
+    sampleCount: document.getElementById("sampleCount"),
+    clearLogBtn: document.getElementById("clearLogBtn"),
+    newMistBtn: document.getElementById("newMistBtn")
+  };
+
+  const palette = ["#2c63b7", "#c77a14", "#147a76", "#8b4eb8", "#b83a32", "#2f7d32", "#575d66"];
+  const names = ["A", "B", "C", "D", "E", "F", "G"];
+  const seedSpecs = [
+    { x: 0.20, y: 0.35, radiusUm: 0.72, chargeN: 2 },
+    { x: 0.38, y: 0.63, radiusUm: 0.92, chargeN: 4 },
+    { x: 0.55, y: 0.43, radiusUm: 0.66, chargeN: 1 },
+    { x: 0.73, y: 0.70, radiusUm: 1.08, chargeN: 7 },
+    { x: 0.66, y: 0.24, radiusUm: 0.82, chargeN: 3 }
+  ];
+
+  const state = {
+    running: true,
+    voltage: 210,
+    selectedId: 0,
+    droplets: [],
+    samples: [],
+    cssWidth: 900,
+    cssHeight: 560,
+    lastTime: performance.now()
+  };
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function createDroplet(spec, index) {
+    const radiusM = spec.radiusUm * 1e-6;
+    const volume = (4 / 3) * Math.PI * Math.pow(radiusM, 3);
+    const mass = OIL_DENSITY * volume;
+    const drag = 6 * Math.PI * AIR_VISCOSITY * radiusM;
+    return {
+      id: index,
+      name: `Drop ${names[index] || index + 1}`,
+      x: spec.x,
+      yM: spec.y * PLATE_GAP,
+      vM: 0,
+      radiusUm: spec.radiusUm,
+      radiusM,
+      chargeN: spec.chargeN,
+      chargeC: spec.chargeN * ELEMENTARY_CHARGE,
+      mass,
+      drag,
+      color: palette[index % palette.length],
+      trail: []
+    };
+  }
+
+  function randomizedSpec(index) {
+    const radiusUm = 0.62 + Math.random() * 0.54;
+    const chargeN = 1 + Math.floor(Math.random() * 7);
+    return {
+      x: 0.15 + Math.random() * 0.72,
+      y: 0.18 + Math.random() * 0.64,
+      radiusUm,
+      chargeN,
+      index
+    };
+  }
+
+  function resetDroplets(randomize) {
+    const specs = randomize
+      ? Array.from({ length: 6 }, (_, index) => randomizedSpec(index))
+      : seedSpecs;
+    state.droplets = specs.map((spec, index) => createDroplet(spec, index));
+    state.selectedId = 0;
+    renderDropButtons();
+    syncReadouts();
+  }
+
+  function selectedDrop() {
+    return state.droplets.find(drop => drop.id === state.selectedId) || state.droplets[0];
+  }
+
+  function electricField() {
+    return state.voltage / PLATE_GAP;
+  }
+
+  function electricForce(drop) {
+    return drop.chargeC * electricField();
+  }
+
+  function gravityForce(drop) {
+    return drop.mass * GRAVITY;
+  }
+
+  function balanceVoltage(drop) {
+    return gravityForce(drop) * PLATE_GAP / drop.chargeC;
+  }
+
+  function inferredCharge(drop) {
+    const field = electricField();
+    if (field <= 0) return null;
+    return gravityForce(drop) / field;
+  }
+
+  function formatSci(value, digits) {
+    if (!Number.isFinite(value) || value === 0) return "0";
+    return value.toExponential(digits || 3).replace("e", " x 10^");
+  }
+
+  function formatForce(value) {
+    return `${(value * 1e12).toFixed(3)} pN`;
+  }
+
+  function balanceStatus(drop) {
+    const gravity = gravityForce(drop);
+    const net = electricForce(drop) - gravity;
+    const ratio = net / gravity;
+    if (Math.abs(ratio) < 0.035) {
+      return { label: "balanced", className: "balance-good" };
+    }
+    if (ratio > 0) {
+      return { label: "rising", className: "balance-high" };
+    }
+    return { label: "falling", className: "balance-low" };
+  }
+
+  function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    state.cssWidth = Math.max(320, rect.width);
+    state.cssHeight = Math.max(300, rect.height);
+    canvas.width = Math.round(state.cssWidth * dpr);
+    canvas.height = Math.round(state.cssHeight * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function chamberBounds() {
+    const width = state.cssWidth;
+    const height = state.cssHeight;
+    return {
+      left: 58,
+      right: width - 28,
+      top: 62,
+      bottom: height - 58,
+      width: width - 86,
+      height: height - 120
+    };
+  }
+
+  function screenPosition(drop) {
+    const bounds = chamberBounds();
+    return {
+      x: bounds.left + drop.x * bounds.width,
+      y: bounds.top + (drop.yM / PLATE_GAP) * bounds.height
+    };
+  }
+
+  function updatePhysics(dt) {
+    for (const drop of state.droplets) {
+      const netUp = electricForce(drop) - gravityForce(drop);
+      const terminalVelocity = netUp / drop.drag;
+      const blend = Math.min(1, dt * 3.5);
+      drop.vM += (terminalVelocity - drop.vM) * blend;
+      drop.yM -= drop.vM * dt * MOTION_GAIN;
+
+      const margin = 0.00028;
+      if (drop.yM < margin) {
+        drop.yM = margin;
+        drop.vM *= -0.18;
+      }
+      if (drop.yM > PLATE_GAP - margin) {
+        drop.yM = PLATE_GAP - margin;
+        drop.vM *= -0.18;
+      }
+
+      const pos = screenPosition(drop);
+      drop.trail.push({ x: pos.x, y: pos.y });
+      if (drop.trail.length > 44) {
+        drop.trail.shift();
+      }
+    }
+  }
+
+  function drawArrow(x, y1, y2, color) {
+    const head = y2 > y1 ? 1 : -1;
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y2);
+    ctx.lineTo(x - 5, y2 - head * 9);
+    ctx.lineTo(x + 5, y2 - head * 9);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawChamber() {
+    const width = state.cssWidth;
+    const height = state.cssHeight;
+    const bounds = chamberBounds();
+    ctx.clearRect(0, 0, width, height);
+
+    const bg = ctx.createLinearGradient(0, 0, 0, height);
+    bg.addColorStop(0, "#fff9ed");
+    bg.addColorStop(0.55, "#f7efe0");
+    bg.addColorStop(1, "#efe2cf");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.strokeStyle = "#cfc5b6";
+    ctx.lineWidth = 1;
+    for (let i = 1; i < 5; i += 1) {
+      const y = bounds.top + (bounds.height * i) / 5;
+      ctx.beginPath();
+      ctx.moveTo(bounds.left, y);
+      ctx.lineTo(bounds.right, y);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = "rgba(24, 27, 32, 0.08)";
+    ctx.fillRect(bounds.left, bounds.top, bounds.width, bounds.height);
+    ctx.strokeStyle = "#9f927f";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(bounds.left, bounds.top, bounds.width, bounds.height);
+
+    ctx.fillStyle = "#2e3238";
+    ctx.fillRect(bounds.left - 8, bounds.top - 24, bounds.width + 16, 16);
+    ctx.fillRect(bounds.left - 8, bounds.bottom + 8, bounds.width + 16, 16);
+    ctx.fillStyle = "#fffdf8";
+    ctx.font = "700 13px Inter, system-ui, sans-serif";
+    ctx.fillText("+ top plate", bounds.left + 10, bounds.top - 11);
+    ctx.fillText("- bottom plate", bounds.left + 10, bounds.bottom + 21);
+
+    const arrowColor = state.voltage > 0 ? "#c77a14" : "#7b8088";
+    for (let i = 0; i < 7; i += 1) {
+      const x = bounds.left + 42 + i * ((bounds.width - 84) / 6);
+      drawArrow(x, bounds.bottom - 28, bounds.top + 34, arrowColor);
+    }
+
+    ctx.fillStyle = "#5f6772";
+    ctx.font = "650 12px Inter, system-ui, sans-serif";
+    ctx.fillText("electric force on negative droplets", bounds.right - 232, bounds.top - 12);
+
+    const selected = selectedDrop();
+    for (const drop of state.droplets) {
+      if (drop.trail.length > 1) {
+        ctx.beginPath();
+        drop.trail.forEach((point, index) => {
+          if (index === 0) ctx.moveTo(point.x, point.y);
+          else ctx.lineTo(point.x, point.y);
+        });
+        ctx.strokeStyle = drop.id === state.selectedId ? "rgba(20, 122, 118, 0.46)" : "rgba(24, 27, 32, 0.16)";
+        ctx.lineWidth = drop.id === state.selectedId ? 2 : 1;
+        ctx.stroke();
+      }
+    }
+
+    for (const drop of state.droplets) {
+      const pos = screenPosition(drop);
+      const r = 6 + drop.radiusUm * 4.8;
+      const glow = ctx.createRadialGradient(pos.x - r * 0.35, pos.y - r * 0.4, 1, pos.x, pos.y, r);
+      glow.addColorStop(0, "#ffffff");
+      glow.addColorStop(0.22, drop.color);
+      glow.addColorStop(1, "#1b1d21");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (drop.id === state.selectedId) {
+        ctx.strokeStyle = "#147a76";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, r + 7, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const gEnd = pos.y + 46;
+        const eEnd = pos.y - clamp((electricForce(drop) / gravityForce(drop)) * 42, 8, 70);
+        drawArrow(pos.x + 24, pos.y + 6, gEnd, "#b83a32");
+        drawArrow(pos.x - 24, pos.y - 6, eEnd, "#c77a14");
+      }
+
+      ctx.fillStyle = "#181b20";
+      ctx.font = "750 12px Inter, system-ui, sans-serif";
+      ctx.fillText(names[drop.id] || String(drop.id + 1), pos.x + r + 5, pos.y + 4);
+    }
+
+    const status = balanceStatus(selected);
+    ctx.fillStyle = status.className === "balance-good" ? "#2f7d32" : "#181b20";
+    ctx.font = "750 14px Inter, system-ui, sans-serif";
+    ctx.fillText(`${selected.name}: ${status.label}`, bounds.left + 12, bounds.bottom - 14);
+  }
+
+  function syncReadouts() {
+    const drop = selectedDrop();
+    if (!drop) return;
+
+    const field = electricField();
+    const eForce = electricForce(drop);
+    const gForce = gravityForce(drop);
+    const forceRatio = eForce / gForce;
+    const inferred = inferredCharge(drop);
+    const status = balanceStatus(drop);
+    const balanceV = balanceVoltage(drop);
+    const speed = drop.vM * 1000;
+
+    refs.voltageRange.value = String(Math.round(state.voltage));
+    refs.voltageNumber.value = String(Math.round(state.voltage));
+    refs.selectedName.textContent = drop.name;
+    refs.balanceState.textContent = status.label;
+    refs.balanceState.className = status.className;
+    refs.dropPill.textContent = drop.name;
+    refs.fieldReadout.textContent = `${(field / 1000).toFixed(1)} kV/m`;
+    refs.speedReadout.textContent = `${speed.toFixed(2)} mm/s`;
+    refs.balanceVoltage.textContent = `${balanceV.toFixed(0)} V`;
+    refs.forceRatio.textContent = `${forceRatio.toFixed(2)} x g`;
+    refs.electricForce.textContent = formatForce(eForce);
+    refs.gravityForce.textContent = formatForce(gForce);
+
+    const maxForce = Math.max(eForce, gForce, 1e-14);
+    refs.electricBar.style.width = `${clamp((eForce / maxForce) * 100, 0, 100).toFixed(1)}%`;
+    refs.gravityBar.style.width = `${clamp((gForce / maxForce) * 100, 0, 100).toFixed(1)}%`;
+
+    if (!inferred) {
+      refs.rawCharge.textContent = "-- C";
+      refs.chargeUnits.textContent = "-- e";
+      refs.quantizedCharge.textContent = "--";
+      refs.nearestCharge.textContent = "--";
+      refs.stepError.textContent = "--";
+      return;
+    }
+
+    const units = inferred / ELEMENTARY_CHARGE;
+    const nearest = clamp(Math.round(units), 1, 12);
+    const quantized = nearest * ELEMENTARY_CHARGE;
+    const stepError = units - nearest;
+
+    refs.rawCharge.textContent = `${formatSci(inferred, 3)} C`;
+    refs.chargeUnits.textContent = `${units.toFixed(2)} e`;
+    refs.quantizedCharge.textContent = `${nearest} e = ${formatSci(quantized, 3)} C`;
+    refs.nearestCharge.textContent = `${nearest} e`;
+    refs.stepError.textContent = `${stepError >= 0 ? "+" : ""}${stepError.toFixed(2)} e`;
+  }
+
+  function renderDropButtons() {
+    refs.dropGrid.innerHTML = "";
+    for (const drop of state.droplets) {
+      const button = document.createElement("button");
+      button.className = "drop-button";
+      button.type = "button";
+      button.setAttribute("aria-pressed", drop.id === state.selectedId ? "true" : "false");
+      button.innerHTML = `
+        <span class="drop-dot" style="background:${drop.color}"></span>
+        <span>
+          <span class="drop-name">${drop.name}</span>
+          <span class="drop-meta">${drop.radiusUm.toFixed(2)} um radius</span>
+        </span>
+      `;
+      button.addEventListener("click", () => {
+        state.selectedId = drop.id;
+        renderDropButtons();
+        syncReadouts();
+      });
+      refs.dropGrid.appendChild(button);
+    }
+    refs.dropCount.textContent = `${state.droplets.length} live`;
+  }
+
+  function renderLog() {
+    refs.sampleCount.textContent = `${state.samples.length} rows`;
+    if (state.samples.length === 0) {
+      refs.logMount.innerHTML = '<p class="empty-log">Capture a near-balanced drop to log the inferred charge multiple.</p>';
+      return;
+    }
+
+    const rows = state.samples.map(sample => `
+      <tr>
+        <td>${sample.drop}</td>
+        <td>${sample.voltage} V</td>
+        <td>${sample.units} e</td>
+        <td>${sample.quantized} e</td>
+      </tr>
+    `).join("");
+
+    refs.logMount.innerHTML = `
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Drop</th>
+            <th>Voltage</th>
+            <th>Measured</th>
+            <th>Nearest</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+
+  function setVoltage(value) {
+    state.voltage = clamp(Number(value) || 0, 0, 700);
+    syncReadouts();
+  }
+
+  function captureMeasurement() {
+    const drop = selectedDrop();
+    const inferred = inferredCharge(drop);
+    if (!drop || !inferred) return;
+    const units = inferred / ELEMENTARY_CHARGE;
+    const nearest = clamp(Math.round(units), 1, 12);
+    state.samples.unshift({
+      drop: drop.name.replace("Drop ", ""),
+      voltage: Math.round(state.voltage),
+      units: units.toFixed(2),
+      quantized: nearest
+    });
+    state.samples = state.samples.slice(0, 7);
+    renderLog();
+  }
+
+  function animate(now) {
+    const dt = Math.min(0.04, (now - state.lastTime) / 1000 || 0);
+    state.lastTime = now;
+    if (state.running) {
+      updatePhysics(dt);
+    }
+    drawChamber();
+    syncReadouts();
+    requestAnimationFrame(animate);
+  }
+
+  canvas.addEventListener("pointerdown", event => {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    let closest = null;
+    let bestDistance = Infinity;
+    for (const drop of state.droplets) {
+      const pos = screenPosition(drop);
+      const distance = Math.hypot(pos.x - x, pos.y - y);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        closest = drop;
+      }
+    }
+    if (closest && bestDistance < 38) {
+      state.selectedId = closest.id;
+      renderDropButtons();
+      syncReadouts();
+    }
+  });
+
+  refs.voltageRange.addEventListener("input", event => setVoltage(event.target.value));
+  refs.voltageNumber.addEventListener("input", event => setVoltage(event.target.value));
+  refs.toggleRun.addEventListener("click", () => {
+    state.running = !state.running;
+    refs.toggleRun.textContent = state.running ? "Pause" : "Run";
+  });
+  refs.balanceBtn.addEventListener("click", () => {
+    const drop = selectedDrop();
+    if (!drop) return;
+    setVoltage(Math.round(balanceVoltage(drop)));
+  });
+  refs.sprayBtn.addEventListener("click", () => resetDroplets(false));
+  refs.newMistBtn.addEventListener("click", () => resetDroplets(true));
+  refs.captureBtn.addEventListener("click", captureMeasurement);
+  refs.clearLogBtn.addEventListener("click", () => {
+    state.samples = [];
+    renderLog();
+  });
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+    for (const drop of state.droplets) {
+      drop.trail = [];
+    }
+  });
+
+  resizeCanvas();
+  resetDroplets(false);
+  renderLog();
+  requestAnimationFrame(animate);
+})();
+</script>
+</body>
+</html>
