@@ -1,0 +1,29 @@
+id: morning-brief
+name: Morning Brief
+enabled: true
+schedule: 0 6 * * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: martha
+agentSlug: martha
+timeout: 180
+prompt: |-
+  You are Martha. Read bio.md, baby-profile.md, and the last 24 h of entries from logs/feed-log.csv, sleep-log.csv, diaper-log.csv. Read logs/milestone-log.csv for what's pending. Read pediatrician.md for upcoming appointments.
+
+  Replace any existing "## Today" block at the top of index.md with a fresh one in this exact format:
+
+  ## Today — [day name, YYYY-MM-DD]
+
+  **Baby:** [name] is [X weeks, Y days] old.
+  **Last 24 h:** [N feeds] · [total sleep hours, e.g. "11.5 h sleep"] · [N diapers — e.g. "8 (5 wet, 3 dirty)"]
+  **One thing to notice:** [stage-appropriate milestone — read whichever stage cabinet is currently active, or default to milestone-log.csv]
+  **One thing for you:** [self-care nudge based on yesterday's data — e.g. if sleep <6h, suggest a nap; if no entry in the user-care log, suggest water/protein]
+  **Today's calendar:** [appointments today/tomorrow, or "nothing scheduled"]
+  **Wildcard:** [optional one-line celebration, joke, or reminder — skip if nothing genuine to say]
+
+  Keep total under 8 lines. The user reads this with one hand on a baby. No fluff.
+
+  Honor every constraint in bio.md (line in the sand, voice register, what they want from this cabinet). Never violate.
+cabinetPath: cabinets/cabinets/mom-command
+createdAt: '2026-04-26T05:17:47.364Z'
+updatedAt: '2026-04-26T05:17:47.364Z'

@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mom Command — Mission Control</title>
+<style>
+  :root {
+    --bg: #FFF9E9;
+    --panel: #FFFCF2;
+    --ink: #3B2F2F;
+    --muted: #7A6B5D;
+    --border: #E8DDC5;
+    --accent: #C24A6A;
+    --accent-soft: #F5D0DC;
+    --green: #6B8E5A;
+    --gold: #B8892E;
+    --blue: #2E4156;
+    --serif: 'Fraunces', 'Georgia', serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --sans: -apple-system, 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow-x: hidden;
+  }
+  #app {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  header.hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+  }
+  header.hero h1 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+  }
+  header.hero h1 .heart { color: var(--accent); }
+  header.hero .age {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  header.hero .age strong {
+    color: var(--ink);
+    font-size: 18px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 18px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .card h2 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .card .big {
+    font-family: var(--serif);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .card .big small {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .card .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .card .row strong { color: var(--ink); }
+
+  .col-3 { grid-column: span 3; }
+  .col-4 { grid-column: span 4; }
+  .col-6 { grid-column: span 6; }
+  .col-8 { grid-column: span 8; }
+  .col-12 { grid-column: span 12; }
+  @media (max-width: 900px) {
+    .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
+  }
+
+  /* Quick log buttons */
+  .quick-log {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .quick-log button {
+    flex: 1;
+    min-width: 110px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.12s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .quick-log button:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .quick-log button .icon { font-size: 22px; }
+
+  /* Stream */
+  .stream {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .stream-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .stream-item .when { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .stream-item .what { color: var(--ink); }
+  .stream-item .icon { margin-right: 6px; }
+
+  /* Growth chart */
+  .chart-wrap {
+    width: 100%;
+    height: 220px;
+    position: relative;
+  }
+  svg.chart { width: 100%; height: 100%; }
+  svg.chart .grid line { stroke: var(--border); }
+  svg.chart .axis text {
+    font-family: var(--mono);
+    font-size: 10px;
+    fill: var(--muted);
+  }
+  svg.chart .line { fill: none; stroke: var(--accent); stroke-width: 2; }
+  svg.chart .point { fill: var(--accent); }
+  svg.chart .pct-band { fill: var(--accent-soft); opacity: 0.4; }
+
+  /* Milestones */
+  .milestone-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .milestone {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-left: 3px solid var(--border);
+    background: var(--bg);
+    border-radius: 6px;
+  }
+  .milestone.due { border-left-color: var(--gold); }
+  .milestone.overdue { border-left-color: var(--accent); }
+  .milestone.done { border-left-color: var(--green); opacity: 0.6; }
+  .milestone .name { font-size: 14px; flex: 1; }
+  .milestone .window {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .milestone.done .name { text-decoration: line-through; }
+
+  /* Vaccines */
+  .vax-list { display: flex; flex-direction: column; gap: 6px; }
+  .vax-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg);
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .vax-item.done { color: var(--green); }
+  .vax-item.due { color: var(--gold); font-weight: 600; }
+  .vax-item .date { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: var(--mono);
+    padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header class="hero">
+    <h1><span class="heart">💛</span> Mom Command</h1>
+    <div class="age">
+      Baby is <strong id="age-display">—</strong>
+      <span id="dob-display"></span>
+    </div>
+  </header>
+
+  <!-- Top row: 4 vital cards -->
+  <div class="grid">
+    <div class="card col-3">
+      <h2>🍼 Last feed</h2>
+      <div class="big" id="last-feed">—</div>
+      <div class="row"><span>today</span><strong id="feeds-today">0</strong></div>
+    </div>
+    <div class="card col-3">
+      <h2>😴 Last sleep</h2>
+      <div class="big" id="last-sleep">—</div>
+      <div class="row"><span>last night</span><strong id="sleep-night">— h</strong></div>
+    </div>
+    <div class="card col-3">
+      <h2>💩 Last diaper</h2>
+      <div class="big" id="last-diaper">—</div>
+      <div class="row"><span>today</span><strong id="diapers-today">0</strong></div>
+    </div>
+    <div class="card col-3">
+      <h2>📅 Next appt</h2>
+      <div class="big" id="next-appt">—</div>
+      <div class="row"><span>questions</span><strong id="appt-questions">0</strong></div>
+    </div>
+  </div>
+
+  <!-- Quick log + stream -->
+  <div class="grid">
+    <div class="card col-6">
+      <h2>⚡ Quick log</h2>
+      <div class="quick-log">
+        <button data-log="feed-breast"><span class="icon">🤱</span><span>Feed (breast)</span></button>
+        <button data-log="feed-bottle"><span class="icon">🍼</span><span>Feed (bottle)</span></button>
+        <button data-log="sleep-start"><span class="icon">😴</span><span>Sleep start</span></button>
+        <button data-log="sleep-wake"><span class="icon">☀️</span><span>Wake up</span></button>
+        <button data-log="diaper-wet"><span class="icon">💧</span><span>Wet</span></button>
+        <button data-log="diaper-dirty"><span class="icon">💩</span><span>Dirty</span></button>
+      </div>
+      <p style="margin: 8px 0 0; font-size: 12px; color: var(--muted); font-family: var(--mono);">
+        These log to your browser. To persist to CSV, ask Martha to "log my last entries."
+      </p>
+    </div>
+
+    <div class="card col-6">
+      <h2>📜 Today's stream</h2>
+      <div class="stream" id="stream"></div>
+    </div>
+  </div>
+
+  <!-- Growth chart + milestones + vaccines -->
+  <div class="grid">
+    <div class="card col-6">
+      <h2>📈 Growth chart</h2>
+      <div class="chart-wrap">
+        <svg class="chart" viewBox="0 0 600 220" preserveAspectRatio="none" id="growth-chart"></svg>
+      </div>
+      <div class="row">
+        <span>latest weight</span>
+        <strong id="latest-weight">—</strong>
+      </div>
+      <div class="row">
+        <span>percentile</span>
+        <strong id="latest-pct">—</strong>
+      </div>
+    </div>
+
+    <div class="card col-3">
+      <h2>🌟 Milestones — next up</h2>
+      <div class="milestone-list" id="milestones"></div>
+    </div>
+
+    <div class="card col-3">
+      <h2>💉 Vaccines</h2>
+      <div class="vax-list" id="vaccines"></div>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Mom Command · the always-installed root for the Mom &amp; Baby cabinet series ·
+    pair with one stage cabinet at a time
+  </p>
+</div>
+
+<div class="toast" id="toast">Logged.</div>
+
+<script>
+// =================================================================
+// Mock data — in production, this would be parsed from the CSVs
+// in ../logs/ via Cabinet's file-read API. For the standalone preview,
+// we keep state in localStorage so the dashboard feels live.
+// =================================================================
+
+const STORAGE_KEY = 'mom-command-mission-control';
+const DOB = '2026-03-15';   // matches baby-profile.md placeholder
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  // Seed with the same data shown in the CSVs
+  return {
+    feeds: [
+      { ts: '2026-04-26T07:30:00', method: 'breast', side: 'L' },
+      { ts: '2026-04-26T10:15:00', method: 'breast', side: 'R' },
+      { ts: '2026-04-26T13:00:00', method: 'bottle_ebm', amount: 90 },
+    ],
+    sleeps: [
+      { date: '2026-04-25', total_hours: 7.5, wakeups: 3 },
+      { date: '2026-04-26', total_hours: 7.0, wakeups: 2 },
+    ],
+    diapers: [
+      { ts: '2026-04-26T06:30:00', type: 'wet' },
+      { ts: '2026-04-26T08:45:00', type: 'dirty' },
+      { ts: '2026-04-26T10:30:00', type: 'wet' },
+      { ts: '2026-04-26T13:15:00', type: 'wet+dirty' },
+      { ts: '2026-04-26T16:00:00', type: 'wet' },
+    ],
+    sleepActive: null,  // {start: ts}
+  };
+}
+function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+let state = loadState();
+
+// =================================================================
+// Time helpers
+// =================================================================
+function ageString(dobIso) {
+  const dob = new Date(dobIso);
+  const now = new Date();
+  const ms = now - dob;
+  const days = Math.floor(ms / 86400000);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30.44);
+  if (days < 14) return `${days} days old`;
+  if (months < 3) return `${weeks} weeks old`;
+  return `${months} months, ${weeks % 4} weeks old`;
+}
+function ageWeeks(dobIso) {
+  return Math.floor((new Date() - new Date(dobIso)) / (7 * 86400000));
+}
+function timeAgo(tsIso) {
+  const ms = Date.now() - new Date(tsIso).getTime();
+  if (ms < 60000) return 'just now';
+  const min = Math.floor(ms / 60000);
+  if (min < 60) return `${min} min ago`;
+  const h = Math.floor(min / 60);
+  const remMin = min % 60;
+  if (h < 24) return `${h}h ${remMin}m ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+}
+function fmtTime(tsIso) {
+  const d = new Date(tsIso);
+  return d.toTimeString().slice(0, 5);
+}
+function isToday(tsIso) {
+  const d = new Date(tsIso);
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() &&
+         d.getMonth() === now.getMonth() &&
+         d.getDate() === now.getDate();
+}
+
+// =================================================================
+// Renderers
+// =================================================================
+function render() {
+  // Header — age
+  document.getElementById('age-display').textContent = ageString(DOB);
+  document.getElementById('dob-display').textContent = `· DOB ${DOB}`;
+
+  // Last feed
+  const feedsToday = state.feeds.filter(f => isToday(f.ts));
+  const lastFeed = state.feeds[state.feeds.length - 1];
+  document.getElementById('last-feed').innerHTML = lastFeed
+    ? `${timeAgo(lastFeed.ts).split(' ').slice(0, 2).join(' ')}<small>ago</small>`
+    : '—';
+  document.getElementById('feeds-today').textContent = feedsToday.length;
+
+  // Last sleep
+  const lastSleepEntry = state.sleeps[state.sleeps.length - 1];
+  document.getElementById('last-sleep').innerHTML = lastSleepEntry
+    ? `${lastSleepEntry.total_hours}<small>h</small>`
+    : '—';
+  document.getElementById('sleep-night').textContent = lastSleepEntry
+    ? `${lastSleepEntry.total_hours} h, ${lastSleepEntry.wakeups} wakeups`
+    : '—';
+
+  // Last diaper
+  const diapersToday = state.diapers.filter(d => isToday(d.ts));
+  const wet = diapersToday.filter(d => d.type.includes('wet')).length;
+  const dirty = diapersToday.filter(d => d.type.includes('dirty')).length;
+  const lastDiaper = state.diapers[state.diapers.length - 1];
+  document.getElementById('last-diaper').innerHTML = lastDiaper
+    ? `${timeAgo(lastDiaper.ts).split(' ').slice(0, 2).join(' ')}<small>ago</small>`
+    : '—';
+  document.getElementById('diapers-today').textContent = `${diapersToday.length} (${wet}w/${dirty}d)`;
+
+  // Next appt
+  document.getElementById('next-appt').textContent = '2 mo';
+  document.getElementById('appt-questions').textContent = '3';
+
+  // Stream — merge feeds + sleeps + diapers, sort by ts desc, today only
+  const stream = [];
+  state.feeds.filter(f => isToday(f.ts)).forEach(f => stream.push({
+    ts: f.ts, icon: f.method.startsWith('bottle') ? '🍼' : '🤱',
+    text: `Feed — ${f.method.replace('_', ' ')}${f.side ? ' (' + f.side + ')' : ''}${f.amount ? ' · ' + f.amount + 'ml' : ''}`,
+  }));
+  state.diapers.filter(d => isToday(d.ts)).forEach(d => stream.push({
+    ts: d.ts, icon: d.type.includes('dirty') ? '💩' : '💧',
+    text: `Diaper — ${d.type}`,
+  }));
+  stream.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+  const streamEl = document.getElementById('stream');
+  streamEl.innerHTML = stream.length === 0
+    ? '<div class="stream-item"><span class="what" style="color: var(--muted);">No entries yet today. Tap a quick-log button.</span></div>'
+    : stream.map(s => `
+        <div class="stream-item">
+          <span class="what"><span class="icon">${s.icon}</span>${s.text}</span>
+          <span class="when">${fmtTime(s.ts)}</span>
+        </div>
+      `).join('');
+
+  renderGrowthChart();
+  renderMilestones();
+  renderVaccines();
+}
+
+function renderGrowthChart() {
+  // Hardcoded sample from logs/growth-chart.csv
+  const data = [
+    { week: 0, weight: 3.4, pct: 50 },
+    { week: 1, weight: 3.3, pct: 40 },
+    { week: 5, weight: 4.6, pct: 55 },
+  ];
+  const svg = document.getElementById('growth-chart');
+  const W = 600, H = 220, P = 30;
+  const maxWeek = Math.max(20, ageWeeks(DOB) + 4);
+  const minW = 2.5, maxW = 8;
+  const x = w => P + (w / maxWeek) * (W - 2 * P);
+  const y = wkg => H - P - ((wkg - minW) / (maxW - minW)) * (H - 2 * P);
+
+  let html = '';
+  // Grid + axis
+  html += '<g class="grid">';
+  for (let i = 0; i <= 4; i++) {
+    const yy = P + i * ((H - 2 * P) / 4);
+    html += `<line x1="${P}" y1="${yy}" x2="${W - P}" y2="${yy}"/>`;
+  }
+  for (let w = 0; w <= maxWeek; w += 4) {
+    html += `<line x1="${x(w)}" y1="${P}" x2="${x(w)}" y2="${H - P}"/>`;
+  }
+  html += '</g>';
+  // Percentile band shadow (cosmetic)
+  html += '<g class="pct-band">';
+  html += `<rect x="${P}" y="${y(maxW * 0.85)}" width="${W - 2*P}" height="${y(minW * 1.4) - y(maxW * 0.85)}"/>`;
+  html += '</g>';
+  // Axis labels
+  html += '<g class="axis">';
+  for (let kg = 3; kg <= 7; kg++) {
+    html += `<text x="6" y="${y(kg) + 3}">${kg}kg</text>`;
+  }
+  for (let w = 0; w <= maxWeek; w += 4) {
+    html += `<text x="${x(w) - 6}" y="${H - 8}">${w}w</text>`;
+  }
+  html += '</g>';
+  // Line + points
+  const path = data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${x(d.week)} ${y(d.weight)}`).join(' ');
+  html += `<path class="line" d="${path}"/>`;
+  data.forEach(d => {
+    html += `<circle class="point" cx="${x(d.week)}" cy="${y(d.weight)}" r="4"/>`;
+  });
+  svg.innerHTML = html;
+
+  const latest = data[data.length - 1];
+  document.getElementById('latest-weight').textContent = `${latest.weight} kg`;
+  document.getElementById('latest-pct').textContent = `${latest.pct}th`;
+}
+
+function renderMilestones() {
+  // From logs/milestone-log.csv — show next 4 windows
+  const milestones = [
+    { name: 'Lifts head briefly', low: 4, high: 6, done: true },
+    { name: 'Social smile', low: 6, high: 8, done: false },
+    { name: 'Makes cooing sounds', low: 6, high: 8, done: false },
+    { name: 'Tracks objects with eyes', low: 4, high: 8, done: true },
+    { name: 'Brings hands to mouth', low: 8, high: 12, done: false },
+  ];
+  const w = ageWeeks(DOB);
+  const upcoming = milestones
+    .filter(m => !m.done && m.high >= w - 2)
+    .slice(0, 4);
+  const list = document.getElementById('milestones');
+  list.innerHTML = upcoming.length === 0
+    ? '<div class="milestone done"><span class="name">All caught up.</span></div>'
+    : upcoming.map(m => {
+      const status = m.done ? 'done' : (w > m.high ? 'overdue' : (w >= m.low ? 'due' : ''));
+      return `<div class="milestone ${status}">
+        <span class="name">${m.name}</span>
+        <span class="window">${m.low}–${m.high}w</span>
+      </div>`;
+    }).join('');
+}
+
+function renderVaccines() {
+  // From logs/vaccination-schedule.csv — first 6 rows
+  const vax = [
+    { name: 'Hep B (1)', age: 'birth', date: '2026-03-15', done: true },
+    { name: 'Hep B (2)', age: '1-2 mo', date: null, due: true },
+    { name: 'DTaP (1)', age: '2 mo', date: null, due: true },
+    { name: 'Hib (1)', age: '2 mo', date: null, due: true },
+    { name: 'IPV (1)', age: '2 mo', date: null, due: true },
+    { name: 'PCV13 (1)', age: '2 mo', date: null, due: true },
+  ];
+  document.getElementById('vaccines').innerHTML = vax.map(v => `
+    <div class="vax-item ${v.done ? 'done' : ''} ${v.due ? 'due' : ''}">
+      <span>${v.done ? '✅ ' : v.due ? '⏳ ' : ''}${v.name}</span>
+      <span class="date">${v.date || v.age}</span>
+    </div>
+  `).join('');
+}
+
+// =================================================================
+// Quick-log handlers
+// =================================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+document.querySelectorAll('.quick-log button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const action = btn.dataset.log;
+    const now = new Date().toISOString().slice(0, 19);
+    if (action === 'feed-breast') {
+      state.feeds.push({ ts: now, method: 'breast', side: '' });
+      showToast('🤱 Breastfeed logged');
+    } else if (action === 'feed-bottle') {
+      state.feeds.push({ ts: now, method: 'bottle' });
+      showToast('🍼 Bottle logged');
+    } else if (action === 'sleep-start') {
+      state.sleepActive = { start: now };
+      saveState(state);
+      showToast('😴 Sleep started');
+      return;
+    } else if (action === 'sleep-wake') {
+      if (state.sleepActive) {
+        const startMs = new Date(state.sleepActive.start).getTime();
+        const hours = Math.round(((Date.now() - startMs) / 3600000) * 10) / 10;
+        const today = new Date().toISOString().slice(0, 10);
+        const existing = state.sleeps.find(s => s.date === today);
+        if (existing) {
+          existing.total_hours = Math.round((existing.total_hours + hours) * 10) / 10;
+        } else {
+          state.sleeps.push({ date: today, total_hours: hours, wakeups: 0 });
+        }
+        state.sleepActive = null;
+        showToast(`☀️ Woke after ${hours}h`);
+      } else {
+        showToast('Tap "Sleep start" first');
+        return;
+      }
+    } else if (action === 'diaper-wet') {
+      state.diapers.push({ ts: now, type: 'wet' });
+      showToast('💧 Wet logged');
+    } else if (action === 'diaper-dirty') {
+      state.diapers.push({ ts: now, type: 'dirty' });
+      showToast('💩 Dirty logged');
+    }
+    saveState(state);
+    render();
+  });
+});
+
+render();
+setInterval(render, 60000);  // refresh "X min ago" labels every minute
+</script>
+</body>
+</html>

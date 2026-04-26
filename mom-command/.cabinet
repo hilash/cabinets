@@ -1,0 +1,12 @@
+schemaVersion: 1
+id: mom-command-root
+name: Mom Command
+kind: root
+version: 0.1.0
+description: >
+  The always-installed root for the Mom & Baby cabinet series. Holds the
+  shared family context — baby profile, growth chart, feed/sleep/diaper
+  logs, milestone log, vaccination schedule, pediatrician info, emergency
+  contacts. Pairs with one stage cabinet at a time (newborn, infant,
+  crawler, etc.). One agent: Martha, your chief of staff.
+entry: index.md

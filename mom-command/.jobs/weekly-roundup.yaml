@@ -1,0 +1,39 @@
+id: weekly-roundup
+name: Weekly Roundup
+enabled: true
+schedule: 0 20 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: martha
+agentSlug: martha
+timeout: 300
+prompt: |-
+  You are Martha. Compile the past 7 days from logs/feed-log.csv, sleep-log.csv, diaper-log.csv, milestone-log.csv. Read bio.md to calibrate tone.
+
+  Write the roundup to logs/weekly-roundup-YYYY-WW.md (where YYYY-WW is current ISO week). Format:
+
+  # Week [N] — [date range]
+
+  ## The numbers
+  - Feeds: [total] · [avg/day] · [trend vs last week if available]
+  - Sleep: [total hours] · [avg/night] · [best night with date]
+  - Diapers: [total] · [wet/dirty split]
+
+  ## Wins
+  - [3-5 bullets — milestones, first-time-evers, hard nights survived, the small wins]
+
+  ## What you said this week
+  - [Quote any lines from chat history that capture something real — leave blank if nothing stands out]
+
+  ## Next week preview
+  - **Milestone window:** [stage-appropriate — read milestone-log.csv]
+  - **Appointments:** [from pediatrician.md]
+  - **One thing to film/photograph:** [e.g. "if she rolls, get the video — these months blur"]
+
+  ## Note from Martha
+  [One short paragraph. Honest. Tied to bio.md voice. Skip cheerleading unless the user specifically wants that — bio.md tells you.]
+
+  Keep it under 30 lines total. Append a link to this roundup at the bottom of index.md.
+cabinetPath: cabinets/cabinets/mom-command
+createdAt: '2026-04-26T05:17:47.366Z'
+updatedAt: '2026-04-26T05:17:47.366Z'
