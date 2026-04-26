@@ -6,34 +6,52 @@
 <title>Personal OS · Daily Console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* ============================================================
+     Design tokens — Liquid glass on warm parchment
+     ============================================================ */
   :root {
+    /* Background — soft warm parchment, never flat */
     --bg: #FBF6EB;
-    --surface: #FFFFFF;
-    --surface-cream: #FCF6E6;
-    --surface-peach: #FFF1E8;
-    --surface-sage:  #E9F0E6;
-    --surface-sky:   #E5EDF2;
-    --surface-lilac: #F2EAF1;
-    --surface-rose:  #FBEDF1;
-    --hairline: #ECE4D4;
-    --hairline-strong: #D9CDB4;
+    --bg-tint-rose: rgba(233, 123, 146, 0.10);
+    --bg-tint-sky:  rgba(111, 168, 229, 0.08);
+    --bg-tint-gold: rgba(216, 162, 78, 0.08);
+    --bg-tint-sage: rgba(107, 142, 90, 0.06);
 
-    --ink: #1B1814;
-    --ink-2: #5C544A;
-    --ink-3: #998E7E;
-    --ink-4: #C0B6A2;
+    /* Glass — translucent, blurred surfaces. The whole language. */
+    --glass:               rgba(255, 252, 244, 0.55);
+    --glass-strong:        rgba(255, 252, 244, 0.72);
+    --glass-tinted-peach:  rgba(255, 240, 230, 0.62);
+    --glass-tinted-sage:   rgba(232, 240, 228, 0.58);
+    --glass-tinted-sky:    rgba(228, 238, 244, 0.58);
+    --glass-tinted-lilac:  rgba(238, 230, 240, 0.58);
+    --glass-tinted-cream:  rgba(252, 245, 226, 0.62);
+    --glass-tinted-rose:   rgba(248, 230, 236, 0.58);
+    --glass-dark:          rgba(28, 32, 38, 0.62);
+    --glass-dark-strong:   rgba(20, 24, 30, 0.78);
 
-    --primary: #2E4156;          /* deep navy */
-    --primary-soft: #C8D5DD;
-    --good:    #6B8E5A;
-    --warn:    #B8892E;
-    --alert:   #C24A6A;
-    --rose:    #C24A6A;
-    --rose-soft: #F5D0DC;
+    --glass-stroke:       rgba(255, 255, 255, 0.55);
+    --glass-stroke-soft:  rgba(255, 255, 255, 0.35);
+    --glass-stroke-dark:  rgba(255, 255, 255, 0.10);
+    --glass-bevel:        rgba(27, 24, 20, 0.04);
 
-    /* per-area tints */
+    /* Ink */
+    --ink:    #1B1814;
+    --ink-2:  #5C544A;
+    --ink-3:  #998E7E;
+    --ink-4:  #C0B6A2;
+    --ink-inv:#FBF6EB;
+
+    /* Accents — used very sparingly for meaning */
+    --primary:    #2E4156;       /* deep navy, only on the COS banner */
+    --good:       #6B8E5A;
+    --warn:       #B8892E;
+    --alert:      #C24A6A;
+    --rose:       #C24A6A;
+    --rose-soft:  #F5D0DC;
+
+    /* Per-area tints */
     --brain:  #B96EE9;
     --family: #E97B92;
     --home:   #B8892E;
@@ -41,365 +59,491 @@
     --health: #6FA8E5;
     --play:   #D8A24E;
 
-    --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
-    --sans:  'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    /* Typography */
+    --serif: 'Cormorant Garamond', 'Hoefler Text', Garamond, 'Times New Roman', serif;
+    --sans:  'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-    --r-md: 14px;
-    --r-lg: 20px;
-    --r-xl: 28px;
+    /* Radius — generous, soft */
+    --r-md: 18px;
+    --r-lg: 26px;
+    --r-xl: 32px;
+
+    /* Glass shadow stack — depth without harshness */
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+    --glass-shadow-dark:
+      0 1px 1px rgba(255, 255, 255, 0.10) inset,
+      0 -1px 1px rgba(0, 0, 0, 0.20) inset,
+      0 18px 50px -10px rgba(28, 32, 38, 0.30),
+      0 6px 18px -4px rgba(28, 32, 38, 0.20);
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     background: var(--bg);
     color: var(--ink);
     font-family: var(--sans);
     font-size: 15px;
-    line-height: 1.5;
+    line-height: 1.55;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: 'cv11', 'ss01';
   }
+  body {
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  /* Background color blobs — give backdrop-filter something to blur */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 12% 8%,  var(--bg-tint-rose) 0%, transparent 65%),
+      radial-gradient(50rem 35rem at 90% 22%, var(--bg-tint-sky)  0%, transparent 60%),
+      radial-gradient(45rem 30rem at 20% 75%, var(--bg-tint-gold) 0%, transparent 60%),
+      radial-gradient(40rem 25rem at 80% 90%, var(--bg-tint-sage) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--bg);
+  }
+
   .num { font-variant-numeric: tabular-nums; }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
-  .shell {
-    max-width: 1380px;
-    margin: 0 auto;
-    padding: 32px 28px 80px;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
+  /* ============================================================
+     Glass primitive — every container uses this language
+     ============================================================ */
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Specular top highlight — refracted edge light */
+  .glass::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 18px; right: 18px;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.95) 50%,
+      transparent 100%);
+    pointer-events: none;
   }
 
-  /* ==== Header ==== */
+  .glass-dark {
+    background: var(--glass-dark);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--glass-stroke-dark);
+    border-radius: var(--r-xl);
+    box-shadow: var(--glass-shadow-dark);
+    position: relative;
+    overflow: hidden;
+    color: var(--ink-inv);
+  }
+  .glass-dark::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 24px; right: 24px;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.40) 50%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ============================================================
+     Layout
+     ============================================================ */
+  .shell {
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 56px 36px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  @media (max-width: 720px) {
+    .shell { padding: 32px 18px 80px; gap: 22px; }
+  }
+
+  /* ============================================================
+     Hero
+     ============================================================ */
   .hero {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: 24px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--hairline);
+    gap: 32px;
+    padding: 14px 8px 32px;
   }
   .hero .left .eyebrow {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 10.5px;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.22em;
     color: var(--ink-3);
-    margin-bottom: 12px;
+    margin-bottom: 18px;
+    font-weight: 500;
   }
   .hero .left h1 {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: clamp(34px, 4.5vw, 50px);
+    font-weight: 400;
+    font-size: clamp(48px, 6vw, 76px);
     letter-spacing: -0.025em;
-    line-height: 1.05;
+    line-height: 0.95;
+    color: var(--ink);
   }
-  .hero .left h1 .name { color: var(--primary); }
+  .hero .left h1 .name {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--primary);
+  }
   .hero .left .stand {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 15px;
+    font-weight: 400;
+    font-size: 19px;
     color: var(--ink-2);
-    margin-top: 6px;
+    margin-top: 14px;
+    letter-spacing: 0.005em;
   }
-  .hero .right {
-    text-align: right;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-3);
-    line-height: 1.7;
-  }
+  .hero .right { text-align: right; line-height: 1.7; }
   .hero .right .date {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 18px;
+    font-weight: 400;
+    font-size: 22px;
     color: var(--ink);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    letter-spacing: 0.005em;
+  }
+  .hero .right .meta {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
   }
   @media (max-width: 720px) {
-    .hero { flex-direction: column; align-items: stretch; gap: 12px; }
+    .hero { flex-direction: column; align-items: stretch; gap: 14px; padding: 8px 4px 18px; }
     .hero .right { text-align: left; }
   }
 
-  /* ==== Chief of Staff banner ==== */
+  /* ============================================================
+     Chief of Staff dark glass banner
+     ============================================================ */
   .cos {
-    background: linear-gradient(120deg, #2E4156 0%, #1A2632 100%);
-    color: #F0EFEC;
-    border-radius: var(--r-xl);
-    padding: 28px 32px;
+    padding: 36px 40px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 24px;
+    gap: 32px;
   }
-  .cos .who {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+  .cos .who { display: flex; flex-direction: column; gap: 6px; }
   .cos .who .label {
     font-family: var(--mono);
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    opacity: 0.6;
+    letter-spacing: 0.20em;
+    opacity: 0.55;
+    font-weight: 500;
   }
   .cos .who .name {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: 22px;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.005em;
   }
   .cos .body {
     font-family: var(--serif);
-    font-size: 17px;
+    font-weight: 400;
+    font-size: 19px;
     line-height: 1.5;
+    letter-spacing: 0.005em;
+    opacity: 0.92;
   }
-  .cos .body strong { color: white; }
+  .cos .body strong { font-weight: 600; opacity: 1; }
   .cos .stats {
     display: flex;
-    gap: 24px;
+    gap: 28px;
     text-align: right;
   }
   .cos .stats .stat .v {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: 32px;
+    font-weight: 400;
+    font-size: 44px;
     line-height: 1;
+    letter-spacing: -0.02em;
   }
   .cos .stats .stat .l {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    opacity: 0.65;
-    margin-top: 4px;
+    letter-spacing: 0.18em;
+    opacity: 0.55;
+    margin-top: 6px;
+    font-weight: 500;
   }
-  .cos .stats .stat.alert .v { color: var(--rose-soft); }
+  .cos .stats .stat.alert .v { color: var(--rose-soft); font-style: italic; }
   @media (max-width: 800px) {
-    .cos { grid-template-columns: 1fr; gap: 16px; }
+    .cos { grid-template-columns: 1fr; gap: 18px; padding: 28px 26px; }
     .cos .stats { justify-content: space-between; }
   }
 
-  /* ==== Three columns: Today / This Week / The Numbers ==== */
+  /* ============================================================
+     Triplet — Today / This Week / The Numbers
+     ============================================================ */
   .triplet {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: 20px;
   }
-  @media (max-width: 980px) {
-    .triplet { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 980px) { .triplet { grid-template-columns: 1fr; } }
+
   .col {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: var(--r-lg);
-    padding: 22px 24px;
+    padding: 28px 30px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
   }
   .col-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    border-bottom: 1px solid var(--hairline);
-    padding-bottom: 10px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--glass-bevel);
   }
   .col-head .title {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: 18px;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.005em;
   }
   .col-head .meta {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     color: var(--ink-3);
+    font-weight: 500;
   }
 
-  /* Today list */
-  .agenda {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  /* Today agenda */
+  .agenda { display: flex; flex-direction: column; gap: 4px; }
   .agenda-item {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--hairline);
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--glass-bevel);
   }
   .agenda-item:last-child { border-bottom: none; }
   .agenda-item.now {
+    margin-left: -30px;
+    margin-right: -30px;
+    padding-left: 27px;
+    padding-right: 30px;
+    background: linear-gradient(90deg, rgba(46, 65, 86, 0.06) 0%, transparent 60%);
     border-left: 3px solid var(--primary);
-    margin-left: -22px;
-    padding-left: 19px;
-    background: var(--surface-cream);
-    border-radius: 4px;
   }
   .agenda .time {
     font-family: var(--mono);
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--ink-3);
-    min-width: 50px;
-    padding-top: 2px;
+    min-width: 52px;
+    padding-top: 3px;
+    font-weight: 500;
   }
   .agenda .what {
     flex: 1;
-    font-size: 14px;
+    font-size: 14.5px;
     color: var(--ink);
-    line-height: 1.4;
+    line-height: 1.45;
   }
   .agenda .what .area {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 9px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--ink-3);
-    margin-right: 6px;
+    letter-spacing: 0.16em;
+    margin-right: 8px;
+    font-weight: 500;
   }
-  .agenda .what .area.brain { color: var(--brain); }
+  .agenda .what .area.brain  { color: var(--brain); }
   .agenda .what .area.family { color: var(--family); }
-  .agenda .what .area.home { color: var(--home); }
-  .agenda .what .area.money { color: var(--money); }
+  .agenda .what .area.home   { color: var(--home); }
+  .agenda .what .area.money  { color: var(--money); }
   .agenda .what .area.health { color: var(--health); }
-  .agenda .what .area.play { color: var(--play); }
+  .agenda .what .area.play   { color: var(--play); }
 
-  /* This week */
+  /* Week */
   .week-day {
     display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px dashed var(--hairline);
+    grid-template-columns: 84px 1fr;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--glass-bevel);
+    align-items: start;
   }
   .week-day:last-child { border-bottom: none; }
-  .week-day.today { background: var(--surface-cream); border-radius: 6px; padding: 10px 12px; margin: 0 -12px; }
+  .week-day.today {
+    background: rgba(46, 65, 86, 0.06);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 2px -14px;
+  }
   .week-day .day {
     font-family: var(--serif);
     font-style: italic;
+    font-weight: 400;
     color: var(--ink-2);
-    font-size: 13px;
+    font-size: 16px;
     padding-top: 1px;
   }
-  .week-day .events {
-    font-size: 13.5px;
-    color: var(--ink);
-  }
-  .week-day .events .ev {
-    display: block;
-    margin-bottom: 2px;
-  }
+  .week-day .events { font-size: 13.5px; color: var(--ink); line-height: 1.5; }
+  .week-day .events .ev { display: block; margin-bottom: 3px; }
   .week-day .events .ev .swatch {
     display: inline-block;
     width: 6px; height: 6px;
     border-radius: 50%;
-    margin-right: 6px;
-    vertical-align: 1px;
+    margin-right: 8px;
+    vertical-align: 2px;
   }
 
   /* Numbers */
-  .stat-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
+  .stat-stack { display: flex; flex-direction: column; gap: 16px; }
   .stat-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed var(--hairline);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--glass-bevel);
   }
   .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
   .stat-row .lbl {
     font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
     color: var(--ink-3);
+    font-weight: 500;
   }
   .stat-row .v {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: 24px;
+    font-weight: 500;
+    font-size: 28px;
     letter-spacing: -0.015em;
     line-height: 1;
   }
   .stat-row .v small {
     font-family: var(--sans);
-    font-size: 11.5px;
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--ink-3);
-    margin-left: 5px;
+    margin-left: 6px;
   }
-  .stat-row .v.up   { color: var(--good); }
-  .stat-row .v.down { color: var(--alert); }
+  .stat-row .v.up   { color: var(--good); font-style: italic; }
+  .stat-row .v.down { color: var(--alert); font-style: italic; }
 
-  /* ==== 6 Life Areas ==== */
-  .areas {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: var(--r-lg);
-    padding: 22px 24px;
-  }
+  /* ============================================================
+     Six life areas — tinted glass cards
+     ============================================================ */
+  .areas { padding: 28px 32px; }
   .areas-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 18px;
-    border-bottom: 1px solid var(--hairline);
-    padding-bottom: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--glass-bevel);
   }
   .areas-head .title {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.005em;
   }
   .areas-head .meta {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     color: var(--ink-3);
+    font-weight: 500;
   }
   .area-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
+    gap: 14px;
   }
   @media (max-width: 980px) { .area-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 600px) { .area-grid { grid-template-columns: repeat(2, 1fr); } }
 
   .area-card {
-    border: 1px solid var(--hairline);
     border-radius: var(--r-md);
-    padding: 16px 14px;
+    padding: 22px 18px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.12s ease, border-color 0.15s;
+    transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s;
+    backdrop-filter: blur(20px) saturate(170%);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    border: 1px solid var(--glass-stroke-soft);
+    box-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.50) inset,
+      0 6px 20px -8px rgba(27, 24, 20, 0.08);
+    position: relative;
+    overflow: hidden;
   }
-  .area-card:hover { transform: translateY(-2px); }
-  .area-card.brain  { background: var(--surface-lilac); border-color: #DCC9DB; }
-  .area-card.family { background: var(--surface-peach); border-color: #F4D9C4; }
-  .area-card.home   { background: var(--surface-cream); border-color: #EFE0BE; }
-  .area-card.money  { background: var(--surface-sage);  border-color: #C8D8C0; }
-  .area-card.health { background: var(--surface-sky);   border-color: #C2D2DB; }
-  .area-card.play   { background: var(--surface-cream); border-color: #EFE0BE; }
+  .area-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 14px; right: 14px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+    pointer-events: none;
+  }
+  .area-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 14px 32px -10px rgba(27, 24, 20, 0.14);
+  }
+  .area-card.brain  { background: var(--glass-tinted-lilac); }
+  .area-card.family { background: var(--glass-tinted-peach); }
+  .area-card.home   { background: var(--glass-tinted-cream); }
+  .area-card.money  { background: var(--glass-tinted-sage); }
+  .area-card.health { background: var(--glass-tinted-sky); }
+  .area-card.play   { background: var(--glass-tinted-cream); }
+
   .area-card .glyph {
-    width: 28px; height: 28px;
-    color: currentColor;
-    margin-bottom: 4px;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 6px;
   }
   .area-card.brain  .glyph { color: var(--brain); }
   .area-card.family .glyph { color: var(--family); }
@@ -407,101 +551,134 @@
   .area-card.money  .glyph { color: var(--money); }
   .area-card.health .glyph { color: var(--health); }
   .area-card.play   .glyph { color: var(--play); }
+
   .area-card .name {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: 15.5px;
+    font-weight: 500;
+    font-size: 19px;
     letter-spacing: -0.005em;
   }
   .area-card .signal {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    color: var(--ink-3);
-    line-height: 1.5;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    font-weight: 400;
   }
-  .area-card .signal strong { color: var(--ink); }
+  .area-card .signal strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
 
-  /* ==== Briefs schedule ==== */
-  .briefs-card {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: var(--r-lg);
-    padding: 22px 24px;
-  }
+  /* ============================================================
+     Briefs schedule
+     ============================================================ */
+  .briefs-card { padding: 28px 32px; }
   .briefs-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--hairline);
-    padding-bottom: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--glass-bevel);
   }
-  .briefs-head .title { font-family: var(--serif); font-weight: 600; font-size: 18px; }
+  .briefs-head .title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.005em;
+  }
   .briefs-head .meta {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     color: var(--ink-3);
+    font-weight: 500;
   }
-  .briefs-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+  .briefs-table { width: 100%; border-collapse: collapse; }
   .briefs-table th {
     text-align: left;
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
     color: var(--ink-3);
-    padding: 6px 12px;
-    border-bottom: 1px solid var(--hairline);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--glass-bevel);
   }
   .briefs-table td {
-    padding: 10px 12px;
-    border-bottom: 1px dashed var(--hairline);
-    font-size: 13.5px;
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--glass-bevel);
+    font-size: 14px;
     vertical-align: middle;
   }
   .briefs-table tr:last-child td { border-bottom: none; }
   .briefs-table .area-tag {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .briefs-table .area-tag .swatch {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+  }
+  .briefs-table .when {
     font-family: var(--mono);
-    font-size: 10.5px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    font-size: 11.5px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .briefs-table .owner {
+    font-family: var(--sans);
+    font-size: 13px;
     color: var(--ink-2);
   }
-  .briefs-table .area-tag .swatch { width: 8px; height: 8px; border-radius: 50%; }
-  .briefs-table .when { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
   .briefs-table .status {
     font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 3px 9px;
+    letter-spacing: 0.14em;
+    padding: 4px 11px;
     border-radius: 100px;
-    background: var(--surface-cream);
+    background: rgba(255, 255, 255, 0.5);
     color: var(--ink-3);
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--glass-stroke-soft);
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
-  .briefs-table .status.ready { background: var(--surface-sage); color: var(--good); border-color: #C8D8C0; }
-  .briefs-table .status.pending { background: var(--surface-cream); color: var(--warn); border-color: #EFE0BE; }
-  .briefs-table .status.needs-you { background: var(--surface-rose); color: var(--alert); border-color: #F0C9D5; }
+  .briefs-table .status.ready {
+    background: rgba(107, 142, 90, 0.18);
+    color: var(--good);
+    border-color: rgba(107, 142, 90, 0.3);
+  }
+  .briefs-table .status.pending {
+    background: rgba(184, 137, 46, 0.18);
+    color: var(--warn);
+    border-color: rgba(184, 137, 46, 0.3);
+  }
+  .briefs-table .status.needs-you {
+    background: rgba(194, 74, 106, 0.20);
+    color: var(--alert);
+    border-color: rgba(194, 74, 106, 0.35);
+  }
 
-  /* ==== Money pulse — mini chart ==== */
+  /* ============================================================
+     Money pulse
+     ============================================================ */
   .money-pulse {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: var(--r-lg);
-    padding: 22px 24px;
+    padding: 28px 32px;
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 24px;
+    grid-template-columns: 1fr 300px;
+    gap: 32px;
     align-items: center;
   }
   @media (max-width: 880px) { .money-pulse { grid-template-columns: 1fr; } }
@@ -509,46 +686,49 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
   }
-  .money-pulse .head .title { font-family: var(--serif); font-weight: 600; font-size: 18px; }
+  .money-pulse .head .title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.005em;
+  }
   .money-pulse .head .meta {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     color: var(--ink-3);
+    font-weight: 500;
   }
   .money-pulse .chart-wrap {
-    height: 180px;
+    height: 200px;
     width: 100%;
     position: relative;
   }
   .money-pulse svg { display: block; width: 100%; height: 100%; }
-  .money-pulse .nums {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
+  .money-pulse .nums { display: flex; flex-direction: column; gap: 16px; }
   .money-pulse .num-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed var(--hairline);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--glass-bevel);
   }
   .money-pulse .num-row:last-child { border-bottom: none; padding-bottom: 0; }
   .money-pulse .num-row .lbl {
     font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--ink-3);
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
+    font-weight: 500;
   }
   .money-pulse .num-row .v {
     font-family: var(--serif);
-    font-weight: 600;
-    font-size: 22px;
+    font-weight: 500;
+    font-size: 26px;
     letter-spacing: -0.015em;
   }
   .money-pulse .num-row .v small {
@@ -556,15 +736,28 @@
     font-size: 11px;
     color: var(--good);
     font-weight: 500;
-    margin-left: 5px;
+    margin-left: 6px;
+    font-style: italic;
   }
 
+  /* ============================================================
+     Footer
+     ============================================================ */
   .footer {
     text-align: center;
     color: var(--ink-3);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    padding-top: 14px;
+  }
+  .footer code {
     font-family: var(--mono);
     font-size: 11px;
-    padding-top: 12px;
+    background: var(--glass-tinted-cream);
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-style: normal;
   }
 </style>
 </head>
@@ -577,22 +770,22 @@
     <div class="left">
       <div class="eyebrow">Personal OS · Daily Console</div>
       <h1>Hello, <span class="name" id="user-name">Hila</span>.</h1>
-      <div class="stand" id="stand-line">Here's where you stand.</div>
+      <div class="stand" id="stand-line">Here is where you stand today.</div>
     </div>
     <div class="right">
       <div class="date" id="today-date">—</div>
-      <div id="today-meta">week — of '26</div>
+      <div class="meta" id="today-meta">week — of '26</div>
     </div>
   </header>
 
-  <!-- ============= Chief of Staff banner ============= -->
-  <section class="cos">
+  <!-- ============= Chief of Staff dark glass ============= -->
+  <section class="cos glass-dark">
     <div class="who">
       <span class="label">Chief of Staff</span>
       <span class="name">Sunday roll-up</span>
     </div>
     <div class="body">
-      <strong>3 things moved</strong> this week. <strong>1 thing needs you</strong>: the home renewal expires Thursday. Brain wrote two long pieces. Family had a calmer week than usual.
+      <strong>Three things moved</strong> this week. <strong>One thing needs you</strong> — the home rental renewal expires Thursday. Brain wrote two long pieces. Family had a calmer week than usual.
     </div>
     <div class="stats">
       <div class="stat"><div class="v">3</div><div class="l">moved</div></div>
@@ -601,11 +794,9 @@
     </div>
   </section>
 
-  <!-- ============= Triplet: Today / This Week / The Numbers ============= -->
+  <!-- ============= Triplet ============= -->
   <section class="triplet">
-
-    <!-- TODAY -->
-    <div class="col">
+    <div class="col glass">
       <div class="col-head">
         <span class="title">Today</span>
         <span class="meta" id="today-day">—</span>
@@ -613,8 +804,7 @@
       <div class="agenda" id="agenda"></div>
     </div>
 
-    <!-- THIS WEEK -->
-    <div class="col">
+    <div class="col glass">
       <div class="col-head">
         <span class="title">This week</span>
         <span class="meta">7 days</span>
@@ -622,8 +812,7 @@
       <div id="week-list"></div>
     </div>
 
-    <!-- THE NUMBERS -->
-    <div class="col">
+    <div class="col glass">
       <div class="col-head">
         <span class="title">The numbers</span>
         <span class="meta">vital signs</span>
@@ -654,7 +843,7 @@
   </section>
 
   <!-- ============= 6 Life Areas ============= -->
-  <section class="areas">
+  <section class="areas glass">
     <div class="areas-head">
       <span class="title">Life areas</span>
       <span class="meta">click any · zoom in</span>
@@ -662,7 +851,7 @@
     <div class="area-grid">
 
       <a class="area-card brain" href="../brain/index.md">
-        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M11 6c-3 0-5 2-5 5 0 1 .5 2 1 3-1 1-1.5 2-1.5 4 0 3 2 5 5 5h.5"/>
           <path d="M21 6c3 0 5 2 5 5 0 1-.5 2-1 3 1 1 1.5 2 1.5 4 0 3-2 5-5 5h-.5"/>
           <path d="M16 6v20"/>
@@ -672,7 +861,7 @@
       </a>
 
       <a class="area-card family" href="../family/index.md">
-        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="10" r="4"/>
           <circle cx="22" cy="11" r="3"/>
           <path d="M4 26c0-4 3-7 7-7s7 3 7 7"/>
@@ -683,7 +872,7 @@
       </a>
 
       <a class="area-card home" href="../home/index.md">
-        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 14L16 5l11 9"/>
           <path d="M7 12v14h18V12"/>
           <path d="M13 26v-7h6v7"/>
@@ -693,7 +882,7 @@
       </a>
 
       <a class="area-card money" href="../money/index.md">
-        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="16" cy="16" r="11"/>
           <path d="M12 12h6c1.5 0 3 1 3 3s-1.5 3-3 3h-6"/>
           <path d="M12 18h7c1.5 0 3 1 3 3"/>
@@ -703,7 +892,7 @@
       </a>
 
       <a class="area-card health" href="../health/index.md">
-        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 16h6l3-8 6 16 3-8h6"/>
         </svg>
         <span class="name">Health</span>
@@ -711,7 +900,7 @@
       </a>
 
       <a class="area-card play" href="../play/index.md">
-        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M11 10v3M21 10v3"/>
           <rect x="6" y="13" width="20" height="13" rx="3"/>
           <circle cx="11" cy="19.5" r="1.2" fill="currentColor"/>
@@ -725,7 +914,7 @@
   </section>
 
   <!-- ============= Briefs schedule ============= -->
-  <section class="briefs-card">
+  <section class="briefs-card glass">
     <div class="briefs-head">
       <span class="title">This week's briefs</span>
       <span class="meta">scheduled · 7 jobs</span>
@@ -742,59 +931,59 @@
       <tbody>
         <tr>
           <td><span class="area-tag"><span class="swatch" style="background: var(--primary)"></span>Sunday roll-up</span></td>
-          <td>Chief of Staff</td>
+          <td class="owner">Chief of Staff</td>
           <td class="when">Sun · 5pm</td>
-          <td><span class="status ready">✓ ready</span></td>
+          <td><span class="status ready">ready</span></td>
         </tr>
         <tr>
           <td><span class="area-tag"><span class="swatch" style="background: var(--brain)"></span>Vault synthesis</span></td>
-          <td>Librarian</td>
+          <td class="owner">Librarian</td>
           <td class="when">Fri · 8pm</td>
-          <td><span class="status ready">✓ ready</span></td>
+          <td><span class="status ready">ready</span></td>
         </tr>
         <tr>
           <td><span class="area-tag"><span class="swatch" style="background: var(--brain)"></span>Thinking-about-this-week</span></td>
-          <td>Writing Partner</td>
+          <td class="owner">Writing Partner</td>
           <td class="when">Sun · 8am</td>
-          <td><span class="status ready">✓ ready</span></td>
+          <td><span class="status ready">ready</span></td>
         </tr>
         <tr>
           <td><span class="area-tag"><span class="swatch" style="background: var(--family)"></span>Week-ahead launch sheet</span></td>
-          <td>Family Coordinator</td>
+          <td class="owner">Family Coordinator</td>
           <td class="when">Fri · 4pm</td>
-          <td><span class="status ready">✓ ready</span></td>
+          <td><span class="status ready">ready</span></td>
         </tr>
         <tr>
           <td><span class="area-tag"><span class="swatch" style="background: var(--home)"></span>Bills of the week</span></td>
-          <td>Bills Clerk</td>
+          <td class="owner">Bills Clerk</td>
           <td class="when">Mon · 8am</td>
-          <td><span class="status pending">— pending</span></td>
+          <td><span class="status pending">pending</span></td>
         </tr>
         <tr>
           <td><span class="area-tag"><span class="swatch" style="background: var(--health)"></span>Weekly holistic</span></td>
-          <td>Care Coordinator</td>
+          <td class="owner">Care Coordinator</td>
           <td class="when">Sun · 10am</td>
-          <td><span class="status ready">✓ ready</span></td>
+          <td><span class="status ready">ready</span></td>
         </tr>
         <tr>
           <td><span class="area-tag"><span class="swatch" style="background: var(--home)"></span>Home rental renewal</span></td>
-          <td>Home Ops</td>
+          <td class="owner">Home Ops</td>
           <td class="when">expires Thu</td>
-          <td><span class="status needs-you">! needs you</span></td>
+          <td><span class="status needs-you">needs you</span></td>
         </tr>
       </tbody>
     </table>
   </section>
 
   <!-- ============= Money Pulse ============= -->
-  <section class="money-pulse">
+  <section class="money-pulse glass">
     <div>
       <div class="head">
         <span class="title">Money pulse</span>
         <span class="meta">12-month net worth</span>
       </div>
       <div class="chart-wrap">
-        <svg id="money-chart" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
+        <svg id="money-chart" viewBox="0 0 600 200" preserveAspectRatio="none"></svg>
       </div>
     </div>
     <div class="nums">
@@ -826,7 +1015,6 @@
 <script>
 'use strict';
 
-// ===== Demo data — replace with real data via Cabinet's file API =====
 const TODAY_AGENDA = [
   { time: '09:00', area: 'family', text: "Pediatrician — Maya's 6-week visit", now: false },
   { time: '11:30', area: 'brain',  text: "Writing block — finish chapter 3 draft", now: true },
@@ -846,13 +1034,10 @@ const WEEK = [
   { day: 'Sun', events: [{ swatch: 'brain',  text: 'Thinking-about-this-week 8am' }, { swatch: 'health', text: 'Weekly holistic 10am' }, { swatch: 'family', text: 'Sunday roll-up 5pm' }] },
 ];
 
-// ===== Render =====
 function fmtDate(d) {
   return d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
 }
-function todayDayShort(d) {
-  return d.toLocaleDateString(undefined, { weekday:'short' });
-}
+function todayDayShort(d) { return d.toLocaleDateString(undefined, { weekday:'short' }); }
 function isoWeek(d) {
   const target = new Date(d.valueOf());
   const dayNr = (d.getDay() + 6) % 7;
@@ -869,15 +1054,12 @@ function render() {
   document.getElementById('today-meta').textContent = `week ${isoWeek(now)} of ${now.getFullYear() % 100}`;
   document.getElementById('today-day').textContent = todayDayShort(now);
 
-  // Agenda
-  const ag = document.getElementById('agenda');
-  ag.innerHTML = TODAY_AGENDA.map(item => `
+  document.getElementById('agenda').innerHTML = TODAY_AGENDA.map(item => `
     <div class="agenda-item ${item.now ? 'now' : ''}">
       <div class="time">${item.time}</div>
       <div class="what"><span class="area ${item.area}">${item.area}</span>${item.text}</div>
     </div>`).join('');
 
-  // Week
   const todayShort = todayDayShort(now);
   document.getElementById('week-list').innerHTML = WEEK.map(d => `
     <div class="week-day ${d.day === todayShort ? 'today' : ''}">
@@ -892,37 +1074,54 @@ function render() {
 
 function drawMoneyChart() {
   const svg = document.getElementById('money-chart');
-  const W = 600, H = 180, padX = 8, padY = 14;
-  // 12 months of net worth (k EUR)
+  const W = 600, H = 200, padX = 8, padY = 16;
   const data = [108, 109, 112, 114, 113, 117, 119, 121, 122, 124, 125, 128.4];
   const min = 100, max = 135;
   const x = i => padX + (i / (data.length - 1)) * (W - padX * 2);
   const y = v => H - padY - ((v - min) / (max - min)) * (H - padY * 2);
 
-  // Grid lines
-  let html = '<g stroke="rgba(216, 162, 78, 0.12)" stroke-width="1">';
+  let html = '';
+  // Subtle grid
+  html += '<g stroke="rgba(216, 162, 78, 0.12)" stroke-width="1">';
   for (let kg = 105; kg <= 130; kg += 5) {
     html += `<line x1="${padX}" y1="${y(kg)}" x2="${W - padX}" y2="${y(kg)}"/>`;
   }
   html += '</g>';
 
-  // Area fill
-  let path = data.map((v, i) => `${i === 0 ? 'M' : 'L'} ${x(i)} ${y(v)}`).join(' ');
-  let fillPath = path + ` L ${x(data.length - 1)} ${H - padY} L ${x(0)} ${H - padY} Z`;
-  html += `<path d="${fillPath}" fill="rgba(107,142,90,0.15)"/>`;
+  // Gradient definition
+  html += `<defs>
+    <linearGradient id="moneyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(107,142,90,0.32)"/>
+      <stop offset="100%" stop-color="rgba(107,142,90,0.02)"/>
+    </linearGradient>
+  </defs>`;
 
+  // Smooth curve via Catmull-Rom-ish cardinal spline
+  let path = '';
+  for (let i = 0; i < data.length; i++) {
+    const x1 = x(i), y1 = y(data[i]);
+    if (i === 0) path += `M ${x1} ${y1}`;
+    else {
+      const x0 = x(i - 1), y0 = y(data[i - 1]);
+      const cx = (x0 + x1) / 2;
+      path += ` C ${cx} ${y0} ${cx} ${y1} ${x1} ${y1}`;
+    }
+  }
+
+  // Area
+  html += `<path d="${path} L ${x(data.length - 1)} ${H - padY} L ${x(0)} ${H - padY} Z" fill="url(#moneyGrad)"/>`;
   // Line
   html += `<path d="${path}" fill="none" stroke="#6B8E5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-
-  // Last point
+  // Last point — luxury marker (outer halo + inner dot)
   const last = data.length - 1;
+  html += `<circle cx="${x(last)}" cy="${y(data[last])}" r="9" fill="#6B8E5A" opacity="0.12"/>`;
   html += `<circle cx="${x(last)}" cy="${y(data[last])}" r="5" fill="#6B8E5A" stroke="white" stroke-width="2"/>`;
 
-  // Month labels
+  // Month markers
   const months = ['M','A','M','J','J','A','S','O','N','D','J','F'];
-  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E">';
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E" letter-spacing="1">';
   months.forEach((m, i) => {
-    if (i % 2 === 0) html += `<text x="${x(i) - 3}" y="${H - 2}">${m}</text>`;
+    if (i % 2 === 0) html += `<text x="${x(i) - 3}" y="${H - 3}">${m}</text>`;
   });
   html += '</g>';
 
