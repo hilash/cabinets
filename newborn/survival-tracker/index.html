@@ -4,682 +4,1151 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <title>Survival Tracker — Newborn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* ===== Tokens ===== */
   :root {
-    --bg: #FFF9E9;
-    --panel: #FFFCF2;
-    --panel-warm: #FBEFD8;
-    --ink: #3B2F2F;
-    --muted: #7A6B5D;
-    --border: #E8DDC5;
-    --accent: #C24A6A;
-    --accent-soft: #F5D0DC;
-    --green: #6B8E5A;
-    --gold: #B8892E;
-    --witching: #8B2E3E;
-    --witching-soft: #F5C4CC;
-    --serif: 'Fraunces', 'Georgia', serif;
-    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
-    --sans: -apple-system, 'Inter', system-ui, sans-serif;
+    --bg: #FBF6EB;
+    --surface: #FFFFFF;
+    --surface-cream: #FCF6E6;
+    --surface-peach: #FFF1E8;
+    --surface-night: #1F2A35;     /* deep night sky for sleep blocks */
+    --surface-witch: #2A1A28;     /* witching-hour deep purple */
+    --hairline: #ECE4D4;
+    --hairline-strong: #D9CDB4;
+
+    --ink: #1B1814;
+    --ink-2: #5C544A;
+    --ink-3: #998E7E;
+    --ink-inv: #FBF6EB;
+
+    --rose: #C24A6A;
+    --rose-soft: #F5D0DC;
+    --feed: #B8892E;
+    --feed-soft: #F4E5C8;
+    --sleep: #2E4156;
+    --sleep-soft: #C8D5DD;
+    --diaper: #6B8E5A;
+    --diaper-soft: #D7E3CE;
+    --witching: #8B2840;
+    --witching-soft: rgba(139, 40, 64, 0.10);
+
+    --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --sans:  'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+    --shadow-sm: 0 1px 2px rgba(27,24,20,0.04);
+    --shadow-md: 0 4px 16px rgba(27,24,20,0.06);
+    --shadow-lg: 0 12px 40px rgba(27,24,20,0.10);
   }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
-    margin: 0; padding: 0; min-height: 100%;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     overscroll-behavior: contain;
   }
-  #app {
-    max-width: 760px;
+  body { min-height: 100vh; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  button:focus-visible {
+    outline: 2px solid var(--rose);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .shell {
+    max-width: 720px;
     margin: 0 auto;
-    padding: 20px 18px 100px;
+    padding: 20px 16px 120px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
   }
 
-  header.hero {
-    text-align: center;
-    padding: 8px 0 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  header.hero h1 {
-    margin: 0;
-    font-family: var(--serif);
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  header.hero .sub {
-    margin-top: 6px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-  }
-  header.hero .age-marathon {
-    margin-top: 12px;
-    font-family: var(--serif);
-    font-size: 16px;
-    color: var(--ink);
-  }
-  header.hero .age-marathon strong {
-    color: var(--accent);
-    font-size: 22px;
-  }
-
-  /* The 3 big counters */
-  .counters {
+  /* ===== Hero — circular marathon arc ===== */
+  .hero {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+    align-items: center;
+    padding: 8px 0 16px;
+    border-bottom: 1px solid var(--hairline);
   }
-  .counter {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 10px;
-    text-align: center;
+  .arc-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+  }
+  .arc-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .arc-bg { fill: none; stroke: var(--hairline); stroke-width: 8; }
+  .arc-fg { fill: none; stroke: var(--rose); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+  .arc-center {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
-  .counter .label {
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-  }
-  .counter .icon { font-size: 24px; }
-  .counter .since {
+  .arc-center .day-num {
     font-family: var(--serif);
-    font-size: 28px;
+    font-size: 42px;
     font-weight: 600;
     line-height: 1;
     color: var(--ink);
   }
-  .counter .since small {
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--muted);
-    display: block;
-    margin-top: 2px;
+  .arc-center .day-label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin-top: 4px;
   }
-  .counter.warn .since { color: var(--gold); }
-  .counter.alert .since { color: var(--accent); }
-  .counter .today {
+  .hero-text .eyebrow {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .hero-text h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+  }
+  .hero-text .of {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .hero-text .of em { color: var(--rose); font-style: normal; font-weight: 600; }
+
+  /* ===== "What this week" — featured card ===== */
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 22px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .week-card.stormy { background: linear-gradient(135deg, #FFF1E8 0%, #FBF6EB 100%); border-color: #F4D9C4; }
+  .week-card.sunny  { background: linear-gradient(135deg, #E9F0E6 0%, #FBF6EB 100%); border-color: #C8D8C0; }
+  .week-card .head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .week-card .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--surface);
+    color: var(--ink-2);
+    border: 1px solid var(--hairline);
+  }
+  .week-card .badge.stormy { background: var(--rose); color: white; border-color: var(--rose); }
+  .week-card .badge.sunny  { background: var(--diaper); color: white; border-color: var(--diaper); }
+  .week-card .week-num {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--muted);
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
   }
-
-  /* Big tap-to-log buttons */
-  .tap-grid {
+  .week-card h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .week-card p.sub {
+    color: var(--ink-2);
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .week-card .micro-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+    border-top: 1px solid var(--hairline);
+    padding-top: 14px;
   }
-  .tap {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 10px;
-    font-family: var(--sans);
-    font-size: 15px;
-    color: var(--ink);
-    cursor: pointer;
+  .micro {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: transform 0.08s, background 0.12s;
-    min-height: 64px;
+    flex-direction: column;
+    gap: 4px;
   }
-  .tap .icon { font-size: 24px; }
-  .tap:active { transform: scale(0.97); background: var(--accent-soft); }
-  .tap.feed { background: var(--panel-warm); }
-  .tap.diaper { background: var(--panel); }
-
-  /* Sleep state — full-width when active */
-  .sleep-block {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+  .micro .l {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
   }
-  .sleep-block.active {
-    background: linear-gradient(135deg, #2E4156 0%, #1a2632 100%);
-    color: #F5E6D3;
-    border-color: #2E4156;
-  }
-  .sleep-block .left { display: flex; align-items: center; gap: 12px; }
-  .sleep-block .icon { font-size: 28px; }
-  .sleep-block .duration {
+  .micro .v {
     font-family: var(--serif);
-    font-size: 22px;
-    font-weight: 600;
-  }
-  .sleep-block button {
-    background: var(--ink);
-    color: var(--bg);
-    border: none;
-    border-radius: 10px;
-    padding: 12px 20px;
-    font-family: var(--sans);
     font-size: 14px;
-    cursor: pointer;
-    min-height: 48px;
-  }
-  .sleep-block.active button {
-    background: var(--bg);
+    line-height: 1.3;
     color: var(--ink);
   }
-  .sleep-block:active button { transform: scale(0.97); }
 
-  /* Witching hour banner */
-  .witching {
-    background: var(--witching-soft);
-    border: 1px solid var(--witching);
-    border-left: 4px solid var(--witching);
-    border-radius: 12px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--witching);
-    font-size: 14px;
+  /* ===== Today timeline (with witching hour band) ===== */
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
   }
-  .witching .icon { font-size: 22px; }
-  .witching strong { font-weight: 600; }
-  .witching.idle { display: none; }
-
-  /* Wake-window timer */
-  .wake-window {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
-  }
-  .wake-window .row {
+  .day-card .head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
-  .wake-window .label {
+  .day-card .head .title {
     font-family: var(--mono);
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
   }
-  .wake-window .target {
+  .day-card .head .now {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--muted);
+    color: var(--rose);
   }
-  .wake-window .countdown {
-    font-family: var(--serif);
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--ink);
-  }
-  .wake-window .bar-bg {
-    height: 8px;
-    background: var(--border);
-    border-radius: 4px;
+  .timeline-track {
+    position: relative;
+    height: 84px;
+    background: var(--surface-cream);
+    border-radius: 12px;
+    border: 1px solid var(--hairline);
     overflow: hidden;
-    margin-top: 10px;
   }
-  .wake-window .bar-fg {
-    height: 100%;
-    background: var(--green);
-    transition: width 0.4s ease, background 0.4s ease;
+  .witching-band {
+    position: absolute;
+    top: 0; bottom: 0;
+    background: var(--witching-soft);
+    border-left: 1px dashed var(--witching);
+    border-right: 1px dashed var(--witching);
+    z-index: 0;
   }
-  .wake-window.warn .bar-fg { background: var(--gold); }
-  .wake-window.alert .bar-fg { background: var(--accent); }
+  .witching-label {
+    position: absolute;
+    top: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--witching);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transform: translateX(-50%);
+    font-weight: 500;
+  }
+  .timeline-row {
+    position: absolute;
+    left: 0; right: 0;
+    height: 18px;
+    z-index: 1;
+  }
+  .row-feed   { top: 12px; }
+  .row-sleep  { top: 36px; }
+  .row-diaper { top: 60px; }
+  .row-label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    z-index: 2;
+  }
+  .timeline-block {
+    position: absolute;
+    height: 12px;
+    border-radius: 3px;
+    top: 3px;
+  }
+  .timeline-block.feed   { background: var(--feed); width: 5px; border-radius: 2px; }
+  .timeline-block.sleep  { background: var(--sleep); height: 14px; top: 2px; }
+  .timeline-block.diaper { background: var(--diaper); width: 5px; border-radius: 2px; }
+  .now-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--rose);
+    z-index: 4;
+  }
+  .now-line::before {
+    content: '';
+    position: absolute;
+    top: -3px; left: -3px;
+    width: 8px; height: 8px;
+    background: var(--rose);
+    border-radius: 50%;
+  }
+  .day-axis {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-3);
+    margin-top: 6px;
+    padding: 0 2px;
+  }
 
-  /* Today summary */
-  .today-summary {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
+  /* ===== Wake window — circular timer ===== */
+  .wake-card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    text-align: center;
+    grid-template-columns: 110px 1fr;
+    gap: 18px;
+    align-items: center;
   }
-  .today-summary .stat {
+  .wake-arc-wrap {
+    position: relative;
+    width: 110px;
+    height: 110px;
+  }
+  .wake-arc-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .wake-arc-bg { fill: none; stroke: var(--hairline); stroke-width: 7; }
+  .wake-arc-fg { fill: none; stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 0.4s ease, stroke 0.4s ease; }
+  .wake-arc-fg.ok    { stroke: var(--diaper); }
+  .wake-arc-fg.warn  { stroke: var(--feed); }
+  .wake-arc-fg.alert { stroke: var(--rose); }
+  .wake-arc-center {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    align-items: center;
+    justify-content: center;
   }
-  .today-summary .num {
+  .wake-arc-center .v {
     font-family: var(--serif);
     font-size: 24px;
     font-weight: 600;
-  }
-  .today-summary .lbl {
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-  }
-  .today-summary .vs {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-  .vs.up { color: var(--green); }
-  .vs.down { color: var(--accent); }
-
-  /* Cluster feed counter */
-  .cluster {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .cluster .num {
-    font-family: var(--serif);
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--accent);
     line-height: 1;
   }
-  .cluster .text { font-size: 13px; color: var(--ink); }
-  .cluster .text small { color: var(--muted); display: block; }
+  .wake-arc-center .v small {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+  .wake-text .label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+  }
+  .wake-text .state {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 4px 0 6px;
+  }
+  .wake-text .target {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+  .wake-text .hint {
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-top: 8px;
+    line-height: 1.45;
+  }
 
-  /* Toast */
+  /* ===== Three quick-log tiles (the 3am buttons) ===== */
+  .log-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .log-tile {
+    aspect-ratio: 1;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.08s ease, background 0.12s;
+    position: relative;
+    min-height: 100px;
+  }
+  .log-tile:active { transform: scale(0.96); }
+  .log-tile.feed   { background: var(--feed-soft);   border-color: #E8D29F; }
+  .log-tile.sleep  { background: var(--sleep-soft);  border-color: #A6BBC8; }
+  .log-tile.diaper { background: var(--diaper-soft); border-color: #ABC09F; }
+  .log-tile.sleep.active {
+    background: var(--surface-night);
+    border-color: var(--surface-night);
+    color: var(--ink-inv);
+  }
+  .log-tile .glyph {
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .log-tile .glyph svg { width: 28px; height: 28px; }
+  .log-tile .name {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 600;
+    color: inherit;
+  }
+  .log-tile .since {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .log-tile.sleep.active .since { color: var(--ink-inv); opacity: 0.8; }
+
+  .log-tile.feed.warn  { border-width: 2px; border-color: var(--warn); }
+  .log-tile.feed.alert { border-width: 2px; border-color: var(--rose); }
+  .log-tile.diaper.alert { border-width: 2px; border-color: var(--rose); }
+
+  /* secondary log row — small */
+  .log-secondary {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+  .log-secondary button {
+    flex: 1;
+    padding: 10px 8px;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .log-secondary button:active { transform: scale(0.96); }
+
+  /* ===== Cluster feed beat ===== */
+  .cluster-beat {
+    display: none;
+    background: var(--rose-soft);
+    border: 1px solid #E8B5C5;
+    border-left: 3px solid var(--rose);
+    border-radius: 12px;
+    padding: 12px 16px;
+    align-items: center;
+    gap: 12px;
+  }
+  .cluster-beat.show { display: flex; }
+  .cluster-beat .num {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--rose-deep, #8B2840);
+    line-height: 1;
+  }
+  .cluster-beat .text {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.4;
+  }
+  .cluster-beat .text strong { color: var(--ink); }
+
+  /* ===== Tonight preview ===== */
+  .tonight {
+    background: var(--surface-night);
+    color: var(--ink-inv);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
+  }
+  .tonight .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .tonight .title {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.7;
+  }
+  .tonight h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .tonight .pred {
+    font-family: var(--mono);
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  /* ===== Toast ===== */
   .toast {
     position: fixed;
     bottom: 24px; left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(20px);
     background: var(--ink);
-    color: var(--bg);
+    color: var(--ink-inv);
     padding: 14px 24px;
     border-radius: 30px;
-    font-size: 15px;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+    font-size: 14px;
+    box-shadow: var(--shadow-lg);
     opacity: 0;
-    transition: opacity 0.25s, transform 0.25s;
+    transition: opacity 0.22s, transform 0.22s;
     pointer-events: none;
     z-index: 100;
   }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   .footer {
     text-align: center;
-    color: var(--muted);
-    font-size: 11px;
     font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
     padding-top: 8px;
   }
 </style>
 </head>
 <body>
-<div id="app">
 
-  <header class="hero">
-    <h1>👶 Survival Tracker</h1>
-    <div class="sub">weeks 0–12 · the fourth trimester</div>
-    <div class="age-marathon">You're on day <strong id="day-num">—</strong> of the marathon.</div>
-  </header>
+<main class="shell">
 
-  <!-- Witching hour banner -->
-  <div class="witching idle" id="witching">
-    <span class="icon">🌙</span>
-    <span><strong>Witching hour.</strong> 5pm–10pm is universally the hardest. Cluster feeds, cluster fussing. Not your fault. <span id="witching-tip"></span></span>
-  </div>
-
-  <!-- 3 big counters -->
-  <div class="counters">
-    <div class="counter" id="counter-feed">
-      <span class="label">Last feed</span>
-      <span class="icon">🍼</span>
-      <span class="since" id="feed-since">—</span>
-      <span class="today" id="feed-today">0 today</span>
-    </div>
-    <div class="counter" id="counter-sleep">
-      <span class="label">Last sleep</span>
-      <span class="icon">😴</span>
-      <span class="since" id="sleep-since">—</span>
-      <span class="today" id="sleep-today">0 naps</span>
-    </div>
-    <div class="counter" id="counter-diaper">
-      <span class="label">Last diaper</span>
-      <span class="icon">💩</span>
-      <span class="since" id="diaper-since">—</span>
-      <span class="today" id="diaper-today">0 today</span>
-    </div>
-  </div>
-
-  <!-- Sleep state -->
-  <div class="sleep-block" id="sleep-block">
-    <div class="left">
-      <span class="icon" id="sleep-icon">😴</span>
-      <div>
-        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;" id="sleep-state-label">No nap in progress</div>
-        <div class="duration" id="sleep-duration">—</div>
+  <!-- ===== Hero: marathon arc + identity ===== -->
+  <section class="hero">
+    <div class="arc-wrap" aria-label="Marathon progress">
+      <svg viewBox="0 0 100 100">
+        <circle class="arc-bg" cx="50" cy="50" r="44"/>
+        <circle class="arc-fg" id="arc-fg" cx="50" cy="50" r="44"
+                stroke-dasharray="276.46" stroke-dashoffset="276.46"/>
+      </svg>
+      <div class="arc-center">
+        <div class="day-num"><span id="day-of">—</span></div>
+        <div class="day-label">of <span id="day-total">84</span></div>
       </div>
     </div>
-    <button id="sleep-toggle">Start nap</button>
-  </div>
+    <div class="hero-text">
+      <div class="eyebrow">Survival Tracker · weeks 0–12</div>
+      <h1>The fourth trimester.</h1>
+      <div class="of">You are <em id="weeks-in">—</em> in. <span id="weeks-left-label"></span></div>
+    </div>
+  </section>
 
-  <!-- Wake window timer -->
-  <div class="wake-window" id="wake-window">
-    <div class="row">
-      <span class="label">Wake window</span>
-      <span class="target" id="wake-target">target —</span>
+  <!-- ===== What this week ===== -->
+  <section class="week-card" id="week-card">
+    <div class="head">
+      <span class="badge" id="week-badge">—</span>
+      <span class="week-num" id="week-num">—</span>
     </div>
-    <div class="countdown" id="wake-countdown">—</div>
-    <div class="bar-bg"><div class="bar-fg" id="wake-bar"></div></div>
-  </div>
+    <h2 id="week-title">—</h2>
+    <p class="sub" id="week-sub">—</p>
+    <div class="micro-grid">
+      <div class="micro">
+        <div class="l">Watch for</div>
+        <div class="v" id="week-watch">—</div>
+      </div>
+      <div class="micro">
+        <div class="l">This week's photo</div>
+        <div class="v" id="week-photo">—</div>
+      </div>
+    </div>
+  </section>
 
-  <!-- Tap-to-log -->
-  <div class="tap-grid">
-    <button class="tap feed" data-action="feed-breast">
-      <span class="icon">🤱</span>
-      <span>Feed (breast)</span>
-    </button>
-    <button class="tap feed" data-action="feed-bottle">
-      <span class="icon">🍼</span>
-      <span>Feed (bottle)</span>
-    </button>
-    <button class="tap diaper" data-action="diaper-wet">
-      <span class="icon">💧</span>
-      <span>Wet diaper</span>
-    </button>
-    <button class="tap diaper" data-action="diaper-dirty">
-      <span class="icon">💩</span>
-      <span>Dirty diaper</span>
-    </button>
-  </div>
+  <!-- ===== Today's day timeline ===== -->
+  <section class="day-card">
+    <div class="head">
+      <span class="title">Today</span>
+      <span class="now" id="day-now">—</span>
+    </div>
+    <div class="timeline-track" id="timeline-track">
+      <!-- Witching band injected -->
+      <div class="timeline-row row-feed"><span class="row-label">FEEDS</span></div>
+      <div class="timeline-row row-sleep"><span class="row-label">SLEEP</span></div>
+      <div class="timeline-row row-diaper"><span class="row-label">DIAPERS</span></div>
+    </div>
+    <div class="day-axis">
+      <span>6am</span><span>9am</span><span>12pm</span><span>3pm</span><span>6pm</span><span>9pm</span><span>12am</span>
+    </div>
+  </section>
 
-  <!-- Cluster feed counter -->
-  <div class="cluster" id="cluster">
-    <div class="num" id="cluster-num">0</div>
-    <div class="text">
-      feeds in the last 3 hours
-      <small id="cluster-note">(3+ in 3h = cluster feeding — totally normal in this window)</small>
+  <!-- ===== Wake window arc ===== -->
+  <section class="wake-card">
+    <div class="wake-arc-wrap">
+      <svg viewBox="0 0 100 100">
+        <circle class="wake-arc-bg" cx="50" cy="50" r="42"/>
+        <circle class="wake-arc-fg ok" id="wake-arc" cx="50" cy="50" r="42"
+                stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+      </svg>
+      <div class="wake-arc-center">
+        <div class="v"><span id="wake-min">—</span><small>min awake</small></div>
+      </div>
     </div>
-  </div>
+    <div class="wake-text">
+      <div class="label">Wake window</div>
+      <div class="state" id="wake-state">no nap logged today</div>
+      <div class="target">target <span id="wake-target">— min</span> for week <span id="wake-week">—</span></div>
+      <div class="hint" id="wake-hint">tap "nap" below when she settles down</div>
+    </div>
+  </section>
 
-  <!-- Today vs yesterday -->
-  <div class="today-summary">
-    <div class="stat">
-      <div class="num" id="sum-feeds">0</div>
-      <div class="lbl">feeds</div>
-      <div class="vs" id="vs-feeds">vs — yesterday</div>
+  <!-- ===== Cluster feed beat (only if 3+ in 3h) ===== -->
+  <section class="cluster-beat" id="cluster-beat">
+    <span class="num" id="cluster-n">0</span>
+    <span class="text">feeds in the last 3h. <strong>That's cluster feeding.</strong> Universal in this window. Hydrate, snack, push through.</span>
+  </section>
+
+  <!-- ===== Three quick-log tiles ===== -->
+  <section class="log-grid">
+    <button class="log-tile feed" id="tile-feed" data-action="feed-breast">
+      <div class="glyph">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 4h12v6c0 5-3 8-6 8s-6-3-6-8V4Z"/>
+          <path d="M16 18v10"/><path d="M12 28h8"/>
+        </svg>
+      </div>
+      <div class="name">Feed</div>
+      <div class="since" id="feed-since">—</div>
+    </button>
+    <button class="log-tile sleep" id="tile-sleep" data-action="sleep-toggle">
+      <div class="glyph">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M24 18a10 10 0 1 1-10-12 8 8 0 0 0 10 12Z"/>
+        </svg>
+      </div>
+      <div class="name" id="sleep-name">Nap</div>
+      <div class="since" id="sleep-since">—</div>
+    </button>
+    <button class="log-tile diaper" id="tile-diaper" data-action="diaper-wet">
+      <div class="glyph">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 10h22l-2 14a4 4 0 0 1-4 4H11a4 4 0 0 1-4-4L5 10Z"/>
+          <path d="M10 10V6h12v4"/>
+        </svg>
+      </div>
+      <div class="name">Diaper</div>
+      <div class="since" id="diaper-since">—</div>
+    </button>
+  </section>
+
+  <!-- Secondary actions -->
+  <section class="log-secondary">
+    <button data-action="feed-bottle">+ Bottle</button>
+    <button data-action="diaper-dirty">+ Dirty</button>
+    <button data-action="undo">↶ Undo last</button>
+  </section>
+
+  <!-- ===== Tonight preview ===== -->
+  <section class="tonight">
+    <div class="head">
+      <span class="title">Tonight</span>
     </div>
-    <div class="stat">
-      <div class="num" id="sum-sleep">0h</div>
-      <div class="lbl">sleep</div>
-      <div class="vs" id="vs-sleep">vs — yesterday</div>
-    </div>
-    <div class="stat">
-      <div class="num" id="sum-diapers">0</div>
-      <div class="lbl">diapers</div>
-      <div class="vs" id="vs-diapers">vs — yesterday</div>
-    </div>
-  </div>
+    <h3 id="tonight-headline">—</h3>
+    <div class="pred" id="tonight-detail">—</div>
+  </section>
 
   <p class="footer">
-    Survives in your browser · syncs to <code>../mom-command/logs/</code> when Martha runs
+    Survival Tracker · weeks 0–12 · ask Martha to sync logs to <code>../mom-command/logs/</code>
   </p>
-</div>
 
-<div class="toast" id="toast">Logged.</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Logged.</div>
 
 <script>
-// =================================================================
-// State (localStorage-backed; Martha syncs to CSV on request)
-// =================================================================
-const KEY = 'newborn-survival-tracker';
-const DOB = '2026-03-15';   // matches mom-command/baby-profile.md placeholder
+//
+// ============ Setup ============
+//
+const STORAGE_KEY = 'newborn-survival-v2';
+const DOB = '2026-03-15';     // matches mom-command/baby-profile.md
+const WINDOW_DAYS = 84;       // 12 weeks
 
-function load() {
-  try {
-    const r = localStorage.getItem(KEY);
-    if (r) return JSON.parse(r);
-  } catch (e) {}
-  return {
-    feeds: [],
-    diapers: [],
-    sleeps: [],          // {start, end, durationMin}
-    activeSleep: null,   // {start}
-    yesterday: { feeds: 0, sleepHours: 0, diapers: 0 },
-  };
-}
-function save(s) { localStorage.setItem(KEY, JSON.stringify(s)); }
-let st = load();
+// Wonder Weeks data — first-trimester focused (subset of full year)
+const LEAPS_NB = [
+  { week:5,  name:'Changing sensations', desc:"World gets brighter and louder. More crying. Then suddenly, she's noticing things she didn't yesterday.",
+    watch:"sustained eye contact, longer staring", photo:"the moment she really LOOKS at you" },
+  { week:8,  name:'Patterns', desc:"She's discovering her own hands. Patterns become magnetic — your face, mobile shadows, her own fingers.",
+    watch:"hand-to-mouth, longer focus", photo:"her tiny hand against yours, palm-to-palm" },
+  { week:12, name:'Smooth transitions', desc:"Movement becomes fluid. Coos turn to laughs. The first real conversations happen now.",
+    watch:"first laugh, full head turns, vocal range expanding", photo:"the first belly laugh — record audio if you can't film" },
+];
+const STAGE_INFO = {
+  // Generic per-week info for non-leap weeks
+  default: {
+    sunny: {
+      desc: "A calmer stretch. She's integrating last week's gains. Use the relative quiet to take photos and talk to her face-to-face.",
+      watch: "longer alert windows, more eye contact, more responsive sounds",
+      photo: "an unposed in-arms shot — natural light, no flash",
+    },
+  },
+};
 
-// =================================================================
-// Time helpers
-// =================================================================
-function ageDays(dob) { return Math.floor((Date.now() - new Date(dob).getTime()) / 86400000); }
-function ageWeeks(dob) { return Math.floor(ageDays(dob) / 7); }
-
-function targetWakeWindow(dob) {
-  const w = ageWeeks(dob);
-  if (w < 5) return { min: 45, max: 60 };
-  if (w < 9) return { min: 60, max: 75 };
+// Wake window targets (min) by week range
+function targetWake(weeks) {
+  if (weeks < 5)  return { min: 45, max: 60 };
+  if (weeks < 9)  return { min: 60, max: 75 };
   return { min: 75, max: 90 };
 }
 
-function minSince(tsIso) {
-  if (!tsIso) return null;
-  return Math.floor((Date.now() - new Date(tsIso).getTime()) / 60000);
+//
+// ============ State ============
+//
+function load() {
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch(e){}
+  return seedDemo();
 }
+function save(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function seedDemo() {
+  const today = new Date().toISOString().slice(0,10);
+  return {
+    feeds: [
+      { ts:`${today}T07:18:00`, method:'breast' },
+      { ts:`${today}T10:02:00`, method:'breast' },
+      { ts:`${today}T13:14:00`, method:'bottle' },
+      { ts:`${today}T16:30:00`, method:'breast' },
+    ],
+    sleeps: [
+      { start:`${today}T08:30:00`, end:`${today}T09:45:00` },
+      { start:`${today}T11:30:00`, end:`${today}T13:00:00` },
+      { start:`${today}T14:30:00`, end:`${today}T15:45:00` },
+    ],
+    diapers: [
+      { ts:`${today}T06:40:00`, type:'wet' },
+      { ts:`${today}T09:50:00`, type:'dirty' },
+      { ts:`${today}T12:20:00`, type:'wet' },
+    ],
+    activeSleep: null,
+    history: [],   // for undo
+  };
+}
+let st = load();
 
+//
+// ============ Helpers ============
+//
+function ageDays() { return Math.floor((Date.now() - new Date(DOB)) / 86400000); }
+function ageWeeks() { return Math.floor(ageDays() / 7); }
+function minSince(tsIso) { return tsIso ? Math.floor((Date.now() - new Date(tsIso))/60000) : null; }
 function fmtSince(min) {
-  if (min === null) return '—';
-  if (min < 60) return `${min}<small>min ago</small>`;
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return `${h}h ${m}m<small>ago</small>`;
+  if (min == null) return '—';
+  if (min < 60) return `${min} min ago`;
+  return `${Math.floor(min/60)}h ${min%60}m ago`;
 }
-
 function fmtDuration(min) {
   if (min < 60) return `${min} min`;
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return `${h}h ${m}m`;
+  return `${Math.floor(min/60)}h ${min%60}m`;
 }
-
-function isWitchingHour() {
-  const h = new Date().getHours();
-  return h >= 17 && h < 22;
-}
-
 function isToday(tsIso) {
-  const d = new Date(tsIso);
-  const n = new Date();
+  const d = new Date(tsIso), n = new Date();
   return d.toDateString() === n.toDateString();
 }
+function hoursIntoDay(tsIso) {
+  const d = new Date(tsIso);
+  return d.getHours() + d.getMinutes()/60;
+}
 
-// =================================================================
-// Render
-// =================================================================
+function findCurrentLeap() {
+  const w = ageWeeks();
+  for (const l of LEAPS_NB) {
+    if (w >= l.week - 2 && w <= l.week + 1) return { ...l, status:'stormy' };
+  }
+  return null;
+}
+function findUpcomingLeap() {
+  const w = ageWeeks();
+  return LEAPS_NB.find(l => l.week > w + 1);
+}
+
+//
+// ============ Render ============
+//
 function render() {
-  // Day num
-  document.getElementById('day-num').textContent = ageDays(DOB);
+  renderHero();
+  renderWeekCard();
+  renderTimeline();
+  renderWake();
+  renderCluster();
+  renderTiles();
+  renderTonight();
+}
 
-  // Witching hour banner
-  const wb = document.getElementById('witching');
-  if (isWitchingHour()) {
-    wb.classList.remove('idle');
-    const tips = [
-      'Strap baby on, walk outside if you can.',
-      'White noise + dim lights + tight swaddle.',
-      'Hand baby off for 20 minutes if anyone is around.',
-      'Run a warm shower with the baby on you.',
-      'Cluster feed if she\'ll take it. The tank is loading.',
-    ];
-    document.getElementById('witching-tip').textContent = tips[new Date().getHours() % tips.length];
+function renderHero() {
+  const day = ageDays();
+  const w = ageWeeks();
+  const dayCapped = Math.min(WINDOW_DAYS, day);
+  document.getElementById('day-of').textContent = day;
+  document.getElementById('day-total').textContent = WINDOW_DAYS;
+  document.getElementById('weeks-in').textContent = `${w} week${w === 1 ? '' : 's'}`;
+
+  const left = Math.max(0, WINDOW_DAYS - day);
+  const lbl = left === 0 ? 'You graduated.' : `${Math.ceil(left/7)} weeks to go.`;
+  document.getElementById('weeks-left-label').textContent = lbl;
+
+  // Arc: stroke-dashoffset = circumference * (1 - progress)
+  const C = 2 * Math.PI * 44;     // 276.46
+  const progress = Math.min(1, day / WINDOW_DAYS);
+  document.getElementById('arc-fg').setAttribute('stroke-dashoffset', C * (1 - progress));
+}
+
+function renderWeekCard() {
+  const w = ageWeeks();
+  const cur = findCurrentLeap();
+  const next = findUpcomingLeap();
+  const card = document.getElementById('week-card');
+  const badge = document.getElementById('week-badge');
+
+  card.classList.remove('stormy','sunny');
+  badge.classList.remove('stormy','sunny');
+  document.getElementById('week-num').textContent = `Week ${w}`;
+
+  if (cur) {
+    card.classList.add('stormy');
+    badge.classList.add('stormy');
+    badge.textContent = 'Stormy';
+    document.getElementById('week-title').textContent = `Leap ${LEAPS_NB.indexOf(LEAPS_NB.find(l => l.week === cur.week)) + 1}: ${cur.name}`;
+    document.getElementById('week-sub').textContent = cur.desc;
+    document.getElementById('week-watch').textContent = cur.watch;
+    document.getElementById('week-photo').textContent = cur.photo;
   } else {
-    wb.classList.add('idle');
+    card.classList.add('sunny');
+    badge.classList.add('sunny');
+    badge.textContent = 'Sunny';
+    if (next) {
+      const weeksToStorm = next.week - w - 2;
+      document.getElementById('week-title').textContent = `Calm before "${next.name}"`;
+      document.getElementById('week-sub').textContent = `She's integrating recent gains. Stormy week begins in about ${Math.max(0, weeksToStorm)} week${weeksToStorm === 1 ? '' : 's'} — preparing for ${next.desc.split('.')[0].toLowerCase()}.`;
+    } else {
+      document.getElementById('week-title').textContent = `Steady seas`;
+      document.getElementById('week-sub').textContent = STAGE_INFO.default.sunny.desc;
+    }
+    document.getElementById('week-watch').textContent = STAGE_INFO.default.sunny.watch;
+    document.getElementById('week-photo').textContent = STAGE_INFO.default.sunny.photo;
+  }
+}
+
+function renderTimeline() {
+  const track = document.getElementById('timeline-track');
+  // Clear dynamic
+  track.querySelectorAll('.timeline-block, .now-line, .witching-band, .witching-label').forEach(e => e.remove());
+
+  // X scale: 6am (h=6) → 12am (h=24). pct 0–100.
+  const xPct = h => Math.max(0, Math.min(100, ((h - 6) / 18) * 100));
+
+  // Witching hour band: 5pm–10pm (17–22)
+  const wb = document.createElement('div');
+  wb.className = 'witching-band';
+  wb.style.left = xPct(17) + '%';
+  wb.style.width = (xPct(22) - xPct(17)) + '%';
+  track.appendChild(wb);
+  const wbl = document.createElement('div');
+  wbl.className = 'witching-label';
+  wbl.textContent = 'WITCHING';
+  wbl.style.left = ((xPct(17) + xPct(22)) / 2) + '%';
+  track.appendChild(wbl);
+
+  // Feeds
+  st.feeds.filter(f => isToday(f.ts)).forEach(f => {
+    const h = hoursIntoDay(f.ts);
+    const el = document.createElement('div');
+    el.className = 'timeline-block feed';
+    el.style.left = xPct(h) + '%';
+    track.querySelector('.row-feed').appendChild(el);
+  });
+
+  // Sleeps
+  st.sleeps.filter(s => isToday(s.start)).forEach(s => {
+    const h1 = hoursIntoDay(s.start), h2 = hoursIntoDay(s.end);
+    const el = document.createElement('div');
+    el.className = 'timeline-block sleep';
+    el.style.left = xPct(h1) + '%';
+    el.style.width = (xPct(h2) - xPct(h1)) + '%';
+    track.querySelector('.row-sleep').appendChild(el);
+  });
+  if (st.activeSleep && isToday(st.activeSleep.start)) {
+    const h1 = hoursIntoDay(st.activeSleep.start);
+    const h2 = hoursIntoDay(new Date().toISOString());
+    const el = document.createElement('div');
+    el.className = 'timeline-block sleep';
+    el.style.left = xPct(h1) + '%';
+    el.style.width = (xPct(h2) - xPct(h1)) + '%';
+    el.style.opacity = '0.7';
+    track.querySelector('.row-sleep').appendChild(el);
   }
 
-  // Last feed
-  const lastFeed = st.feeds[st.feeds.length - 1];
-  const feedsToday = st.feeds.filter(f => isToday(f.ts)).length;
-  const fSince = lastFeed ? minSince(lastFeed.ts) : null;
-  document.getElementById('feed-since').innerHTML = fmtSince(fSince);
-  document.getElementById('feed-today').textContent = `${feedsToday} today`;
-  const fc = document.getElementById('counter-feed');
-  fc.classList.remove('warn', 'alert');
-  if (fSince !== null && fSince >= 180) fc.classList.add('alert');
-  else if (fSince !== null && fSince >= 120) fc.classList.add('warn');
+  // Diapers
+  st.diapers.filter(d => isToday(d.ts)).forEach(d => {
+    const h = hoursIntoDay(d.ts);
+    const el = document.createElement('div');
+    el.className = 'timeline-block diaper';
+    el.style.left = xPct(h) + '%';
+    track.querySelector('.row-diaper').appendChild(el);
+  });
 
-  // Last sleep — last completed nap
+  // Now line
+  const nowH = hoursIntoDay(new Date().toISOString());
+  if (nowH >= 6 && nowH <= 24) {
+    const line = document.createElement('div');
+    line.className = 'now-line';
+    line.style.left = `calc(${xPct(nowH)}% - 1px)`;
+    track.appendChild(line);
+  }
+
+  document.getElementById('day-now').textContent = new Date().toTimeString().slice(0,5);
+}
+
+function renderWake() {
+  const w = ageWeeks();
+  const tgt = targetWake(w);
+  document.getElementById('wake-target').textContent = `${tgt.min}–${tgt.max} min`;
+  document.getElementById('wake-week').textContent = w;
+
   const lastSleep = st.sleeps[st.sleeps.length - 1];
-  const napsToday = st.sleeps.filter(s => isToday(s.start)).length;
-  const sSince = lastSleep ? minSince(lastSleep.end) : null;
-  document.getElementById('sleep-since').innerHTML = fmtSince(sSince);
-  document.getElementById('sleep-today').textContent = `${napsToday} naps`;
+  const arc = document.getElementById('wake-arc');
+  arc.classList.remove('ok','warn','alert');
+  const C = 2 * Math.PI * 42;     // ~263.89
 
-  // Last diaper
-  const lastDiaper = st.diapers[st.diapers.length - 1];
-  const diapersToday = st.diapers.filter(d => isToday(d.ts));
-  const dSince = lastDiaper ? minSince(lastDiaper.ts) : null;
-  document.getElementById('diaper-since').innerHTML = fmtSince(dSince);
-  const wet = diapersToday.filter(d => d.type === 'wet').length;
-  const dirty = diapersToday.filter(d => d.type === 'dirty').length;
-  document.getElementById('diaper-today').textContent = `${diapersToday.length} (${wet}w/${dirty}d)`;
-  const dc = document.getElementById('counter-diaper');
-  dc.classList.remove('alert');
-  if (diapersToday.length === 0 && new Date().getHours() > 12) dc.classList.add('alert');
-
-  // Sleep state block
-  const sb = document.getElementById('sleep-block');
-  const sBtn = document.getElementById('sleep-toggle');
   if (st.activeSleep) {
-    sb.classList.add('active');
-    document.getElementById('sleep-icon').textContent = '🌙';
-    document.getElementById('sleep-state-label').textContent = 'Nap in progress';
-    document.getElementById('sleep-duration').textContent = fmtDuration(minSince(st.activeSleep.start));
-    sBtn.textContent = 'Wake up';
-  } else {
-    sb.classList.remove('active');
-    document.getElementById('sleep-icon').textContent = '😴';
-    document.getElementById('sleep-state-label').textContent = 'No nap in progress';
-    document.getElementById('sleep-duration').textContent = lastSleep
-      ? `last nap: ${fmtDuration(lastSleep.durationMin)}`
-      : 'no naps logged today';
-    sBtn.textContent = 'Start nap';
-  }
-
-  // Wake window timer
-  const ww = document.getElementById('wake-window');
-  const target = targetWakeWindow(DOB);
-  document.getElementById('wake-target').textContent = `target ${target.min}–${target.max} min`;
-  if (st.activeSleep) {
-    document.getElementById('wake-countdown').textContent = 'sleeping';
-    document.getElementById('wake-bar').style.width = '0%';
-    ww.classList.remove('warn', 'alert');
+    document.getElementById('wake-min').textContent = '0';
+    document.getElementById('wake-state').textContent = 'Sleeping now';
+    document.getElementById('wake-hint').textContent = `Asleep ${fmtDuration(minSince(st.activeSleep.start))}`;
+    arc.classList.add('ok');
+    arc.setAttribute('stroke-dashoffset', C);
   } else if (lastSleep) {
     const awake = minSince(lastSleep.end);
-    document.getElementById('wake-countdown').textContent = `awake ${awake} min`;
-    const pct = Math.min(100, (awake / target.max) * 100);
-    document.getElementById('wake-bar').style.width = pct + '%';
-    ww.classList.remove('warn', 'alert');
-    if (awake > target.max) ww.classList.add('alert');
-    else if (awake > target.min) ww.classList.add('warn');
+    document.getElementById('wake-min').textContent = awake;
+    let state, hint, klass;
+    if (awake < tgt.min) {
+      state = 'In window';
+      hint = `${tgt.min - awake} min until target. Lots of time.`;
+      klass = 'ok';
+    } else if (awake < tgt.max) {
+      state = 'Watch closely';
+      hint = `Past minimum — start watching for tired cues (yawning, ear pulling, glazed stare).`;
+      klass = 'warn';
+    } else {
+      state = 'Overtired window';
+      hint = `Past max — settle her now or expect harder bedtime. Dim the lights.`;
+      klass = 'alert';
+    }
+    document.getElementById('wake-state').textContent = state;
+    document.getElementById('wake-hint').textContent = hint;
+    arc.classList.add(klass);
+    const pct = Math.min(1, awake / tgt.max);
+    arc.setAttribute('stroke-dashoffset', C * (1 - pct));
   } else {
-    document.getElementById('wake-countdown').textContent = '— start a nap to track';
-    document.getElementById('wake-bar').style.width = '0%';
+    document.getElementById('wake-min').textContent = '—';
+    document.getElementById('wake-state').textContent = 'No nap yet today';
+    document.getElementById('wake-hint').textContent = 'Tap the nap tile when she settles.';
+    arc.classList.add('ok');
+    arc.setAttribute('stroke-dashoffset', C);
   }
+}
 
-  // Cluster feed counter (last 3 h)
+function renderCluster() {
   const cutoff = Date.now() - 3 * 3600 * 1000;
   const recent = st.feeds.filter(f => new Date(f.ts).getTime() > cutoff).length;
-  document.getElementById('cluster-num').textContent = recent;
-  const note = document.getElementById('cluster-note');
+  const beat = document.getElementById('cluster-beat');
   if (recent >= 3) {
-    note.textContent = '(That\'s cluster feeding. Normal. Especially 4–8pm. Hydrate, snack, push through.)';
-    note.style.color = 'var(--accent)';
+    beat.classList.add('show');
+    document.getElementById('cluster-n').textContent = recent;
   } else {
-    note.textContent = '(3+ in 3h = cluster feeding — totally normal in this window)';
-    note.style.color = 'var(--muted)';
+    beat.classList.remove('show');
+  }
+}
+
+function renderTiles() {
+  // Feed tile
+  const lastFeed = st.feeds[st.feeds.length - 1];
+  const feedSince = lastFeed ? minSince(lastFeed.ts) : null;
+  document.getElementById('feed-since').textContent = fmtSince(feedSince);
+  const feedTile = document.getElementById('tile-feed');
+  feedTile.classList.remove('warn','alert');
+  if (feedSince != null) {
+    if (feedSince > 180) feedTile.classList.add('alert');
+    else if (feedSince > 120) feedTile.classList.add('warn');
   }
 
-  // Today summary
-  document.getElementById('sum-feeds').textContent = feedsToday;
-  const sleepToday = st.sleeps.filter(s => isToday(s.start)).reduce((sum, s) => sum + s.durationMin, 0);
-  document.getElementById('sum-sleep').textContent = `${(sleepToday / 60).toFixed(1)}h`;
-  document.getElementById('sum-diapers').textContent = diapersToday.length;
-  // vs yesterday
-  setVs('vs-feeds', feedsToday, st.yesterday.feeds);
-  setVs('vs-sleep', sleepToday / 60, st.yesterday.sleepHours, '.0', 'h');
-  setVs('vs-diapers', diapersToday.length, st.yesterday.diapers);
+  // Sleep tile
+  const sleepTile = document.getElementById('tile-sleep');
+  if (st.activeSleep) {
+    sleepTile.classList.add('active');
+    document.getElementById('sleep-name').textContent = 'Wake';
+    document.getElementById('sleep-since').textContent = `napping ${fmtDuration(minSince(st.activeSleep.start))}`;
+  } else {
+    sleepTile.classList.remove('active');
+    document.getElementById('sleep-name').textContent = 'Nap';
+    const lastSleep = st.sleeps[st.sleeps.length - 1];
+    document.getElementById('sleep-since').textContent = lastSleep
+      ? `last: ${fmtDuration((new Date(lastSleep.end) - new Date(lastSleep.start))/60000)}`
+      : 'tap to start';
+  }
+
+  // Diaper tile
+  const lastDiaper = st.diapers[st.diapers.length - 1];
+  const diaperSince = lastDiaper ? minSince(lastDiaper.ts) : null;
+  const diapersToday = st.diapers.filter(d => isToday(d.ts)).length;
+  const diaperTile = document.getElementById('tile-diaper');
+  diaperTile.classList.remove('alert');
+  if (diaperSince != null) {
+    document.getElementById('diaper-since').textContent = `${diapersToday} today · ${fmtSince(diaperSince)}`;
+  } else {
+    document.getElementById('diaper-since').textContent = 'none today';
+  }
+  if (diapersToday < 4 && new Date().getHours() >= 14) diaperTile.classList.add('alert');
 }
 
-function setVs(id, today, ystr, fixed, unit) {
-  unit = unit || '';
-  const el = document.getElementById(id);
-  el.classList.remove('up', 'down');
-  if (ystr === 0) { el.textContent = `vs — yesterday`; return; }
-  const diff = today - ystr;
-  const sign = diff > 0 ? '+' : '';
-  el.textContent = `${sign}${diff.toFixed(fixed === '.0' ? 1 : 0)}${unit} vs yesterday`;
-  if (diff > 0) el.classList.add('up');
-  else if (diff < 0) el.classList.add('down');
+function renderTonight() {
+  // Predict next feed: avg interval over today's feeds
+  const todayFeeds = st.feeds.filter(f => isToday(f.ts));
+  let headline = "It's still daylight.";
+  let detail = '—';
+  const hour = new Date().getHours();
+
+  if (hour >= 18 && hour < 24) {
+    headline = "Tonight's first long stretch is the goal.";
+    detail = "Cluster-feed if she'll take it. Lights dim by 8pm. Last full feed before bed gives the best stretch.";
+  } else if (hour >= 17 && hour < 18) {
+    headline = "Witching hour starts now.";
+    detail = "Strap her on. White noise. Walk outside if you can. Cluster feed welcome.";
+  } else if (hour >= 22 || hour < 5) {
+    headline = "It's the middle of it.";
+    detail = "I see you. The 3am feed is the last one before sunrise. You're not alone.";
+  } else if (hour >= 5 && hour < 9) {
+    headline = "Morning shift.";
+    detail = "First feed sets today's rhythm. Tummy time after a diaper change while she's alert.";
+  } else if (todayFeeds.length >= 2) {
+    const intervals = [];
+    for (let i = 1; i < todayFeeds.length; i++) {
+      intervals.push((new Date(todayFeeds[i].ts) - new Date(todayFeeds[i-1].ts)) / 60000);
+    }
+    const avgMin = intervals.reduce((a,b) => a+b, 0) / intervals.length;
+    const lastFeedTs = new Date(todayFeeds[todayFeeds.length - 1].ts);
+    const nextFeedTs = new Date(lastFeedTs.getTime() + avgMin * 60000);
+    headline = `Next feed likely around ${nextFeedTs.toTimeString().slice(0,5)}.`;
+    detail = `Avg interval today: ${Math.round(avgMin)} min. Witching hour starts at 5pm.`;
+  } else {
+    headline = "Watching for the rhythm.";
+    detail = "Once you log a few feeds I can predict the next one.";
+  }
+  document.getElementById('tonight-headline').textContent = headline;
+  document.getElementById('tonight-detail').textContent = detail;
 }
 
-// =================================================================
-// Actions
-// =================================================================
+//
+// ============ Actions ============
+//
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  clearTimeout(showToast.t);
-  showToast.t = setTimeout(() => t.classList.remove('show'), 1600);
+  clearTimeout(showToast.tid);
+  showToast.tid = setTimeout(() => t.classList.remove('show'), 1500);
 }
 
-document.querySelectorAll('.tap').forEach(b => {
-  b.addEventListener('click', () => {
-    const a = b.dataset.action;
-    const now = new Date().toISOString();
-    if (a === 'feed-breast') { st.feeds.push({ ts: now, method: 'breast' }); showToast('🤱 Breastfeed logged'); }
-    else if (a === 'feed-bottle') { st.feeds.push({ ts: now, method: 'bottle' }); showToast('🍼 Bottle logged'); }
-    else if (a === 'diaper-wet') { st.diapers.push({ ts: now, type: 'wet' }); showToast('💧 Wet diaper logged'); }
-    else if (a === 'diaper-dirty') { st.diapers.push({ ts: now, type: 'dirty' }); showToast('💩 Dirty diaper logged'); }
-    save(st);
-    render();
-  });
-});
+function pushHistory(action, undoData) {
+  st.history.push({ action, undoData });
+  if (st.history.length > 20) st.history.shift();
+}
 
-document.getElementById('sleep-toggle').addEventListener('click', () => {
+function handleAction(action) {
   const now = new Date().toISOString();
-  if (st.activeSleep) {
-    const startMs = new Date(st.activeSleep.start).getTime();
-    const durationMin = Math.max(1, Math.round((Date.now() - startMs) / 60000));
-    st.sleeps.push({ start: st.activeSleep.start, end: now, durationMin });
-    st.activeSleep = null;
-    showToast(`☀️ Awake after ${fmtDuration(durationMin)}`);
-  } else {
-    st.activeSleep = { start: now };
-    showToast('🌙 Nap started');
+  if (action === 'feed-breast') {
+    st.feeds.push({ ts: now, method:'breast' });
+    pushHistory('feed-pop', null);
+    showToast('Breastfeed logged');
+  }
+  else if (action === 'feed-bottle') {
+    st.feeds.push({ ts: now, method:'bottle' });
+    pushHistory('feed-pop', null);
+    showToast('Bottle feed logged');
+  }
+  else if (action === 'diaper-wet') {
+    st.diapers.push({ ts: now, type:'wet' });
+    pushHistory('diaper-pop', null);
+    showToast('Wet diaper logged');
+  }
+  else if (action === 'diaper-dirty') {
+    st.diapers.push({ ts: now, type:'dirty' });
+    pushHistory('diaper-pop', null);
+    showToast('Dirty diaper logged');
+  }
+  else if (action === 'sleep-toggle') {
+    if (st.activeSleep) {
+      const sleep = { start: st.activeSleep.start, end: now };
+      st.sleeps.push(sleep);
+      st.activeSleep = null;
+      pushHistory('sleep-pop', null);
+      showToast(`Awake after ${fmtDuration((new Date(now) - new Date(sleep.start))/60000)}`);
+    } else {
+      st.activeSleep = { start: now };
+      pushHistory('sleep-cancel-active', null);
+      showToast('Nap started');
+    }
+  }
+  else if (action === 'undo') {
+    const last = st.history.pop();
+    if (!last) { showToast('Nothing to undo'); return; }
+    if (last.action === 'feed-pop') st.feeds.pop();
+    if (last.action === 'diaper-pop') st.diapers.pop();
+    if (last.action === 'sleep-pop') st.sleeps.pop();
+    if (last.action === 'sleep-cancel-active') st.activeSleep = null;
+    showToast('Undone');
   }
   save(st);
   render();
+}
+
+document.querySelectorAll('[data-action]').forEach(b => {
+  b.addEventListener('click', () => handleAction(b.dataset.action));
 });
 
 render();
-setInterval(render, 30000);  // refresh "min ago" every 30s
+setInterval(render, 30000);
 </script>
 </body>
 </html>

@@ -3,649 +3,1324 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mom Command — Mission Control</title>
+<title>Mom Command</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* ===== Design tokens ===== */
   :root {
-    --bg: #FFF9E9;
-    --panel: #FFFCF2;
-    --ink: #3B2F2F;
-    --muted: #7A6B5D;
-    --border: #E8DDC5;
-    --accent: #C24A6A;
-    --accent-soft: #F5D0DC;
-    --green: #6B8E5A;
-    --gold: #B8892E;
-    --blue: #2E4156;
-    --serif: 'Fraunces', 'Georgia', serif;
-    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
-    --sans: -apple-system, 'Inter', system-ui, sans-serif;
+    /* Surface */
+    --bg: #FBF6EB;
+    --surface: #FFFFFF;
+    --surface-peach: #FFF1E8;
+    --surface-sage:  #E9F0E6;
+    --surface-lilac: #F2EAF1;
+    --surface-sky:   #E5EDF2;
+    --surface-cream: #FCF6E6;
+    --hairline: #ECE4D4;
+    --hairline-strong: #D9CDB4;
+
+    /* Ink */
+    --ink: #1B1814;
+    --ink-2: #5C544A;
+    --ink-3: #998E7E;
+    --ink-inv: #FBF6EB;
+
+    /* Brand */
+    --rose: #C24A6A;
+    --rose-soft: #F5D0DC;
+    --rose-deep: #8B2840;
+
+    /* Semantic */
+    --feed: #B8892E;       /* warm gold */
+    --feed-soft: #F4E5C8;
+    --sleep: #2E4156;      /* deep blue */
+    --sleep-soft: #C8D5DD;
+    --diaper: #6B8E5A;     /* sage */
+    --diaper-soft: #D7E3CE;
+    --milestone: #C24A6A;
+    --warn: #C28A2E;
+    --alert: #B8392E;
+
+    /* Typography */
+    --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --sans:  'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    /* Radius / shadow */
+    --r-sm: 8px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+    --shadow-sm: 0 1px 2px rgba(27,24,20,0.04);
+    --shadow-md: 0 4px 16px rgba(27,24,20,0.06);
+    --shadow-lg: 0 12px 40px rgba(27,24,20,0.10);
   }
-  * { box-sizing: border-box; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    margin: 0; padding: 0; height: 100%;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  body {
+    min-height: 100vh;
     overflow-x: hidden;
   }
-  #app {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 28px 32px 80px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  header.hero {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 18px;
-  }
-  header.hero h1 {
-    margin: 0;
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: 36px;
-    letter-spacing: -0.02em;
-  }
-  header.hero h1 .heart { color: var(--accent); }
-  header.hero .age {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--muted);
-  }
-  header.hero .age strong {
-    color: var(--ink);
-    font-size: 18px;
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  button:focus-visible {
+    outline: 2px solid var(--rose);
+    outline-offset: 3px;
+    border-radius: 6px;
   }
 
+  /* Tabular numerics for all numbers */
+  .num, [data-num], time { font-variant-numeric: tabular-nums; }
+
+  /* ===== Layout ===== */
+  .shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 32px 28px 140px;
+  }
+  @media (max-width: 720px) {
+    .shell { padding: 20px 16px 140px; }
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 36px;
+  }
+  .hero-left { flex: 1; }
+  .hero .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(36px, 5vw, 56px);
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--ink);
+  }
+  .hero h1 .name { color: var(--rose); }
+  .hero .age {
+    font-family: var(--serif);
+    font-size: clamp(15px, 1.8vw, 18px);
+    color: var(--ink-2);
+    font-style: italic;
+    margin-top: 8px;
+  }
+  .hero-right {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+  .hero-right .today-date {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  @media (max-width: 720px) {
+    .hero { flex-direction: column; align-items: stretch; gap: 12px; }
+    .hero-right { text-align: left; }
+  }
+
+  /* ===== Grid ===== */
   .grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 18px;
   }
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .card h2 {
-    margin: 0;
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .card .big {
-    font-family: var(--serif);
-    font-size: 40px;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.01em;
-  }
-  .card .big small {
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--muted);
-    margin-left: 6px;
-  }
-  .card .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .card .row strong { color: var(--ink); }
-
-  .col-3 { grid-column: span 3; }
-  .col-4 { grid-column: span 4; }
-  .col-6 { grid-column: span 6; }
-  .col-8 { grid-column: span 8; }
   .col-12 { grid-column: span 12; }
-  @media (max-width: 900px) {
-    .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
+  .col-8  { grid-column: span 8; }
+  .col-6  { grid-column: span 6; }
+  .col-5  { grid-column: span 5; }
+  .col-4  { grid-column: span 4; }
+  .col-7  { grid-column: span 7; }
+  @media (max-width: 980px) {
+    .col-8, .col-7, .col-6, .col-5, .col-4 { grid-column: span 12; }
   }
 
-  /* Quick log buttons */
-  .quick-log {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .quick-log button {
-    flex: 1;
-    min-width: 110px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 12px;
-    font-family: var(--sans);
-    font-size: 14px;
-    color: var(--ink);
-    cursor: pointer;
-    transition: all 0.12s ease;
+  /* ===== Card primitive ===== */
+  .card {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    padding: 24px 26px;
+    border: 1px solid var(--hairline);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    gap: 18px;
   }
-  .quick-log button:hover {
-    background: var(--accent-soft);
-    border-color: var(--accent);
-    transform: translateY(-1px);
-  }
-  .quick-log button .icon { font-size: 22px; }
+  .card.tinted-peach { background: var(--surface-peach); border-color: #F4D9C4; }
+  .card.tinted-sage  { background: var(--surface-sage);  border-color: #C8D8C0; }
+  .card.tinted-sky   { background: var(--surface-sky);   border-color: #C2D2DB; }
+  .card.tinted-lilac { background: var(--surface-lilac); border-color: #DCC9DB; }
+  .card.tinted-cream { background: var(--surface-cream); border-color: #EFE0BE; }
 
-  /* Stream */
-  .stream {
+  .card-head {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 320px;
-    overflow-y: auto;
-    padding-right: 4px;
-  }
-  .stream-item {
-    display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    padding: 10px 14px;
-    background: var(--bg);
-    border-radius: 8px;
-    font-family: var(--mono);
-    font-size: 13px;
-  }
-  .stream-item .when { color: var(--muted); font-variant-numeric: tabular-nums; }
-  .stream-item .what { color: var(--ink); }
-  .stream-item .icon { margin-right: 6px; }
-
-  /* Growth chart */
-  .chart-wrap {
-    width: 100%;
-    height: 220px;
-    position: relative;
-  }
-  svg.chart { width: 100%; height: 100%; }
-  svg.chart .grid line { stroke: var(--border); }
-  svg.chart .axis text {
-    font-family: var(--mono);
-    font-size: 10px;
-    fill: var(--muted);
-  }
-  svg.chart .line { fill: none; stroke: var(--accent); stroke-width: 2; }
-  svg.chart .point { fill: var(--accent); }
-  svg.chart .pct-band { fill: var(--accent-soft); opacity: 0.4; }
-
-  /* Milestones */
-  .milestone-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .milestone {
-    display: flex;
-    align-items: center;
     gap: 12px;
-    padding: 10px 12px;
-    border-left: 3px solid var(--border);
-    background: var(--bg);
-    border-radius: 6px;
   }
-  .milestone.due { border-left-color: var(--gold); }
-  .milestone.overdue { border-left-color: var(--accent); }
-  .milestone.done { border-left-color: var(--green); opacity: 0.6; }
-  .milestone .name { font-size: 14px; flex: 1; }
-  .milestone .window {
+  .card-title {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
   }
-  .milestone.done .name { text-decoration: line-through; }
+  .card-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
 
-  /* Vaccines */
-  .vax-list { display: flex; flex-direction: column; gap: 6px; }
-  .vax-item {
+  /* ===== Size comparison hero (THIS MONTH) ===== */
+  .size-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 24px;
+    min-height: 240px;
+  }
+  .size-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    max-width: 200px;
+    margin-left: auto;
+  }
+  .size-icon {
+    width: 100%;
+    height: 100%;
+    color: var(--rose);
+  }
+  .size-text .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .size-text .compare {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .size-text .compare em {
+    color: var(--rose);
+    font-style: italic;
+  }
+  .size-text .vitals {
+    display: flex;
+    gap: 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .size-text .vitals strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  @media (max-width: 720px) {
+    .size-card { grid-template-columns: 1fr; }
+    .size-icon-wrap { max-width: 140px; margin: 0 auto; }
+    .size-text { text-align: center; }
+    .size-text .vitals { justify-content: center; }
+  }
+
+  /* ===== Today timeline ===== */
+  .day-timeline { position: relative; }
+  .day-axis {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background: var(--bg);
-    border-radius: 6px;
-    font-size: 13px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 8px;
+    padding: 0 2px;
   }
-  .vax-item.done { color: var(--green); }
-  .vax-item.due { color: var(--gold); font-weight: 600; }
-  .vax-item .date { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .timeline-track {
+    position: relative;
+    height: 96px;
+    background: var(--surface-cream);
+    border-radius: 12px;
+    border: 1px solid var(--hairline);
+    overflow: hidden;
+  }
+  .timeline-row {
+    position: absolute;
+    left: 0; right: 0;
+    height: 22px;
+    display: flex;
+    align-items: center;
+  }
+  .row-feed   { top: 8px; }
+  .row-sleep  { top: 36px; }
+  .row-diaper { top: 64px; }
+  .row-label {
+    position: absolute;
+    left: 12px;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    z-index: 2;
+  }
+  .timeline-block {
+    position: absolute;
+    height: 16px;
+    border-radius: 4px;
+    cursor: default;
+  }
+  .timeline-block.feed   { background: var(--feed); }
+  .timeline-block.sleep  { background: var(--sleep); height: 18px; top: -1px;  }
+  .timeline-block.diaper { background: var(--diaper); width: 6px; border-radius: 2px; }
+  .now-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--rose);
+    z-index: 3;
+  }
+  .now-line::before {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px;
+    width: 10px; height: 10px;
+    background: var(--rose);
+    border-radius: 50%;
+  }
+  .now-pill {
+    position: absolute;
+    top: -22px;
+    transform: translateX(-50%);
+    background: var(--rose);
+    color: white;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  .day-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    padding-top: 6px;
+    border-top: 1px solid var(--hairline);
+    margin-top: 4px;
+  }
+  .day-stat .v {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .day-stat .v small {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink-3);
+    margin-left: 4px;
+  }
+  .day-stat .l {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+  }
+  .day-stat.feed-c .v { color: var(--feed); }
+  .day-stat.sleep-c .v { color: var(--sleep); }
+  .day-stat.diaper-c .v { color: var(--diaper); }
+
+  /* ===== Growth chart ===== */
+  .growth-wrap { position: relative; height: 260px; }
+  svg.growth { width: 100%; height: 100%; display: block; }
+  .growth .band-50 { fill: var(--rose-soft); opacity: 0.45; }
+  .growth .band-out { fill: var(--rose-soft); opacity: 0.18; }
+  .growth .axis text {
+    font-family: var(--mono);
+    font-size: 10px;
+    fill: var(--ink-3);
+  }
+  .growth .axis line, .growth .grid line { stroke: var(--hairline); }
+  .growth .baby-line { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  .growth .baby-pt { fill: var(--ink); stroke: white; stroke-width: 2; }
+  .growth-legend {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 6px;
+    border-top: 1px solid var(--hairline);
+  }
+  .growth-legend .scale {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    display: flex;
+    gap: 14px;
+  }
+  .growth-legend .scale span::before {
+    content: '';
+    display: inline-block;
+    width: 10px; height: 10px;
+    margin-right: 4px;
+    border-radius: 2px;
+    vertical-align: -1px;
+  }
+  .legend-band::before { background: var(--rose-soft); }
+  .legend-baby::before { background: var(--ink); }
+
+  .growth-callout {
+    text-align: right;
+  }
+  .growth-callout .pct {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .growth-callout .pct sup {
+    font-size: 14px;
+    color: var(--rose);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .growth-callout .pct-l {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    margin-top: 4px;
+  }
+
+  /* ===== Wonder Weeks calendar ===== */
+  .leap-strip {
+    display: flex;
+    gap: 2px;
+    height: 34px;
+  }
+  .leap-cell {
+    flex: 1;
+    border-radius: 3px;
+    min-width: 4px;
+    background: var(--surface-sage);
+    position: relative;
+  }
+  .leap-cell.stormy {
+    background: var(--rose-soft);
+  }
+  .leap-cell.now {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+    z-index: 2;
+  }
+  .leap-axis {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    padding: 0 2px;
+  }
+  .leap-detail {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: center;
+    background: var(--surface-cream);
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .leap-num {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 38px;
+    line-height: 1;
+    color: var(--rose);
+  }
+  .leap-num small {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    margin-top: 4px;
+  }
+  .leap-text .leap-name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .leap-text .leap-when {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .leap-text .leap-desc {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  /* ===== Milestones strip ===== */
+  .milestone-rail {
+    position: relative;
+    padding: 28px 0 8px;
+  }
+  .milestone-rail::before {
+    content: '';
+    position: absolute;
+    left: 4px; right: 4px; top: 38px;
+    height: 1px;
+    background: var(--hairline-strong);
+    background-image: linear-gradient(90deg, var(--hairline-strong) 50%, transparent 50%);
+    background-size: 8px 1px;
+  }
+  .milestone-rail .ms-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    position: relative;
+  }
+  .milestone-pt {
+    flex: 1;
+    text-align: center;
+    position: relative;
+  }
+  .milestone-pt::before {
+    content: '';
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--hairline-strong);
+    margin: 0 auto 8px;
+  }
+  .milestone-pt.done::before { background: var(--diaper); border-color: var(--diaper); }
+  .milestone-pt.due::before  { background: var(--milestone); border-color: var(--milestone); }
+  .milestone-pt.upcoming::before { background: var(--bg); border-color: var(--ink-3); }
+  .milestone-pt .ms-when {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .milestone-pt .ms-name {
+    font-family: var(--serif);
+    font-size: 13.5px;
+    line-height: 1.25;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .milestone-pt.done .ms-name { color: var(--ink-2); }
+  .milestone-pt.due .ms-name  { color: var(--milestone); font-weight: 600; }
+
+  /* ===== FAB (floating action button) ===== */
+  .fab-wrap {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 50;
+  }
+  .fab {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--rose);
+    color: white;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: transform 0.18s ease;
+  }
+  .fab:hover, .fab:focus-visible { transform: scale(1.06); }
+  .fab.open { background: var(--ink); }
+  .fab-menu {
+    position: absolute;
+    bottom: 76px; right: 0;
+    background: var(--surface);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--hairline);
+    padding: 8px;
+    display: none;
+    min-width: 220px;
+  }
+  .fab-menu.open { display: block; }
+  .fab-menu button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: var(--r-sm);
+    text-align: left;
+    font-size: 14px;
+    color: var(--ink);
+    transition: background 0.12s;
+  }
+  .fab-menu button:hover { background: var(--surface-cream); }
+  .fab-menu button .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .fab-menu .dot.feed  { background: var(--feed); }
+  .fab-menu .dot.sleep { background: var(--sleep); }
+  .fab-menu .dot.diaper{ background: var(--diaper); }
+  .fab-menu .kbd {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    background: var(--surface-cream);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
 
   /* Toast */
   .toast {
     position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
     background: var(--ink);
-    color: var(--bg);
+    color: var(--ink-inv);
     padding: 12px 20px;
-    border-radius: 24px;
-    font-size: 14px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    border-radius: 30px;
+    font-size: 13.5px;
+    box-shadow: var(--shadow-lg);
     opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
+    transition: opacity 0.22s ease, transform 0.22s ease;
     pointer-events: none;
     z-index: 100;
   }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .footer-note {
+  .footer {
+    margin-top: 48px;
     text-align: center;
-    color: var(--muted);
-    font-size: 12px;
     font-family: var(--mono);
-    padding-top: 12px;
+    font-size: 11px;
+    color: var(--ink-3);
   }
 </style>
 </head>
 <body>
-<div id="app">
 
+<main class="shell">
+
+  <!-- ============ HERO ============ -->
   <header class="hero">
-    <h1><span class="heart">💛</span> Mom Command</h1>
-    <div class="age">
-      Baby is <strong id="age-display">—</strong>
-      <span id="dob-display"></span>
+    <div class="hero-left">
+      <div class="eyebrow">Mom Command</div>
+      <h1>Hello, <span class="name" id="baby-name">friend</span>.</h1>
+      <div class="age" id="age-poetic">an unwritten chapter</div>
+    </div>
+    <div class="hero-right">
+      <div class="today-date" id="today-date">—</div>
+      <div id="today-meta">today's view</div>
     </div>
   </header>
 
-  <!-- Top row: 4 vital cards -->
-  <div class="grid">
-    <div class="card col-3">
-      <h2>🍼 Last feed</h2>
-      <div class="big" id="last-feed">—</div>
-      <div class="row"><span>today</span><strong id="feeds-today">0</strong></div>
-    </div>
-    <div class="card col-3">
-      <h2>😴 Last sleep</h2>
-      <div class="big" id="last-sleep">—</div>
-      <div class="row"><span>last night</span><strong id="sleep-night">— h</strong></div>
-    </div>
-    <div class="card col-3">
-      <h2>💩 Last diaper</h2>
-      <div class="big" id="last-diaper">—</div>
-      <div class="row"><span>today</span><strong id="diapers-today">0</strong></div>
-    </div>
-    <div class="card col-3">
-      <h2>📅 Next appt</h2>
-      <div class="big" id="next-appt">—</div>
-      <div class="row"><span>questions</span><strong id="appt-questions">0</strong></div>
-    </div>
-  </div>
+  <!-- ============ ROW 1: Size + Today ============ -->
+  <section class="grid">
 
-  <!-- Quick log + stream -->
-  <div class="grid">
-    <div class="card col-6">
-      <h2>⚡ Quick log</h2>
-      <div class="quick-log">
-        <button data-log="feed-breast"><span class="icon">🤱</span><span>Feed (breast)</span></button>
-        <button data-log="feed-bottle"><span class="icon">🍼</span><span>Feed (bottle)</span></button>
-        <button data-log="sleep-start"><span class="icon">😴</span><span>Sleep start</span></button>
-        <button data-log="sleep-wake"><span class="icon">☀️</span><span>Wake up</span></button>
-        <button data-log="diaper-wet"><span class="icon">💧</span><span>Wet</span></button>
-        <button data-log="diaper-dirty"><span class="icon">💩</span><span>Dirty</span></button>
+    <!-- THIS MONTH: size comparison (the wow moment) -->
+    <div class="card tinted-peach col-5">
+      <div class="card-head">
+        <div class="card-title">This month</div>
+        <div class="card-meta" id="month-meta">—</div>
       </div>
-      <p style="margin: 8px 0 0; font-size: 12px; color: var(--muted); font-family: var(--mono);">
-        These log to your browser. To persist to CSV, ask Martha to "log my last entries."
-      </p>
-    </div>
-
-    <div class="card col-6">
-      <h2>📜 Today's stream</h2>
-      <div class="stream" id="stream"></div>
-    </div>
-  </div>
-
-  <!-- Growth chart + milestones + vaccines -->
-  <div class="grid">
-    <div class="card col-6">
-      <h2>📈 Growth chart</h2>
-      <div class="chart-wrap">
-        <svg class="chart" viewBox="0 0 600 220" preserveAspectRatio="none" id="growth-chart"></svg>
-      </div>
-      <div class="row">
-        <span>latest weight</span>
-        <strong id="latest-weight">—</strong>
-      </div>
-      <div class="row">
-        <span>percentile</span>
-        <strong id="latest-pct">—</strong>
+      <div class="size-card">
+        <div class="size-icon-wrap" aria-hidden="true">
+          <!-- SVG fruit/object icon, swapped per month -->
+          <svg class="size-icon" id="size-svg" viewBox="0 0 200 200"></svg>
+        </div>
+        <div class="size-text">
+          <div class="label">about the size of a</div>
+          <div class="compare"><em id="size-name">—</em></div>
+          <div class="vitals">
+            <div><strong id="weight-display">—</strong>weight</div>
+            <div><strong id="length-display">—</strong>length</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="card col-3">
-      <h2>🌟 Milestones — next up</h2>
-      <div class="milestone-list" id="milestones"></div>
+    <!-- TODAY timeline -->
+    <div class="card col-7">
+      <div class="card-head">
+        <div class="card-title">Today's day</div>
+        <div class="card-meta" id="day-now">—</div>
+      </div>
+      <div class="day-timeline">
+        <div class="timeline-track" id="timeline-track">
+          <div class="timeline-row row-feed"><span class="row-label">FEEDS</span></div>
+          <div class="timeline-row row-sleep"><span class="row-label">SLEEP</span></div>
+          <div class="timeline-row row-diaper"><span class="row-label">DIAPERS</span></div>
+        </div>
+        <div class="day-axis">
+          <span>6am</span><span>9am</span><span>12pm</span><span>3pm</span><span>6pm</span><span>9pm</span><span>12am</span>
+        </div>
+      </div>
+      <div class="day-stats">
+        <div class="day-stat feed-c">
+          <div class="l">Feeds</div>
+          <div class="v"><span id="day-feeds">0</span></div>
+        </div>
+        <div class="day-stat sleep-c">
+          <div class="l">Sleep</div>
+          <div class="v"><span id="day-sleep">0</span><small>hrs</small></div>
+        </div>
+        <div class="day-stat diaper-c">
+          <div class="l">Diapers</div>
+          <div class="v"><span id="day-diapers">0</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROW 2: Growth + Wonder Weeks ============ -->
+  <section class="grid" style="margin-top: 18px;">
+
+    <!-- Growth chart -->
+    <div class="card col-7">
+      <div class="card-head">
+        <div class="card-title">Growth chart</div>
+        <div class="card-meta">WHO weight-for-age · 0–24 mo</div>
+      </div>
+      <div class="growth-wrap">
+        <svg class="growth" id="growth-svg" viewBox="0 0 600 260" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="growth-legend">
+        <div class="scale">
+          <span class="legend-band">P3 — P97 band</span>
+          <span class="legend-baby" id="legend-baby-name">your baby</span>
+        </div>
+        <div class="growth-callout">
+          <div class="pct"><span id="latest-pct">—</span><sup>th</sup></div>
+          <div class="pct-l">latest percentile</div>
+        </div>
+      </div>
     </div>
 
-    <div class="card col-3">
-      <h2>💉 Vaccines</h2>
-      <div class="vax-list" id="vaccines"></div>
+    <!-- Wonder Weeks -->
+    <div class="card tinted-lilac col-5">
+      <div class="card-head">
+        <div class="card-title">Wonder Weeks · the storm calendar</div>
+        <div class="card-meta">52 wks</div>
+      </div>
+      <div class="leap-detail">
+        <div class="leap-num"><span id="leap-num">—</span><small>current leap</small></div>
+        <div class="leap-text">
+          <div class="leap-name" id="leap-name">—</div>
+          <div class="leap-when" id="leap-when">—</div>
+          <div class="leap-desc" id="leap-desc">—</div>
+        </div>
+      </div>
+      <div class="leap-strip" id="leap-strip" aria-label="52-week stormy/sunny calendar"></div>
+      <div class="leap-axis">
+        <span>birth</span><span>3 mo</span><span>6 mo</span><span>9 mo</span><span>12 mo</span>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <p class="footer-note">
-    Mom Command · the always-installed root for the Mom &amp; Baby cabinet series ·
-    pair with one stage cabinet at a time
+  <!-- ============ ROW 3: Milestones rail ============ -->
+  <section class="grid" style="margin-top: 18px;">
+    <div class="card col-12">
+      <div class="card-head">
+        <div class="card-title">Milestones</div>
+        <div class="card-meta">recently · now · upcoming</div>
+      </div>
+      <div class="milestone-rail">
+        <div class="ms-row" id="ms-row"></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">
+    Mom Command · open <code style="background:var(--surface-cream);padding:1px 5px;border-radius:4px;">bio.md</code> any time ·
+    Martha reads it before every message
   </p>
+
+</main>
+
+<!-- FAB -->
+<div class="fab-wrap">
+  <div class="fab-menu" id="fab-menu" role="menu" aria-label="Quick log">
+    <button data-log="feed-breast"><span class="dot feed"></span>Feed — breast<span class="kbd">F</span></button>
+    <button data-log="feed-bottle"><span class="dot feed"></span>Feed — bottle<span class="kbd">B</span></button>
+    <button data-log="sleep-toggle"><span class="dot sleep"></span><span id="sleep-label">Start nap</span><span class="kbd">S</span></button>
+    <button data-log="diaper-wet"><span class="dot diaper"></span>Diaper — wet<span class="kbd">W</span></button>
+    <button data-log="diaper-dirty"><span class="dot diaper"></span>Diaper — dirty<span class="kbd">D</span></button>
+  </div>
+  <button class="fab" id="fab" aria-label="Quick log" aria-haspopup="menu">+</button>
 </div>
 
-<div class="toast" id="toast">Logged.</div>
+<div class="toast" id="toast" role="status" aria-live="polite">Logged.</div>
 
 <script>
-// =================================================================
-// Mock data — in production, this would be parsed from the CSVs
-// in ../logs/ via Cabinet's file-read API. For the standalone preview,
-// we keep state in localStorage so the dashboard feels live.
-// =================================================================
+//
+// ============ Data ============
+//
+const STORAGE_KEY = 'mom-command-v2';
+const BABY_NAME = 'Maya';            // edit in baby-profile.md
+const DOB = '2026-03-15';            // matches baby-profile.md placeholder
 
-const STORAGE_KEY = 'mom-command-mission-control';
-const DOB = '2026-03-15';   // matches baby-profile.md placeholder
+// Size comparisons by month — every month gets its own object, with weight (kg) at p50
+// Source: WHO weight-for-age, plus author-curated comparison
+const SIZE_TABLE = [
+  { m:0,  name:'a small loaf of bread', kg:3.4, cm:51, svg:'loaf' },
+  { m:1,  name:'a butternut squash',   kg:4.5, cm:55, svg:'squash' },
+  { m:2,  name:'a small cabbage',      kg:5.6, cm:58, svg:'cabbage' },
+  { m:3,  name:'a cantaloupe',         kg:6.4, cm:60, svg:'melon' },
+  { m:4,  name:'a small watermelon',   kg:7.0, cm:63, svg:'watermelon' },
+  { m:5,  name:'a pineapple',          kg:7.5, cm:65, svg:'pineapple' },
+  { m:6,  name:'a bowling pin',        kg:7.9, cm:67, svg:'pin' },
+  { m:7,  name:'a small pumpkin',      kg:8.3, cm:69, svg:'pumpkin' },
+  { m:8,  name:'a Dutch oven',         kg:8.6, cm:70, svg:'pot' },
+  { m:9,  name:'a Thanksgiving turkey',kg:8.9, cm:72, svg:'turkey' },
+  { m:10, name:'a stand mixer',        kg:9.2, cm:73, svg:'mixer' },
+  { m:11, name:'a beachball, almost',  kg:9.4, cm:74, svg:'beachball' },
+  { m:12, name:'a giant watermelon',   kg:9.6, cm:75, svg:'watermelon-big' },
+];
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  // Seed with the same data shown in the CSVs
+// WHO weight-for-age (boys, kg). p3 / p50 / p97 by month, 0-24
+const WHO = {
+  months: [0,1,2,3,4,5,6,7,8,9,10,11,12,15,18,21,24],
+  p3:  [2.5,3.4,4.3,5.0,5.6,6.1,6.4,6.7,7.0,7.2,7.5,7.7,7.8,8.4,8.9,9.4,9.8],
+  p50: [3.3,4.5,5.6,6.4,7.0,7.5,7.9,8.3,8.6,8.9,9.2,9.4,9.6,10.3,10.9,11.5,12.2],
+  p97: [4.4,5.8,7.1,8.0,8.7,9.3,9.8,10.3,10.7,11.0,11.4,11.7,11.8,12.7,13.7,14.5,15.3],
+};
+
+// Wonder Weeks — published leap weeks (start of stormy period). Each leap = stormy 1-3 wks before, then sunny.
+const LEAPS = [
+  { num:1, week:5,  name:'Changing sensations', desc:'World gets brighter, louder, more vivid. More crying. Then suddenly: more aware.' },
+  { num:2, week:8,  name:'Patterns',            desc:'Notices repetition. Stares longer. Discovers their hands. Smiles back.' },
+  { num:3, week:12, name:'Smooth transitions',  desc:'Movement gets fluid — head turns, eyes follow, voice modulates. Cooing, laughing.' },
+  { num:4, week:19, name:'Events',              desc:'Strings actions together. Reaches *and* grabs. Recognizes you across a room.' },
+  { num:5, week:26, name:'Relationships',       desc:'Distance is real now. Stranger anxiety. Object permanence is clicking.' },
+  { num:6, week:37, name:'Categories',          desc:'Sorts the world. Knows a dog from a cat. Imitates expressions.' },
+  { num:7, week:46, name:'Sequences',           desc:'Order matters. Stacks, fits, repeats. Says first words on purpose.' },
+  { num:8, week:55, name:'Programs',            desc:'Tiny routines: wave bye, eat with spoon. Independence + protest emerge together.' },
+];
+function currentLeap(weeks) {
+  let cur = null;
+  for (const l of LEAPS) {
+    if (weeks >= l.week - 2 && weeks <= l.week + 1) { return { ...l, status:'stormy' }; }
+    if (l.week > weeks && (!cur || l.week < cur.week)) cur = l;
+  }
+  return cur ? { ...cur, status:'upcoming' } : { num:'—', name:'Smooth seas', when:'—', desc:'No leap nearby. Enjoy the sunny stretch.' };
+}
+function isStormyWeek(w) {
+  return LEAPS.some(l => w >= l.week - 2 && w <= l.week + 1);
+}
+
+// Milestones (first year, ordered by typical mid-window)
+const MILESTONES = [
+  { name:'Lifts head briefly',      low:4, high:6 },
+  { name:'Tracks objects with eyes',low:4, high:8 },
+  { name:'Social smile',            low:6, high:8 },
+  { name:'Coos',                    low:6, high:8 },
+  { name:'Hands to mouth',          low:8, high:12 },
+  { name:'Holds head steady',       low:10, high:12 },
+  { name:'Rolls tummy → back',      low:12, high:16 },
+  { name:'Laughs out loud',         low:16, high:18 },
+  { name:'Reaches for objects',     low:16, high:20 },
+  { name:'Rolls back → tummy',      low:16, high:24 },
+  { name:'Sits with support',       low:20, high:24 },
+  { name:'Babbles consonants',      low:20, high:24 },
+  { name:'Hand-to-hand transfer',   low:24, high:28 },
+  { name:'Sits unsupported',        low:24, high:32 },
+  { name:'Crawls',                  low:28, high:40 },
+  { name:'Pincer grasp',            low:36, high:40 },
+  { name:'Pulls to stand',          low:36, high:44 },
+  { name:'Cruising',                low:36, high:48 },
+  { name:'First words',             low:40, high:52 },
+  { name:'First steps',             low:40, high:60 },
+];
+
+//
+// ============ State (localStorage) ============
+//
+function load() {
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch(e){}
+  return seedDemo();
+}
+function save(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function seedDemo() {
+  const today = new Date().toISOString().slice(0,10);
   return {
     feeds: [
-      { ts: '2026-04-26T07:30:00', method: 'breast', side: 'L' },
-      { ts: '2026-04-26T10:15:00', method: 'breast', side: 'R' },
-      { ts: '2026-04-26T13:00:00', method: 'bottle_ebm', amount: 90 },
+      { ts: `${today}T07:18:00`, method:'breast' },
+      { ts: `${today}T10:02:00`, method:'breast' },
+      { ts: `${today}T13:14:00`, method:'bottle' },
+      { ts: `${today}T16:30:00`, method:'breast' },
     ],
     sleeps: [
-      { date: '2026-04-25', total_hours: 7.5, wakeups: 3 },
-      { date: '2026-04-26', total_hours: 7.0, wakeups: 2 },
+      { start:`${today}T08:30:00`, end:`${today}T09:45:00` },
+      { start:`${today}T11:30:00`, end:`${today}T13:00:00` },
+      { start:`${today}T14:30:00`, end:`${today}T15:45:00` },
     ],
     diapers: [
-      { ts: '2026-04-26T06:30:00', type: 'wet' },
-      { ts: '2026-04-26T08:45:00', type: 'dirty' },
-      { ts: '2026-04-26T10:30:00', type: 'wet' },
-      { ts: '2026-04-26T13:15:00', type: 'wet+dirty' },
-      { ts: '2026-04-26T16:00:00', type: 'wet' },
+      { ts:`${today}T06:40:00`, type:'wet' },
+      { ts:`${today}T09:50:00`, type:'dirty' },
+      { ts:`${today}T12:20:00`, type:'wet' },
+      { ts:`${today}T15:00:00`, type:'wet+dirty' },
+      { ts:`${today}T17:10:00`, type:'wet' },
     ],
-    sleepActive: null,  // {start: ts}
+    growth: [
+      { date:'2026-03-15', kg:3.4 },
+      { date:'2026-03-22', kg:3.3 },
+      { date:'2026-04-15', kg:4.6 },
+    ],
+    milestonesDone: ['Lifts head briefly','Tracks objects with eyes','Social smile'],
+    activeSleep: null,
   };
 }
-function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-let state = loadState();
+let st = load();
 
-// =================================================================
-// Time helpers
-// =================================================================
-function ageString(dobIso) {
-  const dob = new Date(dobIso);
-  const now = new Date();
-  const ms = now - dob;
-  const days = Math.floor(ms / 86400000);
-  const weeks = Math.floor(days / 7);
-  const months = Math.floor(days / 30.44);
-  if (days < 14) return `${days} days old`;
-  if (months < 3) return `${weeks} weeks old`;
-  return `${months} months, ${weeks % 4} weeks old`;
+//
+// ============ Time helpers ============
+//
+function ageMs() { return Date.now() - new Date(DOB).getTime(); }
+function ageDays() { return Math.floor(ageMs() / 86400000); }
+function ageWeeks() { return Math.floor(ageDays() / 7); }
+function ageMonths() { return Math.floor(ageDays() / 30.44); }
+function poeticAge() {
+  const d = ageDays(), w = ageWeeks(), mo = ageMonths();
+  if (d < 14) return `${d} days into the world`;
+  if (d < 56) return `${w} weeks · ${d - w*7} days`;
+  return `${mo} months · ${w - mo*4} weeks · in your arms`;
 }
-function ageWeeks(dobIso) {
-  return Math.floor((new Date() - new Date(dobIso)) / (7 * 86400000));
-}
-function timeAgo(tsIso) {
-  const ms = Date.now() - new Date(tsIso).getTime();
-  if (ms < 60000) return 'just now';
-  const min = Math.floor(ms / 60000);
-  if (min < 60) return `${min} min ago`;
-  const h = Math.floor(min / 60);
-  const remMin = min % 60;
-  if (h < 24) return `${h}h ${remMin}m ago`;
-  const d = Math.floor(h / 24);
-  return `${d}d ago`;
-}
-function fmtTime(tsIso) {
-  const d = new Date(tsIso);
-  return d.toTimeString().slice(0, 5);
+function fmtDate(d) {
+  const opts = { weekday:'long', month:'long', day:'numeric' };
+  return d.toLocaleDateString(undefined, opts);
 }
 function isToday(tsIso) {
+  const d = new Date(tsIso), n = new Date();
+  return d.toDateString() === n.toDateString();
+}
+function hoursIntoDay(tsIso) {
   const d = new Date(tsIso);
-  const now = new Date();
-  return d.getFullYear() === now.getFullYear() &&
-         d.getMonth() === now.getMonth() &&
-         d.getDate() === now.getDate();
+  return d.getHours() + d.getMinutes()/60;
 }
 
-// =================================================================
-// Renderers
-// =================================================================
+//
+// ============ Render ============
+//
 function render() {
-  // Header — age
-  document.getElementById('age-display').textContent = ageString(DOB);
-  document.getElementById('dob-display').textContent = `· DOB ${DOB}`;
+  // Hero
+  document.getElementById('baby-name').textContent = BABY_NAME;
+  document.getElementById('age-poetic').textContent = poeticAge();
+  document.getElementById('today-date').textContent = fmtDate(new Date());
+  document.getElementById('today-meta').textContent = `day ${ageDays()} · week ${ageWeeks()} · month ${ageMonths()}`;
 
-  // Last feed
-  const feedsToday = state.feeds.filter(f => isToday(f.ts));
-  const lastFeed = state.feeds[state.feeds.length - 1];
-  document.getElementById('last-feed').innerHTML = lastFeed
-    ? `${timeAgo(lastFeed.ts).split(' ').slice(0, 2).join(' ')}<small>ago</small>`
-    : '—';
-  document.getElementById('feeds-today').textContent = feedsToday.length;
-
-  // Last sleep
-  const lastSleepEntry = state.sleeps[state.sleeps.length - 1];
-  document.getElementById('last-sleep').innerHTML = lastSleepEntry
-    ? `${lastSleepEntry.total_hours}<small>h</small>`
-    : '—';
-  document.getElementById('sleep-night').textContent = lastSleepEntry
-    ? `${lastSleepEntry.total_hours} h, ${lastSleepEntry.wakeups} wakeups`
-    : '—';
-
-  // Last diaper
-  const diapersToday = state.diapers.filter(d => isToday(d.ts));
-  const wet = diapersToday.filter(d => d.type.includes('wet')).length;
-  const dirty = diapersToday.filter(d => d.type.includes('dirty')).length;
-  const lastDiaper = state.diapers[state.diapers.length - 1];
-  document.getElementById('last-diaper').innerHTML = lastDiaper
-    ? `${timeAgo(lastDiaper.ts).split(' ').slice(0, 2).join(' ')}<small>ago</small>`
-    : '—';
-  document.getElementById('diapers-today').textContent = `${diapersToday.length} (${wet}w/${dirty}d)`;
-
-  // Next appt
-  document.getElementById('next-appt').textContent = '2 mo';
-  document.getElementById('appt-questions').textContent = '3';
-
-  // Stream — merge feeds + sleeps + diapers, sort by ts desc, today only
-  const stream = [];
-  state.feeds.filter(f => isToday(f.ts)).forEach(f => stream.push({
-    ts: f.ts, icon: f.method.startsWith('bottle') ? '🍼' : '🤱',
-    text: `Feed — ${f.method.replace('_', ' ')}${f.side ? ' (' + f.side + ')' : ''}${f.amount ? ' · ' + f.amount + 'ml' : ''}`,
-  }));
-  state.diapers.filter(d => isToday(d.ts)).forEach(d => stream.push({
-    ts: d.ts, icon: d.type.includes('dirty') ? '💩' : '💧',
-    text: `Diaper — ${d.type}`,
-  }));
-  stream.sort((a, b) => new Date(b.ts) - new Date(a.ts));
-  const streamEl = document.getElementById('stream');
-  streamEl.innerHTML = stream.length === 0
-    ? '<div class="stream-item"><span class="what" style="color: var(--muted);">No entries yet today. Tap a quick-log button.</span></div>'
-    : stream.map(s => `
-        <div class="stream-item">
-          <span class="what"><span class="icon">${s.icon}</span>${s.text}</span>
-          <span class="when">${fmtTime(s.ts)}</span>
-        </div>
-      `).join('');
-
-  renderGrowthChart();
+  renderSize();
+  renderTimeline();
+  renderGrowth();
+  renderLeaps();
   renderMilestones();
-  renderVaccines();
+  renderSleepLabel();
 }
 
-function renderGrowthChart() {
-  // Hardcoded sample from logs/growth-chart.csv
-  const data = [
-    { week: 0, weight: 3.4, pct: 50 },
-    { week: 1, weight: 3.3, pct: 40 },
-    { week: 5, weight: 4.6, pct: 55 },
-  ];
-  const svg = document.getElementById('growth-chart');
-  const W = 600, H = 220, P = 30;
-  const maxWeek = Math.max(20, ageWeeks(DOB) + 4);
-  const minW = 2.5, maxW = 8;
-  const x = w => P + (w / maxWeek) * (W - 2 * P);
-  const y = wkg => H - P - ((wkg - minW) / (maxW - minW)) * (H - 2 * P);
+function renderSize() {
+  const m = Math.min(12, ageMonths());
+  const s = SIZE_TABLE[m];
+  document.getElementById('size-name').textContent = s.name;
+  document.getElementById('weight-display').textContent = `${s.kg.toFixed(1)} kg`;
+  document.getElementById('length-display').textContent = `${s.cm} cm`;
+  document.getElementById('month-meta').textContent = `month ${m}`;
+  document.getElementById('size-svg').innerHTML = svgFor(s.svg);
+}
 
-  let html = '';
-  // Grid + axis
-  html += '<g class="grid">';
-  for (let i = 0; i <= 4; i++) {
-    const yy = P + i * ((H - 2 * P) / 4);
-    html += `<line x1="${P}" y1="${yy}" x2="${W - P}" y2="${yy}"/>`;
+// Hand-drawn-ish SVG icons. Stroke-based, single accent color. No emoji.
+function svgFor(key) {
+  const stroke = 'currentColor', fill = 'none', sw = 4;
+  const wrap = (inner) => `<g fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${inner}</g>`;
+  switch(key) {
+    case 'loaf': return wrap(`
+      <path d="M40 110 Q40 70 80 70 H120 Q160 70 160 110 V140 Q160 150 150 150 H50 Q40 150 40 140 Z"/>
+      <path d="M55 90 L70 70 M85 75 L100 60 M115 75 L130 60 M145 90 L160 75"/>`);
+    case 'squash': return wrap(`
+      <ellipse cx="100" cy="125" rx="42" ry="50"/>
+      <path d="M100 75 Q100 50 90 40 Q85 35 90 30"/>
+      <path d="M88 45 Q70 40 65 30"/>`);
+    case 'cabbage': return wrap(`
+      <circle cx="100" cy="110" r="55"/>
+      <path d="M100 55 Q70 75 60 110 M100 55 Q130 75 140 110"/>
+      <path d="M75 90 Q100 100 125 90 M70 130 Q100 145 130 130"/>`);
+    case 'melon': return wrap(`
+      <ellipse cx="100" cy="110" rx="52" ry="45"/>
+      <path d="M48 110 Q100 80 152 110 M48 110 Q100 140 152 110"/>
+      <path d="M70 75 Q70 65 80 65"/>`);
+    case 'watermelon':
+    case 'watermelon-big': return wrap(`
+      <path d="M40 130 Q40 80 100 80 Q160 80 160 130 Q160 145 145 145 H55 Q40 145 40 130 Z"/>
+      <path d="M55 130 H145" stroke-width="3"/>
+      <circle cx="80" cy="120" r="2.5" fill="${stroke}"/>
+      <circle cx="100" cy="118" r="2.5" fill="${stroke}"/>
+      <circle cx="120" cy="120" r="2.5" fill="${stroke}"/>`);
+    case 'pineapple': return wrap(`
+      <ellipse cx="100" cy="120" rx="38" ry="48"/>
+      <path d="M85 75 Q90 55 100 60 Q110 55 115 75"/>
+      <path d="M75 75 Q85 60 95 70 M125 75 Q115 60 105 70"/>
+      <path d="M75 105 L100 95 L125 105 M75 130 L100 120 L125 130"/>`);
+    case 'pin': return wrap(`
+      <path d="M85 50 Q85 35 100 35 Q115 35 115 50 Q115 70 110 80 Q120 100 120 130 Q120 165 100 165 Q80 165 80 130 Q80 100 90 80 Q85 70 85 50 Z"/>
+      <path d="M90 60 Q95 65 100 60"/>`);
+    case 'pumpkin': return wrap(`
+      <ellipse cx="100" cy="120" rx="55" ry="45"/>
+      <path d="M75 78 L75 120 M125 78 L125 120 M100 75 L100 165"/>
+      <path d="M100 75 Q105 60 115 55"/>`);
+    case 'pot': return wrap(`
+      <path d="M50 90 H150 V145 Q150 155 140 155 H60 Q50 155 50 145 Z"/>
+      <path d="M40 90 H160 M70 75 H80 M120 75 H130"/>`);
+    case 'turkey': return wrap(`
+      <ellipse cx="100" cy="125" rx="55" ry="38"/>
+      <path d="M75 105 Q70 90 80 85 M125 105 Q130 90 120 85 M100 90 Q100 75 110 73"/>`);
+    case 'mixer': return wrap(`
+      <rect x="50" y="60" width="80" height="40" rx="6"/>
+      <path d="M130 80 H155 V100"/>
+      <path d="M75 100 V145 M75 145 H145 V100"/>
+      <line x1="100" y1="100" x2="100" y2="135"/>`);
+    case 'beachball': return wrap(`
+      <circle cx="100" cy="105" r="55"/>
+      <path d="M45 105 Q100 75 155 105 M45 105 Q100 135 155 105 M100 50 V160"/>`);
+    default: return wrap(`<circle cx="100" cy="100" r="50"/>`);
   }
-  for (let w = 0; w <= maxWeek; w += 4) {
-    html += `<line x1="${x(w)}" y1="${P}" x2="${x(w)}" y2="${H - P}"/>`;
+}
+
+function renderTimeline() {
+  const track = document.getElementById('timeline-track');
+  // Clear existing blocks (keep labels and rows)
+  track.querySelectorAll('.timeline-block, .now-line, .now-pill').forEach(e => e.remove());
+
+  // X scale: 6am (h=6) → 12am next (h=24). pct from 0 to 100.
+  const xPct = h => Math.max(0, Math.min(100, ((h - 6) / 18) * 100));
+
+  // Feeds (today only)
+  st.feeds.filter(f => isToday(f.ts)).forEach(f => {
+    const h = hoursIntoDay(f.ts);
+    const el = document.createElement('div');
+    el.className = 'timeline-block feed';
+    el.style.left = xPct(h) + '%';
+    el.style.width = '6px';
+    el.style.borderRadius = '3px';
+    el.style.top = '11px';
+    el.title = `Feed — ${new Date(f.ts).toTimeString().slice(0,5)}`;
+    track.querySelector('.row-feed').appendChild(el);
+  });
+
+  // Sleeps
+  st.sleeps.filter(s => isToday(s.start)).forEach(s => {
+    const h1 = hoursIntoDay(s.start);
+    const h2 = hoursIntoDay(s.end);
+    const el = document.createElement('div');
+    el.className = 'timeline-block sleep';
+    el.style.left = xPct(h1) + '%';
+    el.style.width = (xPct(h2) - xPct(h1)) + '%';
+    el.title = `Slept ${new Date(s.start).toTimeString().slice(0,5)} – ${new Date(s.end).toTimeString().slice(0,5)}`;
+    track.querySelector('.row-sleep').appendChild(el);
+  });
+  if (st.activeSleep && isToday(st.activeSleep.start)) {
+    const h1 = hoursIntoDay(st.activeSleep.start);
+    const h2 = hoursIntoDay(new Date().toISOString());
+    const el = document.createElement('div');
+    el.className = 'timeline-block sleep';
+    el.style.left = xPct(h1) + '%';
+    el.style.width = (xPct(h2) - xPct(h1)) + '%';
+    el.style.opacity = '0.7';
+    track.querySelector('.row-sleep').appendChild(el);
+  }
+
+  // Diapers
+  st.diapers.filter(d => isToday(d.ts)).forEach(d => {
+    const h = hoursIntoDay(d.ts);
+    const el = document.createElement('div');
+    el.className = 'timeline-block diaper';
+    el.style.left = xPct(h) + '%';
+    el.style.top = '8px';
+    el.title = `Diaper — ${d.type} at ${new Date(d.ts).toTimeString().slice(0,5)}`;
+    track.querySelector('.row-diaper').appendChild(el);
+  });
+
+  // Now line
+  const nowH = hoursIntoDay(new Date().toISOString());
+  if (nowH >= 6 && nowH <= 24) {
+    const line = document.createElement('div');
+    line.className = 'now-line';
+    line.style.left = `calc(${xPct(nowH)}% - 1px)`;
+    track.appendChild(line);
+
+    const pill = document.createElement('div');
+    pill.className = 'now-pill';
+    pill.textContent = 'now';
+    pill.style.left = `${xPct(nowH)}%`;
+    track.appendChild(pill);
+  }
+
+  // Day stats
+  const feedsToday = st.feeds.filter(f => isToday(f.ts)).length;
+  const sleepHrs = st.sleeps.filter(s => isToday(s.start))
+    .reduce((sum, s) => sum + (new Date(s.end) - new Date(s.start))/3600000, 0);
+  const diapersToday = st.diapers.filter(d => isToday(d.ts)).length;
+  document.getElementById('day-feeds').textContent = feedsToday;
+  document.getElementById('day-sleep').textContent = sleepHrs.toFixed(1);
+  document.getElementById('day-diapers').textContent = diapersToday;
+  document.getElementById('day-now').textContent = new Date().toTimeString().slice(0,5);
+}
+
+function renderGrowth() {
+  const svg = document.getElementById('growth-svg');
+  const W = 600, H = 260, P = { l: 36, r: 12, t: 14, b: 26 };
+  const maxMo = 24, minKg = 2, maxKg = 16;
+  const x = m => P.l + (m / maxMo) * (W - P.l - P.r);
+  const y = kg => H - P.b - ((kg - minKg) / (maxKg - minKg)) * (H - P.t - P.b);
+
+  let html = '<g class="grid">';
+  for (let kg = 4; kg <= 16; kg += 2) {
+    html += `<line x1="${P.l}" y1="${y(kg)}" x2="${W - P.r}" y2="${y(kg)}"/>`;
+  }
+  for (let mo = 0; mo <= maxMo; mo += 3) {
+    html += `<line x1="${x(mo)}" y1="${P.t}" x2="${x(mo)}" y2="${H - P.b}"/>`;
   }
   html += '</g>';
-  // Percentile band shadow (cosmetic)
-  html += '<g class="pct-band">';
-  html += `<rect x="${P}" y="${y(maxW * 0.85)}" width="${W - 2*P}" height="${y(minW * 1.4) - y(maxW * 0.85)}"/>`;
-  html += '</g>';
+
+  // P3-P97 outer band
+  let topPath = WHO.months.map((m, i) => `${i===0?'M':'L'} ${x(m)} ${y(WHO.p97[i])}`).join(' ');
+  let botPath = [...WHO.months].reverse().map((m, i) => {
+    const idx = WHO.months.length - 1 - i;
+    return `L ${x(m)} ${y(WHO.p3[idx])}`;
+  }).join(' ');
+  html += `<path class="band-out" d="${topPath} ${botPath} Z"/>`;
+
+  // P50 reference line
+  let p50Path = WHO.months.map((m, i) => `${i===0?'M':'L'} ${x(m)} ${y(WHO.p50[i])}`).join(' ');
+  html += `<path d="${p50Path}" stroke="${'#C24A6A'}" stroke-width="1.5" stroke-dasharray="3 3" fill="none" opacity="0.5"/>`;
+
   // Axis labels
   html += '<g class="axis">';
-  for (let kg = 3; kg <= 7; kg++) {
+  for (let kg = 4; kg <= 16; kg += 2) {
     html += `<text x="6" y="${y(kg) + 3}">${kg}kg</text>`;
   }
-  for (let w = 0; w <= maxWeek; w += 4) {
-    html += `<text x="${x(w) - 6}" y="${H - 8}">${w}w</text>`;
+  for (let mo = 0; mo <= maxMo; mo += 3) {
+    html += `<text x="${x(mo) - 4}" y="${H - 8}">${mo}mo</text>`;
   }
   html += '</g>';
-  // Line + points
-  const path = data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${x(d.week)} ${y(d.weight)}`).join(' ');
-  html += `<path class="line" d="${path}"/>`;
-  data.forEach(d => {
-    html += `<circle class="point" cx="${x(d.week)}" cy="${y(d.weight)}" r="4"/>`;
-  });
+
+  // Baby's plotted points + connecting line
+  const pts = st.growth.map(g => {
+    const m = (new Date(g.date) - new Date(DOB)) / (30.44 * 86400000);
+    return { m, kg: g.kg };
+  }).filter(p => p.m >= 0 && p.m <= maxMo);
+  if (pts.length > 0) {
+    const linePath = pts.map((p, i) => `${i===0?'M':'L'} ${x(p.m)} ${y(p.kg)}`).join(' ');
+    html += `<path class="baby-line" d="${linePath}"/>`;
+    pts.forEach(p => {
+      html += `<circle class="baby-pt" cx="${x(p.m)}" cy="${y(p.kg)}" r="4.5"/>`;
+    });
+  }
+
   svg.innerHTML = html;
 
-  const latest = data[data.length - 1];
-  document.getElementById('latest-weight').textContent = `${latest.weight} kg`;
-  document.getElementById('latest-pct').textContent = `${latest.pct}th`;
+  // Calculate percentile of latest weight
+  const latest = pts[pts.length - 1];
+  if (latest) {
+    const pct = estimatePercentile(latest.m, latest.kg);
+    document.getElementById('latest-pct').textContent = pct;
+  } else {
+    document.getElementById('latest-pct').textContent = '—';
+  }
+  document.getElementById('legend-baby-name').textContent = BABY_NAME.toLowerCase();
+}
+
+function estimatePercentile(months, kg) {
+  // Find bracket
+  const idx = WHO.months.findIndex(m => m >= months);
+  const i = Math.max(1, idx);
+  const t = (months - WHO.months[i-1]) / (WHO.months[i] - WHO.months[i-1] || 1);
+  const lerp = (a, b) => a + (b - a) * t;
+  const p3  = lerp(WHO.p3[i-1],  WHO.p3[i]);
+  const p50 = lerp(WHO.p50[i-1], WHO.p50[i]);
+  const p97 = lerp(WHO.p97[i-1], WHO.p97[i]);
+  // Rough percentile estimation via 2-sided lerp
+  if (kg <= p3) return 3;
+  if (kg <= p50) return Math.round(3 + ((kg - p3) / (p50 - p3)) * 47);
+  if (kg <= p97) return Math.round(50 + ((kg - p50) / (p97 - p50)) * 47);
+  return 97;
+}
+
+function renderLeaps() {
+  const w = ageWeeks();
+  const strip = document.getElementById('leap-strip');
+  strip.innerHTML = '';
+  for (let i = 0; i < 52; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'leap-cell';
+    if (isStormyWeek(i)) cell.classList.add('stormy');
+    if (i === w) cell.classList.add('now');
+    cell.title = `Week ${i}`;
+    strip.appendChild(cell);
+  }
+  const cur = currentLeap(w);
+  document.getElementById('leap-num').textContent = typeof cur.num === 'number' ? cur.num : '—';
+  document.getElementById('leap-name').textContent = cur.name;
+  if (cur.status === 'stormy') {
+    document.getElementById('leap-when').textContent = `Stormy now · resolves around week ${cur.week + 1}`;
+  } else if (cur.status === 'upcoming') {
+    document.getElementById('leap-when').textContent = `Next storm starts around week ${cur.week - 2}`;
+  } else {
+    document.getElementById('leap-when').textContent = 'No leap nearby';
+  }
+  document.getElementById('leap-desc').textContent = cur.desc;
 }
 
 function renderMilestones() {
-  // From logs/milestone-log.csv — show next 4 windows
-  const milestones = [
-    { name: 'Lifts head briefly', low: 4, high: 6, done: true },
-    { name: 'Social smile', low: 6, high: 8, done: false },
-    { name: 'Makes cooing sounds', low: 6, high: 8, done: false },
-    { name: 'Tracks objects with eyes', low: 4, high: 8, done: true },
-    { name: 'Brings hands to mouth', low: 8, high: 12, done: false },
-  ];
-  const w = ageWeeks(DOB);
-  const upcoming = milestones
-    .filter(m => !m.done && m.high >= w - 2)
-    .slice(0, 4);
-  const list = document.getElementById('milestones');
-  list.innerHTML = upcoming.length === 0
-    ? '<div class="milestone done"><span class="name">All caught up.</span></div>'
-    : upcoming.map(m => {
-      const status = m.done ? 'done' : (w > m.high ? 'overdue' : (w >= m.low ? 'due' : ''));
-      return `<div class="milestone ${status}">
-        <span class="name">${m.name}</span>
-        <span class="window">${m.low}–${m.high}w</span>
+  const w = ageWeeks();
+  // Build a 7-point window: 3 recent done, current focus, 3 upcoming
+  const sorted = [...MILESTONES].sort((a, b) => (a.low + a.high) - (b.low + b.high));
+  const done = sorted.filter(m => st.milestonesDone.includes(m.name)).slice(-3);
+  const remaining = sorted.filter(m => !st.milestonesDone.includes(m.name));
+  const upcoming = remaining.slice(0, 4);
+  const points = [...done, ...upcoming].slice(0, 7);
+
+  const row = document.getElementById('ms-row');
+  row.innerHTML = '';
+  points.forEach(m => {
+    const isDone = st.milestonesDone.includes(m.name);
+    const isDue  = !isDone && w >= m.low && w <= m.high;
+    const cls = isDone ? 'done' : (isDue ? 'due' : 'upcoming');
+    const when = isDone ? 'achieved' : (isDue ? 'due now' : `${m.low}–${m.high} wk`);
+    const html = `
+      <div class="milestone-pt ${cls}">
+        <div class="ms-when">${when}</div>
+        <div class="ms-name">${m.name}</div>
       </div>`;
-    }).join('');
+    row.insertAdjacentHTML('beforeend', html);
+  });
 }
 
-function renderVaccines() {
-  // From logs/vaccination-schedule.csv — first 6 rows
-  const vax = [
-    { name: 'Hep B (1)', age: 'birth', date: '2026-03-15', done: true },
-    { name: 'Hep B (2)', age: '1-2 mo', date: null, due: true },
-    { name: 'DTaP (1)', age: '2 mo', date: null, due: true },
-    { name: 'Hib (1)', age: '2 mo', date: null, due: true },
-    { name: 'IPV (1)', age: '2 mo', date: null, due: true },
-    { name: 'PCV13 (1)', age: '2 mo', date: null, due: true },
-  ];
-  document.getElementById('vaccines').innerHTML = vax.map(v => `
-    <div class="vax-item ${v.done ? 'done' : ''} ${v.due ? 'due' : ''}">
-      <span>${v.done ? '✅ ' : v.due ? '⏳ ' : ''}${v.name}</span>
-      <span class="date">${v.date || v.age}</span>
-    </div>
-  `).join('');
+function renderSleepLabel() {
+  document.getElementById('sleep-label').textContent = st.activeSleep ? 'End nap' : 'Start nap';
 }
 
-// =================================================================
-// Quick-log handlers
-// =================================================================
+//
+// ============ Actions ============
+//
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => t.classList.remove('show'), 1800);
+  clearTimeout(showToast.tid);
+  showToast.tid = setTimeout(() => t.classList.remove('show'), 1800);
 }
 
-document.querySelectorAll('.quick-log button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const action = btn.dataset.log;
-    const now = new Date().toISOString().slice(0, 19);
-    if (action === 'feed-breast') {
-      state.feeds.push({ ts: now, method: 'breast', side: '' });
-      showToast('🤱 Breastfeed logged');
-    } else if (action === 'feed-bottle') {
-      state.feeds.push({ ts: now, method: 'bottle' });
-      showToast('🍼 Bottle logged');
-    } else if (action === 'sleep-start') {
-      state.sleepActive = { start: now };
-      saveState(state);
-      showToast('😴 Sleep started');
-      return;
-    } else if (action === 'sleep-wake') {
-      if (state.sleepActive) {
-        const startMs = new Date(state.sleepActive.start).getTime();
-        const hours = Math.round(((Date.now() - startMs) / 3600000) * 10) / 10;
-        const today = new Date().toISOString().slice(0, 10);
-        const existing = state.sleeps.find(s => s.date === today);
-        if (existing) {
-          existing.total_hours = Math.round((existing.total_hours + hours) * 10) / 10;
-        } else {
-          state.sleeps.push({ date: today, total_hours: hours, wakeups: 0 });
-        }
-        state.sleepActive = null;
-        showToast(`☀️ Woke after ${hours}h`);
-      } else {
-        showToast('Tap "Sleep start" first');
-        return;
-      }
-    } else if (action === 'diaper-wet') {
-      state.diapers.push({ ts: now, type: 'wet' });
-      showToast('💧 Wet logged');
-    } else if (action === 'diaper-dirty') {
-      state.diapers.push({ ts: now, type: 'dirty' });
-      showToast('💩 Dirty logged');
-    }
-    saveState(state);
-    render();
+const fab = document.getElementById('fab');
+const fabMenu = document.getElementById('fab-menu');
+fab.addEventListener('click', () => {
+  const open = fabMenu.classList.toggle('open');
+  fab.classList.toggle('open', open);
+  fab.textContent = open ? '×' : '+';
+  fab.setAttribute('aria-expanded', String(open));
+});
+document.addEventListener('click', (e) => {
+  if (!fabMenu.contains(e.target) && e.target !== fab) {
+    fabMenu.classList.remove('open');
+    fab.classList.remove('open');
+    fab.textContent = '+';
+  }
+});
+
+document.querySelectorAll('.fab-menu button').forEach(b => {
+  b.addEventListener('click', () => {
+    handleAction(b.dataset.log);
+    fabMenu.classList.remove('open');
+    fab.classList.remove('open');
+    fab.textContent = '+';
   });
 });
 
+function handleAction(action) {
+  const now = new Date().toISOString();
+  if (action === 'feed-breast')  { st.feeds.push({ ts: now, method:'breast' }); showToast('Breastfeed logged'); }
+  if (action === 'feed-bottle')  { st.feeds.push({ ts: now, method:'bottle' }); showToast('Bottle feed logged'); }
+  if (action === 'diaper-wet')   { st.diapers.push({ ts: now, type:'wet' }); showToast('Wet diaper logged'); }
+  if (action === 'diaper-dirty') { st.diapers.push({ ts: now, type:'dirty' }); showToast('Dirty diaper logged'); }
+  if (action === 'sleep-toggle') {
+    if (st.activeSleep) {
+      st.sleeps.push({ start: st.activeSleep.start, end: now });
+      st.activeSleep = null;
+      showToast('Nap ended');
+    } else {
+      st.activeSleep = { start: now };
+      showToast('Nap started');
+    }
+  }
+  save(st);
+  render();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const map = { f:'feed-breast', b:'feed-bottle', s:'sleep-toggle', w:'diaper-wet', d:'diaper-dirty' };
+  const a = map[e.key.toLowerCase()];
+  if (a) handleAction(a);
+});
+
 render();
-setInterval(render, 60000);  // refresh "X min ago" labels every minute
+setInterval(render, 60000);
 </script>
 </body>
 </html>
