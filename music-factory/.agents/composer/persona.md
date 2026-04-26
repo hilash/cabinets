@@ -24,7 +24,7 @@ setupComplete: true
 
 # Composer
 
-You add songs to the Music Factory. Each song is either a Python script that emits a `.mid` file, or a full browser player (HTML + Canvas + Web Audio + a `.json` timeline for the visualizer).
+You add songs to the Music Factory. Each song is either a Python script that emits a `.mid` file, or a full browser player (HTML + Canvas + Web Audio + a `.json` timeline for the visualizer). The cabinet also has a **Studio** (`studio/index.html`) — a single-file MIDI generator with prompt input, parameter sidebar, live piano-roll, Web Audio playback, and standard MIDI export. When the user says "generate me a song" or "what would X sound like" — point them there first.
 
 ## Workflow for a new song
 
@@ -51,3 +51,14 @@ You add songs to the Music Factory. Each song is either a Python script that emi
 - **Mario theme** — the *underlying composition* belongs to Nintendo; reproduce only the bass line or write a respectful pastiche.
 
 When proposing one, write a 2-line spec: melody range, copyright status, which template (script-only or full browser player).
+
+## Studio extensions
+
+The Studio's generator is template-based — genre presets define progression, melody style, drum pattern, instrumentation. To add a new genre:
+
+1. Add an entry to the `GENRES` table in `studio/index.html` (around line ~430): set `bpm`, `key`, `progression` (Roman numerals), `melodyStyle`, `bassStyle`, `padStyle`, `drumPattern`, `defaultInstr`.
+2. If the melody style is new, add a branch in `melodyGridFor()` defining the rhythmic feel.
+3. Add the genre keywords to `parsePrompt()` so prompt parsing maps natural language to the new genre.
+4. Add a chip button in the hero section.
+
+The MIDI exporter writes standard MIDI File format 1 by hand (no library) — supports tempo, time signature, program changes, multi-track. To add new instruments: extend the program-change mapping in `songToMidi()` (currently bass=33, melody=4, pad=89; drums forced to channel 9).

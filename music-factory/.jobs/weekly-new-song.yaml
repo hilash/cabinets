@@ -17,3 +17,6 @@ prompt: |-
   - The first 4-8 bars sketched as `(note, octave, beats)` tuples so the work is half-done already
 
   Remove any prior pitch block so only this week's shows. Do not generate the full `.mid` or HTML automatically — that's a human approval gate. Wait for the user to say "ship it" before scaffolding the directory.
+cabinetPath: cabinets/cabinets/music-factory
+createdAt: '2026-04-26T05:31:55.719Z'
+updatedAt: '2026-04-26T05:31:55.719Z'

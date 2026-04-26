@@ -2,50 +2,70 @@
 title: Music Factory
 icon: music
 created: 2026-04-25
-tags: [music, midi, python, browser-apps]
+modified: 2026-04-26
+tags: [music, midi, python, browser-apps, generator]
 ---
 
 # 🎹 Music Factory
 
-> **Compose songs in Python. Render them as MIDI. Play them in the browser with a live visualizer.**
+> **What MIDI would you like to generate today?**
+>
+> Type a vibe → live piano-roll → one-tap playback → download a real `.mid` file.
 
-This cabinet shows three things you can do with ~50 lines of pure-Python MIDI code: render a recognizable song, ship it as a self-contained web player, and document the process so the next song takes 20 minutes instead of an afternoon.
+## Open the Studio first
 
-## What's inside
+- **[[studio/index|🎛️ Studio — the MIDI generator]]** ← *new* · full-screen Cabinet app. Describe a song in plain English (*"a melancholy lofi beat in C minor"*), watch the piano roll fill, hit play (Web Audio synthesizes it live), download as a standard `.mid` file. Ten genres, seven moods, twelve keys, four instruments. No build, no API, no account — runs entirely in your browser.
 
-- **[[still-alive/index|🟠 Still Alive — Portal MIDI Player]]** — full-screen Cabinet app. The GLaDOS song from *Portal*, with a piano-roll visualizer that lights up note-by-note as it plays. Click the page in the sidebar — Cabinet renders it edge-to-edge thanks to the `.app` marker.
-- **[[bye-bye-bye/bye_bye_bye|🎤 Bye Bye Bye — NSync as Python]]** — a single self-contained Python script that builds the song's melody, bass, and chord track, then writes `bye_bye_bye.mid`. Run it: `python bye_bye_bye.py`.
-- **[[composing-in-python/index|📝 Composing in Python — How-to]]** — a step-by-step guide for writing your own song with `mido` + `pygame`. Note helpers, beat→tick conversion, melody/bass tracks, and a runnable example.
+## Reference players & how-tos
 
-## Why this is fun
+- **[[still-alive/index|🟠 Still Alive — Portal MIDI Player]]** — full-screen Cabinet app. The GLaDOS song from *Portal*, hand-authored, with a piano-roll visualizer that lights up note-by-note as it plays.
+- **[[bye-bye-bye/bye_bye_bye|🎤 Bye Bye Bye — NSync as Python]]** — a self-contained Python script that builds melody + bass + chord tracks and writes `bye_bye_bye.mid`. Run: `python bye_bye_bye.py`.
+- **[[composing-in-python/index|📝 Composing in Python — How-to]]** — step-by-step guide using `mido` + `pygame`. Note helpers, beat→tick conversion, melody/bass tracks, runnable example.
+
+## Why this exists
 
 MIDI is the quietest superpower in programming. ~120 lines of code can produce something a stranger immediately recognizes. There's no audio engine to wrestle with, no audio files to license — just integers (note number, velocity, ticks) flowing into a `.mid` file that any browser, DAW, or speaker can play.
 
-This cabinet exists to lower the activation energy. Steal the Portal player as a template, swap the `SCORE` for your own notes, and you've shipped a song.
+The Studio takes that one step further: you don't even need to write code. Pick a vibe, hit generate, get a real `.mid`. Then open it in Logic / Ableton / GarageBand / [signal](https://signal.vercel.app/) and edit to taste — or open the source of `studio/index.html` to see exactly how it was built.
 
 ## Quickstart
 
 ```bash
-# 1. Try the browser player
-open still-alive/index.html       # plays in any modern browser
+# 1. Generate a song from a prompt (THE Studio)
+open studio/index.html
 
-# 2. Generate a fresh MIDI from Python
+# 2. Try the hand-authored Portal player
+open still-alive/index.html
+
+# 3. Generate a song from Python
 cd bye-bye-bye/
 pip install mido
-python bye_bye_bye.py             # writes bye_bye_bye.mid in this folder
+python bye_bye_bye.py             # writes bye_bye_bye.mid
 
-# 3. Read the guide
+# 4. Read the guide
 open composing-in-python/index.md
 ```
+
+## What's under the Studio's hood
+
+All vanilla JS + Web Audio + Canvas in a single ~1500-line `index.html`:
+
+- **Music theory primitives** — scales (major, minor, dorian, pentatonic, blues), chord library (maj/min/maj7/min7/sus4/dim/dom7), Roman-numeral progression builder
+- **10 genre presets** with chord progressions, melody styles, bass styles, drum patterns, default instruments — lofi, pop, lullaby, cinematic, Bach invention, chiptune, jazz, rock, ambient, folk
+- **Prompt parser** — extracts genre/mood/key/BPM from natural language
+- **Procedural generator** — turns params into a track structure (bass + melody + pad + drums) with seeded randomness
+- **Piano-roll renderer** — Canvas, color-coded per track, live playhead
+- **Web Audio playback engine** — per-instrument oscillator + ADSR, drums via noise + filter, sample-accurate scheduling
+- **Standard MIDI File exporter** — writes format-1 `.mid` binary by hand (no library), with tempo, time signature, program changes, and per-track event chunks. The download is a real, DAW-importable file.
 
 ## What this cabinet does NOT include
 
 - A DAW. Use Logic, Ableton, GarageBand, or [signal](https://signal.vercel.app/) (browser) to open the `.mid` files for editing.
-- Audio rendering. The Python scripts produce `.mid` (note data only). To turn that into a `.wav` or `.mp3`, route through a soft-synth like FluidSynth.
-- Copyright clearance. The melodies of "Still Alive" and "Bye Bye Bye" belong to their composers. These files are educational reproductions — keep them that way.
+- High-quality audio rendering. The Studio's playback uses simple oscillator synthesis. For realistic sound, route the downloaded `.mid` through a soft-synth like FluidSynth or any DAW with sampled instruments.
+- Copyright clearance. "Still Alive" and "Bye Bye Bye" are educational reproductions — keep them that way. The Studio generates original music from algorithmic templates.
 
 ## Implementation notes
 
-- The Still Alive player is vanilla JS + Canvas + the Web Audio API — zero dependencies, runs offline.
-- The Python scripts depend only on `mido` (and `pygame` if you want to play in-process). No external services.
-- The `.app` marker on `still-alive/` tells Cabinet to render that page full-screen with the sidebar collapsed.
+- All apps are vanilla JS + Canvas + Web Audio. Zero dependencies, runs offline.
+- The Python scripts depend only on `mido` (and `pygame` if you want to play in-process).
+- The `.app` marker on `studio/`, `still-alive/` tells Cabinet to render those pages full-screen with the sidebar collapsed.
