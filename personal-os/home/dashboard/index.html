@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Home · Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #B8892E;
+    --area-soft: rgba(184, 137, 46, 0.16);
+    --bg-tint-1: rgba(184, 137, 46, 0.10);
+    --bg-tint-2: rgba(107, 142, 90, 0.08);
+    --bg-tint-3: rgba(46, 65, 86, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before {
+    content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+  }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb:hover { color: var(--ink); }
+  .crumb .arrow { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--area); }
+  .quick-nav { display: flex; gap: 4px; }
+  .quick-nav a { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); padding: 4px 10px; border-radius: 100px; }
+  .quick-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .quick-nav a.active { background: var(--area-soft); color: var(--area); }
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.alert { color: var(--alert); }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* Bills timeline */
+  .bills { display: flex; flex-direction: column; gap: 0; }
+  .bill { display: grid; grid-template-columns: 80px 1fr auto auto; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--glass-bevel); align-items: center; }
+  .bill:last-child { border-bottom: none; }
+  .bill.due-soon { background: rgba(184,137,46,0.08); margin: 0 -10px; padding: 9px 10px; border-radius: 8px; }
+  .bill .when { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .bill .when small { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; font-style: normal; }
+  .bill .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); }
+  .bill .acct { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 2px; }
+  .bill .amt { font-family: var(--serif); font-weight: 500; font-size: 15px; text-align: right; }
+  .bill .status {
+    font-family: var(--mono); font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 3px 9px; border-radius: 100px; font-weight: 600;
+  }
+  .bill .status.auto { background: rgba(107,142,90,0.18); color: var(--good); border: 1px solid rgba(107,142,90,0.3); }
+  .bill .status.manual { background: rgba(184,137,46,0.18); color: var(--warn); border: 1px solid rgba(184,137,46,0.3); }
+
+  /* Maintenance */
+  .maint { display: flex; flex-direction: column; gap: 0; }
+  .maint-item { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--glass-bevel); align-items: center; }
+  .maint-item:last-child { border-bottom: none; }
+  .maint-item .what { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .maint-item .what small { display: block; font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-top: 2px; font-style: normal; }
+  .maint-item .when { font-family: var(--mono); font-size: 11px; color: var(--ink-3); text-align: right; }
+  .maint-item.overdue .when { color: var(--alert); font-weight: 600; }
+  .maint-item.due-soon .when { color: var(--warn); font-weight: 600; }
+
+  /* Suppliers */
+  .suppliers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .supplier {
+    padding: 12px 14px;
+    background: rgba(252, 245, 226, 0.55);
+    border: 1px solid rgba(239, 224, 190, 0.6);
+    border-radius: var(--r-md);
+  }
+  .supplier .role { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); margin-bottom: 3px; }
+  .supplier .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); margin-bottom: 4px; font-weight: 500; }
+  .supplier .contact { font-family: var(--mono); font-size: 11px; color: var(--ink-2); }
+
+  /* Warranties */
+  .warranties { display: flex; flex-direction: column; gap: 0; }
+  .warranty { display: grid; grid-template-columns: 1fr 100px 80px; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--glass-bevel); align-items: center; }
+  .warranty:last-child { border-bottom: none; }
+  .warranty .item { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .warranty .item small { display: block; font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-top: 2px; font-style: normal; }
+  .warranty .expiry { font-family: var(--mono); font-size: 11px; color: var(--ink-3); text-align: right; }
+  .warranty .status { font-family: var(--mono); font-size: 10px; text-align: right; }
+  .warranty .status.ok { color: var(--good); }
+  .warranty .status.warn { color: var(--warn); }
+  .warranty .status.alert { color: var(--alert); }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+  .footer a { color: var(--area); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <a href="../../daily-console/index.html" class="crumb"><span class="arrow">←</span>Daily Console</a>
+    <nav class="quick-nav">
+      <a href="../../brain/dashboard/index.html">Brain</a>
+      <a href="../../family/dashboard/index.html">Family</a>
+      <a class="active" href="#">Home</a>
+      <a href="../../money/dashboard/index.html">Money</a>
+      <a href="../../health/dashboard/index.html">Health</a>
+      <a href="../../play/dashboard/index.html">Play</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>The <em>building</em>.</h1>
+      <div class="stand">Bills, maintenance, warranties, suppliers — the boring magic.</div>
+    </div>
+    <div class="right">2-bedroom · Berlin · 87m²</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Bills this month</div><div class="v">€2,340</div><div class="delta">5 paid · 3 pending</div></div>
+    <div class="big-stat glass"><div class="lbl">Next bill</div><div class="v">€240</div><div class="delta alert">Bills clerk runs Mon</div></div>
+    <div class="big-stat glass"><div class="lbl">Maintenance</div><div class="v">3 <small>tasks</small></div><div class="delta">1 overdue · boiler</div></div>
+    <div class="big-stat glass"><div class="lbl">Rental renewal</div><div class="v">Thu</div><div class="delta alert">⚠ expires this week</div></div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Bills — next 30 days</span>
+        <span class="meta">€2,340 total</span>
+      </div>
+      <div class="bills">
+        <div class="bill due-soon">
+          <div class="when">Mon<small>Apr 28</small></div>
+          <div><div class="name">Electricity</div><div class="acct">N26 · auto-debit</div></div>
+          <span class="amt">€240</span>
+          <span class="status auto">auto</span>
+        </div>
+        <div class="bill due-soon">
+          <div class="when">Wed<small>Apr 30</small></div>
+          <div><div class="name">Water</div><div class="acct">N26 · auto-debit</div></div>
+          <span class="amt">€68</span>
+          <span class="status auto">auto</span>
+        </div>
+        <div class="bill due-soon">
+          <div class="when">Thu<small>May 1</small></div>
+          <div><div class="name">Rent</div><div class="acct">DKB · transfer</div></div>
+          <span class="amt">€1,400</span>
+          <span class="status manual">pay</span>
+        </div>
+        <div class="bill">
+          <div class="when">May 5</div>
+          <div><div class="name">Internet (Vodafone)</div><div class="acct">N26 · auto-debit</div></div>
+          <span class="amt">€39</span>
+          <span class="status auto">auto</span>
+        </div>
+        <div class="bill">
+          <div class="when">May 7</div>
+          <div><div class="name">Heating service contract</div><div class="acct">DKB · transfer</div></div>
+          <span class="amt">€84</span>
+          <span class="status manual">pay</span>
+        </div>
+        <div class="bill">
+          <div class="when">May 12</div>
+          <div><div class="name">Building contribution (Hausgeld)</div><div class="acct">DKB · standing order</div></div>
+          <span class="amt">€340</span>
+          <span class="status auto">auto</span>
+        </div>
+        <div class="bill">
+          <div class="when">May 15</div>
+          <div><div class="name">Mobile (O2)</div><div class="acct">N26 · auto-debit</div></div>
+          <span class="amt">€29</span>
+          <span class="status auto">auto</span>
+        </div>
+        <div class="bill">
+          <div class="when">May 20</div>
+          <div><div class="name">Insurance (Haftpflicht)</div><div class="acct">DKB · auto-debit</div></div>
+          <span class="amt">€18</span>
+          <span class="status auto">auto</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Maintenance schedule</span>
+        <span class="meta">3 active</span>
+      </div>
+      <div class="maint">
+        <div class="maint-item overdue">
+          <div class="what">Boiler annual service<small>Vaillant · Mr. Kremer 030-554-1180</small></div>
+          <div class="when">overdue · 2 wks</div>
+        </div>
+        <div class="maint-item due-soon">
+          <div class="what">Window cleaning (interior)<small>quarterly · DIY or Helpling</small></div>
+          <div class="when">in 5 days</div>
+        </div>
+        <div class="maint-item">
+          <div class="what">HVAC filter change<small>every 3 mo</small></div>
+          <div class="when">in 18 days</div>
+        </div>
+        <div class="maint-item">
+          <div class="what">Smoke detector battery test<small>annual · all 4 detectors</small></div>
+          <div class="when">in 47 days</div>
+        </div>
+        <div class="maint-item">
+          <div class="what">Drain treatment (kitchen + bath)<small>quarterly · Sani Pro</small></div>
+          <div class="when">in 62 days</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Warranties &amp; receipts</span>
+        <span class="meta">12 tracked</span>
+      </div>
+      <div class="warranties">
+        <div class="warranty">
+          <div class="item">Bosch dishwasher (SMS46MI03E)<small>bought May 2024</small></div>
+          <div class="expiry">May 2026</div>
+          <div class="status warn">expires soon</div>
+        </div>
+        <div class="warranty">
+          <div class="item">MacBook Pro 14" M3<small>AppleCare+ active</small></div>
+          <div class="expiry">Sep 2027</div>
+          <div class="status ok">2.4 yrs left</div>
+        </div>
+        <div class="warranty">
+          <div class="item">Sonos Beam Gen 2<small>standard 2yr</small></div>
+          <div class="expiry">Mar 2026</div>
+          <div class="status alert">2 mo left</div>
+        </div>
+        <div class="warranty">
+          <div class="item">Eames Lounge Chair<small>Vitra 30yr structural</small></div>
+          <div class="expiry">Jul 2053</div>
+          <div class="status ok">28 yrs left</div>
+        </div>
+        <div class="warranty">
+          <div class="item">Miele washing machine<small>5yr extended</small></div>
+          <div class="expiry">Nov 2027</div>
+          <div class="status ok">2.5 yrs left</div>
+        </div>
+        <div class="warranty">
+          <div class="item">Roomba j7+<small>1yr standard expired</small></div>
+          <div class="expiry">Jan 2025</div>
+          <div class="status alert">expired</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Suppliers · keep close</span>
+        <span class="meta">tested · trusted</span>
+      </div>
+      <div class="suppliers">
+        <div class="supplier">
+          <div class="role">Plumber</div>
+          <div class="name">Klempner Berlin</div>
+          <div class="contact">030 442 1190</div>
+        </div>
+        <div class="supplier">
+          <div class="role">Electrician</div>
+          <div class="name">Stromer &amp; Söhne</div>
+          <div class="contact">0176 884 22</div>
+        </div>
+        <div class="supplier">
+          <div class="role">Heating</div>
+          <div class="name">Mr. Kremer · Vaillant</div>
+          <div class="contact">030 554 1180</div>
+        </div>
+        <div class="supplier">
+          <div class="role">Cleaner</div>
+          <div class="name">Magdalena · weekly</div>
+          <div class="contact">0176 226 7710</div>
+        </div>
+        <div class="supplier">
+          <div class="role">Handyman</div>
+          <div class="name">MyHammer · Reno Krause</div>
+          <div class="contact">via app</div>
+        </div>
+        <div class="supplier">
+          <div class="role">Building admin (Hausverwaltung)</div>
+          <div class="name">Domus 24 GmbH</div>
+          <div class="contact">030 226 4400</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Home · part of <a href="../../daily-console/index.html">Personal OS</a></p>
+
+</main>
+</body>
+</html>

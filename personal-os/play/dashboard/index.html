@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Play · Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #D8A24E;
+    --area-soft: rgba(216, 162, 78, 0.16);
+    --bg-tint-1: rgba(216, 162, 78, 0.10);
+    --bg-tint-2: rgba(233, 123, 146, 0.08);
+    --bg-tint-3: rgba(107, 142, 90, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb:hover { color: var(--ink); }
+  .crumb .arrow { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--area); }
+  .quick-nav { display: flex; gap: 4px; }
+  .quick-nav a { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); padding: 4px 10px; border-radius: 100px; }
+  .quick-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .quick-nav a.active { background: var(--area-soft); color: var(--area); }
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.up { color: var(--good); }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 14px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* Habit grid (GitHub-style contribution graph) */
+  .habits { display: flex; flex-direction: column; gap: 14px; }
+  .habit-row { display: grid; grid-template-columns: 110px 1fr 70px; gap: 12px; align-items: center; }
+  .habit-row .name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .habit-row .name small { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; font-style: normal; }
+  .habit-row .grid {
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    gap: 2px;
+    height: 26px;
+  }
+  .habit-row .cell { width: 100%; height: 100%; border-radius: 2px; background: rgba(216, 162, 78, 0.08); }
+  .habit-row .cell.l1 { background: rgba(216, 162, 78, 0.30); }
+  .habit-row .cell.l2 { background: rgba(216, 162, 78, 0.55); }
+  .habit-row .cell.l3 { background: var(--area); }
+  .habit-row .streak {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--area);
+    text-align: right;
+    line-height: 1;
+  }
+  .habit-row .streak small {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 3px;
+  }
+
+  /* Reading list */
+  .books { display: flex; flex-direction: column; gap: 0; }
+  .book { padding: 10px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+  .book:last-child { border-bottom: none; }
+  .book .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); line-height: 1.3; }
+  .book .by { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 2px; }
+  .book .pct-wrap { width: 90px; }
+  .book .pct-bar { height: 5px; background: rgba(216, 162, 78, 0.10); border-radius: 3px; overflow: hidden; }
+  .book .pct-fill { height: 100%; background: var(--area); border-radius: 3px; }
+  .book .pct-text { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-align: right; margin-top: 3px; }
+
+  /* Hobby projects */
+  .hobbies { display: flex; flex-direction: column; gap: 0; }
+  .hobby { padding: 10px 0; border-bottom: 1px solid var(--glass-bevel); }
+  .hobby:last-child { border-bottom: none; }
+  .hobby .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .hobby .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); }
+  .hobby .when { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+  .hobby .next { font-size: 12px; color: var(--ink-2); line-height: 1.4; }
+
+  /* DnD card */
+  .dnd-card { padding: 18px 22px; }
+  .dnd-card .upcoming { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 6px; }
+  .dnd-card .session { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 24px; color: var(--ink); line-height: 1.1; margin-bottom: 8px; }
+  .dnd-card .when { font-family: var(--mono); font-size: 11px; color: var(--ink-2); margin-bottom: 12px; }
+  .dnd-card .party { display: flex; flex-wrap: wrap; gap: 4px; }
+  .dnd-card .party .pc {
+    font-family: var(--mono); font-size: 9.5px; padding: 3px 9px; border-radius: 100px;
+    background: var(--area-soft); color: var(--area); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+  .footer a { color: var(--area); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <a href="../../daily-console/index.html" class="crumb"><span class="arrow">←</span>Daily Console</a>
+    <nav class="quick-nav">
+      <a href="../../brain/dashboard/index.html">Brain</a>
+      <a href="../../family/dashboard/index.html">Family</a>
+      <a href="../../home/dashboard/index.html">Home</a>
+      <a href="../../money/dashboard/index.html">Money</a>
+      <a href="../../health/dashboard/index.html">Health</a>
+      <a class="active" href="#">Play</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Where the <em>fun</em> work lives.</h1>
+      <div class="stand">Habits, books, hobbies, the next DnD session.</div>
+    </div>
+    <div class="right">play is non-negotiable</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Habit streak</div><div class="v">11 <small>days</small></div><div class="delta up">3 of 5 today</div></div>
+    <div class="big-stat glass"><div class="lbl">Books finished</div><div class="v">14 <small>YTD</small></div><div class="delta">target 24 · ahead</div></div>
+    <div class="big-stat glass"><div class="lbl">Active hobbies</div><div class="v">4</div><div class="delta">writing · DnD · garden · MIDI</div></div>
+    <div class="big-stat glass"><div class="lbl">Next DnD</div><div class="v">Fri</div><div class="delta">prep due Wed</div></div>
+  </section>
+
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">Habits — last 28 days</span>
+      <span class="meta">5 daily · streak in gold</span>
+    </div>
+    <div class="habits" id="habits"></div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Reading shelf</span>
+        <span class="meta">3 in progress · 8 in TBR</span>
+      </div>
+      <div class="books">
+        <div class="book">
+          <div>
+            <div class="name">The Beginning of Infinity</div>
+            <div class="by">David Deutsch · physics + philosophy</div>
+          </div>
+          <div class="pct-wrap">
+            <div class="pct-bar"><div class="pct-fill" style="width:62%"></div></div>
+            <div class="pct-text">62% · ch 9</div>
+          </div>
+        </div>
+        <div class="book">
+          <div>
+            <div class="name">Working Backwards</div>
+            <div class="by">Bryar &amp; Carr · Amazon's playbook</div>
+          </div>
+          <div class="pct-wrap">
+            <div class="pct-bar"><div class="pct-fill" style="width:34%"></div></div>
+            <div class="pct-text">34%</div>
+          </div>
+        </div>
+        <div class="book">
+          <div>
+            <div class="name">The Anxious Generation</div>
+            <div class="by">Jonathan Haidt · phones &amp; teens</div>
+          </div>
+          <div class="pct-wrap">
+            <div class="pct-bar"><div class="pct-fill" style="width:88%"></div></div>
+            <div class="pct-text">88% · finishing</div>
+          </div>
+        </div>
+        <div class="book">
+          <div>
+            <div class="name">Kitchen Confidential</div>
+            <div class="by">Anthony Bourdain · re-read</div>
+          </div>
+          <div class="pct-wrap">
+            <div class="pct-bar"><div class="pct-fill" style="width:0%"></div></div>
+            <div class="pct-text">queued · May</div>
+          </div>
+        </div>
+        <div class="book">
+          <div>
+            <div class="name">A Pattern Language</div>
+            <div class="by">Christopher Alexander · slow read</div>
+          </div>
+          <div class="pct-wrap">
+            <div class="pct-bar"><div class="pct-fill" style="width:14%"></div></div>
+            <div class="pct-text">14% · pause</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card glass" style="margin-bottom: 14px;">
+        <div class="card-head">
+          <span class="title">Hobby projects</span>
+          <span class="meta">4 active</span>
+        </div>
+        <div class="hobbies">
+          <div class="hobby">
+            <div class="head"><span class="name">Songwriting (lofi project)</span><span class="when">touched Apr 24</span></div>
+            <div class="next">3 sketches in Music Factory · next: render to MIDI + add bass line</div>
+          </div>
+          <div class="hobby">
+            <div class="head"><span class="name">Balcony garden</span><span class="when">touched Apr 22</span></div>
+            <div class="next">Tomatoes germinated · transplant to balcony pots this weekend</div>
+          </div>
+          <div class="hobby">
+            <div class="head"><span class="name">"Year of fatherhood" essay series</span><span class="when">touched Apr 20</span></div>
+            <div class="next">Essay 2/12 in draft · pacing toward weekly · ship May</div>
+          </div>
+          <div class="hobby">
+            <div class="head"><span class="name">Bookshelf rebuild</span><span class="when">touched Apr 18</span></div>
+            <div class="next">Designed in Sketchup · cuts ordered from Hornbach · build in May</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dnd-card glass">
+        <div class="upcoming">Next session</div>
+        <div class="session">"The Vault Beneath the Bell Tower"</div>
+        <div class="when">Fri Apr 30 · 7pm · session 14 · prep due Wed</div>
+        <div class="party">
+          <span class="pc">DM (you)</span>
+          <span class="pc">Lior · ranger</span>
+          <span class="pc">Sara · cleric</span>
+          <span class="pc">Tom · rogue</span>
+          <span class="pc">Anna · sorcerer</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Play · part of <a href="../../daily-console/index.html">Personal OS</a></p>
+
+</main>
+
+<script>
+'use strict';
+
+const HABITS = [
+  { name: 'Movement',  sub: 'walk · yoga · strength',  data: pattern(28, 0.85), streak: 11 },
+  { name: 'Reading',   sub: '20 min minimum',           data: pattern(28, 0.75), streak: 7  },
+  { name: 'Write',     sub: 'one paragraph',            data: pattern(28, 0.55), streak: 3  },
+  { name: 'No phone (1h after wake)', sub: 'paper journal instead', data: pattern(28, 0.65), streak: 4 },
+  { name: 'Sunlight',  sub: '15 min within 2h of wake', data: pattern(28, 0.80), streak: 11 },
+];
+
+function pattern(n, intensity) {
+  // Random-ish but with a recent-streak feel
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const recency = i / n;     // newer = more likely to hit
+    const r = Math.random() * (0.8 + recency * 0.5);
+    if (r < intensity * 0.35) out.push(0);
+    else if (r < intensity * 0.65) out.push(1);
+    else if (r < intensity * 0.9) out.push(2);
+    else out.push(3);
+  }
+  // Force last 3-7 days to be high (the streak)
+  const streakLen = 3 + Math.floor(Math.random() * 5);
+  for (let i = n - streakLen; i < n; i++) out[i] = Math.random() < 0.7 ? 3 : 2;
+  return out;
+}
+
+function renderHabits() {
+  const html = HABITS.map(h => {
+    const cells = h.data.map(level => `<div class="cell ${level ? 'l' + level : ''}"></div>`).join('');
+    return `<div class="habit-row">
+      <div class="name">${h.name}<small>${h.sub}</small></div>
+      <div class="grid">${cells}</div>
+      <div class="streak">${h.streak}<small>day streak</small></div>
+    </div>`;
+  }).join('');
+  document.getElementById('habits').innerHTML = html;
+}
+renderHabits();
+</script>
+</body>
+</html>

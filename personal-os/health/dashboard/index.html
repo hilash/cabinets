@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Health · Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #6FA8E5;
+    --area-soft: rgba(111, 168, 229, 0.16);
+    --bg-tint-1: rgba(111, 168, 229, 0.10);
+    --bg-tint-2: rgba(107, 142, 90, 0.08);
+    --bg-tint-3: rgba(233, 123, 146, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb:hover { color: var(--ink); }
+  .crumb .arrow { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--area); }
+  .quick-nav { display: flex; gap: 4px; }
+  .quick-nav a { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); padding: 4px 10px; border-radius: 100px; }
+  .quick-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .quick-nav a.active { background: var(--area-soft); color: var(--area); }
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  /* Vitals cards w/ sparkline */
+  .vitals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 980px) { .vitals { grid-template-columns: repeat(2, 1fr); } }
+  .vital { padding: 16px 20px; }
+  .vital .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 6px; font-weight: 500; }
+  .vital .v { font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: -0.02em; line-height: 1; margin-bottom: 4px; }
+  .vital .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .vital .delta { font-family: var(--sans); font-size: 11px; font-style: italic; color: var(--ink-3); margin-bottom: 8px; }
+  .vital .delta.up { color: var(--good); }
+  .vital .delta.down { color: var(--alert); }
+  .vital .spark { width: 100%; height: 36px; }
+  .vital .spark svg { width: 100%; height: 100%; display: block; }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* Labs table */
+  .labs { width: 100%; border-collapse: collapse; }
+  .labs th { text-align: left; font-family: var(--mono); font-size: 8.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); padding: 4px 8px; border-bottom: 1px solid var(--glass-bevel); }
+  .labs td { padding: 8px; border-bottom: 1px solid var(--glass-bevel); font-size: 12.5px; vertical-align: middle; }
+  .labs tr:last-child td { border-bottom: none; }
+  .labs .lab-name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .labs .lab-val { font-family: var(--serif); font-weight: 500; font-size: 14px; text-align: right; }
+  .labs .lab-range { font-family: var(--mono); font-size: 10px; color: var(--ink-3); text-align: right; }
+  .labs .lab-status { text-align: right; }
+  .labs .pill { display: inline-block; font-family: var(--mono); font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.12em; padding: 2px 8px; border-radius: 100px; font-weight: 600; }
+  .labs .pill.ok { background: rgba(107,142,90,0.18); color: var(--good); }
+  .labs .pill.warn { background: rgba(184,137,46,0.18); color: var(--warn); }
+  .labs .pill.alert { background: rgba(194,74,106,0.20); color: var(--alert); }
+
+  /* Supplements stack */
+  .stack { display: flex; flex-direction: column; gap: 0; }
+  .supp { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--glass-bevel); align-items: center; }
+  .supp:last-child { border-bottom: none; }
+  .supp .name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .supp .name small { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; font-style: normal; }
+  .supp .dose { font-family: var(--mono); font-size: 11px; color: var(--ink-2); }
+  .supp .when { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; }
+
+  /* Workouts */
+  .workouts { display: flex; flex-direction: column; gap: 0; }
+  .workout { display: grid; grid-template-columns: 50px 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--glass-bevel); align-items: center; }
+  .workout:last-child { border-bottom: none; }
+  .workout .when { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .workout .what { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .workout .what small { display: block; font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-top: 2px; font-style: normal; }
+  .workout .dur { font-family: var(--mono); font-size: 11px; color: var(--ink-2); text-align: right; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+  .footer a { color: var(--area); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <a href="../../daily-console/index.html" class="crumb"><span class="arrow">←</span>Daily Console</a>
+    <nav class="quick-nav">
+      <a href="../../brain/dashboard/index.html">Brain</a>
+      <a href="../../family/dashboard/index.html">Family</a>
+      <a href="../../home/dashboard/index.html">Home</a>
+      <a href="../../money/dashboard/index.html">Money</a>
+      <a class="active" href="#">Health</a>
+      <a href="../../play/dashboard/index.html">Play</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Your <em>vitals</em>.</h1>
+      <div class="stand">HRV, sleep, weight, labs, supplements, workouts — all sourced.</div>
+    </div>
+    <div class="right">last sync · oura · 4 min ago</div>
+  </header>
+
+  <section class="vitals">
+    <div class="vital glass">
+      <div class="lbl">HRV (7-day)</div>
+      <div class="v">52 <small>ms</small></div>
+      <div class="delta up">↑ from 47 last week</div>
+      <div class="spark"><svg id="spark-hrv" viewBox="0 0 100 36" preserveAspectRatio="none"></svg></div>
+    </div>
+    <div class="vital glass">
+      <div class="lbl">Sleep avg</div>
+      <div class="v">7.2 <small>hours</small></div>
+      <div class="delta up">deep 1.4 · REM 1.6</div>
+      <div class="spark"><svg id="spark-sleep" viewBox="0 0 100 36" preserveAspectRatio="none"></svg></div>
+    </div>
+    <div class="vital glass">
+      <div class="lbl">Weight</div>
+      <div class="v">62.4 <small>kg</small></div>
+      <div class="delta">stable · ±0.3</div>
+      <div class="spark"><svg id="spark-weight" viewBox="0 0 100 36" preserveAspectRatio="none"></svg></div>
+    </div>
+    <div class="vital glass">
+      <div class="lbl">Resting HR</div>
+      <div class="v">58 <small>bpm</small></div>
+      <div class="delta up">↓ 2 bpm 30-day</div>
+      <div class="spark"><svg id="spark-rhr" viewBox="0 0 100 36" preserveAspectRatio="none"></svg></div>
+    </div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Latest labs · Mar 12</span>
+        <span class="meta">28 markers</span>
+      </div>
+      <table class="labs">
+        <thead><tr><th>Marker</th><th style="text-align:right">Result</th><th style="text-align:right">Range</th><th></th></tr></thead>
+        <tbody>
+          <tr><td class="lab-name">Vitamin D (25-OH)</td><td class="lab-val">42 ng/ml</td><td class="lab-range">30–60</td><td class="lab-status"><span class="pill ok">ok</span></td></tr>
+          <tr><td class="lab-name">Ferritin</td><td class="lab-val">38 ng/ml</td><td class="lab-range">15–150</td><td class="lab-status"><span class="pill warn">low-end</span></td></tr>
+          <tr><td class="lab-name">B12</td><td class="lab-val">680 pg/ml</td><td class="lab-range">200–900</td><td class="lab-status"><span class="pill ok">ok</span></td></tr>
+          <tr><td class="lab-name">TSH</td><td class="lab-val">2.1 mIU/L</td><td class="lab-range">0.4–4.0</td><td class="lab-status"><span class="pill ok">ok</span></td></tr>
+          <tr><td class="lab-name">HbA1c</td><td class="lab-val">5.2 %</td><td class="lab-range">&lt;5.7</td><td class="lab-status"><span class="pill ok">ok</span></td></tr>
+          <tr><td class="lab-name">LDL-C</td><td class="lab-val">128 mg/dl</td><td class="lab-range">&lt;100 ideal</td><td class="lab-status"><span class="pill warn">discuss</span></td></tr>
+          <tr><td class="lab-name">HDL</td><td class="lab-val">68 mg/dl</td><td class="lab-range">&gt;50</td><td class="lab-status"><span class="pill ok">good</span></td></tr>
+          <tr><td class="lab-name">Triglycerides</td><td class="lab-val">82 mg/dl</td><td class="lab-range">&lt;150</td><td class="lab-status"><span class="pill ok">ok</span></td></tr>
+          <tr><td class="lab-name">ApoB</td><td class="lab-val">94 mg/dl</td><td class="lab-range">&lt;90 ideal</td><td class="lab-status"><span class="pill warn">discuss</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Supplements stack</span>
+        <span class="meta">5 daily</span>
+      </div>
+      <div class="stack">
+        <div class="supp">
+          <div class="name">Vitamin D3 + K2<small>Thorne · NIH-quality</small></div>
+          <span class="dose">2000 IU</span>
+          <span class="when">am · w/ fat</span>
+        </div>
+        <div class="supp">
+          <div class="name">Magnesium glycinate<small>Pure Encapsulations</small></div>
+          <span class="dose">400 mg</span>
+          <span class="when">pm</span>
+        </div>
+        <div class="supp">
+          <div class="name">Omega-3 (EPA/DHA)<small>Nordic Naturals · IFOS</small></div>
+          <span class="dose">2 g</span>
+          <span class="when">am · w/ food</span>
+        </div>
+        <div class="supp">
+          <div class="name">Iron bisglycinate<small>per ferritin · Fri only</small></div>
+          <span class="dose">25 mg</span>
+          <span class="when">empty stomach</span>
+        </div>
+        <div class="supp">
+          <div class="name">Creatine monohydrate<small>Bulk · 5 g</small></div>
+          <span class="dose">5 g</span>
+          <span class="when">anytime</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Recent workouts</span>
+        <span class="meta">last 7 days · 4 sessions</span>
+      </div>
+      <div class="workouts">
+        <div class="workout">
+          <span class="when">Yest</span>
+          <div class="what">Walk + sunlight<small>3.4 km · 32 min · zone 2</small></div>
+          <span class="dur">32 min</span>
+        </div>
+        <div class="workout">
+          <span class="when">Apr 24</span>
+          <div class="what">Yoga (Yin)<small>YouTube · Yoga with Adriene</small></div>
+          <span class="dur">45 min</span>
+        </div>
+        <div class="workout">
+          <span class="when">Apr 23</span>
+          <div class="what">Walk · zone 2<small>5.1 km · 47 min</small></div>
+          <span class="dur">47 min</span>
+        </div>
+        <div class="workout">
+          <span class="when">Apr 21</span>
+          <div class="what">Strength (postpartum, supervised)<small>Pilates studio · Anke</small></div>
+          <span class="dur">50 min</span>
+        </div>
+        <div class="workout">
+          <span class="when">Apr 19</span>
+          <div class="what">Walk · zone 2 + stroller<small>4.2 km · 42 min</small></div>
+          <span class="dur">42 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Care team &amp; appointments</span>
+        <span class="meta">5 contacts</span>
+      </div>
+      <div class="stack">
+        <div class="supp">
+          <div class="name">Dr. Schäfer · GP<small>Charité · last visit Mar 12</small></div>
+          <span class="dose">—</span>
+          <span class="when">next: Sep</span>
+        </div>
+        <div class="supp">
+          <div class="name">Dr. Bauer · OB-GYN<small>postpartum check Mar 28</small></div>
+          <span class="dose">—</span>
+          <span class="when">next: Jun</span>
+        </div>
+        <div class="supp">
+          <div class="name">Anke · pelvic-floor PT<small>Pilates studio Friedrichshain</small></div>
+          <span class="dose">weekly</span>
+          <span class="when">Wed 4pm</span>
+        </div>
+        <div class="supp">
+          <div class="name">Dr. Levi · dentist<small>annual cleaning</small></div>
+          <span class="dose">—</span>
+          <span class="when">due Aug</span>
+        </div>
+        <div class="supp">
+          <div class="name">Lactation consultant<small>Lisa M. · IBCLC</small></div>
+          <span class="dose">on-call</span>
+          <span class="when">via WhatsApp</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Health · part of <a href="../../daily-console/index.html">Personal OS</a> · every recommendation cites a source</p>
+
+</main>
+
+<script>
+'use strict';
+function spark(id, data, color) {
+  const svg = document.getElementById(id);
+  const W = 100, H = 36;
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = max - min || 1;
+  const x = i => (i / (data.length - 1)) * W;
+  const y = v => H - 4 - ((v - min) / range) * (H - 8);
+  let path = '';
+  for (let i = 0; i < data.length; i++) {
+    const x1 = x(i), y1 = y(data[i]);
+    if (i === 0) path += `M ${x1} ${y1}`;
+    else {
+      const x0 = x(i - 1), y0 = y(data[i - 1]);
+      const cx = (x0 + x1) / 2;
+      path += ` C ${cx} ${y0} ${cx} ${y1} ${x1} ${y1}`;
+    }
+  }
+  let html = '';
+  html += `<defs><linearGradient id="g-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.30"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>`;
+  html += `<path d="${path} L ${W} ${H} L 0 ${H} Z" fill="url(#g-${id})"/>`;
+  html += `<path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/>`;
+  html += `<circle cx="${x(data.length-1)}" cy="${y(data[data.length-1])}" r="2" fill="${color}"/>`;
+  svg.innerHTML = html;
+}
+spark('spark-hrv',    [44, 47, 45, 49, 51, 52, 50, 53, 51, 52, 54, 52, 55, 52], '#6FA8E5');
+spark('spark-sleep',  [6.8, 7.0, 6.5, 7.4, 7.2, 7.5, 7.0, 7.3, 7.1, 7.4, 7.0, 7.2, 7.4, 7.2], '#6B8E5A');
+spark('spark-weight', [62.6, 62.5, 62.4, 62.6, 62.3, 62.4, 62.4, 62.5, 62.4, 62.3, 62.4, 62.5, 62.4, 62.4], '#998E7E');
+spark('spark-rhr',    [60, 61, 60, 59, 60, 58, 59, 58, 57, 58, 58, 59, 58, 58], '#C24A6A');
+</script>
+</body>
+</html>

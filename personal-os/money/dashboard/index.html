@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Money · Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --bg-tint-1: rgba(107, 142, 90, 0.10);
+    --bg-tint-2: rgba(216, 162, 78, 0.08);
+    --bg-tint-3: rgba(46, 65, 86, 0.06);
+
+    --glass:        rgba(255, 252, 244, 0.55);
+    --glass-strong: rgba(255, 252, 244, 0.72);
+    --glass-sage:   rgba(232, 240, 228, 0.62);
+    --glass-cream:  rgba(252, 245, 226, 0.62);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-stroke-soft: rgba(255, 255, 255, 0.35);
+    --glass-bevel:  rgba(27, 24, 20, 0.04);
+
+    --ink:    #1B1814;
+    --ink-2:  #5C544A;
+    --ink-3:  #998E7E;
+    --ink-4:  #C0B6A2;
+
+    --area:        #6B8E5A;       /* Money sage */
+    --area-soft:   rgba(107, 142, 90, 0.16);
+    --primary:     #2E4156;
+    --good:        #6B8E5A;
+    --warn:        #B8892E;
+    --alert:       #C24A6A;
+
+    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+    --sans:  'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+    --r-md: 14px;
+    --r-lg: 20px;
+
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  a { text-decoration: none; }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .glass::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 18px; right: 18px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.95) 50%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .shell {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 24px 28px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ===== Topbar (back nav) ===== */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 6px 0;
+  }
+  .crumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    transition: color 0.15s;
+  }
+  .crumb:hover { color: var(--ink); }
+  .crumb .arrow { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--area); }
+
+  .quick-nav { display: flex; gap: 4px; }
+  .quick-nav a {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    padding: 4px 10px;
+    border-radius: 100px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .quick-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .quick-nav a.active { background: var(--area-soft); color: var(--area); }
+
+  /* ===== Hero ===== */
+  .hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    padding: 4px 6px 6px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(34px, 4vw, 50px);
+    letter-spacing: -0.022em;
+    line-height: 0.98;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--area);
+  }
+  .hero .stand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-2);
+    margin-top: 6px;
+  }
+  .hero .right {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  /* ===== Big number row ===== */
+  .big-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat {
+    padding: 18px 22px;
+  }
+  .big-stat .lbl {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .big-stat .v {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .big-stat .v small {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-3);
+    margin-left: 5px;
+  }
+  .big-stat .delta {
+    margin-top: 6px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-style: italic;
+  }
+  .big-stat .delta.up { color: var(--good); }
+  .big-stat .delta.down { color: var(--alert); }
+
+  /* ===== Two-col + sidebar ===== */
+  .row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  .card { padding: 18px 22px; }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--glass-bevel);
+    margin-bottom: 12px;
+  }
+  .card-head .title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.005em;
+  }
+  .card-head .meta {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+
+  /* Net worth chart */
+  .chart-wrap { height: 240px; width: 100%; position: relative; }
+  .chart-wrap svg { display: block; width: 100%; height: 100%; }
+
+  /* Accounts list */
+  .accounts { display: flex; flex-direction: column; gap: 0; }
+  .acct {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--glass-bevel);
+    align-items: center;
+  }
+  .acct:last-child { border-bottom: none; }
+  .acct .name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .acct .type {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 2px;
+  }
+  .acct .bal {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--ink);
+    text-align: right;
+    letter-spacing: -0.01em;
+  }
+  .acct .bal small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--ink-3);
+    margin-top: 2px;
+    font-style: italic;
+  }
+  .acct .bal small.up { color: var(--good); }
+  .acct .bal small.down { color: var(--alert); }
+
+  /* Spending bars */
+  .spend-list { display: flex; flex-direction: column; gap: 9px; }
+  .spend-row { display: grid; grid-template-columns: 110px 1fr 60px; gap: 10px; align-items: center; }
+  .spend-row .cat { font-size: 12.5px; color: var(--ink-2); }
+  .spend-row .bar-wrap { height: 9px; background: rgba(216, 162, 78, 0.12); border-radius: 4px; overflow: hidden; }
+  .spend-row .bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--area) 0%, #8FB57F 100%);
+    border-radius: 4px;
+  }
+  .spend-row .amt {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink);
+    text-align: right;
+    font-weight: 500;
+  }
+
+  /* Subscriptions table */
+  .subs { width: 100%; border-collapse: collapse; }
+  .subs th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 8.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--glass-bevel);
+  }
+  .subs td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--glass-bevel);
+    font-size: 12.5px;
+    vertical-align: middle;
+  }
+  .subs tr:last-child td { border-bottom: none; }
+  .subs .sub-name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .subs .price { font-family: var(--serif); font-weight: 500; text-align: right; font-size: 14px; }
+  .subs .renew { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-align: right; }
+  .subs tr.soon .renew { color: var(--warn); font-weight: 500; }
+
+  /* Goals */
+  .goals { display: flex; flex-direction: column; gap: 14px; }
+  .goal-row .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .goal-row .name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .goal-row .pct { font-family: var(--mono); font-size: 11px; color: var(--ink-2); font-weight: 500; }
+  .goal-row .progress { height: 6px; background: rgba(107, 142, 90, 0.10); border-radius: 3px; overflow: hidden; }
+  .goal-row .progress .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--area) 0%, #8FB57F 100%);
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .goal-row .target {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 4px;
+  }
+
+  /* Footer ===== */
+  .footer {
+    text-align: center;
+    color: var(--ink-3);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    padding-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <!-- ===== Topbar ===== -->
+  <div class="topbar">
+    <a href="../../daily-console/index.html" class="crumb"><span class="arrow">←</span>Daily Console</a>
+    <nav class="quick-nav">
+      <a href="../../brain/dashboard/index.html">Brain</a>
+      <a href="../../family/dashboard/index.html">Family</a>
+      <a href="../../home/dashboard/index.html">Home</a>
+      <a class="active" href="#">Money</a>
+      <a href="../../health/dashboard/index.html">Health</a>
+      <a href="../../play/dashboard/index.html">Play</a>
+    </nav>
+  </div>
+
+  <!-- ===== Hero ===== -->
+  <header class="hero">
+    <div class="left">
+      <h1>Where the <em>money</em> is.</h1>
+      <div class="stand">Net worth, accounts, spending, subscriptions, goals.</div>
+    </div>
+    <div class="right" id="hero-meta">last updated · today</div>
+  </header>
+
+  <!-- ===== Big stats row ===== -->
+  <section class="big-stats">
+    <div class="big-stat glass">
+      <div class="lbl">Net worth</div>
+      <div class="v">€128,400</div>
+      <div class="delta up">↑ 2.3% this month · €2,890</div>
+    </div>
+    <div class="big-stat glass">
+      <div class="lbl">Liquid cash</div>
+      <div class="v">€18,200</div>
+      <div class="delta up">covers 14 months</div>
+    </div>
+    <div class="big-stat glass">
+      <div class="lbl">Savings rate</div>
+      <div class="v">32% <small>this month</small></div>
+      <div class="delta up">target 30% · ↑ 2pp</div>
+    </div>
+    <div class="big-stat glass">
+      <div class="lbl">Subscriptions</div>
+      <div class="v">€124 <small>monthly</small></div>
+      <div class="delta down">2 due in next 7 days</div>
+    </div>
+  </section>
+
+  <!-- ===== Net worth chart + Accounts ===== -->
+  <section class="row">
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Net worth — last 12 months</span>
+        <span class="meta">€108k → €128.4k · ↑ 19%</span>
+      </div>
+      <div class="chart-wrap">
+        <svg id="nw-chart" viewBox="0 0 700 240" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Accounts</span>
+        <span class="meta">7</span>
+      </div>
+      <div class="accounts" id="accounts"></div>
+    </div>
+  </section>
+
+  <!-- ===== Spending + Subscriptions ===== -->
+  <section class="row">
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Spending — this month</span>
+        <span class="meta">€2,840 · ↓ 4%</span>
+      </div>
+      <div class="spend-list" id="spend-list"></div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Subscriptions</span>
+        <span class="meta">€124/mo · €1,488/yr</span>
+      </div>
+      <table class="subs" id="subs"></table>
+    </div>
+  </section>
+
+  <!-- ===== Goals ===== -->
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">Goals</span>
+      <span class="meta">tracking</span>
+    </div>
+    <div class="goals" id="goals"></div>
+  </section>
+
+  <p class="footer">Money · part of <a href="../../daily-console/index.html" style="color:var(--area); font-weight:500">Personal OS</a></p>
+
+</main>
+
+<script>
+'use strict';
+
+// ===== Data =====
+const NET_WORTH = [
+  { m: 'May', v: 108.0 }, { m: 'Jun', v: 109.2 }, { m: 'Jul', v: 112.1 },
+  { m: 'Aug', v: 114.3 }, { m: 'Sep', v: 113.5 }, { m: 'Oct', v: 117.0 },
+  { m: 'Nov', v: 119.4 }, { m: 'Dec', v: 121.8 }, { m: 'Jan', v: 122.9 },
+  { m: 'Feb', v: 124.5 }, { m: 'Mar', v: 125.5 }, { m: 'Apr', v: 128.4 },
+];
+
+const ACCOUNTS = [
+  { name: 'N26 Checking',         type: 'cash',       bal: 4200,   delta: '+€1,200 mo', dir: 'up'   },
+  { name: 'DKB Savings',          type: 'cash · HYS', bal: 14000,  delta: '+€500 mo',   dir: 'up'   },
+  { name: 'Trade Republic ETF',   type: 'invest',     bal: 62500,  delta: '+€2,800 mo', dir: 'up'   },
+  { name: 'Vanguard ISA',         type: 'invest',     bal: 28400,  delta: '+€680 mo',   dir: 'up'   },
+  { name: 'Crypto (cold storage)',type: 'invest',     bal: 8900,   delta: '−€340 mo',   dir: 'down' },
+  { name: 'Pension (private)',    type: 'long-term',  bal: 9200,   delta: '+€220 mo',   dir: 'up'   },
+  { name: 'Credit card (Amex)',   type: 'liability',  bal: -1300,  delta: 'paid full',  dir: ''     },
+];
+
+const SPENDING = [
+  { cat: 'Rent + utilities', amt: 1100 },
+  { cat: 'Groceries',        amt:  480 },
+  { cat: 'Eating out',       amt:  320 },
+  { cat: 'Transport',        amt:  180 },
+  { cat: 'Subscriptions',    amt:  124 },
+  { cat: 'Shopping',         amt:  220 },
+  { cat: 'Health',           amt:   95 },
+  { cat: 'Travel',           amt:  280 },
+  { cat: 'Other',            amt:   41 },
+];
+
+const SUBS = [
+  { name: 'Anthropic Pro',      price:  20, renew: 'in 4 days', soon: true },
+  { name: 'Cabinet (annual)',   price: '15.83', renew: 'in 6 days', soon: true },
+  { name: 'Spotify Family',     price:  17, renew: 'in 11 days', soon: false },
+  { name: 'Cursor Pro',         price:  20, renew: 'in 13 days', soon: false },
+  { name: 'iCloud 2 TB',        price:   9, renew: 'in 17 days', soon: false },
+  { name: 'NYT Digital',        price:  17, renew: 'in 20 days', soon: false },
+  { name: 'Vercel',             price:  20, renew: 'in 26 days', soon: false },
+  { name: 'GitHub Copilot',     price:  10, renew: 'in 28 days', soon: false },
+];
+
+const GOALS = [
+  { name: 'Emergency fund (€20k)',   v: 18200, target: 20000, unit: '€' },
+  { name: 'Investments (€100k)',     v: 91400, target: 100000, unit: '€' },
+  { name: 'Net worth (€150k by EOY)',v: 128400, target: 150000, unit: '€' },
+];
+
+// ===== Render =====
+function render() {
+  drawNetWorth();
+  document.getElementById('accounts').innerHTML = ACCOUNTS.map(a => `
+    <div class="acct">
+      <div>
+        <div class="name">${a.name}</div>
+        <div class="type">${a.type}</div>
+      </div>
+      <div class="bal">
+        ${a.bal < 0 ? '−€' + Math.abs(a.bal).toLocaleString() : '€' + a.bal.toLocaleString()}
+        ${a.delta ? `<small class="${a.dir}">${a.delta}</small>` : ''}
+      </div>
+    </div>`).join('');
+
+  const maxSpend = Math.max(...SPENDING.map(s => s.amt));
+  document.getElementById('spend-list').innerHTML = SPENDING.map(s => `
+    <div class="spend-row">
+      <span class="cat">${s.cat}</span>
+      <div class="bar-wrap"><div class="bar" style="width:${(s.amt / maxSpend * 100).toFixed(0)}%"></div></div>
+      <span class="amt">€${s.amt}</span>
+    </div>`).join('');
+
+  document.getElementById('subs').innerHTML = `
+    <thead><tr><th>Service</th><th style="text-align:right">€/mo</th><th style="text-align:right">Renews</th></tr></thead>
+    <tbody>${SUBS.map(s => `
+      <tr class="${s.soon ? 'soon' : ''}">
+        <td class="sub-name">${s.name}</td>
+        <td class="price">€${s.price}</td>
+        <td class="renew">${s.renew}</td>
+      </tr>`).join('')}
+    </tbody>`;
+
+  document.getElementById('goals').innerHTML = GOALS.map(g => {
+    const pct = Math.min(100, (g.v / g.target) * 100);
+    return `<div class="goal-row">
+      <div class="head">
+        <span class="name">${g.name}</span>
+        <span class="pct">${pct.toFixed(0)}%</span>
+      </div>
+      <div class="progress"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="target">${g.unit}${g.v.toLocaleString()} of ${g.unit}${g.target.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+function drawNetWorth() {
+  const svg = document.getElementById('nw-chart');
+  const W = 700, H = 240, padX = 12, padY = 22;
+  const data = NET_WORTH.map(p => p.v);
+  const labels = NET_WORTH.map(p => p.m);
+  const min = 100, max = 135;
+  const x = i => padX + (i / (data.length - 1)) * (W - padX * 2);
+  const y = v => H - padY - ((v - min) / (max - min)) * (H - padY * 2);
+
+  let html = '';
+  html += '<g stroke="rgba(216, 162, 78, 0.10)" stroke-width="1">';
+  for (let kg = 105; kg <= 130; kg += 5) html += `<line x1="${padX}" y1="${y(kg)}" x2="${W - padX}" y2="${y(kg)}"/>`;
+  html += '</g>';
+
+  html += `<defs>
+    <linearGradient id="nwGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(107,142,90,0.32)"/>
+      <stop offset="100%" stop-color="rgba(107,142,90,0.02)"/>
+    </linearGradient>
+  </defs>`;
+
+  let path = '';
+  for (let i = 0; i < data.length; i++) {
+    const x1 = x(i), y1 = y(data[i]);
+    if (i === 0) path += `M ${x1} ${y1}`;
+    else {
+      const x0 = x(i - 1), y0 = y(data[i - 1]);
+      const cx = (x0 + x1) / 2;
+      path += ` C ${cx} ${y0} ${cx} ${y1} ${x1} ${y1}`;
+    }
+  }
+  html += `<path d="${path} L ${x(data.length - 1)} ${H - padY} L ${x(0)} ${H - padY} Z" fill="url(#nwGrad)"/>`;
+  html += `<path d="${path}" fill="none" stroke="#6B8E5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  // Y-axis labels (left)
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E">';
+  for (let kg = 110; kg <= 130; kg += 10) html += `<text x="0" y="${y(kg) - 3}">€${kg}k</text>`;
+  html += '</g>';
+
+  // Last point — halo + dot + value tag
+  const last = data.length - 1;
+  html += `<circle cx="${x(last)}" cy="${y(data[last])}" r="11" fill="#6B8E5A" opacity="0.12"/>`;
+  html += `<circle cx="${x(last)}" cy="${y(data[last])}" r="6" fill="#6B8E5A" stroke="white" stroke-width="2"/>`;
+  html += `<text x="${x(last) - 36}" y="${y(data[last]) - 14}" font-family="Cormorant Garamond, serif" font-size="14" font-style="italic" fill="#1B1814">€${data[last]}k</text>`;
+
+  // Month labels
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E" letter-spacing="1">';
+  labels.forEach((m, i) => { if (i % 2 === 0) html += `<text x="${x(i) - 5}" y="${H - 4}">${m}</text>`; });
+  html += '</g>';
+
+  svg.innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>

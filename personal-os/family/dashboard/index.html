@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Family · Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #E97B92;
+    --area-soft: rgba(233, 123, 146, 0.16);
+    --bg-tint-1: rgba(233, 123, 146, 0.10);
+    --bg-tint-2: rgba(216, 162, 78, 0.08);
+    --bg-tint-3: rgba(111, 168, 229, 0.06);
+
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E;
+    --primary: #2E4156; --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before {
+    content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+  }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb:hover { color: var(--ink); }
+  .crumb .arrow { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--area); }
+  .quick-nav { display: flex; gap: 4px; }
+  .quick-nav a { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); padding: 4px 10px; border-radius: 100px; }
+  .quick-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .quick-nav a.active { background: var(--area-soft); color: var(--area); }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  /* Members row */
+  .members-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 980px) { .members-grid { grid-template-columns: repeat(2, 1fr); } }
+  .member { padding: 16px 20px; }
+  .member .label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 6px; }
+  .member .name { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--ink); font-weight: 500; line-height: 1.05; margin-bottom: 4px; }
+  .member .age { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-bottom: 8px; }
+  .member .bullet { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+  .member .bullet strong { color: var(--ink); font-weight: 600; }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* Calendar week */
+  .cal-week { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr; gap: 6px; }
+  .day-col { display: flex; flex-direction: column; gap: 4px; min-height: 200px; }
+  .day-head {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-3); padding: 6px 8px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 4px;
+  }
+  .day-head .num { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink); margin-left: 4px; font-weight: 500; }
+  .day-col.today .day-head { color: var(--area); }
+  .day-col.today .day-head .num { color: var(--area); }
+  .ev {
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.5);
+    border-left: 3px solid var(--ink-4);
+    font-size: 11px;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+  .ev.maya  { border-left-color: var(--area); background: rgba(233,123,146,0.10); }
+  .ev.adam  { border-left-color: var(--primary); background: rgba(46,65,86,0.08); }
+  .ev.you   { border-left-color: var(--good); background: rgba(107,142,90,0.10); }
+  .ev.shared{ border-left-color: var(--warn); background: rgba(216,162,78,0.12); }
+  .ev .who { font-family: var(--mono); font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); display: block; margin-bottom: 2px; }
+
+  /* Birthdays */
+  .bday-list { display: flex; flex-direction: column; gap: 0; }
+  .bday { display: grid; grid-template-columns: 60px 1fr auto; gap: 12px; padding: 10px 0; align-items: center; border-bottom: 1px solid var(--glass-bevel); }
+  .bday:last-child { border-bottom: none; }
+  .bday.next-7 { background: rgba(233,123,146,0.06); margin: 0 -10px; padding: 10px; border-radius: 8px; }
+  .bday .when { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink); }
+  .bday .name { font-family: var(--serif); font-size: 15px; color: var(--ink); font-weight: 500; }
+  .bday .relation { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 2px; }
+  .bday .age { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+
+  /* Moments */
+  .moments { display: flex; flex-direction: column; gap: 0; }
+  .moment { padding: 8px 0; border-bottom: 1px dashed var(--glass-bevel); display: grid; grid-template-columns: 60px 1fr; gap: 12px; }
+  .moment:last-child { border-bottom: none; }
+  .moment .when { font-family: var(--mono); font-size: 10px; color: var(--ink-3); padding-top: 2px; }
+  .moment .what { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); line-height: 1.4; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+  .footer a { color: var(--area); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <a href="../../daily-console/index.html" class="crumb"><span class="arrow">←</span>Daily Console</a>
+    <nav class="quick-nav">
+      <a href="../../brain/dashboard/index.html">Brain</a>
+      <a class="active" href="#">Family</a>
+      <a href="../../home/dashboard/index.html">Home</a>
+      <a href="../../money/dashboard/index.html">Money</a>
+      <a href="../../health/dashboard/index.html">Health</a>
+      <a href="../../play/dashboard/index.html">Play</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>The <em>people</em>.</h1>
+      <div class="stand">Members, this week's calendar, birthdays, captured moments.</div>
+    </div>
+    <div class="right">family of 4 + 1 grandmother</div>
+  </header>
+
+  <!-- Members -->
+  <section class="members-grid">
+    <div class="member glass">
+      <div class="label">Partner</div>
+      <div class="name">Adam</div>
+      <div class="age">36 · works in fintech</div>
+      <div class="bullet"><strong>This week:</strong> business trip Wed–Fri (Munich)</div>
+    </div>
+    <div class="member glass">
+      <div class="label">Daughter</div>
+      <div class="name">Maya</div>
+      <div class="age">6 weeks</div>
+      <div class="bullet"><strong>This week:</strong> 6-week pediatrician visit (Mon)</div>
+    </div>
+    <div class="member glass">
+      <div class="label">Mother</div>
+      <div class="name">Ruth</div>
+      <div class="age">68 · in Tel Aviv</div>
+      <div class="bullet"><strong>This week:</strong> Friday call · book a visit for May</div>
+    </div>
+    <div class="member glass">
+      <div class="label">Father</div>
+      <div class="name">David</div>
+      <div class="age">71 · birthday Thu</div>
+      <div class="bullet"><strong>This week:</strong> ⚠ birthday Thursday · gift TBD</div>
+    </div>
+  </section>
+
+  <!-- Calendar + Birthdays -->
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">This week</span>
+        <span class="meta">Apr 26 – May 2</span>
+      </div>
+      <div class="cal-week">
+        <div class="day-col">
+          <div class="day-head">Mon<span class="num">26</span></div>
+          <div class="ev maya"><span class="who">Maya</span>9am · pediatrician 6-wk visit</div>
+          <div class="ev shared"><span class="who">Family</span>Adam packs for Munich</div>
+        </div>
+        <div class="day-col">
+          <div class="day-head">Tue<span class="num">27</span></div>
+          <div class="ev you"><span class="who">You</span>11am · therapy</div>
+          <div class="ev maya"><span class="who">Maya</span>tummy time + bath</div>
+        </div>
+        <div class="day-col today">
+          <div class="day-head">Wed<span class="num">28</span></div>
+          <div class="ev adam"><span class="who">Adam</span>Munich (return Fri pm)</div>
+          <div class="ev you"><span class="who">You</span>solo evening — order in</div>
+        </div>
+        <div class="day-col">
+          <div class="day-head">Thu<span class="num">29</span></div>
+          <div class="ev shared"><span class="who">Dad</span>🎂 71 — call evening</div>
+          <div class="ev you"><span class="who">You</span>park morning with Maya</div>
+        </div>
+        <div class="day-col">
+          <div class="day-head">Fri<span class="num">30</span></div>
+          <div class="ev adam"><span class="who">Adam</span>back from Munich pm</div>
+          <div class="ev shared"><span class="who">Ruth</span>weekly call 7pm</div>
+        </div>
+        <div class="day-col">
+          <div class="day-head">Sat<span class="num">1</span></div>
+          <div class="ev shared"><span class="who">Family</span>park morning · Tiergarten</div>
+        </div>
+        <div class="day-col">
+          <div class="day-head">Sun<span class="num">2</span></div>
+          <div class="ev shared"><span class="who">Family</span>brunch at home</div>
+          <div class="ev you"><span class="who">You</span>Sunday roll-up 5pm</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Birthdays · next 60 days</span>
+        <span class="meta">7 upcoming</span>
+      </div>
+      <div class="bday-list">
+        <div class="bday next-7">
+          <span class="when">Thu</span>
+          <div>
+            <div class="name">David — Dad</div>
+            <div class="relation">father · Tel Aviv</div>
+          </div>
+          <span class="age">71</span>
+        </div>
+        <div class="bday">
+          <span class="when">May 4</span>
+          <div>
+            <div class="name">Sarah</div>
+            <div class="relation">best friend · Berlin</div>
+          </div>
+          <span class="age">35</span>
+        </div>
+        <div class="bday">
+          <span class="when">May 12</span>
+          <div>
+            <div class="name">Yael</div>
+            <div class="relation">sister · London</div>
+          </div>
+          <span class="age">32</span>
+        </div>
+        <div class="bday">
+          <span class="when">May 18</span>
+          <div>
+            <div class="name">Tomas</div>
+            <div class="relation">Adam's brother · Munich</div>
+          </div>
+          <span class="age">39</span>
+        </div>
+        <div class="bday">
+          <span class="when">Jun 2</span>
+          <div>
+            <div class="name">Ruth — Mom</div>
+            <div class="relation">mother · Tel Aviv</div>
+          </div>
+          <span class="age">69</span>
+        </div>
+        <div class="bday">
+          <span class="when">Jun 14</span>
+          <div>
+            <div class="name">Anneke</div>
+            <div class="relation">Adam's mom · Hamburg</div>
+          </div>
+          <span class="age">66</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Moments -->
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">Captured moments</span>
+      <span class="meta">recent · also see /family/photos</span>
+    </div>
+    <div class="moments">
+      <div class="moment"><span class="when">Apr 26</span><span class="what">"Maya tracked the ceiling fan with her eyes for the first time. Held the gaze for 8 full seconds."</span></div>
+      <div class="moment"><span class="when">Apr 24</span><span class="what">"Adam danced with her in the kitchen at 2am. She stopped crying. That's now The Trick."</span></div>
+      <div class="moment"><span class="when">Apr 22</span><span class="what">"First social smile. Was definitely not gas — eye contact + delay + the corners of her mouth doing it on purpose."</span></div>
+      <div class="moment"><span class="when">Apr 19</span><span class="what">"Mom (Ruth) saw her on FaceTime. Cried. Said she has my forehead and Adam's chin."</span></div>
+      <div class="moment"><span class="when">Apr 16</span><span class="what">"Sarah brought lasagna and didn't ask to hold the baby. Best friend behavior."</span></div>
+    </div>
+  </section>
+
+  <p class="footer">Family · part of <a href="../../daily-console/index.html">Personal OS</a></p>
+
+</main>
+</body>
+</html>

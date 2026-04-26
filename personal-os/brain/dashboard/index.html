@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Brain · Personal OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #B96EE9;
+    --area-soft: rgba(185, 110, 233, 0.16);
+    --bg-tint-1: rgba(185, 110, 233, 0.10);
+    --bg-tint-2: rgba(111, 168, 229, 0.08);
+    --bg-tint-3: rgba(216, 162, 78, 0.06);
+
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --primary: #2E4156; --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+
+    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+    --sans:  'Manrope', -apple-system, system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .glass::before {
+    content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+    pointer-events: none;
+  }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb:hover { color: var(--ink); }
+  .crumb .arrow { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--area); }
+  .quick-nav { display: flex; gap: 4px; }
+  .quick-nav a { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); padding: 4px 10px; border-radius: 100px; }
+  .quick-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .quick-nav a.active { background: var(--area-soft); color: var(--area); }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); font-weight: 500; }
+
+  /* Recent notes */
+  .notes { display: flex; flex-direction: column; gap: 0; }
+  .note { padding: 10px 0; border-bottom: 1px solid var(--glass-bevel); }
+  .note:last-child { border-bottom: none; }
+  .note .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .note .name { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink); }
+  .note .when { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+  .note .excerpt { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+  .note .tag {
+    display: inline-block; font-family: var(--mono); font-size: 8.5px;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--area);
+    background: var(--area-soft); padding: 2px 7px; border-radius: 100px;
+    font-weight: 500; margin-right: 4px;
+  }
+
+  /* Thinking-about cards */
+  .thinking { display: flex; flex-direction: column; gap: 10px; }
+  .think-card {
+    padding: 14px 16px;
+    background: rgba(238, 230, 240, 0.55);
+    border: 1px solid rgba(220, 201, 219, 0.6);
+    border-radius: var(--r-md);
+    backdrop-filter: blur(20px) saturate(170%);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+  }
+  .think-card .q { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink); line-height: 1.35; margin-bottom: 6px; }
+  .think-card .meta { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.14em; }
+
+  /* Drafts */
+  .draft-list { display: flex; flex-direction: column; gap: 0; }
+  .draft { padding: 8px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; }
+  .draft:last-child { border-bottom: none; }
+  .draft .name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .draft .pct { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
+  .draft .bar-wrap { width: 80px; height: 4px; background: rgba(185, 110, 233, 0.10); border-radius: 2px; overflow: hidden; }
+  .draft .bar { height: 100%; background: var(--area); border-radius: 2px; }
+
+  /* Vault graph (notes by week) */
+  .vault-graph { height: 160px; width: 100%; }
+  .vault-graph svg { display: block; width: 100%; height: 100%; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+  .footer a { color: var(--area); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <a href="../../daily-console/index.html" class="crumb"><span class="arrow">←</span>Daily Console</a>
+    <nav class="quick-nav">
+      <a class="active" href="#">Brain</a>
+      <a href="../../family/dashboard/index.html">Family</a>
+      <a href="../../home/dashboard/index.html">Home</a>
+      <a href="../../money/dashboard/index.html">Money</a>
+      <a href="../../health/dashboard/index.html">Health</a>
+      <a href="../../play/dashboard/index.html">Play</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>What you're <em>thinking</em>.</h1>
+      <div class="stand">Vault, recent notes, drafts in flight, what's circling.</div>
+    </div>
+    <div class="right">last sync · 12 min ago</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Notes</div><div class="v">412</div><div class="delta">+3 this week</div></div>
+    <div class="big-stat glass"><div class="lbl">Words written</div><div class="v">186<small>k</small></div><div class="delta">+2.4k this week</div></div>
+    <div class="big-stat glass"><div class="lbl">Backlinks</div><div class="v">1,840</div><div class="delta">density 4.5/note</div></div>
+    <div class="big-stat glass"><div class="lbl">Active drafts</div><div class="v">5</div><div class="delta">2 near ship</div></div>
+  </section>
+
+  <section class="row">
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Recent notes</span>
+        <span class="meta">last 7 days · 11 entries</span>
+      </div>
+      <div class="notes">
+        <div class="note">
+          <div class="head"><span class="name">"Why every PRD should ship with one chart"</span><span class="when">Apr 26 · 12 min</span></div>
+          <div><span class="tag">writing</span><span class="tag">product</span></div>
+          <div class="excerpt">A PRD without a chart is a story without a face. The chart isn't the data — it's the framing. It tells the engineer what the success state LOOKS like, not just what it measures…</div>
+        </div>
+        <div class="note">
+          <div class="head"><span class="name">"On why I keep returning to Cormorant"</span><span class="when">Apr 25</span></div>
+          <div><span class="tag">design</span><span class="tag">typography</span></div>
+          <div class="excerpt">Cormorant Garamond carries a quiet authority that Inter cannot match. Three places to use it: hero display, italic emphasis, and time-stamps where the date itself is content…</div>
+        </div>
+        <div class="note">
+          <div class="head"><span class="name">"Liquid glass — the cheap version"</span><span class="when">Apr 24</span></div>
+          <div><span class="tag">design</span><span class="tag">css</span></div>
+          <div class="excerpt">Apple's Liquid Glass works because of three CSS properties: backdrop-filter, the right opacity, and color blobs underneath. Without color behind, the glass looks like plastic…</div>
+        </div>
+        <div class="note">
+          <div class="head"><span class="name">"What Maya's first smile changed"</span><span class="when">Apr 22</span></div>
+          <div><span class="tag">family</span><span class="tag">memoir</span></div>
+          <div class="excerpt">It wasn't the smile. It was the deliberateness of it — the second-long delay between her looking at me and recognizing that I was the same face from yesterday…</div>
+        </div>
+        <div class="note">
+          <div class="head"><span class="name">"Cabinets vs Notion — what's actually different"</span><span class="when">Apr 21</span></div>
+          <div><span class="tag">products</span><span class="tag">essay</span></div>
+          <div class="excerpt">Notion stores your data in their database. Cabinets stores it as files on your disk. That single difference cascades into everything else: portability, agent compatibility, longevity…</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card glass" style="margin-bottom:14px;">
+        <div class="card-head">
+          <span class="title">Currently circling</span>
+          <span class="meta">3 questions</span>
+        </div>
+        <div class="thinking">
+          <div class="think-card">
+            <div class="q">"What's the smallest unit of agency I can give an agent before it goes off the rails?"</div>
+            <div class="meta">3 notes · 2 conversations</div>
+          </div>
+          <div class="think-card">
+            <div class="q">"Why are typography systems so undervalued in B2B product?"</div>
+            <div class="meta">2 notes · open thread</div>
+          </div>
+          <div class="think-card">
+            <div class="q">"Maya's nighttime routine — what does she actually need vs what she signals?"</div>
+            <div class="meta">5 notes · log-driven</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card glass">
+        <div class="card-head">
+          <span class="title">Drafts in flight</span>
+          <span class="meta">5</span>
+        </div>
+        <div class="draft-list">
+          <div class="draft">
+            <span class="name">Cabinet vs Notion essay</span>
+            <div class="bar-wrap"><div class="bar" style="width:88%"></div></div>
+            <span class="pct">88%</span>
+          </div>
+          <div class="draft">
+            <span class="name">Liquid glass tutorial</span>
+            <div class="bar-wrap"><div class="bar" style="width:72%"></div></div>
+            <span class="pct">72%</span>
+          </div>
+          <div class="draft">
+            <span class="name">PRDs with one chart</span>
+            <div class="bar-wrap"><div class="bar" style="width:55%"></div></div>
+            <span class="pct">55%</span>
+          </div>
+          <div class="draft">
+            <span class="name">Mom &amp; Baby cabinet series</span>
+            <div class="bar-wrap"><div class="bar" style="width:40%"></div></div>
+            <span class="pct">40%</span>
+          </div>
+          <div class="draft">
+            <span class="name">"Year 1 of fatherhood" essay</span>
+            <div class="bar-wrap"><div class="bar" style="width:18%"></div></div>
+            <span class="pct">18%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">Vault — notes added per week</span>
+      <span class="meta">last 26 weeks</span>
+    </div>
+    <div class="vault-graph">
+      <svg id="vault-svg" viewBox="0 0 700 160" preserveAspectRatio="none"></svg>
+    </div>
+  </section>
+
+  <p class="footer">Brain · part of <a href="../../daily-console/index.html">Personal OS</a></p>
+
+</main>
+
+<script>
+'use strict';
+function drawVault() {
+  // Demo: 26 weeks of note counts
+  const data = [4,3,5,8,6,4,7,9,3,5,6,4,7,8,5,6,3,4,7,9,5,6,8,4,5,3];
+  const svg = document.getElementById('vault-svg');
+  const W = 700, H = 160, padX = 12, padY = 18;
+  const max = Math.max(...data);
+  const barW = (W - padX*2) / data.length;
+  let html = '';
+  data.forEach((v, i) => {
+    const x = padX + i * barW + 1.5;
+    const h = (v / max) * (H - padY*2);
+    const y = H - padY - h;
+    const w = barW - 3;
+    html += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${i === data.length-1 ? '#B96EE9' : 'rgba(185,110,233,0.45)'}"/>`;
+  });
+  // Avg line
+  const avg = data.reduce((a,b)=>a+b,0) / data.length;
+  const ay = H - padY - (avg / max) * (H - padY*2);
+  html += `<line x1="${padX}" y1="${ay}" x2="${W-padX}" y2="${ay}" stroke="#B96EE9" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>`;
+  html += `<text x="${W-padX-50}" y="${ay-4}" font-family="JetBrains Mono, monospace" font-size="9" fill="#B96EE9" font-weight="500">avg ${avg.toFixed(1)}/wk</text>`;
+  svg.innerHTML = html;
+}
+drawVault();
+</script>
+</body>
+</html>
