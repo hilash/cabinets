@@ -15,6 +15,8 @@ Your life has departments. Staff them.
 
 Personal OS is a cabinet for one person (and their household), structured like a small company where each "department" is an area of life. Each child cabinet has its own agents, its own working files, and its own weekly rhythm. A **Chief of Staff** at the root writes one Sunday brief across all of them.
 
+> **Open the [[daily-console/index|🧭 Daily Console]] first.** Full-screen dashboard pulling from all six life areas — today's agenda · this week's calendar · the numbers (net worth, sleep, habit streak, inbox) · six area cards · brief schedule · 12-month net-worth chart.
+
 ## Life Areas (Child Cabinets)
 
 - `brain/` — your second brain. Reads your notes and writing. Surfaces what you're thinking about. Helps you write better.

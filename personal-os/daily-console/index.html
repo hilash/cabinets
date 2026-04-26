@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Personal OS · Daily Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --surface: #FFFFFF;
+    --surface-cream: #FCF6E6;
+    --surface-peach: #FFF1E8;
+    --surface-sage:  #E9F0E6;
+    --surface-sky:   #E5EDF2;
+    --surface-lilac: #F2EAF1;
+    --surface-rose:  #FBEDF1;
+    --hairline: #ECE4D4;
+    --hairline-strong: #D9CDB4;
+
+    --ink: #1B1814;
+    --ink-2: #5C544A;
+    --ink-3: #998E7E;
+    --ink-4: #C0B6A2;
+
+    --primary: #2E4156;          /* deep navy */
+    --primary-soft: #C8D5DD;
+    --good:    #6B8E5A;
+    --warn:    #B8892E;
+    --alert:   #C24A6A;
+    --rose:    #C24A6A;
+    --rose-soft: #F5D0DC;
+
+    /* per-area tints */
+    --brain:  #B96EE9;
+    --family: #E97B92;
+    --home:   #B8892E;
+    --money:  #6B8E5A;
+    --health: #6FA8E5;
+    --play:   #D8A24E;
+
+    --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --sans:  'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .shell {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 32px 28px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  /* ==== Header ==== */
+  .hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .hero .left .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  .hero .left h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(34px, 4.5vw, 50px);
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+  .hero .left h1 .name { color: var(--primary); }
+  .hero .left .stand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-2);
+    margin-top: 6px;
+  }
+  .hero .right {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+  .hero .right .date {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  @media (max-width: 720px) {
+    .hero { flex-direction: column; align-items: stretch; gap: 12px; }
+    .hero .right { text-align: left; }
+  }
+
+  /* ==== Chief of Staff banner ==== */
+  .cos {
+    background: linear-gradient(120deg, #2E4156 0%, #1A2632 100%);
+    color: #F0EFEC;
+    border-radius: var(--r-xl);
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+  }
+  .cos .who {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cos .who .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.6;
+  }
+  .cos .who .name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .cos .body {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .cos .body strong { color: white; }
+  .cos .stats {
+    display: flex;
+    gap: 24px;
+    text-align: right;
+  }
+  .cos .stats .stat .v {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 1;
+  }
+  .cos .stats .stat .l {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.65;
+    margin-top: 4px;
+  }
+  .cos .stats .stat.alert .v { color: var(--rose-soft); }
+  @media (max-width: 800px) {
+    .cos { grid-template-columns: 1fr; gap: 16px; }
+    .cos .stats { justify-content: space-between; }
+  }
+
+  /* ==== Three columns: Today / This Week / The Numbers ==== */
+  .triplet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 980px) {
+    .triplet { grid-template-columns: 1fr; }
+  }
+  .col {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .col-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 10px;
+  }
+  .col-head .title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .col-head .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+  }
+
+  /* Today list */
+  .agenda {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .agenda-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--hairline);
+  }
+  .agenda-item:last-child { border-bottom: none; }
+  .agenda-item.now {
+    border-left: 3px solid var(--primary);
+    margin-left: -22px;
+    padding-left: 19px;
+    background: var(--surface-cream);
+    border-radius: 4px;
+  }
+  .agenda .time {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-3);
+    min-width: 50px;
+    padding-top: 2px;
+  }
+  .agenda .what {
+    flex: 1;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .agenda .what .area {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    margin-right: 6px;
+  }
+  .agenda .what .area.brain { color: var(--brain); }
+  .agenda .what .area.family { color: var(--family); }
+  .agenda .what .area.home { color: var(--home); }
+  .agenda .what .area.money { color: var(--money); }
+  .agenda .what .area.health { color: var(--health); }
+  .agenda .what .area.play { color: var(--play); }
+
+  /* This week */
+  .week-day {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--hairline);
+  }
+  .week-day:last-child { border-bottom: none; }
+  .week-day.today { background: var(--surface-cream); border-radius: 6px; padding: 10px 12px; margin: 0 -12px; }
+  .week-day .day {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-2);
+    font-size: 13px;
+    padding-top: 1px;
+  }
+  .week-day .events {
+    font-size: 13.5px;
+    color: var(--ink);
+  }
+  .week-day .events .ev {
+    display: block;
+    margin-bottom: 2px;
+  }
+  .week-day .events .ev .swatch {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+
+  /* Numbers */
+  .stat-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--hairline);
+  }
+  .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .stat-row .lbl {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+  }
+  .stat-row .v {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  .stat-row .v small {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--ink-3);
+    margin-left: 5px;
+  }
+  .stat-row .v.up   { color: var(--good); }
+  .stat-row .v.down { color: var(--alert); }
+
+  /* ==== 6 Life Areas ==== */
+  .areas {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 22px 24px;
+  }
+  .areas-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 12px;
+  }
+  .areas-head .title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .areas-head .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+  }
+  .area-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 980px) { .area-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { .area-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .area-card {
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.12s ease, border-color 0.15s;
+  }
+  .area-card:hover { transform: translateY(-2px); }
+  .area-card.brain  { background: var(--surface-lilac); border-color: #DCC9DB; }
+  .area-card.family { background: var(--surface-peach); border-color: #F4D9C4; }
+  .area-card.home   { background: var(--surface-cream); border-color: #EFE0BE; }
+  .area-card.money  { background: var(--surface-sage);  border-color: #C8D8C0; }
+  .area-card.health { background: var(--surface-sky);   border-color: #C2D2DB; }
+  .area-card.play   { background: var(--surface-cream); border-color: #EFE0BE; }
+  .area-card .glyph {
+    width: 28px; height: 28px;
+    color: currentColor;
+    margin-bottom: 4px;
+  }
+  .area-card.brain  .glyph { color: var(--brain); }
+  .area-card.family .glyph { color: var(--family); }
+  .area-card.home   .glyph { color: var(--home); }
+  .area-card.money  .glyph { color: var(--money); }
+  .area-card.health .glyph { color: var(--health); }
+  .area-card.play   .glyph { color: var(--play); }
+  .area-card .name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 15.5px;
+    letter-spacing: -0.005em;
+  }
+  .area-card .signal {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  .area-card .signal strong { color: var(--ink); }
+
+  /* ==== Briefs schedule ==== */
+  .briefs-card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 22px 24px;
+  }
+  .briefs-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 12px;
+  }
+  .briefs-head .title { font-family: var(--serif); font-weight: 600; font-size: 18px; }
+  .briefs-head .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+  }
+  .briefs-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .briefs-table th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .briefs-table td {
+    padding: 10px 12px;
+    border-bottom: 1px dashed var(--hairline);
+    font-size: 13.5px;
+    vertical-align: middle;
+  }
+  .briefs-table tr:last-child td { border-bottom: none; }
+  .briefs-table .area-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-2);
+  }
+  .briefs-table .area-tag .swatch { width: 8px; height: 8px; border-radius: 50%; }
+  .briefs-table .when { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+  .briefs-table .status {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: var(--surface-cream);
+    color: var(--ink-3);
+    border: 1px solid var(--hairline);
+  }
+  .briefs-table .status.ready { background: var(--surface-sage); color: var(--good); border-color: #C8D8C0; }
+  .briefs-table .status.pending { background: var(--surface-cream); color: var(--warn); border-color: #EFE0BE; }
+  .briefs-table .status.needs-you { background: var(--surface-rose); color: var(--alert); border-color: #F0C9D5; }
+
+  /* ==== Money pulse — mini chart ==== */
+  .money-pulse {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-lg);
+    padding: 22px 24px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (max-width: 880px) { .money-pulse { grid-template-columns: 1fr; } }
+  .money-pulse .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .money-pulse .head .title { font-family: var(--serif); font-weight: 600; font-size: 18px; }
+  .money-pulse .head .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+  }
+  .money-pulse .chart-wrap {
+    height: 180px;
+    width: 100%;
+    position: relative;
+  }
+  .money-pulse svg { display: block; width: 100%; height: 100%; }
+  .money-pulse .nums {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .money-pulse .num-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--hairline);
+  }
+  .money-pulse .num-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .money-pulse .num-row .lbl {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .money-pulse .num-row .v {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+  }
+  .money-pulse .num-row .v small {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--good);
+    font-weight: 500;
+    margin-left: 5px;
+  }
+
+  .footer {
+    text-align: center;
+    color: var(--ink-3);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <!-- ============= Hero ============= -->
+  <header class="hero">
+    <div class="left">
+      <div class="eyebrow">Personal OS · Daily Console</div>
+      <h1>Hello, <span class="name" id="user-name">Hila</span>.</h1>
+      <div class="stand" id="stand-line">Here's where you stand.</div>
+    </div>
+    <div class="right">
+      <div class="date" id="today-date">—</div>
+      <div id="today-meta">week — of '26</div>
+    </div>
+  </header>
+
+  <!-- ============= Chief of Staff banner ============= -->
+  <section class="cos">
+    <div class="who">
+      <span class="label">Chief of Staff</span>
+      <span class="name">Sunday roll-up</span>
+    </div>
+    <div class="body">
+      <strong>3 things moved</strong> this week. <strong>1 thing needs you</strong>: the home renewal expires Thursday. Brain wrote two long pieces. Family had a calmer week than usual.
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">3</div><div class="l">moved</div></div>
+      <div class="stat alert"><div class="v">1</div><div class="l">needs you</div></div>
+      <div class="stat"><div class="v">7</div><div class="l">briefs ready</div></div>
+    </div>
+  </section>
+
+  <!-- ============= Triplet: Today / This Week / The Numbers ============= -->
+  <section class="triplet">
+
+    <!-- TODAY -->
+    <div class="col">
+      <div class="col-head">
+        <span class="title">Today</span>
+        <span class="meta" id="today-day">—</span>
+      </div>
+      <div class="agenda" id="agenda"></div>
+    </div>
+
+    <!-- THIS WEEK -->
+    <div class="col">
+      <div class="col-head">
+        <span class="title">This week</span>
+        <span class="meta">7 days</span>
+      </div>
+      <div id="week-list"></div>
+    </div>
+
+    <!-- THE NUMBERS -->
+    <div class="col">
+      <div class="col-head">
+        <span class="title">The numbers</span>
+        <span class="meta">vital signs</span>
+      </div>
+      <div class="stat-stack">
+        <div class="stat-row">
+          <span class="lbl">Net worth</span>
+          <span class="v up">€128,400 <small>↑ 2.3%</small></span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Sleep avg (7d)</span>
+          <span class="v">7.2 <small>hours</small></span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Habit streak</span>
+          <span class="v up">11 <small>days</small></span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Books this month</span>
+          <span class="v">2 <small>finished</small></span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Inbox zero</span>
+          <span class="v down">37 <small>open</small></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= 6 Life Areas ============= -->
+  <section class="areas">
+    <div class="areas-head">
+      <span class="title">Life areas</span>
+      <span class="meta">click any · zoom in</span>
+    </div>
+    <div class="area-grid">
+
+      <a class="area-card brain" href="../brain/index.md">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 6c-3 0-5 2-5 5 0 1 .5 2 1 3-1 1-1.5 2-1.5 4 0 3 2 5 5 5h.5"/>
+          <path d="M21 6c3 0 5 2 5 5 0 1-.5 2-1 3 1 1 1.5 2 1.5 4 0 3-2 5-5 5h-.5"/>
+          <path d="M16 6v20"/>
+        </svg>
+        <span class="name">Brain</span>
+        <span class="signal"><strong>3 notes</strong> this week<br/>writing partner: ready</span>
+      </a>
+
+      <a class="area-card family" href="../family/index.md">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="10" r="4"/>
+          <circle cx="22" cy="11" r="3"/>
+          <path d="M4 26c0-4 3-7 7-7s7 3 7 7"/>
+          <path d="M19 26c0-3 2-5 4-5"/>
+        </svg>
+        <span class="name">Family</span>
+        <span class="signal"><strong>2 events</strong> this week<br/>Dad's birthday Thu</span>
+      </a>
+
+      <a class="area-card home" href="../home/index.md">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 14L16 5l11 9"/>
+          <path d="M7 12v14h18V12"/>
+          <path d="M13 26v-7h6v7"/>
+        </svg>
+        <span class="name">Home</span>
+        <span class="signal"><strong>1 bill</strong> due Mon<br/>boiler service: Apr 30</span>
+      </a>
+
+      <a class="area-card money" href="../money/index.md">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="16" cy="16" r="11"/>
+          <path d="M12 12h6c1.5 0 3 1 3 3s-1.5 3-3 3h-6"/>
+          <path d="M12 18h7c1.5 0 3 1 3 3"/>
+        </svg>
+        <span class="name">Money</span>
+        <span class="signal"><strong>€128k</strong> net worth<br/>↑ 2.3% MoM</span>
+      </a>
+
+      <a class="area-card health" href="../health/index.md">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 16h6l3-8 6 16 3-8h6"/>
+        </svg>
+        <span class="name">Health</span>
+        <span class="signal"><strong>Last labs:</strong> Mar 12<br/>HRV trending up</span>
+      </a>
+
+      <a class="area-card play" href="../play/index.md">
+        <svg class="glyph" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 10v3M21 10v3"/>
+          <rect x="6" y="13" width="20" height="13" rx="3"/>
+          <circle cx="11" cy="19.5" r="1.2" fill="currentColor"/>
+          <circle cx="21" cy="19.5" r="1.2" fill="currentColor"/>
+        </svg>
+        <span class="name">Play</span>
+        <span class="signal"><strong>DnD Friday</strong><br/>habits 5 / 7 hit</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============= Briefs schedule ============= -->
+  <section class="briefs-card">
+    <div class="briefs-head">
+      <span class="title">This week's briefs</span>
+      <span class="meta">scheduled · 7 jobs</span>
+    </div>
+    <table class="briefs-table">
+      <thead>
+        <tr>
+          <th>Brief</th>
+          <th>Owner</th>
+          <th>When</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="area-tag"><span class="swatch" style="background: var(--primary)"></span>Sunday roll-up</span></td>
+          <td>Chief of Staff</td>
+          <td class="when">Sun · 5pm</td>
+          <td><span class="status ready">✓ ready</span></td>
+        </tr>
+        <tr>
+          <td><span class="area-tag"><span class="swatch" style="background: var(--brain)"></span>Vault synthesis</span></td>
+          <td>Librarian</td>
+          <td class="when">Fri · 8pm</td>
+          <td><span class="status ready">✓ ready</span></td>
+        </tr>
+        <tr>
+          <td><span class="area-tag"><span class="swatch" style="background: var(--brain)"></span>Thinking-about-this-week</span></td>
+          <td>Writing Partner</td>
+          <td class="when">Sun · 8am</td>
+          <td><span class="status ready">✓ ready</span></td>
+        </tr>
+        <tr>
+          <td><span class="area-tag"><span class="swatch" style="background: var(--family)"></span>Week-ahead launch sheet</span></td>
+          <td>Family Coordinator</td>
+          <td class="when">Fri · 4pm</td>
+          <td><span class="status ready">✓ ready</span></td>
+        </tr>
+        <tr>
+          <td><span class="area-tag"><span class="swatch" style="background: var(--home)"></span>Bills of the week</span></td>
+          <td>Bills Clerk</td>
+          <td class="when">Mon · 8am</td>
+          <td><span class="status pending">— pending</span></td>
+        </tr>
+        <tr>
+          <td><span class="area-tag"><span class="swatch" style="background: var(--health)"></span>Weekly holistic</span></td>
+          <td>Care Coordinator</td>
+          <td class="when">Sun · 10am</td>
+          <td><span class="status ready">✓ ready</span></td>
+        </tr>
+        <tr>
+          <td><span class="area-tag"><span class="swatch" style="background: var(--home)"></span>Home rental renewal</span></td>
+          <td>Home Ops</td>
+          <td class="when">expires Thu</td>
+          <td><span class="status needs-you">! needs you</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============= Money Pulse ============= -->
+  <section class="money-pulse">
+    <div>
+      <div class="head">
+        <span class="title">Money pulse</span>
+        <span class="meta">12-month net worth</span>
+      </div>
+      <div class="chart-wrap">
+        <svg id="money-chart" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+    <div class="nums">
+      <div class="num-row">
+        <span class="lbl">Net worth</span>
+        <span class="v">€128.4k <small>↑ 2.3%</small></span>
+      </div>
+      <div class="num-row">
+        <span class="lbl">Runway</span>
+        <span class="v">14 <small>months</small></span>
+      </div>
+      <div class="num-row">
+        <span class="lbl">Savings rate</span>
+        <span class="v">32% <small>this month</small></span>
+      </div>
+      <div class="num-row">
+        <span class="lbl">Subscriptions</span>
+        <span class="v">€124 <small>monthly</small></span>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">
+    Personal OS · Daily Console · pulls from <code>../brain/</code>, <code>../family/</code>, <code>../home/</code>, <code>../money/</code>, <code>../health/</code>, <code>../play/</code>
+  </p>
+
+</main>
+
+<script>
+'use strict';
+
+// ===== Demo data — replace with real data via Cabinet's file API =====
+const TODAY_AGENDA = [
+  { time: '09:00', area: 'family', text: "Pediatrician — Maya's 6-week visit", now: false },
+  { time: '11:30', area: 'brain',  text: "Writing block — finish chapter 3 draft", now: true },
+  { time: '13:00', area: 'home',   text: "Lunch + grocery delivery window", now: false },
+  { time: '15:30', area: 'health', text: "Walk + sunlight — 30 min", now: false },
+  { time: '18:00', area: 'family', text: "Family dinner", now: false },
+  { time: '21:00', area: 'play',   text: "Read 30 min before bed", now: false },
+];
+
+const WEEK = [
+  { day: 'Mon', events: [{ swatch: 'home',   text: 'Bills clerk runs · €240' }, { swatch: 'health', text: 'Yoga 7am' }] },
+  { day: 'Tue', events: [{ swatch: 'family', text: 'Therapy 11am' }] },
+  { day: 'Wed', events: [{ swatch: 'brain',  text: 'Vault sync (auto)' }, { swatch: 'play', text: 'Habit review' }] },
+  { day: 'Thu', events: [{ swatch: 'family', text: "Dad's birthday — call" }, { swatch: 'home', text: 'RENTAL RENEWAL ⚠' }] },
+  { day: 'Fri', events: [{ swatch: 'brain',  text: 'Vault synthesis 8pm' }, { swatch: 'play', text: 'DnD 7pm' }] },
+  { day: 'Sat', events: [{ swatch: 'family', text: 'Park morning' }] },
+  { day: 'Sun', events: [{ swatch: 'brain',  text: 'Thinking-about-this-week 8am' }, { swatch: 'health', text: 'Weekly holistic 10am' }, { swatch: 'family', text: 'Sunday roll-up 5pm' }] },
+];
+
+// ===== Render =====
+function fmtDate(d) {
+  return d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+}
+function todayDayShort(d) {
+  return d.toLocaleDateString(undefined, { weekday:'short' });
+}
+function isoWeek(d) {
+  const target = new Date(d.valueOf());
+  const dayNr = (d.getDay() + 6) % 7;
+  target.setDate(target.getDate() - dayNr + 3);
+  const firstThursday = target.valueOf();
+  target.setMonth(0, 1);
+  if (target.getDay() !== 4) target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+  return 1 + Math.ceil((firstThursday - target) / 604800000);
+}
+
+function render() {
+  const now = new Date();
+  document.getElementById('today-date').textContent = fmtDate(now);
+  document.getElementById('today-meta').textContent = `week ${isoWeek(now)} of ${now.getFullYear() % 100}`;
+  document.getElementById('today-day').textContent = todayDayShort(now);
+
+  // Agenda
+  const ag = document.getElementById('agenda');
+  ag.innerHTML = TODAY_AGENDA.map(item => `
+    <div class="agenda-item ${item.now ? 'now' : ''}">
+      <div class="time">${item.time}</div>
+      <div class="what"><span class="area ${item.area}">${item.area}</span>${item.text}</div>
+    </div>`).join('');
+
+  // Week
+  const todayShort = todayDayShort(now);
+  document.getElementById('week-list').innerHTML = WEEK.map(d => `
+    <div class="week-day ${d.day === todayShort ? 'today' : ''}">
+      <div class="day">${d.day}</div>
+      <div class="events">
+        ${d.events.map(e => `<span class="ev"><span class="swatch" style="background:var(--${e.swatch})"></span>${e.text}</span>`).join('')}
+      </div>
+    </div>`).join('');
+
+  drawMoneyChart();
+}
+
+function drawMoneyChart() {
+  const svg = document.getElementById('money-chart');
+  const W = 600, H = 180, padX = 8, padY = 14;
+  // 12 months of net worth (k EUR)
+  const data = [108, 109, 112, 114, 113, 117, 119, 121, 122, 124, 125, 128.4];
+  const min = 100, max = 135;
+  const x = i => padX + (i / (data.length - 1)) * (W - padX * 2);
+  const y = v => H - padY - ((v - min) / (max - min)) * (H - padY * 2);
+
+  // Grid lines
+  let html = '<g stroke="rgba(216, 162, 78, 0.12)" stroke-width="1">';
+  for (let kg = 105; kg <= 130; kg += 5) {
+    html += `<line x1="${padX}" y1="${y(kg)}" x2="${W - padX}" y2="${y(kg)}"/>`;
+  }
+  html += '</g>';
+
+  // Area fill
+  let path = data.map((v, i) => `${i === 0 ? 'M' : 'L'} ${x(i)} ${y(v)}`).join(' ');
+  let fillPath = path + ` L ${x(data.length - 1)} ${H - padY} L ${x(0)} ${H - padY} Z`;
+  html += `<path d="${fillPath}" fill="rgba(107,142,90,0.15)"/>`;
+
+  // Line
+  html += `<path d="${path}" fill="none" stroke="#6B8E5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  // Last point
+  const last = data.length - 1;
+  html += `<circle cx="${x(last)}" cy="${y(data[last])}" r="5" fill="#6B8E5A" stroke="white" stroke-width="2"/>`;
+
+  // Month labels
+  const months = ['M','A','M','J','J','A','S','O','N','D','J','F'];
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E">';
+  months.forEach((m, i) => {
+    if (i % 2 === 0) html += `<text x="${x(i) - 3}" y="${H - 2}">${m}</text>`;
+  });
+  html += '</g>';
+
+  svg.innerHTML = html;
+}
+
+render();
+setInterval(render, 60000);
+</script>
+</body>
+</html>
