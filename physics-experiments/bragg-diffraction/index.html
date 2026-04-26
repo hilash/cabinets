@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bragg Diffraction — Solid State</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1116;
+    --surface: #161A21;
+    --surface-2: #1E232C;
+    --hairline: #2A3038;
+    --hairline-strong: #3C4451;
+
+    --ink: #ECECEC;
+    --ink-2: #A8AFBA;
+    --ink-3: #6E7682;
+
+    --rose: #E97B92;
+    --gold: #D8A24E;
+    --green: #6FB07F;
+    --blue: #6FA8E5;
+    --xray: #FFCB47;       /* incoming beam */
+    --scatter: #E97B92;    /* scattered beam */
+    --atom: #6FA8E5;
+    --atom-glow: rgba(111, 168, 229, 0.35);
+    --plane: rgba(216, 162, 78, 0.6);
+    --constructive: #82DDA8;
+    --destructive: #C26A6A;
+
+    --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --sans:  'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --r-md: 14px;
+    --r-lg: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .num, time { font-variant-numeric: tabular-nums; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  /* ==== Layout ==== */
+  .shell {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: auto 1fr 240px;
+    grid-template-areas:
+      "side header"
+      "side stage"
+      "side detector";
+    height: 100vh;
+    gap: 1px;
+    background: var(--hairline);
+  }
+  @media (max-width: 900px) {
+    .shell {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr auto auto;
+      grid-template-areas:
+        "header"
+        "stage"
+        "detector"
+        "side";
+      height: auto;
+      min-height: 100vh;
+    }
+  }
+
+  /* ==== Sidebar ==== */
+  aside {
+    grid-area: side;
+    background: var(--surface);
+    padding: 24px 22px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .brand {
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 16px;
+  }
+  .brand .eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .brand h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .brand h1 em { color: var(--gold); font-style: italic; font-weight: 500; }
+  .brand .sub {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-2);
+    margin-top: 6px;
+  }
+
+  .group { display: flex; flex-direction: column; gap: 8px; }
+  .group-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-3);
+  }
+  .control {
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+  }
+  .control .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .control .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .control .value {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .control .value small {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-left: 4px;
+  }
+  .control input[type=range] {
+    width: 100%;
+    accent-color: var(--gold);
+    height: 4px;
+  }
+  .control .axis {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-3);
+    margin-top: 4px;
+  }
+
+  .crystal-toggle {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .crystal-toggle button {
+    padding: 10px 4px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    color: var(--ink-2);
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .crystal-toggle button.active {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold);
+  }
+
+  .equation {
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .equation .formula {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+  .equation .computed {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+  .equation .computed .v { color: var(--ink); }
+  .equation .verdict {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+  }
+  .equation .verdict.constructive { color: var(--constructive); }
+  .equation .verdict.destructive  { color: var(--ink-3); }
+
+  .footer-note {
+    margin-top: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+
+  /* ==== Header strip ==== */
+  header.bar {
+    grid-area: header;
+    background: var(--surface);
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  header.bar .crumbs {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  header.bar .legend {
+    display: flex;
+    gap: 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+  header.bar .legend .dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+  .dot-xray     { background: var(--xray); }
+  .dot-scatter  { background: var(--scatter); }
+  .dot-atom     { background: var(--atom); }
+  .dot-plane    { background: var(--plane); }
+
+  /* ==== Stage (the lattice + beam) ==== */
+  main.stage {
+    grid-area: stage;
+    background: radial-gradient(ellipse at center, #131822 0%, var(--bg) 70%);
+    position: relative;
+    overflow: hidden;
+  }
+  main.stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .stage-hud {
+    position: absolute;
+    top: 16px; left: 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    pointer-events: none;
+  }
+  .chip {
+    background: rgba(22, 26, 33, 0.85);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--hairline);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+  .chip strong { color: var(--ink); }
+
+  .peak-flash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(130, 221, 168, 0.12) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .peak-flash.show { opacity: 1; }
+
+  /* ==== Detector chart (bottom) ==== */
+  section.detector {
+    grid-area: detector;
+    background: var(--surface);
+    padding: 18px 28px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .det-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .det-head .title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .det-head .title em { color: var(--gold); font-style: italic; font-weight: 600; }
+  .det-head .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .det-chart-wrap {
+    flex: 1;
+    position: relative;
+    background: var(--bg);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .det-chart-wrap canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .det-axis {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-3);
+    padding: 0 4px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--gold);
+    color: var(--bg);
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity 0.22s, transform 0.22s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- =============== Sidebar: controls + Bragg formula =============== -->
+  <aside>
+    <div class="brand">
+      <div class="eyebrow">Solid State · 1915 Nobel</div>
+      <h1>Bragg <em>Diffraction</em></h1>
+      <div class="sub">how we know crystals are periodic</div>
+    </div>
+
+    <div class="group">
+      <div class="group-title">Crystal</div>
+      <div class="crystal-toggle" id="crystal-toggle">
+        <button data-cryst="cubic"   class="active">Cubic</button>
+        <button data-cryst="bcc">BCC</button>
+        <button data-cryst="fcc">FCC</button>
+      </div>
+      <div class="control">
+        <div class="row">
+          <span class="label">d — plane spacing</span>
+          <span class="value"><span id="d-val">2.5</span><small>Å</small></span>
+        </div>
+        <input type="range" id="d-slider" min="1.0" max="6.0" step="0.05" value="2.5"/>
+        <div class="axis"><span>1.0</span><span>6.0 Å</span></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-title">X-ray beam</div>
+      <div class="control">
+        <div class="row">
+          <span class="label">λ — wavelength</span>
+          <span class="value"><span id="lambda-val">1.54</span><small>Å (Cu Kα)</small></span>
+        </div>
+        <input type="range" id="lambda-slider" min="0.5" max="3.0" step="0.02" value="1.54"/>
+        <div class="axis"><span>Mo Kα</span><span>Cu Kα</span><span>Cr Kα</span></div>
+      </div>
+      <div class="control">
+        <div class="row">
+          <span class="label">θ — incidence angle</span>
+          <span class="value"><span id="theta-val">22</span><small>°</small></span>
+        </div>
+        <input type="range" id="theta-slider" min="2" max="80" step="0.2" value="22"/>
+        <div class="axis"><span>2°</span><span>40°</span><span>80°</span></div>
+      </div>
+    </div>
+
+    <!-- Bragg's law live equation -->
+    <div class="equation">
+      <div class="formula">2d sin θ = nλ</div>
+      <div class="computed">
+        <div>2 × <span class="v" id="eq-d">2.5</span> × sin(<span class="v" id="eq-theta">22°</span>) =
+          <span class="v" id="eq-lhs">1.872</span> Å</div>
+        <div>nλ at n=<span class="v" id="eq-n">1</span>: <span class="v" id="eq-rhs">1.54</span> Å</div>
+      </div>
+      <div class="verdict" id="verdict">—</div>
+    </div>
+
+    <div class="footer-note">
+      Tip — drag the θ slider through 0–80°. Watch the chart below: peaks erupt
+      where 2d sin θ = nλ for integer n. That's Bragg's law. Now change d
+      (different crystal) or λ (different X-ray source) and the peaks shift
+      predictably. This is how crystallographers solve unknown structures.
+    </div>
+  </aside>
+
+  <!-- =============== Header strip =============== -->
+  <header class="bar">
+    <span class="crumbs">Physics Experiments / Solid State / <strong>Bragg X-ray Diffraction</strong></span>
+    <div class="legend">
+      <span><span class="dot dot-xray"></span>Incoming X-ray</span>
+      <span><span class="dot dot-scatter"></span>Scattered</span>
+      <span><span class="dot dot-atom"></span>Atom</span>
+      <span><span class="dot dot-plane"></span>Lattice plane</span>
+    </div>
+  </header>
+
+  <!-- =============== Stage =============== -->
+  <main class="stage">
+    <canvas id="stage" width="1200" height="700"></canvas>
+    <div class="stage-hud">
+      <span class="chip">Crystal: <strong id="hud-cryst">cubic</strong></span>
+      <span class="chip">d = <strong id="hud-d">2.5 Å</strong></span>
+      <span class="chip">θ = <strong id="hud-theta">22°</strong></span>
+      <span class="chip">λ = <strong id="hud-lambda">1.54 Å</strong></span>
+    </div>
+    <div class="peak-flash" id="peak-flash"></div>
+  </main>
+
+  <!-- =============== Detector chart =============== -->
+  <section class="detector">
+    <div class="det-head">
+      <div class="title">Detector intensity vs θ — <em id="det-cur">22°</em></div>
+      <div class="meta">peaks where 2d sin θ = nλ &nbsp; · &nbsp; n = 1, 2, 3…</div>
+    </div>
+    <div class="det-chart-wrap">
+      <canvas id="detector" width="1200" height="240"></canvas>
+    </div>
+    <div class="det-axis">
+      <span>0°</span><span>10°</span><span>20°</span><span>30°</span><span>40°</span><span>50°</span><span>60°</span><span>70°</span><span>80°</span>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">peak!</div>
+
+<script>
+'use strict';
+
+// =============== State ===============
+const state = {
+  crystal: 'cubic',
+  d: 2.5,        // Å — interplanar spacing
+  lambda: 1.54,  // Å — Cu Kα is 1.54
+  theta: 22,     // degrees
+  lastPeakN: null,
+};
+
+// =============== Canvas setup ===============
+const stageCanvas = document.getElementById('stage');
+const sctx = stageCanvas.getContext('2d');
+const detCanvas = document.getElementById('detector');
+const dctx = detCanvas.getContext('2d');
+
+function fitCanvas(c) {
+  const r = c.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  c.width  = r.width  * dpr;
+  c.height = r.height * dpr;
+  c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function fitAll() { fitCanvas(stageCanvas); fitCanvas(detCanvas); }
+window.addEventListener('resize', () => { fitAll(); render(); });
+
+// =============== Bragg math ===============
+function lhs() { return 2 * state.d * Math.sin(state.theta * Math.PI / 180); }
+function nForPeak() {
+  const v = lhs() / state.lambda;
+  const n = Math.round(v);
+  if (n < 1) return null;
+  if (Math.abs(v - n) < 0.04 && n <= 6) return n;
+  return null;
+}
+function thetaForN(n) {
+  const v = (n * state.lambda) / (2 * state.d);
+  if (v > 1) return null;
+  return Math.asin(v) * 180 / Math.PI;
+}
+function intensityAtTheta(thetaDeg) {
+  // Sum of Lorentzian peaks at each Bragg angle, plus crystal-type structure factor
+  let I = 0;
+  for (let n = 1; n <= 6; n++) {
+    const tp = thetaForN(n);
+    if (tp == null) break;
+    const w = 0.6;     // peak width in degrees
+    const sf = structureFactor(n);
+    if (sf === 0) continue;
+    I += sf * (w*w) / ((thetaDeg - tp)**2 + w*w);
+  }
+  return Math.min(1, I);
+}
+function structureFactor(n) {
+  // Simplified: cubic has all peaks; BCC zeros out odd h+k+l (here, odd n);
+  // FCC zeros out mixed parity (approximated: zero on n=1,3 for first orders)
+  if (state.crystal === 'cubic') return 1.0;
+  if (state.crystal === 'bcc')   return n % 2 === 0 ? 1.0 : 0;
+  if (state.crystal === 'fcc')   return (n === 1 || n === 3) ? 0 : 1.0;
+  return 1.0;
+}
+
+// =============== Stage drawing ===============
+function drawStage() {
+  const W = stageCanvas.clientWidth, H = stageCanvas.clientHeight;
+  sctx.clearRect(0, 0, W, H);
+
+  // ---- Lattice region (left half of stage) ----
+  const cx = W * 0.45, cy = H * 0.55;
+  const dPx = Math.max(28, Math.min(80, state.d * 18));   // map Å to pixels for display
+  const cols = 9, rows = 7;
+
+  // Lattice planes (horizontal lines, since beam comes in from upper-left)
+  sctx.save();
+  sctx.translate(cx, cy);
+  sctx.strokeStyle = 'rgba(216, 162, 78, 0.30)';
+  sctx.lineWidth = 1;
+  sctx.setLineDash([3, 4]);
+  for (let r = -3; r <= 3; r++) {
+    const y = r * dPx;
+    sctx.beginPath();
+    sctx.moveTo(-cols/2 * dPx, y);
+    sctx.lineTo(cols/2 * dPx, y);
+    sctx.stroke();
+  }
+  sctx.setLineDash([]);
+
+  // Atoms — basis depends on crystal type
+  const atoms = [];
+  for (let r = -3; r <= 3; r++) {
+    for (let c = -4; c <= 4; c++) {
+      atoms.push({ x: c * dPx, y: r * dPx, kind: 'corner' });
+      if (state.crystal === 'bcc') {
+        atoms.push({ x: (c + 0.5) * dPx, y: (r + 0.5) * dPx, kind: 'body' });
+      }
+      if (state.crystal === 'fcc') {
+        atoms.push({ x: (c + 0.5) * dPx, y: r * dPx, kind: 'face' });
+        atoms.push({ x: c * dPx, y: (r + 0.5) * dPx, kind: 'face' });
+      }
+    }
+  }
+
+  // Atoms rendering — small thermal jitter for life
+  const t = performance.now() / 800;
+  atoms.forEach((a, i) => {
+    const jx = Math.sin(t + i * 0.7) * 0.6;
+    const jy = Math.cos(t + i * 0.5) * 0.6;
+    const x = a.x + jx, y = a.y + jy;
+    if (Math.abs(x) > cols/2 * dPx + 2 || Math.abs(y) > rows/2 * dPx + 2) return;
+    const r = a.kind === 'corner' ? 4.5 : 3.6;
+    // glow
+    const g = sctx.createRadialGradient(x, y, 0, x, y, r * 3.5);
+    g.addColorStop(0, 'rgba(111, 168, 229, 0.45)');
+    g.addColorStop(1, 'rgba(111, 168, 229, 0)');
+    sctx.fillStyle = g;
+    sctx.beginPath(); sctx.arc(x, y, r * 3.5, 0, Math.PI*2); sctx.fill();
+    // core
+    sctx.fillStyle = a.kind === 'corner' ? '#9CC1ED' : '#6FA8E5';
+    sctx.beginPath(); sctx.arc(x, y, r, 0, Math.PI*2); sctx.fill();
+  });
+
+  sctx.restore();
+
+  // ---- Beams ----
+  const thetaRad = state.theta * Math.PI / 180;
+  const beamLen = 380;
+  // Source: upper-left. Beam hits lattice center, scatters to upper-right (mirrored).
+  const sx = cx - Math.cos(thetaRad) * beamLen;
+  const sy = cy - Math.sin(thetaRad) * beamLen;
+  const dx = cx + Math.cos(thetaRad) * beamLen;
+  const dy = cy - Math.sin(thetaRad) * beamLen;
+
+  // Wavy X-ray beam (incoming)
+  drawWaveBeam(sx, sy, cx, cy, state.lambda * 4, '#FFCB47', 0.85, 'IN');
+  // Scattered beam — green if peak, dimmer otherwise
+  const peakN = nForPeak();
+  const isPeak = peakN !== null && structureFactor(peakN) > 0;
+  drawWaveBeam(cx, cy, dx, dy, state.lambda * 4, isPeak ? '#82DDA8' : '#E97B92', isPeak ? 1 : 0.55, 'OUT');
+
+  // Angle indicator arc
+  sctx.save();
+  sctx.translate(cx, cy);
+  sctx.strokeStyle = 'rgba(216, 162, 78, 0.7)';
+  sctx.lineWidth = 1.5;
+  sctx.beginPath();
+  sctx.arc(0, 0, 70, Math.PI - thetaRad, Math.PI + thetaRad, false);
+  sctx.stroke();
+  // Reference horizontal line (the "lattice plane")
+  sctx.strokeStyle = 'rgba(216, 162, 78, 0.85)';
+  sctx.lineWidth = 1.5;
+  sctx.beginPath();
+  sctx.moveTo(-110, 0); sctx.lineTo(110, 0);
+  sctx.stroke();
+  // θ label
+  sctx.fillStyle = '#D8A24E';
+  sctx.font = '500 14px Fraunces, serif';
+  sctx.fillText('θ', 78, -6);
+  sctx.restore();
+
+  // ---- Path-difference highlight (when at peak) ----
+  if (isPeak) {
+    drawConstructiveHalo(cx, cy);
+  }
+
+  // ---- Source / detector labels ----
+  sctx.fillStyle = '#A8AFBA';
+  sctx.font = '500 10px JetBrains Mono, monospace';
+  sctx.fillText('SOURCE', sx + 8, sy - 8);
+  sctx.fillText('DETECTOR', dx + 8, dy - 8);
+}
+
+function drawWaveBeam(x1, y1, x2, y2, wavelengthPx, color, alpha, dir) {
+  const len = Math.hypot(x2 - x1, y2 - y1);
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  const phase = (performance.now() / 300) * (dir === 'OUT' ? 1 : 1);
+  sctx.save();
+  sctx.translate(x1, y1);
+  sctx.rotate(ang);
+  sctx.globalAlpha = alpha;
+
+  // Beam core line
+  sctx.strokeStyle = color;
+  sctx.lineWidth = 1.4;
+  sctx.beginPath();
+  sctx.moveTo(0, 0); sctx.lineTo(len, 0);
+  sctx.stroke();
+
+  // Wavy overlay (sine on top of beam axis)
+  sctx.strokeStyle = color;
+  sctx.lineWidth = 1.6;
+  sctx.beginPath();
+  const amp = 6;
+  const k = 2 * Math.PI / Math.max(8, wavelengthPx);
+  for (let s = 0; s <= len; s += 2) {
+    const yy = Math.sin(s * k - phase) * amp;
+    if (s === 0) sctx.moveTo(s, yy);
+    else sctx.lineTo(s, yy);
+  }
+  sctx.stroke();
+
+  sctx.restore();
+}
+
+function drawConstructiveHalo(x, y) {
+  const t = (performance.now() % 1500) / 1500;
+  for (let i = 0; i < 3; i++) {
+    const off = (t + i / 3) % 1;
+    sctx.beginPath();
+    sctx.strokeStyle = `rgba(130, 221, 168, ${0.45 * (1 - off)})`;
+    sctx.lineWidth = 2;
+    sctx.arc(x, y, 30 + off * 80, 0, Math.PI * 2);
+    sctx.stroke();
+  }
+}
+
+// =============== Detector chart ===============
+function drawDetector() {
+  const W = detCanvas.clientWidth, H = detCanvas.clientHeight;
+  dctx.clearRect(0, 0, W, H);
+
+  const padX = 14, padY = 18;
+  const innerW = W - padX * 2, innerH = H - padY * 2;
+  const xT = th => padX + (th / 80) * innerW;
+  const yI = i => padY + (1 - i) * innerH;
+
+  // Grid
+  dctx.strokeStyle = 'rgba(60, 68, 81, 0.8)';
+  dctx.lineWidth = 1;
+  dctx.beginPath();
+  for (let th = 0; th <= 80; th += 10) {
+    const x = xT(th);
+    dctx.moveTo(x, padY); dctx.lineTo(x, padY + innerH);
+  }
+  dctx.stroke();
+
+  // Curve
+  dctx.beginPath();
+  for (let th = 0; th <= 80; th += 0.25) {
+    const I = intensityAtTheta(th);
+    const x = xT(th), y = yI(I);
+    if (th === 0) dctx.moveTo(x, y);
+    else dctx.lineTo(x, y);
+  }
+  // Stroke + fill below
+  const grad = dctx.createLinearGradient(0, padY, 0, padY + innerH);
+  grad.addColorStop(0, 'rgba(216, 162, 78, 0.55)');
+  grad.addColorStop(1, 'rgba(216, 162, 78, 0.04)');
+  dctx.lineTo(xT(80), yI(0));
+  dctx.lineTo(xT(0),  yI(0));
+  dctx.closePath();
+  dctx.fillStyle = grad;
+  dctx.fill();
+
+  dctx.beginPath();
+  for (let th = 0; th <= 80; th += 0.25) {
+    const I = intensityAtTheta(th);
+    const x = xT(th), y = yI(I);
+    if (th === 0) dctx.moveTo(x, y);
+    else dctx.lineTo(x, y);
+  }
+  dctx.strokeStyle = '#D8A24E';
+  dctx.lineWidth = 2;
+  dctx.stroke();
+
+  // Mark peaks
+  for (let n = 1; n <= 6; n++) {
+    const tp = thetaForN(n);
+    if (tp == null) break;
+    if (structureFactor(n) === 0) continue;
+    const x = xT(tp);
+    dctx.strokeStyle = 'rgba(130, 221, 168, 0.6)';
+    dctx.setLineDash([3, 4]);
+    dctx.beginPath();
+    dctx.moveTo(x, padY); dctx.lineTo(x, padY + innerH);
+    dctx.stroke();
+    dctx.setLineDash([]);
+    // Label
+    dctx.fillStyle = '#82DDA8';
+    dctx.font = '500 11px JetBrains Mono, monospace';
+    dctx.fillText(`n=${n}`, x + 4, padY + 12);
+    dctx.fillStyle = '#A8AFBA';
+    dctx.font = '500 10px JetBrains Mono, monospace';
+    dctx.fillText(`${tp.toFixed(1)}°`, x + 4, padY + 26);
+  }
+
+  // Cursor (current θ)
+  const xc = xT(state.theta);
+  dctx.strokeStyle = '#E97B92';
+  dctx.lineWidth = 2;
+  dctx.beginPath();
+  dctx.moveTo(xc, padY); dctx.lineTo(xc, padY + innerH);
+  dctx.stroke();
+  dctx.fillStyle = '#E97B92';
+  dctx.beginPath();
+  dctx.arc(xc, yI(intensityAtTheta(state.theta)), 5, 0, Math.PI * 2);
+  dctx.fill();
+}
+
+// =============== Sidebar updates ===============
+function updateUI() {
+  document.getElementById('d-val').textContent = state.d.toFixed(2);
+  document.getElementById('lambda-val').textContent = state.lambda.toFixed(2);
+  document.getElementById('theta-val').textContent = state.theta.toFixed(1);
+
+  document.getElementById('eq-d').textContent = state.d.toFixed(2);
+  document.getElementById('eq-theta').textContent = state.theta.toFixed(1) + '°';
+  document.getElementById('eq-lhs').textContent = lhs().toFixed(3);
+
+  const peakN = nForPeak();
+  if (peakN && structureFactor(peakN) > 0) {
+    document.getElementById('eq-n').textContent = peakN;
+    document.getElementById('eq-rhs').textContent = (peakN * state.lambda).toFixed(3);
+    const v = document.getElementById('verdict');
+    v.textContent = `Constructive — order n = ${peakN}`;
+    v.className = 'verdict constructive';
+  } else {
+    // Show nearest n
+    const ratio = lhs() / state.lambda;
+    const nearN = Math.max(1, Math.round(ratio));
+    document.getElementById('eq-n').textContent = nearN;
+    document.getElementById('eq-rhs').textContent = (nearN * state.lambda).toFixed(3);
+    const v = document.getElementById('verdict');
+    if (lhs() < state.lambda) v.textContent = 'Below first peak — sweep θ higher';
+    else v.textContent = 'Off Bragg condition — between peaks';
+    v.className = 'verdict destructive';
+  }
+
+  document.getElementById('hud-cryst').textContent = state.crystal;
+  document.getElementById('hud-d').textContent = state.d.toFixed(2) + ' Å';
+  document.getElementById('hud-theta').textContent = state.theta.toFixed(1) + '°';
+  document.getElementById('hud-lambda').textContent = state.lambda.toFixed(2) + ' Å';
+  document.getElementById('det-cur').textContent = state.theta.toFixed(1) + '°';
+
+  // Peak flash
+  if (peakN && structureFactor(peakN) > 0 && state.lastPeakN !== peakN) {
+    flashPeak(peakN);
+  }
+  if (!peakN || structureFactor(peakN) === 0) state.lastPeakN = null;
+  else state.lastPeakN = peakN;
+}
+
+function flashPeak(n) {
+  const f = document.getElementById('peak-flash');
+  f.classList.add('show');
+  setTimeout(() => f.classList.remove('show'), 600);
+  showToast(`peak — order ${n}`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast.tid);
+  showToast.tid = setTimeout(() => t.classList.remove('show'), 1300);
+}
+
+// =============== Wiring ===============
+document.getElementById('d-slider').addEventListener('input', e => {
+  state.d = parseFloat(e.target.value); updateUI(); render();
+});
+document.getElementById('lambda-slider').addEventListener('input', e => {
+  state.lambda = parseFloat(e.target.value); updateUI(); render();
+});
+document.getElementById('theta-slider').addEventListener('input', e => {
+  state.theta = parseFloat(e.target.value); updateUI(); render();
+});
+document.querySelectorAll('#crystal-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    state.crystal = b.dataset.cryst;
+    document.querySelectorAll('#crystal-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    updateUI(); render();
+  });
+});
+
+function render() { drawStage(); drawDetector(); }
+function tick() { drawStage(); requestAnimationFrame(tick); }
+
+// Init
+fitAll();
+updateUI();
+render();
+requestAnimationFrame(tick);
+setInterval(drawDetector, 80);    // detector cursor follows the wave animation cleanly
+
+</script>
+</body>
+</html>

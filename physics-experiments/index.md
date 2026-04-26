@@ -28,17 +28,22 @@ Interactive, self-contained simulations of classic physics experiments. Each fol
 - **Stern-Gerlach Lab** (`stern-gerlach/`) — Frankfurt, 1922. Send silver atoms through a non-uniform magnetic field. Classical physics predicts a smear; the screen shows two discrete spots. Spin is quantized. Now stack analyzers to discover the non-commutativity that built quantum mechanics.
 - **Millikan Oil Drop** (`millikan-oil-drop/`) — Chicago, 1909. Suspend tiny charged oil droplets between charged plates, balance gravity against electric force, measure the charge. Find that every drop is an integer multiple of one number: e ≈ 1.602×10⁻¹⁹ C. Charge is quantized too.
 
+## Solid state
+
+- **Bragg X-ray Diffraction** (`bragg-diffraction/`) — Cambridge, 1913 (Nobel 1915). Aim X-rays at a crystal, sweep the angle θ, watch peaks erupt only where 2d sin θ = nλ. The experiment that proved crystals are periodic lattices and gave us every structural-biology and materials-science result since. Toggle simple-cubic / BCC / FCC and see how the structure factor kills certain peaks.
+
 ## Implementation notes
 
 Each experiment is a directory with an `index.html` file plus a `.app` marker so Cabinet renders it full-screen. Built with vanilla JS + Canvas 2D — zero build step, zero external libs. Open any HTML file directly in a browser if you want to hack on it.
 
-## Why these nine
+## Why these ten
 
-They cover the four moments physics changed:
+They cover the five moments physics changed:
 
 1. **Mechanics is mathematical** (Galileo, Bernoulli, Newton via projectile motion)
 2. **The Earth moves** (Foucault — physics confirms cosmology by direct demo)
 3. **Light is weirder than waves OR particles** (double-slit, wave interference)
 4. **Reality is quantized** (Stern-Gerlach for spin, Millikan for charge)
+5. **Matter is periodic** (Bragg — and once you know that, every transistor follows)
 
 Read the cabinet top-to-bottom and you've toured 350 years of physics in the order it actually happened.

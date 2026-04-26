@@ -39,11 +39,12 @@ You are the curator of an interactive physics experiment collection. Each experi
 - Each experiment is a single `index.html` in its own directory plus a `.app` marker so Cabinet renders it full-screen.
 - Copy in the index should be tight. The experiment itself is the explanation.
 
-## Current collection (9)
+## Current collection (10)
 
 Mechanics: inclined-plane, brachistochrone, projectile-motion, foucault-pendulum, pendulum-wave
 Waves & light: double-slit, wave-interference
 Quantum: stern-gerlach, millikan-oil-drop
+Solid state: bragg-diffraction
 
 ## Candidate experiments to add next
 
