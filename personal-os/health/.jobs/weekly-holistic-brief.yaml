@@ -1,9 +1,12 @@
 id: weekly-holistic-brief
 name: Weekly Holistic Health Brief
-description: Sunday 10am — all six specialists feed the Care Coordinator for one synthesis page.
-ownerAgent: care-coordinator
 enabled: true
-schedule: "0 10 * * 0"
+schedule: 0 10 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: care-coordinator
+agentSlug: care-coordinator
+timeout: 600
 prompt: |-
   Read every specialist's latest output in health/briefs/:
     - protocol-week-*
@@ -24,5 +27,6 @@ prompt: |-
     - Not a doctor. Framing is synthesis + appointment prep.
     - Flag any specialist disagreements openly.
     - If data is missing, say so.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/health
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

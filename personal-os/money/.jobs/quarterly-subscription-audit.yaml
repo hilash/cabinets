@@ -1,9 +1,12 @@
 id: quarterly-subscription-audit
 name: Quarterly Subscription Audit
-description: First of each quarter — find the zombies, draft the cancellations.
-ownerAgent: subscription-auditor
 enabled: true
-schedule: "0 10 1 1,4,7,10 *"
+schedule: 0 10 1 1,4,7,10 *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: subscription-auditor
+agentSlug: subscription-auditor
+timeout: 600
 prompt: |-
   Read money/subscriptions.md and any usage data in money/subscriptions/usage/.
 
@@ -17,5 +20,6 @@ prompt: |-
     7. Cut-list total annual savings
 
   Never cancel. Only draft.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/money
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

@@ -1,9 +1,12 @@
 id: weekly-bills-check
 name: Weekly Bills Check
-description: Monday morning — what's due, what spiked, what's renewing.
-ownerAgent: bills-clerk
 enabled: true
-schedule: "0 8 * * 1"
+schedule: 0 8 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: bills-clerk
+agentSlug: bills-clerk
+timeout: 600
 prompt: |-
   Read home/bills.md and home/utilities.md.
 
@@ -14,5 +17,6 @@ prompt: |-
     4. Auto-pay health (missing cards, expiring cards)
 
   Never pay or cancel anything. Only track and recommend.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/home
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

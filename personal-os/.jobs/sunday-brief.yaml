@@ -1,9 +1,12 @@
 id: sunday-brief
 name: Sunday Weekly Brief
-description: One-page cross-department brief for the week ahead.
-ownerAgent: chief-of-staff
 enabled: true
-schedule: "0 17 * * 0"
+schedule: 0 17 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: chief-of-staff
+agentSlug: chief-of-staff
+timeout: 600
 prompt: |-
   Read the latest weekly output from every child cabinet:
     - brain/briefs/
@@ -23,5 +26,6 @@ prompt: |-
     - Never longer than one page.
     - Don't repeat child-cabinet content verbatim — synthesize.
     - If a department has nothing to report, write one line saying so.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

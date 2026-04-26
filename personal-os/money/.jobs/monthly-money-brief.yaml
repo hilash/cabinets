@@ -1,9 +1,12 @@
 id: monthly-money-brief
 name: Monthly Money Brief
-description: 3rd-of-the-month budget brief, net worth update, and one lever for next month.
-ownerAgent: budget-keeper
 enabled: true
-schedule: "0 9 3 * *"
+schedule: 0 9 3 * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: budget-keeper
+agentSlug: budget-keeper
+timeout: 600
 prompt: |-
   Read money/budget.md, money/transactions/ (latest month), money/networth.md, money/goals.md.
   Also read home/briefs/bills-*.md for recurring-bill context.
@@ -20,5 +23,6 @@ prompt: |-
     - Never moralize.
     - Always end with ONE actionable lever.
     - Note life events that legitimately distort comparisons.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/money
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

@@ -1,9 +1,12 @@
 id: weekly-vault-synthesis
 name: Weekly Vault Synthesis
-description: Librarian reindexes the vault, surfaces clusters, orphans, and resurfacing topics.
-ownerAgent: librarian
 enabled: true
-schedule: "0 20 * * 5"
+schedule: 0 20 * * 5
+provider: claude-code
+adapterType: claude_local
+ownerAgent: librarian
+agentSlug: librarian
+timeout: 600
 prompt: |-
   Walk brain/notes/ and brain/writing/.
 
@@ -14,5 +17,6 @@ prompt: |-
 
   Do not edit user notes. Only report.
   If vault has fewer than 20 notes, write a one-line note and exit.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/brain
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

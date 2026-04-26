@@ -1,10 +1,12 @@
 id: labs-interpretation
 name: Labs Interpretation (on upload)
-description: When new labs land in health/labs/YYYY-MM/, produce an interpretation file.
-ownerAgent: longevity-physician
 enabled: true
-trigger: on-file-change
-watch: /health/labs/**
+schedule: 0 9 * * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: longevity-physician
+agentSlug: longevity-physician
+timeout: 600
 prompt: |-
   A new labs file arrived. Read it (PDF → parsed values → structured table).
 
@@ -21,5 +23,6 @@ prompt: |-
   Never diagnose. Describe + prompt physician conversation.
 
   Then notify Pharmacist and Metabolic Dietitian to review the stack and food patterns against the new values.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/health
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

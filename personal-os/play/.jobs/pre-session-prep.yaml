@@ -1,9 +1,12 @@
 id: pre-session-prep
 name: DnD Pre-Session Prep
-description: Friday 5pm — prep the next session based on campaign state and last recap.
-ownerAgent: dnd-dm
 enabled: true
-schedule: "0 17 * * 5"
+schedule: 0 17 * * 5
+provider: claude-code
+adapterType: claude_local
+ownerAgent: dnd-dm
+agentSlug: dnd-dm
+timeout: 600
 prompt: |-
   Read play/dnd/campaign.md, the most recent session recap, and current NPC/world state.
 
@@ -18,5 +21,6 @@ prompt: |-
     8. Ending options with natural pause points
 
   Age-appropriate stakes. Plan to ~90 minutes with pause points every ~30.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/play
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

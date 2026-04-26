@@ -1,9 +1,12 @@
 id: monthly-maintenance
 name: Monthly Maintenance Brief
-description: First Monday of the month — what's due, what's coming, what's in progress.
-ownerAgent: home-ops
 enabled: true
-schedule: "0 9 1 * *"
+schedule: 0 9 1 * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: home-ops
+agentSlug: home-ops
+timeout: 600
 prompt: |-
   Read home/maintenance/ and home/warranties.md.
 
@@ -14,5 +17,6 @@ prompt: |-
     4. Warranty reminders (anything expiring next 90 days)
 
   For each due item, note DIY-vs-pro tradeoff with time and cost estimates.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/home
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

@@ -1,9 +1,12 @@
 id: week-ahead-brief
 name: Week-Ahead Family Brief
-description: Friday afternoon one-pager covering the coming week's family logistics.
-ownerAgent: family-coordinator
 enabled: true
-schedule: "0 16 * * 5"
+schedule: 0 16 * * 5
+provider: claude-code
+adapterType: claude_local
+ownerAgent: family-coordinator
+agentSlug: family-coordinator
+timeout: 600
 prompt: |-
   Read family/members.md, family/calendar/, and the past week's school/inbox.md.
 
@@ -18,5 +21,6 @@ prompt: |-
     - One page max.
     - If a slot needs a babysitter, draft a warm message in family/babysitters/drafts/.
     - Flag conflicts, don't resolve them.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/family
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

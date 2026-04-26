@@ -1,9 +1,12 @@
 id: weekly-habit-review
 name: Weekly Habit Review
-description: Sunday 6pm — what stuck, what wobbled, what's a lie.
-ownerAgent: habit-architect
 enabled: true
-schedule: "0 18 * * 0"
+schedule: 0 18 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: habit-architect
+agentSlug: habit-architect
+timeout: 600
 prompt: |-
   Read play/habits/ logs for the past 7 days.
 
@@ -15,5 +18,6 @@ prompt: |-
 
   Never shame. Streaks are vanity. Outcomes matter.
   If >3 active habits, flag it — adherence collapses past 3.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/personal-os/play
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

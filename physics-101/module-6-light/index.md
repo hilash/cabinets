@@ -30,7 +30,7 @@ Cross-link back to [[../module-4-waves/index|Module 4 — Waves]]: everything yo
 
 ## Interactive Element
 
-_TBD._ Candidate: PhET's *Bending Light* (<https://phet.colorado.edu/en/simulations/bending-light>) for refraction, or the cabinet's [[/experiments/double-slit/index|Double-Slit experiment]] for wave-particle duality.
+_TBD._ Candidate: PhET's *Bending Light* (<https://phet.colorado.edu/en/simulations/bending-light>) for refraction, or the cabinet's [[/physics-experiments/double-slit/index|Double-Slit experiment]] for wave-particle duality.
 
 ## Worked Example
 
@@ -42,4 +42,4 @@ _TBD._ 3-5 short questions with answers below the fold.
 
 ## What's Next
 
-_TBD._ This is the final module. Suggest next steps: a real intro physics textbook (Hewitt's *Conceptual Physics*), or moving into the calculus-based version (Halliday/Resnick/Walker). Could also point at the sister cabinet [[/experiments/index|Physics Experiments]] for further play.
+_TBD._ This is the final module. Suggest next steps: a real intro physics textbook (Hewitt's *Conceptual Physics*), or moving into the calculus-based version (Halliday/Resnick/Walker). Could also point at the sister cabinet [[/physics-experiments/index|Physics Experiments]] for further play.

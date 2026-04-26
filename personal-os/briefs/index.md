@@ -11,39 +11,33 @@ order: 1
 
 The payoff view. Each department writes one or more scheduled briefs. The Chief of Staff reads across them and writes the Sunday roll-up.
 
+> Briefs are written by scheduled jobs into each department's `briefs/` subfolder. The folders appear after the first run — until then this page is the map.
+
 ## This week
 
-- [[week-current|Sunday roll-up]] — from Chief of Staff (Sunday 5pm)
+- **Sunday roll-up** — Chief of Staff, Sunday 5pm → lands at `briefs/week-current.md`
 
 ## By department
 
-### Brain
-- [[../brain/briefs/|Weekly vault synthesis]] — Librarian, Friday 8pm
-- [[../brain/briefs/|Thinking-about-this-week]] — Writing Partner, Sunday 8am
+| Brief | Owner | Schedule | Lands in |
+|---|---|---|---|
+| Weekly vault synthesis | Librarian | Friday 8pm | `brain/briefs/` |
+| Thinking-about-this-week | Writing Partner | Sunday 8am | `brain/briefs/` |
+| Week-ahead launch sheet | Family Coordinator | Friday 4pm | `family/briefs/` |
+| School weekly | School Liaison | Sunday evening | `family/school/weekly/` |
+| Bills of the week | Bills Clerk | Monday 8am | `home/briefs/` |
+| Monthly maintenance | Home Ops | 1st of month | `home/briefs/` |
+| Monthly money | Budget Keeper | 3rd of month | `money/briefs/` |
+| Quarterly subscriptions | Subscription Auditor | quarterly | `money/briefs/` |
+| Weekly holistic | Care Coordinator | Sunday 10am | `health/briefs/` |
+| Weekly habits | Habit Architect | Sunday 6pm | `play/briefs/` |
+| DnD session prep | DnD DM | Friday 5pm | `play/dnd/sessions/` |
 
-### Family
-- [[../family/briefs/|Week-ahead launch sheet]] — Family Coordinator, Friday 4pm
-- [[../family/school/weekly/|School weekly]] — School Liaison, Sunday evening
-
-### Home
-- [[../home/briefs/|Bills of the week]] — Bills Clerk, Monday 8am
-- [[../home/briefs/|Monthly maintenance]] — Home Ops, 1st of month
-
-### Money
-- [[../money/briefs/|Monthly money]] — Budget Keeper, 3rd of month
-- [[../money/briefs/|Quarterly subscriptions]] — Subscription Auditor, quarterly
-
-### Health
-- [[../health/briefs/|Weekly holistic]] — Care Coordinator, Sunday 10am
-- Protocol / nutrition / training / supplements — specialists feed the Care Coordinator
-
-### Play
-- [[../play/briefs/|Weekly habits]] — Habit Architect, Sunday 6pm
-- [[../play/dnd/sessions/|DnD session prep]] — DnD DM, Friday 5pm
+Protocol/nutrition/training/supplements specialists feed the Care Coordinator under `health/`.
 
 ## Specialty cabinets (if installed)
 
-- [[../../keto-hq/briefs/|Keto HQ]] — weekly brief Sundays 9am
+- **Keto HQ** — weekly brief Sundays 9am, writes to `keto-hq/briefs/`
 - Other protocol cabinets (fasting-hq, marathon-hq, …) register themselves here.
 
 ## Rhythm map
