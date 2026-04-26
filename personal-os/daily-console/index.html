@@ -64,10 +64,10 @@
     --sans:  'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-    /* Radius — generous, soft */
-    --r-md: 18px;
-    --r-lg: 26px;
-    --r-xl: 32px;
+    /* Radius — softer than rectangles, smaller than before */
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 26px;
 
     /* Glass shadow stack — depth without harshness */
     --glass-shadow:
@@ -176,15 +176,15 @@
      Layout
      ============================================================ */
   .shell {
-    max-width: 1340px;
+    max-width: 1380px;
     margin: 0 auto;
-    padding: 56px 36px 100px;
+    padding: 28px 28px 60px;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 16px;
   }
   @media (max-width: 720px) {
-    .shell { padding: 32px 18px 80px; gap: 22px; }
+    .shell { padding: 18px 14px 60px; gap: 14px; }
   }
 
   /* ============================================================
@@ -194,24 +194,24 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    gap: 32px;
-    padding: 14px 8px 32px;
+    gap: 24px;
+    padding: 4px 6px 14px;
   }
   .hero .left .eyebrow {
     font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.20em;
     color: var(--ink-3);
-    margin-bottom: 18px;
+    margin-bottom: 8px;
     font-weight: 500;
   }
   .hero .left h1 {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: clamp(48px, 6vw, 76px);
-    letter-spacing: -0.025em;
-    line-height: 0.95;
+    font-size: clamp(34px, 4vw, 52px);
+    letter-spacing: -0.022em;
+    line-height: 0.98;
     color: var(--ink);
   }
   .hero .left h1 .name {
@@ -223,30 +223,30 @@
     font-family: var(--serif);
     font-style: italic;
     font-weight: 400;
-    font-size: 19px;
+    font-size: 15px;
     color: var(--ink-2);
-    margin-top: 14px;
+    margin-top: 6px;
     letter-spacing: 0.005em;
   }
-  .hero .right { text-align: right; line-height: 1.7; }
+  .hero .right { text-align: right; line-height: 1.6; }
   .hero .right .date {
     font-family: var(--serif);
     font-style: italic;
     font-weight: 400;
-    font-size: 22px;
+    font-size: 17px;
     color: var(--ink);
-    margin-bottom: 6px;
+    margin-bottom: 2px;
     letter-spacing: 0.005em;
   }
   .hero .right .meta {
     font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--ink-3);
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
   }
   @media (max-width: 720px) {
-    .hero { flex-direction: column; align-items: stretch; gap: 14px; padding: 8px 4px 18px; }
+    .hero { flex-direction: column; align-items: stretch; gap: 8px; padding: 4px 2px 10px; }
     .hero .right { text-align: left; }
   }
 
@@ -254,18 +254,18 @@
      Chief of Staff dark glass banner
      ============================================================ */
   .cos {
-    padding: 36px 40px;
+    padding: 18px 24px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 32px;
+    gap: 22px;
   }
-  .cos .who { display: flex; flex-direction: column; gap: 6px; }
+  .cos .who { display: flex; flex-direction: column; gap: 2px; }
   .cos .who .label {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.20em;
+    letter-spacing: 0.18em;
     opacity: 0.55;
     font-weight: 500;
   }
@@ -273,42 +273,42 @@
     font-family: var(--serif);
     font-weight: 500;
     font-style: italic;
-    font-size: 28px;
+    font-size: 20px;
     letter-spacing: -0.005em;
   }
   .cos .body {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: 19px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.45;
     letter-spacing: 0.005em;
     opacity: 0.92;
   }
   .cos .body strong { font-weight: 600; opacity: 1; }
   .cos .stats {
     display: flex;
-    gap: 28px;
+    gap: 22px;
     text-align: right;
   }
   .cos .stats .stat .v {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: 44px;
+    font-size: 30px;
     line-height: 1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.018em;
   }
   .cos .stats .stat .l {
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 9px;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     opacity: 0.55;
-    margin-top: 6px;
+    margin-top: 3px;
     font-weight: 500;
   }
   .cos .stats .stat.alert .v { color: var(--rose-soft); font-style: italic; }
   @media (max-width: 800px) {
-    .cos { grid-template-columns: 1fr; gap: 18px; padding: 28px 26px; }
+    .cos { grid-template-columns: 1fr; gap: 12px; padding: 16px 20px; }
     .cos .stats { justify-content: space-between; }
   }
 
@@ -318,77 +318,77 @@
   .triplet {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 14px;
   }
   @media (max-width: 980px) { .triplet { grid-template-columns: 1fr; } }
 
   .col {
-    padding: 28px 30px;
+    padding: 18px 22px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 12px;
   }
   .col-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding-bottom: 16px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--glass-bevel);
   }
   .col-head .title {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: -0.005em;
   }
   .col-head .meta {
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 9px;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     color: var(--ink-3);
     font-weight: 500;
   }
 
   /* Today agenda */
-  .agenda { display: flex; flex-direction: column; gap: 4px; }
+  .agenda { display: flex; flex-direction: column; gap: 0; }
   .agenda-item {
     display: flex;
     align-items: flex-start;
-    gap: 14px;
-    padding: 12px 0;
+    gap: 12px;
+    padding: 7px 0;
     border-bottom: 1px solid var(--glass-bevel);
   }
   .agenda-item:last-child { border-bottom: none; }
   .agenda-item.now {
-    margin-left: -30px;
-    margin-right: -30px;
-    padding-left: 27px;
-    padding-right: 30px;
+    margin-left: -22px;
+    margin-right: -22px;
+    padding-left: 19px;
+    padding-right: 22px;
     background: linear-gradient(90deg, rgba(46, 65, 86, 0.06) 0%, transparent 60%);
     border-left: 3px solid var(--primary);
   }
   .agenda .time {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--ink-3);
-    min-width: 52px;
-    padding-top: 3px;
+    min-width: 46px;
+    padding-top: 2px;
     font-weight: 500;
   }
   .agenda .what {
     flex: 1;
-    font-size: 14.5px;
+    font-size: 13px;
     color: var(--ink);
-    line-height: 1.45;
+    line-height: 1.4;
   }
   .agenda .what .area {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 8.5px;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    margin-right: 8px;
+    letter-spacing: 0.14em;
+    margin-right: 6px;
     font-weight: 500;
   }
   .agenda .what .area.brain  { color: var(--brain); }
@@ -401,68 +401,68 @@
   /* Week */
   .week-day {
     display: grid;
-    grid-template-columns: 84px 1fr;
-    gap: 14px;
-    padding: 11px 0;
+    grid-template-columns: 56px 1fr;
+    gap: 10px;
+    padding: 6px 0;
     border-bottom: 1px solid var(--glass-bevel);
     align-items: start;
   }
   .week-day:last-child { border-bottom: none; }
   .week-day.today {
     background: rgba(46, 65, 86, 0.06);
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin: 2px -14px;
+    border-radius: 8px;
+    padding: 7px 10px;
+    margin: 1px -10px;
   }
   .week-day .day {
     font-family: var(--serif);
     font-style: italic;
     font-weight: 400;
     color: var(--ink-2);
-    font-size: 16px;
+    font-size: 13.5px;
     padding-top: 1px;
   }
-  .week-day .events { font-size: 13.5px; color: var(--ink); line-height: 1.5; }
-  .week-day .events .ev { display: block; margin-bottom: 3px; }
+  .week-day .events { font-size: 12.5px; color: var(--ink); line-height: 1.45; }
+  .week-day .events .ev { display: block; margin-bottom: 1px; }
   .week-day .events .ev .swatch {
     display: inline-block;
-    width: 6px; height: 6px;
+    width: 5px; height: 5px;
     border-radius: 50%;
-    margin-right: 8px;
+    margin-right: 7px;
     vertical-align: 2px;
   }
 
   /* Numbers */
-  .stat-stack { display: flex; flex-direction: column; gap: 16px; }
+  .stat-stack { display: flex; flex-direction: column; gap: 8px; }
   .stat-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding-bottom: 14px;
+    padding-bottom: 7px;
     border-bottom: 1px solid var(--glass-bevel);
   }
   .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
   .stat-row .lbl {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     color: var(--ink-3);
     font-weight: 500;
   }
   .stat-row .v {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 28px;
-    letter-spacing: -0.015em;
+    font-size: 21px;
+    letter-spacing: -0.012em;
     line-height: 1;
   }
   .stat-row .v small {
     font-family: var(--sans);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: var(--ink-3);
-    margin-left: 6px;
+    margin-left: 5px;
   }
   .stat-row .v.up   { color: var(--good); font-style: italic; }
   .stat-row .v.down { color: var(--alert); font-style: italic; }
@@ -470,43 +470,43 @@
   /* ============================================================
      Six life areas — tinted glass cards
      ============================================================ */
-  .areas { padding: 28px 32px; }
+  .areas { padding: 16px 22px 18px; }
   .areas-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 22px;
-    padding-bottom: 14px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--glass-bevel);
   }
   .areas-head .title {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: -0.005em;
   }
   .areas-head .meta {
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 9px;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     color: var(--ink-3);
     font-weight: 500;
   }
   .area-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 14px;
+    gap: 10px;
   }
   @media (max-width: 980px) { .area-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 600px) { .area-grid { grid-template-columns: repeat(2, 1fr); } }
 
   .area-card {
     border-radius: var(--r-md);
-    padding: 22px 18px;
+    padding: 13px 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
     text-decoration: none;
     color: inherit;
     transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s;
@@ -541,9 +541,9 @@
   .area-card.play   { background: var(--glass-tinted-cream); }
 
   .area-card .glyph {
-    width: 30px;
-    height: 30px;
-    margin-bottom: 6px;
+    width: 22px;
+    height: 22px;
+    margin-bottom: 2px;
   }
   .area-card.brain  .glyph { color: var(--brain); }
   .area-card.family .glyph { color: var(--family); }
@@ -555,14 +555,15 @@
   .area-card .name {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 19px;
+    font-size: 15.5px;
     letter-spacing: -0.005em;
+    line-height: 1.1;
   }
   .area-card .signal {
     font-family: var(--sans);
-    font-size: 12.5px;
+    font-size: 11px;
     color: var(--ink-2);
-    line-height: 1.55;
+    line-height: 1.45;
     font-weight: 400;
   }
   .area-card .signal strong {
@@ -573,26 +574,34 @@
   /* ============================================================
      Briefs schedule
      ============================================================ */
-  .briefs-card { padding: 28px 32px; }
+  /* Bottom row: briefs + money side-by-side on desktop */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 980px) { .bottom-row { grid-template-columns: 1fr; } }
+
+  .briefs-card { padding: 16px 22px 18px; }
   .briefs-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 18px;
-    padding-bottom: 14px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--glass-bevel);
   }
   .briefs-head .title {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: -0.005em;
   }
   .briefs-head .meta {
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 9px;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     color: var(--ink-3);
     font-weight: 500;
   }
@@ -600,53 +609,54 @@
   .briefs-table th {
     text-align: left;
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 8.5px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     color: var(--ink-3);
-    padding: 8px 14px;
+    padding: 4px 10px;
     border-bottom: 1px solid var(--glass-bevel);
   }
   .briefs-table td {
-    padding: 13px 14px;
+    padding: 7px 10px;
     border-bottom: 1px solid var(--glass-bevel);
-    font-size: 14px;
+    font-size: 12.5px;
     vertical-align: middle;
   }
   .briefs-table tr:last-child td { border-bottom: none; }
   .briefs-table .area-tag {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     font-family: var(--serif);
     font-style: italic;
-    font-size: 16px;
+    font-size: 13.5px;
     color: var(--ink);
     font-weight: 400;
+    line-height: 1.2;
   }
   .briefs-table .area-tag .swatch {
-    width: 8px; height: 8px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
   }
   .briefs-table .when {
     font-family: var(--mono);
-    font-size: 11.5px;
+    font-size: 10.5px;
     color: var(--ink-3);
     font-weight: 500;
   }
   .briefs-table .owner {
     font-family: var(--sans);
-    font-size: 13px;
+    font-size: 11.5px;
     color: var(--ink-2);
   }
   .briefs-table .status {
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 8.5px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    padding: 4px 11px;
+    letter-spacing: 0.12em;
+    padding: 3px 9px;
     border-radius: 100px;
     background: rgba(255, 255, 255, 0.5);
     color: var(--ink-3);
@@ -675,68 +685,72 @@
      Money pulse
      ============================================================ */
   .money-pulse {
-    padding: 28px 32px;
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 32px;
-    align-items: center;
+    padding: 16px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-  @media (max-width: 880px) { .money-pulse { grid-template-columns: 1fr; } }
   .money-pulse .head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--glass-bevel);
   }
   .money-pulse .head .title {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: -0.005em;
   }
   .money-pulse .head .meta {
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 9px;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     color: var(--ink-3);
     font-weight: 500;
   }
   .money-pulse .chart-wrap {
-    height: 200px;
+    height: 110px;
     width: 100%;
     position: relative;
   }
   .money-pulse svg { display: block; width: 100%; height: 100%; }
-  .money-pulse .nums { display: flex; flex-direction: column; gap: 16px; }
+  .money-pulse .nums {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px;
+  }
   .money-pulse .num-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding-bottom: 14px;
+    padding: 6px 0;
     border-bottom: 1px solid var(--glass-bevel);
   }
-  .money-pulse .num-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .money-pulse .num-row:nth-last-child(-n+2) { border-bottom: none; padding-bottom: 0; }
   .money-pulse .num-row .lbl {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9px;
     color: var(--ink-3);
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     font-weight: 500;
   }
   .money-pulse .num-row .v {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 26px;
-    letter-spacing: -0.015em;
+    font-size: 18px;
+    letter-spacing: -0.012em;
+    line-height: 1;
   }
   .money-pulse .num-row .v small {
     font-family: var(--sans);
-    font-size: 11px;
+    font-size: 10px;
     color: var(--good);
     font-weight: 500;
-    margin-left: 6px;
+    margin-left: 4px;
     font-style: italic;
   }
 
@@ -748,15 +762,15 @@
     color: var(--ink-3);
     font-family: var(--serif);
     font-style: italic;
-    font-size: 14px;
-    padding-top: 14px;
+    font-size: 12.5px;
+    padding-top: 8px;
   }
   .footer code {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 10px;
     background: var(--glass-tinted-cream);
-    padding: 2px 7px;
-    border-radius: 5px;
+    padding: 1px 6px;
+    border-radius: 4px;
     font-style: normal;
   }
 </style>
@@ -913,8 +927,11 @@
     </div>
   </section>
 
-  <!-- ============= Briefs schedule ============= -->
-  <section class="briefs-card glass">
+  <!-- ============= Bottom row: Briefs + Money side-by-side ============= -->
+  <section class="bottom-row">
+
+  <!-- Briefs schedule -->
+  <div class="briefs-card glass">
     <div class="briefs-head">
       <span class="title">This week's briefs</span>
       <span class="meta">scheduled · 7 jobs</span>
@@ -973,18 +990,16 @@
         </tr>
       </tbody>
     </table>
-  </section>
+  </div>
 
-  <!-- ============= Money Pulse ============= -->
-  <section class="money-pulse glass">
-    <div>
-      <div class="head">
-        <span class="title">Money pulse</span>
-        <span class="meta">12-month net worth</span>
-      </div>
-      <div class="chart-wrap">
-        <svg id="money-chart" viewBox="0 0 600 200" preserveAspectRatio="none"></svg>
-      </div>
+  <!-- Money Pulse -->
+  <div class="money-pulse glass">
+    <div class="head">
+      <span class="title">Money pulse</span>
+      <span class="meta">12-mo net worth</span>
+    </div>
+    <div class="chart-wrap">
+      <svg id="money-chart" viewBox="0 0 600 110" preserveAspectRatio="none"></svg>
     </div>
     <div class="nums">
       <div class="num-row">
@@ -993,17 +1008,19 @@
       </div>
       <div class="num-row">
         <span class="lbl">Runway</span>
-        <span class="v">14 <small>months</small></span>
+        <span class="v">14 <small>mo</small></span>
       </div>
       <div class="num-row">
         <span class="lbl">Savings rate</span>
-        <span class="v">32% <small>this month</small></span>
+        <span class="v">32% <small>this mo</small></span>
       </div>
       <div class="num-row">
         <span class="lbl">Subscriptions</span>
-        <span class="v">€124 <small>monthly</small></span>
+        <span class="v">€124 <small>/mo</small></span>
       </div>
     </div>
+  </div>
+
   </section>
 
   <p class="footer">
@@ -1074,7 +1091,7 @@ function render() {
 
 function drawMoneyChart() {
   const svg = document.getElementById('money-chart');
-  const W = 600, H = 200, padX = 8, padY = 16;
+  const W = 600, H = 110, padX = 8, padY = 10;
   const data = [108, 109, 112, 114, 113, 117, 119, 121, 122, 124, 125, 128.4];
   const min = 100, max = 135;
   const x = i => padX + (i / (data.length - 1)) * (W - padX * 2);
