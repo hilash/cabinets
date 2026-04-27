@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Physics 101 · Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #3A5A7A;            /* teal-navy for physics */
+    --area-soft: rgba(58, 90, 122, 0.16);
+    --bg-tint-1: rgba(58, 90, 122, 0.10);
+    --bg-tint-2: rgba(216, 162, 78, 0.08);
+    --bg-tint-3: rgba(107, 142, 90, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--area); outline-offset: 3px; border-radius: 6px; }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1280px; margin: 0 auto; padding: 28px 28px 80px; display: flex; flex-direction: column; gap: 20px; }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; flex-wrap: wrap; gap: 8px; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+  .top-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .top-nav a {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-3); padding: 5px 12px; border-radius: 100px;
+    transition: all 0.15s;
+  }
+  .top-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .top-nav a.active { background: var(--area-soft); color: var(--area); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4.5vw, 56px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink-2); margin-top: 8px; max-width: 620px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.good { color: var(--good); }
+  .big-stat .delta.stub { color: var(--warn); }
+
+  /* ========== Module cards ========== */
+  .module {
+    padding: 0;
+    overflow: hidden;
+  }
+  .module-head {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--glass-bevel);
+  }
+  .module-num {
+    font-family: var(--serif); font-weight: 500; font-style: italic;
+    font-size: 56px; line-height: 0.85; color: var(--area);
+    text-align: center;
+  }
+  .module-head .info h2 {
+    font-family: var(--serif); font-weight: 500; font-size: 26px; letter-spacing: -0.01em; line-height: 1.1;
+  }
+  .module-head .info h2 em { font-style: italic; }
+  .module-head .info .by { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); margin-top: 4px; font-weight: 500; }
+  .module-head .info .desc { font-family: var(--serif); font-size: 14.5px; color: var(--ink-2); margin-top: 8px; line-height: 1.5; max-width: 720px; font-style: italic; }
+  .module-head .meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; min-width: 130px; }
+  .module-head .pill {
+    font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 4px 11px; border-radius: 100px; font-weight: 600;
+    background: rgba(107,142,90,0.18); color: var(--good); border: 1px solid rgba(107,142,90,0.3);
+  }
+  .module-head .pill.stub { background: rgba(184,137,46,0.18); color: var(--warn); border-color: rgba(184,137,46,0.3); }
+  .module-head .time { font-family: var(--serif); font-weight: 500; font-size: 18px; line-height: 1; }
+  .module-head .time small { font-family: var(--sans); font-size: 11px; color: var(--ink-3); margin-left: 3px; font-style: italic; }
+
+  .module-body { padding: 22px 26px; display: flex; flex-direction: column; gap: 18px; }
+
+  .hook {
+    font-family: var(--serif); font-size: 16px; color: var(--ink); line-height: 1.55;
+    padding: 16px 20px;
+    background: rgba(255, 252, 244, 0.65);
+    border-left: 3px solid var(--area);
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+  }
+  .hook strong { color: var(--ink); font-weight: 600; }
+  .hook em { color: var(--area); font-style: italic; }
+
+  .sim-card {
+    background: rgba(255,255,255,0.4);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .sim-card .sc-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--glass-bevel);
+    background: rgba(255,255,255,0.4);
+  }
+  .sim-card .sc-head .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); font-weight: 500; }
+  .sim-card .sc-head .by { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); font-weight: 500; }
+  .sim-card .frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 62%;
+    background: #f5f0e0;
+    overflow: hidden;
+  }
+  .sim-card iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .module-cta {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    padding-top: 4px;
+  }
+  .module-cta a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 100px;
+    font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .module-cta .primary {
+    background: var(--area); color: white;
+  }
+  .module-cta .primary:hover { background: #2C4760; }
+  .module-cta .secondary {
+    background: rgba(255,255,255,0.5); color: var(--ink-2); border: 1px solid var(--glass-stroke);
+  }
+  .module-cta .secondary:hover { background: rgba(255,255,255,0.85); color: var(--ink); }
+
+  /* ========== Bottom row ========== */
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  .pedagogy { display: flex; flex-direction: column; gap: 0; }
+  .step { padding: 8px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: baseline; }
+  .step:last-child { border-bottom: none; }
+  .step .n { font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 18px; color: var(--area); line-height: 1; }
+  .step .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); font-weight: 500; }
+  .step .name small { display: block; font-family: var(--sans); font-size: 12px; color: var(--ink-2); margin-top: 2px; font-style: normal; line-height: 1.4; }
+
+  .sister {
+    padding: 18px 22px;
+  }
+  .sister h3 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 18px; margin-bottom: 8px; }
+  .sister h3 em { color: var(--area); }
+  .sister p { font-family: var(--serif); font-size: 14.5px; color: var(--ink-2); line-height: 1.5; margin-bottom: 10px; }
+  .sister .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding-top: 6px; }
+  .sister .exp { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); padding: 4px 0; }
+  .sister .exp::before { content: '· '; color: var(--area); font-weight: 700; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">Physics 101 · <strong>Course</strong></div>
+    <nav class="top-nav">
+      <a class="active" href="#">Course</a>
+      <a href="../module-1-motion/index.md">Module 1</a>
+      <a href="../module-2-forces/index.md">2</a>
+      <a href="../module-3-energy/index.md">3</a>
+      <a href="../module-4-waves/index.md">4</a>
+      <a href="../module-5-electricity/index.md">5</a>
+      <a href="../module-6-light/index.md">6</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Physics, <em>from scratch</em>.</h1>
+      <div class="stand">A 6-module beginner curriculum — algebra and basic geometry only, no calculus. Six classic topics: how things move, why they move, the energy that makes it happen, and the waves, electricity, and light that shaped modern science.</div>
+    </div>
+    <div class="right">~10 h reading · 6 PhET sims embedded</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Modules</div><div class="v">6</div><div class="delta">motion → light · linear path</div></div>
+    <div class="big-stat glass"><div class="lbl">Status</div><div class="v">3 / 6</div><div class="delta good">complete · 3 in stub</div></div>
+    <div class="big-stat glass"><div class="lbl">Reading time</div><div class="v">~ 10 <small>hours</small></div><div class="delta">3 hr/week × 3 weeks</div></div>
+    <div class="big-stat glass"><div class="lbl">Math required</div><div class="v">Algebra</div><div class="delta">no calculus · no proofs</div></div>
+  </section>
+
+  <!-- ============ Module 1: Motion ============ -->
+  <section class="module glass">
+    <div class="module-head">
+      <div class="module-num">1</div>
+      <div class="info">
+        <h2><em>Motion</em></h2>
+        <div class="by">Position · velocity · acceleration · the language of how things move</div>
+        <div class="desc">Drop a ball. It hits the floor in half a second, a meter down — but not at constant speed. Three ideas explain that: position, velocity, acceleration. If you can tell them apart, you can describe the motion of anything.</div>
+      </div>
+      <div class="meta">
+        <span class="pill">complete</span>
+        <span class="time">~ 90 <small>min</small></span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="hook">
+        <strong>The hook:</strong> drop a tennis ball from your hand. Half a second. ~1 meter. Not at constant speed — slow at first, fast at the end. <em>The whole module is hidden inside that one observation.</em>
+      </div>
+
+      <div class="sim-card">
+        <div class="sc-head">
+          <span class="name">PhET — Projectile Motion (interactive)</span>
+          <span class="by">tune angle, speed, gravity</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_en.html" title="PhET Projectile Motion" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="module-cta">
+        <a class="primary" href="../module-1-motion/index.md">Open Module 1 →</a>
+        <a class="secondary" href="../../physics-experiments/projectile-motion/index.html">Sister cabinet · Projectile demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Module 2: Forces ============ -->
+  <section class="module glass">
+    <div class="module-head">
+      <div class="module-num">2</div>
+      <div class="info">
+        <h2><em>Forces</em></h2>
+        <div class="by">Newton's three laws · why things move (or don't)</div>
+        <div class="desc">Module 1 told you <em>how</em> things move. This one tells you <em>why</em>. Every acceleration has a cause — a force. Push, pull, gravity, friction. F = m·a is the equation that ties Module 1 to the physical world.</div>
+      </div>
+      <div class="meta">
+        <span class="pill stub">stub</span>
+        <span class="time">~ 90 <small>min</small></span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="hook">
+        <strong>This module is in stub state</strong> — pedagogy template scaffolded, content coming. The instructor agent fills in one section per Monday. Use the embedded PhET sim below right now to build intuition.
+      </div>
+
+      <div class="sim-card">
+        <div class="sc-head">
+          <span class="name">PhET — Forces &amp; Motion: Basics</span>
+          <span class="by">push the box · watch friction win</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html" title="PhET Forces and Motion" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="module-cta">
+        <a class="primary" href="../module-2-forces/index.md">Open Module 2 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Module 3: Energy ============ -->
+  <section class="module glass">
+    <div class="module-head">
+      <div class="module-num">3</div>
+      <div class="info">
+        <h2><em>Energy</em></h2>
+        <div class="by">Kinetic · potential · conservation · the currency of physics</div>
+        <div class="desc">A roller-coaster sits at the top of the first hill, full of potential energy. It rushes through the loop, every joule of potential converting to kinetic and back, friction skimming a bit each cycle. Energy is conserved — the bookkeeping always balances.</div>
+      </div>
+      <div class="meta">
+        <span class="pill stub">stub</span>
+        <span class="time">~ 90 <small>min</small></span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="hook">
+        <strong>This module is in stub state.</strong> The PhET <em>Energy Skate Park</em> sim below is the perfect interactive — drop a skater into the half-pipe and watch KE/PE swap in real time, with and without friction.
+      </div>
+
+      <div class="sim-card">
+        <div class="sc-head">
+          <span class="name">PhET — Energy Skate Park: Basics</span>
+          <span class="by">drop the skater · toggle friction · watch the bars</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://phet.colorado.edu/sims/html/energy-skate-park-basics/latest/energy-skate-park-basics_en.html" title="PhET Energy Skate Park" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="module-cta">
+        <a class="primary" href="../module-3-energy/index.md">Open Module 3 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Module 4: Waves ============ -->
+  <section class="module glass">
+    <div class="module-head">
+      <div class="module-num">4</div>
+      <div class="info">
+        <h2><em>Waves</em></h2>
+        <div class="by">Frequency · amplitude · interference · how disturbances travel</div>
+        <div class="desc">Pluck a guitar string. Drop a pebble in a pond. Yell across a canyon. Each is energy traveling through stuff while the stuff doesn't go anywhere. Waves: the substrate of sound, light, earthquakes, and anything that wiggles.</div>
+      </div>
+      <div class="meta">
+        <span class="pill">complete</span>
+        <span class="time">~ 100 <small>min</small></span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="hook">
+        <strong>The hook:</strong> the string doesn't fly off the guitar. The pond water doesn't travel to shore. The air between you and your friend doesn't whoosh forward. <em>Energy is moving. The medium isn't.</em>
+      </div>
+
+      <div class="sim-card">
+        <div class="sc-head">
+          <span class="name">PhET — Waves Intro</span>
+          <span class="by">water · sound · light · all the same math</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://phet.colorado.edu/sims/html/waves-intro/latest/waves-intro_en.html" title="PhET Waves Intro" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="module-cta">
+        <a class="primary" href="../module-4-waves/index.md">Open Module 4 →</a>
+        <a class="secondary" href="../../physics-experiments/wave-interference/index.html">Sister · Wave Interference demo</a>
+        <a class="secondary" href="../../physics-experiments/pendulum-wave/index.html">Sister · Pendulum Wave</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Module 5: Electricity ============ -->
+  <section class="module glass">
+    <div class="module-head">
+      <div class="module-num">5</div>
+      <div class="info">
+        <h2><em>Electricity</em></h2>
+        <div class="by">Charge · current · voltage · resistance — the flow of electrons</div>
+        <div class="desc">Touch a 9-volt battery to your tongue and you feel it. Touch the same battery to your fingertip — nothing. Same battery, same 9 volts. Three numbers tell you why: voltage, resistance, current. Ohm's law in three keystrokes.</div>
+      </div>
+      <div class="meta">
+        <span class="pill">complete</span>
+        <span class="time">~ 100 <small>min</small></span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="hook">
+        <strong>The hook:</strong> a 9V battery on the tongue tingles. On a fingertip, nothing. <em>Why?</em> The answer is hiding in three numbers — voltage, resistance, current — and the law that ties them together.
+      </div>
+
+      <div class="sim-card">
+        <div class="sc-head">
+          <span class="name">PhET — Circuit Construction Kit (DC)</span>
+          <span class="by">drag wires · build circuits · break things</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://phet.colorado.edu/sims/html/circuit-construction-kit-dc/latest/circuit-construction-kit-dc_en.html" title="PhET Circuit Construction" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="module-cta">
+        <a class="primary" href="../module-5-electricity/index.md">Open Module 5 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Module 6: Light ============ -->
+  <section class="module glass">
+    <div class="module-head">
+      <div class="module-num">6</div>
+      <div class="info">
+        <h2><em>Light</em></h2>
+        <div class="by">Reflection · refraction · the EM spectrum · waves and particles</div>
+        <div class="desc">A straw looks bent in a glass of water. The sky is blue at noon and red at sunset. A prism splits white light into a rainbow. Light is wave (Module 4 applies) and particle (quantization shows up). The final module bridges classical and quantum.</div>
+      </div>
+      <div class="meta">
+        <span class="pill stub">stub</span>
+        <span class="time">~ 90 <small>min</small></span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="hook">
+        <strong>This module is in stub state.</strong> Use the PhET <em>Bending Light</em> sim below to see refraction live — change the medium, watch the angle bend predictably (Snell's law). Wave-particle duality lives in the sister cabinet's Double-Slit experiment.
+      </div>
+
+      <div class="sim-card">
+        <div class="sc-head">
+          <span class="name">PhET — Bending Light</span>
+          <span class="by">aim a laser into water · watch the angle bend</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://phet.colorado.edu/sims/html/bending-light/latest/bending-light_en.html" title="PhET Bending Light" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="module-cta">
+        <a class="primary" href="../module-6-light/index.md">Open Module 6 →</a>
+        <a class="secondary" href="../../physics-experiments/double-slit/index.html">Sister · Double-Slit experiment</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Pedagogy + sister cabinet ============ -->
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">The pedagogy template</span>
+        <span class="meta">every module · same shape</span>
+      </div>
+      <div class="pedagogy">
+        <div class="step"><span class="n">1</span><div><div class="name">Hook</div><small>A real-world question or demo. One paragraph.</small></div></div>
+        <div class="step"><span class="n">2</span><div><div class="name">Core Concepts</div><small>Minimum vocabulary with definitions, units, sign conventions.</small></div></div>
+        <div class="step"><span class="n">3</span><div><div class="name">Interactive Element</div><small>A guided thought experiment, or a link to a free PhET sim (now embedded above).</small></div></div>
+        <div class="step"><span class="n">4</span><div><div class="name">Worked Example</div><small>One problem solved step-by-step, ending with a sanity-check.</small></div></div>
+        <div class="step"><span class="n">5</span><div><div class="name">Practice Questions</div><small>3–5 short problems · answers below the fold.</small></div></div>
+        <div class="step"><span class="n">6</span><div><div class="name">What's Next</div><small>One paragraph bridging to the next module.</small></div></div>
+      </div>
+    </div>
+
+    <div class="sister glass">
+      <div class="card-head">
+        <span class="title">Sister cabinet · physics-experiments</span>
+        <span class="meta">10 interactive demos</span>
+      </div>
+      <h3>Pair with the <em>Physics Experiments</em> cabinet</h3>
+      <p>If installed, you get 10 hand-built interactive demos that map directly to these modules — open them as you go through each topic. Linked from each module above.</p>
+      <div class="exp-grid">
+        <span class="exp">Galileo's inclined plane</span>
+        <span class="exp">Brachistochrone race</span>
+        <span class="exp">Projectile motion</span>
+        <span class="exp">Foucault pendulum</span>
+        <span class="exp">Pendulum wave</span>
+        <span class="exp">Double-slit (wave-particle)</span>
+        <span class="exp">Wave interference (ripple tank)</span>
+        <span class="exp">Stern-Gerlach (spin)</span>
+        <span class="exp">Millikan oil drop (charge)</span>
+        <span class="exp">Bragg X-ray diffraction</span>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Physics 101 · 6-module beginner curriculum · algebra only · sister cabinet: physics-experiments</p>
+
+</main>
+</body>
+</html>

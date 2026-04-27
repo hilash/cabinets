@@ -9,6 +9,8 @@ icon: atom
 
 A 6-module introductory physics curriculum. Each module is an interactive lesson page covering a foundational topic, building from observable mechanics up through the behavior of light.
 
+> **Open the [[course/index|🎓 Course]] first.** Full-screen Liquid Glass page with all 6 modules side-by-side, each with its **PhET sim embedded inline** — drag sliders, drop the skater into the half-pipe, build a circuit, bend light through water, all without leaving the page.
+
 ## Learning Path
 
 1. **Motion** — Position, velocity, acceleration. The language of how things move.
