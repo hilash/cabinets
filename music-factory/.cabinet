@@ -2,11 +2,11 @@ schemaVersion: 1
 id: music-factory-root
 name: Music Factory
 kind: root
-version: 0.1.0
+version: 0.2.0
 description: >
-  Compose songs in Python, render them as MIDI, and play them in the browser
-  with a live note-by-note visualizer. Includes the Portal song "Still Alive"
-  as a full-screen Cabinet app, NSync's "Bye Bye Bye" as a Python script that
-  emits a MIDI file, and a how-to guide for writing your own song from
-  scratch with mido + pygame.
+  A browser-native MIDI factory. Pick a famous public-domain song, watch the
+  piano roll, listen via Web Audio synthesis, download a real .mid file. Ships
+  with Ode to Joy, Für Elise, Twinkle Twinkle, Jingle Bells, Happy Birthday,
+  Tetris (Korobeiniki), Canon in D, and When the Saints Go Marching In —
+  plus the original Portal "Still Alive" player as a sub-app.
 entry: index.md

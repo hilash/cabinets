@@ -2,70 +2,70 @@
 title: Music Factory
 icon: music
 created: 2026-04-25
-modified: 2026-04-26
-tags: [music, midi, python, browser-apps, generator]
+modified: 2026-04-27
+tags: [music, midi, browser-apps, public-domain]
 ---
 
 # 🎹 Music Factory
 
-> **What MIDI would you like to generate today?**
+> Pick a famous song. Watch it light up note-by-note. Hear it. Download the `.mid`.
 >
-> Type a vibe → live piano-roll → one-tap playback → download a real `.mid` file.
+> No build, no server, no account. Two HTML files, vanilla JS, Web Audio.
 
-## Open the Studio first
+## Open the apps
 
-- **[[studio/index|🎛️ Studio — the MIDI generator]]** ← *new* · full-screen Cabinet app. Describe a song in plain English (*"a melancholy lofi beat in C minor"*), watch the piano roll fill, hit play (Web Audio synthesizes it live), download as a standard `.mid` file. Ten genres, seven moods, twelve keys, four instruments. No build, no API, no account — runs entirely in your browser.
+- **[[factory/index|🎛️ Factory — multi-song MIDI player]]** ← *the main one*. A song picker with eight public-domain classics, a piano-roll visualizer, Web Audio playback, and a one-click `.mid` download for every song.
+- **[[still-alive/index|🟠 Still Alive — Portal player]]** — the dedicated, hand-authored Portal "Still Alive" experience. Same player engine, GLaDOS-themed.
 
-## Reference players & how-tos
+## Songs in the factory
 
-- **[[still-alive/index|🟠 Still Alive — Portal MIDI Player]]** — full-screen Cabinet app. The GLaDOS song from *Portal*, hand-authored, with a piano-roll visualizer that lights up note-by-note as it plays.
-- **[[bye-bye-bye/bye_bye_bye|🎤 Bye Bye Bye — NSync as Python]]** — a self-contained Python script that builds melody + bass + chord tracks and writes `bye_bye_bye.mid`. Run: `python bye_bye_bye.py`.
-- **[[composing-in-python/index|📝 Composing in Python — How-to]]** — step-by-step guide using `mido` + `pygame`. Note helpers, beat→tick conversion, melody/bass tracks, runnable example.
+| Song | Composer / source |
+|---|---|
+| Ode to Joy | Beethoven, Symphony No. 9 (1824) |
+| Für Elise | Beethoven, Bagatelle No. 25 in A minor |
+| Twinkle Twinkle Little Star | Trad. / Mozart variations |
+| Jingle Bells | James Lord Pierpont, 1857 |
+| Happy Birthday to You | Patty & Mildred Hill, 1893 (PD since 2016) |
+| Korobeiniki (Tetris Theme A) | Russian folk, 1861 |
+| Canon in D | Pachelbel, c. 1680 |
+| When the Saints Go Marching In | Traditional spiritual |
+| In the Hall of the Mountain King | Grieg, Peer Gynt (1875) |
+| Greensleeves | English traditional, 16th c. |
+| Frère Jacques | French traditional, c. 1780 |
+| Auld Lang Syne | Robert Burns, 1788 |
+| Amazing Grace | John Newton, 1779 |
+| William Tell Overture (Finale) | Rossini, 1829 |
+| Hava Nagila | Jewish traditional |
+| Yankee Doodle | American traditional, c. 1750s |
 
-## Why this exists
+All public-domain. The `.mid` files are generated on the fly from the in-page note data — no audio files or external requests.
 
-MIDI is the quietest superpower in programming. ~120 lines of code can produce something a stranger immediately recognizes. There's no audio engine to wrestle with, no audio files to license — just integers (note number, velocity, ticks) flowing into a `.mid` file that any browser, DAW, or speaker can play.
+## Want a new song?
 
-The Studio takes that one step further: you don't even need to write code. Pick a vibe, hit generate, get a real `.mid`. Then open it in Logic / Ableton / GarageBand / [signal](https://signal.vercel.app/) and edit to taste — or open the source of `studio/index.html` to see exactly how it was built.
+**Open the Tasks panel and ask:** *"add my favorite MIDI song — <name>"*
 
-## Quickstart
+That kicks off an agent task that:
 
-```bash
-# 1. Generate a song from a prompt (THE Studio)
-open studio/index.html
+1. Looks up or transcribes the melody (and a simple bass line) into the cabinet's note format
+2. Verifies the song is public-domain or your original work
+3. Appends it to the `SONGS` array in `factory/index.html`
+4. Reloads the factory so the new song appears in the picker
 
-# 2. Try the hand-authored Portal player
-open still-alive/index.html
+If you'd rather hand-author it, the format is dead simple — see the `SONGS` array near the top of `factory/index.html`. Each song is a list of `["pitchName", beats]` tuples for melody (and optionally bass), plus `bpm` and metadata. Beats are quarter-note counts: `1` is a quarter, `0.5` an eighth, `1.5` a dotted quarter, `2` a half. `"rest"` for silence.
 
-# 3. Generate a song from Python
-cd bye-bye-bye/
-pip install mido
-python bye_bye_bye.py             # writes bye_bye_bye.mid
+## Keyboard shortcuts (in the factory)
 
-# 4. Read the guide
-open composing-in-python/index.md
-```
+- **Space** — play / pause
+- **R** — restart current song
+- **← →** — previous / next song
 
-## What's under the Studio's hood
+## What's under the hood
 
-All vanilla JS + Web Audio + Canvas in a single ~1500-line `index.html`:
+Single-file `factory/index.html`, ~600 lines:
 
-- **Music theory primitives** — scales (major, minor, dorian, pentatonic, blues), chord library (maj/min/maj7/min7/sus4/dim/dom7), Roman-numeral progression builder
-- **10 genre presets** with chord progressions, melody styles, bass styles, drum patterns, default instruments — lofi, pop, lullaby, cinematic, Bach invention, chiptune, jazz, rock, ambient, folk
-- **Prompt parser** — extracts genre/mood/key/BPM from natural language
-- **Procedural generator** — turns params into a track structure (bass + melody + pad + drums) with seeded randomness
-- **Piano-roll renderer** — Canvas, color-coded per track, live playhead
-- **Web Audio playback engine** — per-instrument oscillator + ADSR, drums via noise + filter, sample-accurate scheduling
-- **Standard MIDI File exporter** — writes format-1 `.mid` binary by hand (no library), with tempo, time signature, program changes, and per-track event chunks. The download is a real, DAW-importable file.
+- **Compiler** — turns `[pitch, beats]` tuples into absolute-time note events
+- **Web Audio synth** — sine + triangle (melody) / sine + sawtooth (bass), per-note ADSR
+- **Canvas piano roll** — color-coded melody/bass, scrolling playhead window
+- **Standard MIDI File writer** — emits format-1 `.mid` binary by hand: header chunk, MTrk chunk, tempo + time-sig + program-change + delta-timed note-on/note-off events. The download is a real, DAW-importable file.
 
-## What this cabinet does NOT include
-
-- A DAW. Use Logic, Ableton, GarageBand, or [signal](https://signal.vercel.app/) (browser) to open the `.mid` files for editing.
-- High-quality audio rendering. The Studio's playback uses simple oscillator synthesis. For realistic sound, route the downloaded `.mid` through a soft-synth like FluidSynth or any DAW with sampled instruments.
-- Copyright clearance. "Still Alive" and "Bye Bye Bye" are educational reproductions — keep them that way. The Studio generates original music from algorithmic templates.
-
-## Implementation notes
-
-- All apps are vanilla JS + Canvas + Web Audio. Zero dependencies, runs offline.
-- The Python scripts depend only on `mido` (and `pygame` if you want to play in-process).
-- The `.app` marker on `studio/`, `still-alive/` tells Cabinet to render those pages full-screen with the sidebar collapsed.
+No dependencies. Runs offline. Open `factory/index.html` directly in any modern browser.

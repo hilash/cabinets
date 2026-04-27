@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Music Factory — MIDI generator & player</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0d10;
+    --panel: #13171c;
+    --panel-2: #1a1f27;
+    --text: #e6e9ef;
+    --muted: #7b8696;
+    --grid: #1c222a;
+    --accent: #ff8a3c;
+    --accent-2: #3ca7ff;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background: radial-gradient(ellipse at top, #1a1f27 0%, #0b0d10 60%);
+    color: var(--text);
+    font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    overflow: hidden;
+  }
+
+  #app {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    height: 100dvh;
+    width: 100vw;
+    padding: 18px 28px 14px;
+    gap: 14px;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--grid);
+    padding-bottom: 10px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  header .tip {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.5;
+  }
+  header .tip b { color: var(--accent-2); font-weight: 500; }
+
+  /* ---- Song picker ---- */
+  .picker {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--grid) transparent;
+  }
+  .picker::-webkit-scrollbar { height: 6px; }
+  .picker::-webkit-scrollbar-thumb { background: var(--grid); border-radius: 3px; }
+  .song-card {
+    flex: 0 0 auto;
+    min-width: 170px;
+    padding: 10px 14px;
+    border: 1px solid var(--grid);
+    background: var(--panel);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .song-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .song-card.active {
+    border-color: var(--accent);
+    background: var(--panel-2);
+    box-shadow: 0 0 0 1px var(--accent), 0 0 18px rgba(255, 138, 60, 0.15);
+  }
+  .song-card .t {
+    color: var(--text);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .song-card .c {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .song-card.external {
+    border-style: dashed;
+  }
+  .song-card.external .t { color: var(--accent-2); }
+
+  /* ---- Stage with current note ---- */
+  .stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 48px;
+    min-height: 0;
+  }
+  .side-note {
+    font-size: clamp(28px, 6vw, 80px);
+    color: var(--muted);
+    opacity: 0.45;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+  .current-note {
+    font-size: clamp(160px, 25vw, 380px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+    text-shadow:
+      0 0 40px rgba(255, 138, 60, 0.35),
+      0 0 120px rgba(255, 138, 60, 0.18);
+    transition: transform 0.05s ease-out, color 0.1s;
+    will-change: transform, color;
+    user-select: none;
+  }
+  .current-note.off {
+    color: var(--muted);
+    text-shadow: none;
+    opacity: 0.5;
+  }
+  .current-note .sharp { font-size: 0.55em; vertical-align: 0.4em; }
+  .current-note .octave {
+    font-size: 0.42em; vertical-align: -0.12em;
+    color: var(--accent-2); margin-left: 0.05em;
+  }
+  .song-meta {
+    position: absolute;
+    bottom: 6px;
+    left: 0; right: 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .song-meta b { color: var(--text); font-weight: 500; }
+
+  /* ---- Piano roll ---- */
+  .roll-wrap {
+    position: relative;
+    height: 110px;
+    background: var(--panel);
+    border: 1px solid var(--grid);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  canvas.roll { width: 100%; height: 100%; display: block; }
+  .playhead {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 20%;
+    width: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(255, 138, 60, 0.8);
+    pointer-events: none;
+  }
+
+  /* ---- Controls ---- */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 0;
+  }
+  button.btn, a.btn {
+    appearance: none;
+    border: 1px solid var(--grid);
+    background: var(--panel);
+    color: var(--text);
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  button.btn:hover, a.btn:hover { border-color: var(--accent); color: var(--accent); }
+  button.btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0b0d10;
+  }
+  button.btn.primary:hover {
+    background: #ffa15b;
+    border-color: #ffa15b;
+    color: #0b0d10;
+  }
+  a.btn.dl { color: var(--accent-2); }
+  a.btn.dl:hover { border-color: var(--accent-2); color: #7fc5ff; }
+  .progress {
+    flex: 1;
+    height: 6px;
+    background: var(--grid);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress > .bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transition: width 0.08s linear;
+  }
+  .time {
+    color: var(--muted);
+    font-size: 12px;
+    min-width: 88px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 720px) {
+    #app { padding: 12px 14px 10px; }
+    header .tip { display: none; }
+    .stage { grid-template-columns: 1fr; }
+    .side-note { display: none; }
+    .current-note { font-size: clamp(120px, 38vw, 280px); }
+    .controls { flex-wrap: wrap; }
+    .time { min-width: auto; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Music Factory</h1>
+    <div class="tip">
+      <div>Want a new song?</div>
+      <div>Open <b>Tasks</b> and ask: <b>"add my favorite MIDI song"</b></div>
+    </div>
+  </header>
+
+  <div class="picker" id="picker"></div>
+
+  <main class="stage">
+    <div class="side-note" id="prev-note">&nbsp;</div>
+    <div class="current-note off" id="current-note">&mdash;</div>
+    <div class="side-note" id="next-note">&nbsp;</div>
+    <div class="song-meta" id="song-meta"></div>
+  </main>
+
+  <div class="roll-wrap">
+    <canvas class="roll" id="roll"></canvas>
+    <div class="playhead"></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn primary" id="play-btn">Play</button>
+    <button class="btn" id="restart-btn">Restart</button>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="time" id="time">0:00 / 0:00</div>
+    <a class="btn dl" id="dl-btn" href="#" download>Download MIDI</a>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ===========================================================
+  // SONG LIBRARY
+  // Each song:
+  //   melody / bass : array of [pitchName, beats]
+  //                    pitchName = "C4" | "F#4" | "Eb5" | "rest"
+  //                    beats     = number of quarter-note beats (0.5 = 8th, 1.5 = dotted, etc.)
+  // BPM defines beat→seconds conversion at compile time.
+  // ===========================================================
+  const SONGS = [
+    {
+      id: "ode-to-joy",
+      title: "Ode to Joy",
+      composer: "Beethoven",
+      source: "Symphony No. 9 (1824) · Public domain",
+      bpm: 100,
+      melody: [
+        ["E4",1],["E4",1],["F4",1],["G4",1],
+        ["G4",1],["F4",1],["E4",1],["D4",1],
+        ["C4",1],["C4",1],["D4",1],["E4",1],
+        ["E4",1.5],["D4",0.5],["D4",2],
+        ["E4",1],["E4",1],["F4",1],["G4",1],
+        ["G4",1],["F4",1],["E4",1],["D4",1],
+        ["C4",1],["C4",1],["D4",1],["E4",1],
+        ["D4",1.5],["C4",0.5],["C4",2],
+      ],
+      bass: [
+        ["C3",4],["G3",4],["F3",2],["C3",2],["G3",2],["C3",2],
+        ["C3",4],["G3",4],["F3",2],["C3",2],["G3",2],["C3",2],
+      ],
+    },
+    {
+      id: "fur-elise",
+      title: "Für Elise",
+      composer: "Beethoven",
+      source: "Bagatelle No. 25 in A minor · Public domain",
+      bpm: 80,
+      melody: [
+        ["E5",0.5],["D#5",0.5],["E5",0.5],["D#5",0.5],
+        ["E5",0.5],["B4",0.5],["D5",0.5],["C5",0.5],
+        ["A4",1.5],["rest",0.5],
+        ["C4",0.5],["E4",0.5],["A4",0.5],
+        ["B4",1.5],["rest",0.5],
+        ["E4",0.5],["G#4",0.5],["B4",0.5],
+        ["C5",1.5],["rest",0.5],
+        ["E4",0.5],["E5",0.5],["D#5",0.5],
+        ["E5",0.5],["D#5",0.5],["E5",0.5],["B4",0.5],["D5",0.5],["C5",0.5],
+        ["A4",2],
+      ],
+      bass: [
+        ["rest",4],
+        ["A2",2],["E3",2],
+        ["A2",2],["E3",2],
+        ["rest",2],["A2",2],
+        ["A2",2],
+      ],
+    },
+    {
+      id: "twinkle",
+      title: "Twinkle Twinkle Little Star",
+      composer: "Trad. / Mozart",
+      source: "French folk melody, 1761 · Public domain",
+      bpm: 100,
+      melody: [
+        ["C4",1],["C4",1],["G4",1],["G4",1],["A4",1],["A4",1],["G4",2],
+        ["F4",1],["F4",1],["E4",1],["E4",1],["D4",1],["D4",1],["C4",2],
+        ["G4",1],["G4",1],["F4",1],["F4",1],["E4",1],["E4",1],["D4",2],
+        ["G4",1],["G4",1],["F4",1],["F4",1],["E4",1],["E4",1],["D4",2],
+        ["C4",1],["C4",1],["G4",1],["G4",1],["A4",1],["A4",1],["G4",2],
+        ["F4",1],["F4",1],["E4",1],["E4",1],["D4",1],["D4",1],["C4",2],
+      ],
+      bass: [
+        ["C3",4],["F3",2],["C3",2],
+        ["F3",2],["C3",2],["G3",2],["C3",2],
+        ["C3",2],["G3",2],["C3",2],["G3",2],
+        ["C3",2],["G3",2],["C3",2],["G3",2],
+        ["C3",4],["F3",2],["C3",2],
+        ["F3",2],["C3",2],["G3",2],["C3",2],
+      ],
+    },
+    {
+      id: "jingle-bells",
+      title: "Jingle Bells",
+      composer: "James Lord Pierpont",
+      source: "1857 · Public domain",
+      bpm: 130,
+      melody: [
+        ["E4",1],["E4",1],["E4",2],
+        ["E4",1],["E4",1],["E4",2],
+        ["E4",1],["G4",1],["C4",1.5],["D4",0.5],
+        ["E4",4],
+        ["F4",1],["F4",1],["F4",1.5],["F4",0.5],
+        ["F4",1],["E4",1],["E4",1],["E4",0.5],["E4",0.5],
+        ["E4",1],["D4",1],["D4",1],["E4",1],
+        ["D4",2],["G4",2],
+      ],
+      bass: [
+        ["C3",4],["C3",4],
+        ["C3",4],["C3",4],
+        ["F3",4],["C3",4],
+        ["G3",2],["C3",2],["C3",4],
+      ],
+    },
+    {
+      id: "happy-birthday",
+      title: "Happy Birthday to You",
+      composer: "Patty & Mildred Hill",
+      source: "1893 · Public domain (US, 2016)",
+      bpm: 110,
+      melody: [
+        ["G3",0.75],["G3",0.25],
+        ["A3",1],["G3",1],["C4",1],["B3",2],
+        ["G3",0.75],["G3",0.25],
+        ["A3",1],["G3",1],["D4",1],["C4",2],
+        ["G3",0.75],["G3",0.25],
+        ["G4",1],["E4",1],["C4",1],["B3",1],["A3",1],
+        ["F4",0.75],["F4",0.25],
+        ["E4",1],["C4",1],["D4",1],["C4",2],
+      ],
+      bass: [
+        ["C3",2],["G3",2],["C3",2],
+        ["C3",2],["G3",2],["C3",2],
+        ["C3",2],["F3",2],["C3",2],
+        ["F3",2],["C3",2],["G3",2],
+      ],
+    },
+    {
+      id: "tetris",
+      title: "Korobeiniki (Tetris Theme A)",
+      composer: "Russian folk",
+      source: "1861 · Public domain",
+      bpm: 150,
+      melody: [
+        ["E5",1],["B4",0.5],["C5",0.5],["D5",1],["C5",0.5],["B4",0.5],
+        ["A4",1],["A4",0.5],["C5",0.5],["E5",1],["D5",0.5],["C5",0.5],
+        ["B4",1.5],["C5",0.5],["D5",1],["E5",1],
+        ["C5",1],["A4",1],["A4",1],["rest",1],
+        ["D5",1.5],["F5",0.5],["A5",1],["G5",0.5],["F5",0.5],
+        ["E5",1.5],["C5",0.5],["E5",1],["D5",0.5],["C5",0.5],
+        ["B4",1],["B4",0.5],["C5",0.5],["D5",1],["E5",1],
+        ["C5",1],["A4",1],["A4",2],
+      ],
+      bass: [
+        ["A2",2],["E3",2],["A2",2],["E3",2],
+        ["A2",2],["E3",2],["A2",2],["E3",2],
+        ["F2",2],["C3",2],["G2",2],["D3",2],
+        ["A2",2],["E3",2],["A2",2],["E3",2],
+      ],
+    },
+    {
+      id: "canon-in-d",
+      title: "Canon in D",
+      composer: "Pachelbel",
+      source: "c. 1680 · Public domain",
+      bpm: 65,
+      melody: [
+        ["F#5",2],["E5",2],
+        ["D5",2],["C#5",2],
+        ["B4",2],["A4",2],
+        ["B4",2],["C#5",2],
+        ["D5",2],["C#5",2],
+        ["B4",2],["A4",2],
+        ["G4",2],["F#4",2],
+        ["G4",2],["E4",2],
+      ],
+      bass: [
+        ["D3",4],["A2",4],
+        ["B2",4],["F#2",4],
+        ["G2",4],["D3",4],
+        ["G2",4],["A2",4],
+      ],
+    },
+    {
+      id: "saints",
+      title: "When the Saints Go Marching In",
+      composer: "Traditional spiritual",
+      source: "c. 1900 · Public domain",
+      bpm: 130,
+      melody: [
+        ["C4",1],["E4",1],["F4",1],["G4",2],
+        ["C4",1],["E4",1],["F4",1],["G4",2],
+        ["C4",1],["E4",1],["F4",1],["G4",2],
+        ["E4",1],["C4",1],["E4",1],["D4",2],
+        ["E4",1],["E4",1],["D4",1],["C4",2],
+        ["C4",1],["E4",1],["G4",1],["G4",1],["F4",2],
+        ["E4",1],["F4",1],["G4",1],["E4",1],
+        ["C4",1],["D4",1],["C4",2],
+      ],
+      bass: [
+        ["C3",5],
+        ["C3",5],
+        ["C3",5],
+        ["G3",5],
+        ["C3",5],
+        ["F3",6],
+        ["G3",4],
+        ["C3",4],
+      ],
+    },
+    {
+      id: "mountain-king",
+      title: "In the Hall of the Mountain King",
+      composer: "Grieg",
+      source: "Peer Gynt Suite No. 1 (1875) · Public domain",
+      bpm: 120,
+      melody: [
+        ["B3",0.5],["C#4",0.5],["D4",0.5],["E4",0.5],
+        ["F#4",0.5],["D4",0.5],["F#4",1],
+        ["E4",0.5],["C#4",0.5],["E4",0.5],["F#4",0.5],
+        ["E4",0.5],["B3",0.5],["E4",0.5],["F#4",0.5],
+        ["B3",0.5],["C#4",0.5],["D4",0.5],["E4",0.5],
+        ["F#4",0.5],["D4",0.5],["F#4",1],
+        ["E4",0.5],["C#4",0.5],["E4",0.5],["F#4",0.5],
+        ["E4",0.5],["B3",0.5],["F#4",1],["B3",1],
+        ["B4",0.5],["C#5",0.5],["D5",0.5],["E5",0.5],
+        ["F#5",0.5],["D5",0.5],["F#5",1],
+        ["E5",0.5],["C#5",0.5],["E5",0.5],["F#5",0.5],
+        ["E5",0.5],["B4",0.5],["E5",0.5],["F#5",0.5],
+      ],
+      bass: [
+        ["B2",4],["F#2",4],
+        ["B2",4],["F#2",4],
+        ["B2",4],["F#2",4],
+      ],
+    },
+    {
+      id: "greensleeves",
+      title: "Greensleeves",
+      composer: "English traditional",
+      source: "16th century · Public domain",
+      bpm: 90,
+      melody: [
+        ["A4",1],["C5",2],["D5",1],
+        ["E5",1.5],["F5",0.5],["E5",1],["D5",1],
+        ["B4",2],["G4",1],["A4",1],
+        ["B4",1],["C5",2],["A4",1],
+        ["A4",1.5],["G#4",0.5],["B4",1],["E4",1],
+        ["A4",2],["rest",2],
+      ],
+      bass: [
+        ["A2",4],
+        ["F3",4],
+        ["E3",4],
+        ["A2",4],
+        ["E3",4],
+        ["A2",4],
+      ],
+    },
+    {
+      id: "frere-jacques",
+      title: "Frère Jacques",
+      composer: "French traditional",
+      source: "c. 1780 · Public domain",
+      bpm: 110,
+      melody: [
+        ["C4",1],["D4",1],["E4",1],["C4",1],
+        ["C4",1],["D4",1],["E4",1],["C4",1],
+        ["E4",1],["F4",1],["G4",2],
+        ["E4",1],["F4",1],["G4",2],
+        ["G4",0.5],["A4",0.5],["G4",0.5],["F4",0.5],["E4",1],["C4",1],
+        ["G4",0.5],["A4",0.5],["G4",0.5],["F4",0.5],["E4",1],["C4",1],
+        ["C4",1],["G3",1],["C4",2],
+        ["C4",1],["G3",1],["C4",2],
+      ],
+      bass: [
+        ["C3",4],["C3",4],
+        ["C3",4],["C3",4],
+        ["C3",4],["C3",4],
+        ["C3",4],["C3",4],
+      ],
+    },
+    {
+      id: "auld-lang-syne",
+      title: "Auld Lang Syne",
+      composer: "Robert Burns",
+      source: "1788 · Public domain",
+      bpm: 90,
+      melody: [
+        ["G3",1],
+        ["C4",1.5],["C4",0.5],["C4",1],["E4",1],
+        ["D4",1.5],["C4",0.5],["D4",1],["E4",1],
+        ["C4",1.5],["C4",0.5],["E4",1],["G4",1],
+        ["A4",3],["G4",1],
+        ["G4",1.5],["E4",0.5],["E4",1],["C4",1],
+        ["D4",1.5],["C4",0.5],["D4",1],["E4",1],
+        ["D4",1.5],["C4",0.5],["A3",1],["A3",1],
+        ["G3",2],["C4",2],
+      ],
+      bass: [
+        ["rest",1],
+        ["C3",4],
+        ["F3",4],
+        ["C3",4],
+        ["F3",4],
+        ["C3",4],
+        ["F3",4],
+        ["C3",4],
+        ["G3",4],
+      ],
+    },
+    {
+      id: "amazing-grace",
+      title: "Amazing Grace",
+      composer: "John Newton",
+      source: "1779 · Public domain",
+      bpm: 75,
+      melody: [
+        ["D4",1],
+        ["G4",2],["B4",1],
+        ["G4",2],["B4",1],
+        ["A4",3],
+        ["G4",2],["E4",1],
+        ["D4",2],["D4",1],
+        ["G4",3],
+        ["G4",2],["B4",1],
+        ["A4",3],
+        ["B4",2],["A4",1],
+        ["G4",2],["E4",1],
+        ["D4",2],["D4",1],
+        ["G4",3],
+      ],
+      bass: [
+        ["rest",1],
+        ["G2",3],["G2",3],
+        ["C3",3],["G2",3],
+        ["D3",3],["G2",3],
+        ["G2",3],["C3",3],
+        ["G2",3],["G2",3],
+        ["D3",3],["G2",3],
+      ],
+    },
+    {
+      id: "william-tell",
+      title: "William Tell Overture (Finale)",
+      composer: "Rossini",
+      source: "1829 · Public domain",
+      bpm: 160,
+      melody: [
+        ["C5",0.25],["C5",0.25],["C5",0.5],
+        ["C5",0.25],["C5",0.25],["C5",0.5],
+        ["C5",0.25],["C5",0.25],["E5",0.5],
+        ["G5",1],
+        ["G5",0.25],["G5",0.25],["G5",0.5],
+        ["G5",0.25],["G5",0.25],["G5",0.5],
+        ["G5",0.25],["G5",0.25],["E5",0.5],
+        ["C5",1],
+        ["E5",0.5],["G5",0.5],["E5",0.5],["C5",0.5],
+        ["E5",0.5],["G5",0.5],["E5",1],
+        ["G5",0.5],["E5",0.5],["C5",1],
+        ["C5",0.25],["C5",0.25],["C5",0.5],
+        ["G5",0.25],["G5",0.25],["G5",0.5],
+        ["E5",0.5],["C5",0.5],
+        ["G5",1],["C5",1],
+      ],
+      bass: [
+        ["C3",4],
+        ["C3",4],
+        ["C3",2],["G3",2],
+        ["C3",2],["G3",2],
+        ["C3",3],
+      ],
+    },
+    {
+      id: "hava-nagila",
+      title: "Hava Nagila",
+      composer: "Jewish folk",
+      source: "Traditional · Public domain",
+      bpm: 130,
+      melody: [
+        ["A4",1],["Bb4",1],["Bb4",0.5],["A4",0.5],
+        ["G4",1],["A4",1],["Bb4",2],
+        ["A4",1],["Bb4",1],["Bb4",0.5],["A4",0.5],
+        ["G4",1],["A4",1],["Bb4",2],
+        ["A4",1],["Bb4",1],["C5",1],["D5",1],
+        ["C5",1],["Bb4",1],["A4",2],
+        ["G4",2],["A4",2],
+        ["Bb4",1],["A4",1],["G4",2],
+      ],
+      bass: [
+        ["D3",4],
+        ["D3",3],
+        ["D3",4],
+        ["D3",3],
+        ["A2",4],
+        ["D3",4],
+        ["A2",4],
+        ["D3",4],
+      ],
+    },
+    {
+      id: "yankee-doodle",
+      title: "Yankee Doodle",
+      composer: "American traditional",
+      source: "c. 1750s · Public domain",
+      bpm: 120,
+      melody: [
+        ["G4",1],["G4",1],["A4",1],["B4",1],
+        ["G4",1],["B4",1],["A4",2],
+        ["G4",1],["G4",1],["A4",1],["B4",1],
+        ["G4",2],["F#4",1],["E4",1],
+        ["G4",1],["G4",1],["A4",1],["B4",1],
+        ["C5",1],["B4",1],["A4",1],["G4",1],
+        ["F#4",1],["D4",1],["E4",1],["F#4",1],
+        ["G4",2],["G4",2],
+      ],
+      bass: [
+        ["G2",4],["D3",4],
+        ["G2",4],["D3",4],
+        ["G2",4],["G2",4],
+        ["D3",4],["G2",4],
+      ],
+    },
+  ];
+
+  // External app: links out, doesn't compile or play here.
+  const EXTERNAL = [
+    {
+      id: "still-alive",
+      title: "Still Alive",
+      composer: "Jonathan Coulton (Portal)",
+      href: "../still-alive/index.html",
+    },
+  ];
+
+  // ===========================================================
+  // Note name → MIDI conversion
+  // ===========================================================
+  const PITCH_BASE = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
+  function nameToMidi(name) {
+    if (name === "rest") return null;
+    const m = name.match(/^([A-G])(#|b)?(-?\d+)$/);
+    if (!m) throw new Error("bad pitch: " + name);
+    const [, letter, acc, oct] = m;
+    const accVal = acc === "#" ? 1 : acc === "b" ? -1 : 0;
+    return (parseInt(oct, 10) + 1) * 12 + PITCH_BASE[letter] + accVal;
+  }
+
+  // Compile a song def into the note list shape the player expects.
+  function compileSong(def) {
+    const beatSec = 60 / def.bpm;
+    const notes = [];
+    let melodyEnd = 0;
+    let t = 0;
+    for (const [pitch, beats] of def.melody) {
+      const dur = beats * beatSec;
+      if (pitch !== "rest") {
+        notes.push({
+          name: pitch, midi: nameToMidi(pitch),
+          start: t, duration: dur * 0.94, role: "melody",
+        });
+      }
+      t += dur;
+    }
+    melodyEnd = t;
+    if (def.bass) {
+      let bt = 0;
+      for (const [pitch, beats] of def.bass) {
+        const dur = beats * beatSec;
+        if (pitch !== "rest") {
+          notes.push({
+            name: pitch, midi: nameToMidi(pitch),
+            start: bt, duration: dur * 0.97, role: "bass",
+          });
+        }
+        bt += dur;
+      }
+    }
+    notes.sort((a, b) => a.start - b.start || b.midi - a.midi);
+    return {
+      title: def.title,
+      composer: def.composer,
+      source: def.source,
+      bpm: def.bpm,
+      duration: melodyEnd,
+      notes,
+    };
+  }
+
+  // ===========================================================
+  // Standard MIDI File writer (format-1, hand-rolled)
+  // ===========================================================
+  function buildMidi(song) {
+    const PPQ = 480;
+    const microsPerQuarter = Math.round(60_000_000 / song.bpm);
+
+    const beatsPerSec = song.bpm / 60;
+    function secToTicks(s) { return Math.round(s * beatsPerSec * PPQ); }
+
+    const events = [];
+    for (const n of song.notes) {
+      const ch = n.role === "bass" ? 1 : 0;
+      events.push({ tick: secToTicks(n.start),                bytes: [0x90 | ch, n.midi, n.role === "bass" ? 80 : 100] });
+      events.push({ tick: secToTicks(n.start + n.duration),   bytes: [0x80 | ch, n.midi, 0] });
+    }
+    // stable sort: note-off before note-on at the same tick (helps avoid stuck notes)
+    events.sort((a, b) => a.tick - b.tick || ((a.bytes[0] & 0xf0) - (b.bytes[0] & 0xf0)));
+
+    function vlq(n) {
+      const out = [n & 0x7f];
+      n >>= 7;
+      while (n > 0) { out.unshift((n & 0x7f) | 0x80); n >>= 7; }
+      return out;
+    }
+
+    const trackBytes = [];
+    const push = (...bs) => { for (const b of bs) trackBytes.push(b & 0xff); };
+
+    // Track name
+    push(0x00, 0xFF, 0x03, 0x0c);
+    for (const ch of "Music Factory") push(ch.charCodeAt(0));
+    // Tempo
+    push(0x00, 0xFF, 0x51, 0x03,
+      (microsPerQuarter >> 16) & 0xff,
+      (microsPerQuarter >> 8) & 0xff,
+      microsPerQuarter & 0xff);
+    // 4/4
+    push(0x00, 0xFF, 0x58, 0x04, 0x04, 0x02, 0x18, 0x08);
+    // Program changes: ch0 piano (0), ch1 piano (0)
+    push(0x00, 0xC0, 0x00);
+    push(0x00, 0xC1, 0x00);
+
+    let lastTick = 0;
+    for (const ev of events) {
+      const delta = ev.tick - lastTick;
+      vlq(delta).forEach((b) => push(b));
+      push(...ev.bytes);
+      lastTick = ev.tick;
+    }
+    push(0x00, 0xFF, 0x2F, 0x00);
+
+    const header = [
+      0x4D, 0x54, 0x68, 0x64,
+      0, 0, 0, 6,
+      0, 0,
+      0, 1,
+      (PPQ >> 8) & 0xff, PPQ & 0xff,
+    ];
+    const trackHeader = [0x4D, 0x54, 0x72, 0x6B];
+    const len = trackBytes.length;
+    trackHeader.push((len >> 24) & 0xff, (len >> 16) & 0xff, (len >> 8) & 0xff, len & 0xff);
+
+    return new Uint8Array([...header, ...trackHeader, ...trackBytes]);
+  }
+
+  // ===========================================================
+  // DOM + audio engine (single-song player; rebinds on song switch)
+  // ===========================================================
+  const $ = (id) => document.getElementById(id);
+  const playBtn = $("play-btn");
+  const restartBtn = $("restart-btn");
+  const dlBtn = $("dl-btn");
+  const bar = $("bar");
+  const timeEl = $("time");
+  const currentEl = $("current-note");
+  const prevEl = $("prev-note");
+  const nextEl = $("next-note");
+  const meta = $("song-meta");
+  const roll = $("roll");
+  const ctx2d = roll.getContext("2d");
+  const picker = $("picker");
+
+  let currentDef = null;
+  let song = null;
+  let totalDuration = 0;
+  let audioCtx = null;
+  let masterGain = null;
+  let state = "idle";
+  let startTimeCtx = 0;
+  let offset = 0;
+  let scheduled = [];
+  let rafId = 0;
+  let dlUrl = null;
+
+  function renderNoteName(el, name) {
+    if (!name) { el.innerHTML = "&mdash;"; return; }
+    const letter = name[0];
+    const rest = name.slice(1);
+    const sharp = rest.includes("#");
+    const flat = rest.includes("b");
+    const octave = rest.replace(/[#b]/g, "");
+    el.innerHTML =
+      letter +
+      (sharp ? '<span class="sharp">&#9839;</span>' : '') +
+      (flat ? '<span class="sharp">&#9837;</span>' : '') +
+      `<span class="octave">${octave}</span>`;
+  }
+
+  function midiToHz(midi) { return 440 * Math.pow(2, (midi - 69) / 12); }
+
+  function ensureAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.32;
+    masterGain.connect(audioCtx.destination);
+  }
+
+  function scheduleNote(note, startAtCtx) {
+    const freq = midiToHz(note.midi);
+    const isBass = note.role === "bass";
+    const attack = isBass ? 0.01 : 0.015;
+    const decay = isBass ? 0.12 : 0.08;
+    const sustain = isBass ? 0.45 : 0.55;
+    const release = 0.12;
+    const dur = Math.max(0.06, note.duration);
+
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.0, startAtCtx);
+    gain.gain.linearRampToValueAtTime(isBass ? 0.7 : 1.0, startAtCtx + attack);
+    gain.gain.linearRampToValueAtTime(sustain * (isBass ? 0.7 : 1.0), startAtCtx + attack + decay);
+    gain.gain.setValueAtTime(sustain * (isBass ? 0.7 : 1.0), startAtCtx + dur);
+    gain.gain.linearRampToValueAtTime(0.0, startAtCtx + dur + release);
+
+    const osc1 = audioCtx.createOscillator();
+    osc1.type = "sine";
+    osc1.frequency.value = freq;
+
+    const osc2 = audioCtx.createOscillator();
+    osc2.type = isBass ? "sawtooth" : "triangle";
+    osc2.frequency.value = freq;
+    const o2gain = audioCtx.createGain();
+    o2gain.gain.value = isBass ? 0.18 : 0.35;
+
+    osc1.connect(gain);
+    osc2.connect(o2gain);
+    o2gain.connect(gain);
+    gain.connect(masterGain);
+
+    osc1.start(startAtCtx);
+    osc2.start(startAtCtx);
+    const stopAt = startAtCtx + dur + release + 0.02;
+    osc1.stop(stopAt);
+    osc2.stop(stopAt);
+
+    return {
+      stop: () => {
+        try { osc1.stop(); osc2.stop(); } catch (_) {}
+        try { gain.disconnect(); } catch (_) {}
+      },
+    };
+  }
+
+  function scheduleAllFrom(offsetSeconds) {
+    scheduled.forEach((s) => s.stop());
+    scheduled = [];
+    const now = audioCtx.currentTime + 0.05;
+    song.notes.forEach((note) => {
+      const relative = note.start - offsetSeconds;
+      if (relative + note.duration < 0) return;
+      const at = now + Math.max(0, relative);
+      scheduled.push(scheduleNote(note, at));
+    });
+  }
+
+  function currentSongTime() {
+    if (state !== "playing") return offset;
+    return offset + (audioCtx.currentTime - startTimeCtx);
+  }
+
+  function findActiveMelodyIndex(t) {
+    const notes = song.notes;
+    let best = -1, bestMidi = -Infinity;
+    for (let i = 0; i < notes.length; i++) {
+      const n = notes[i];
+      if (n.start > t + 0.01) break;
+      if (t >= n.start && t < n.start + n.duration) {
+        if (n.role === "melody" && n.midi > bestMidi) { bestMidi = n.midi; best = i; }
+      }
+    }
+    return best;
+  }
+  function findNextMelodyNote(t) {
+    let fallback = null;
+    for (const n of song.notes) {
+      if (n.start <= t) continue;
+      if (n.role === "melody") return n;
+      if (!fallback) fallback = n;
+    }
+    return fallback;
+  }
+  function findPrevMelodyNote(t) {
+    let last = null;
+    for (const n of song.notes) {
+      if (n.start >= t) break;
+      if (n.role === "melody" && n.start + n.duration <= t) last = n;
+    }
+    return last;
+  }
+  function formatTime(s) {
+    s = Math.max(0, s | 0);
+    const m = (s / 60) | 0;
+    const sec = (s % 60).toString().padStart(2, "0");
+    return `${m}:${sec}`;
+  }
+
+  function tick() {
+    const t = currentSongTime();
+    const idx = findActiveMelodyIndex(t);
+    if (idx >= 0) {
+      const n = song.notes[idx];
+      renderNoteName(currentEl, n.name);
+      currentEl.classList.remove("off");
+      const pulse = 1 - Math.min(1, (t - n.start) / Math.max(0.05, n.duration));
+      currentEl.style.transform = `scale(${(1 + 0.08 * pulse).toFixed(3)})`;
+      const prev = findPrevMelodyNote(n.start);
+      const next = findNextMelodyNote(n.start + n.duration * 0.5);
+      renderNoteName(prevEl, prev ? prev.name : null);
+      renderNoteName(nextEl, next ? next.name : null);
+    } else {
+      currentEl.innerHTML = "&mdash;";
+      currentEl.classList.add("off");
+      currentEl.style.transform = "scale(1)";
+      renderNoteName(prevEl, (findPrevMelodyNote(t) || {}).name || null);
+      renderNoteName(nextEl, (findNextMelodyNote(t) || {}).name || null);
+    }
+    const pct = Math.min(100, (t / totalDuration) * 100);
+    bar.style.width = pct + "%";
+    timeEl.textContent = `${formatTime(t)} / ${formatTime(totalDuration)}`;
+    drawRoll(t);
+    if (state === "playing" && t >= totalDuration) {
+      stopAll();
+      offset = 0;
+      state = "idle";
+      playBtn.textContent = "Play";
+    }
+    if (state === "playing") rafId = requestAnimationFrame(tick);
+  }
+
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = roll.getBoundingClientRect();
+    roll.width = rect.width * dpr;
+    roll.height = rect.height * dpr;
+    ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function drawRoll(t) {
+    if (!song) return;
+    const rect = roll.getBoundingClientRect();
+    const W = rect.width, H = rect.height;
+    ctx2d.clearRect(0, 0, W, H);
+    const WINDOW_BEFORE = 2, WINDOW_AFTER = 8;
+    const totalWindow = WINDOW_BEFORE + WINDOW_AFTER;
+    const mins = Math.min(...song.notes.map((n) => n.midi));
+    const maxs = Math.max(...song.notes.map((n) => n.midi));
+    const span = Math.max(12, maxs - mins + 4);
+    const top = maxs + 2;
+    const yFor = (m) => ((top - m) / span) * (H - 12) + 6;
+    ctx2d.strokeStyle = "rgba(255,255,255,0.04)";
+    ctx2d.lineWidth = 1;
+    for (let m = mins - 2; m <= maxs + 2; m++) {
+      const y = yFor(m);
+      ctx2d.beginPath();
+      ctx2d.moveTo(0, y); ctx2d.lineTo(W, y); ctx2d.stroke();
+    }
+    const windowStart = t - WINDOW_BEFORE;
+    const windowEnd = t + WINDOW_AFTER;
+    for (const n of song.notes) {
+      const end = n.start + n.duration;
+      if (end < windowStart || n.start > windowEnd) continue;
+      const x1 = ((n.start - windowStart) / totalWindow) * W;
+      const x2 = ((end - windowStart) / totalWindow) * W;
+      const y = yFor(n.midi);
+      const active = t >= n.start && t < end;
+      const upcoming = n.start > t;
+      const isBass = n.role === "bass";
+      if (active)         ctx2d.fillStyle = isBass ? "#3ca7ff" : "#ff8a3c";
+      else if (upcoming)  ctx2d.fillStyle = isBass ? "rgba(60,167,255,0.55)" : "rgba(255,138,60,0.75)";
+      else                ctx2d.fillStyle = "rgba(123,134,150,0.3)";
+      roundedRect(ctx2d, x1, y - 5, Math.max(2, x2 - x1), 10, 3);
+      ctx2d.fill();
+      if (active) {
+        ctx2d.shadowColor = isBass ? "rgba(60,167,255,0.8)" : "rgba(255,138,60,0.8)";
+        ctx2d.shadowBlur = 12;
+        roundedRect(ctx2d, x1, y - 5, Math.max(2, x2 - x1), 10, 3);
+        ctx2d.fill();
+        ctx2d.shadowBlur = 0;
+      }
+    }
+  }
+  function roundedRect(c, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    c.beginPath();
+    c.moveTo(x + rr, y);
+    c.arcTo(x + w, y, x + w, y + h, rr);
+    c.arcTo(x + w, y + h, x, y + h, rr);
+    c.arcTo(x, y + h, x, y, rr);
+    c.arcTo(x, y, x + w, y, rr);
+    c.closePath();
+  }
+
+  function play() {
+    ensureAudio();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    startTimeCtx = audioCtx.currentTime;
+    scheduleAllFrom(offset);
+    state = "playing";
+    playBtn.textContent = "Pause";
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(tick);
+  }
+  function pause() {
+    if (state !== "playing") return;
+    offset = currentSongTime();
+    stopAll();
+    state = "paused";
+    playBtn.textContent = "Play";
+  }
+  function stopAll() {
+    scheduled.forEach((s) => s.stop());
+    scheduled = [];
+    cancelAnimationFrame(rafId);
+  }
+  function restart() {
+    stopAll();
+    offset = 0;
+    state = "idle";
+    playBtn.textContent = "Play";
+    currentEl.innerHTML = "&mdash;";
+    currentEl.classList.add("off");
+    renderNoteName(prevEl, null);
+    const firstMelody = song.notes.find((n) => n.role === "melody") || song.notes[0];
+    renderNoteName(nextEl, firstMelody ? firstMelody.name : null);
+    bar.style.width = "0%";
+    timeEl.textContent = `0:00 / ${formatTime(totalDuration)}`;
+    drawRoll(0);
+  }
+
+  // ===========================================================
+  // Song selection
+  // ===========================================================
+  function selectSong(def) {
+    stopAll();
+    state = "idle";
+    offset = 0;
+    playBtn.textContent = "Play";
+    currentDef = def;
+    song = compileSong(def);
+    const last = song.notes[song.notes.length - 1];
+    totalDuration = last ? last.start + last.duration + 0.6 : 0;
+    meta.innerHTML = `<b>${escapeHtml(song.title)}</b> &middot; ${escapeHtml(song.composer)} &middot; ${song.bpm} BPM`;
+
+    if (dlUrl) URL.revokeObjectURL(dlUrl);
+    const blob = new Blob([buildMidi(song)], { type: "audio/midi" });
+    dlUrl = URL.createObjectURL(blob);
+    dlBtn.href = dlUrl;
+    dlBtn.setAttribute("download", `${def.id}.mid`);
+
+    // Update active card + scroll it into view
+    [...picker.children].forEach((c) => {
+      const isActive = c.dataset.id === def.id;
+      c.classList.toggle("active", isActive);
+      if (isActive) c.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    });
+
+    resizeCanvas();
+    restart();
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function buildPicker() {
+    SONGS.forEach((def) => {
+      const card = document.createElement("div");
+      card.className = "song-card";
+      card.dataset.id = def.id;
+      card.innerHTML = `<div class="t">${escapeHtml(def.title)}</div><div class="c">${escapeHtml(def.composer)}</div>`;
+      card.addEventListener("click", () => selectSong(def));
+      picker.appendChild(card);
+    });
+    EXTERNAL.forEach((ext) => {
+      const card = document.createElement("a");
+      card.className = "song-card external";
+      card.href = ext.href;
+      card.innerHTML = `<div class="t">${escapeHtml(ext.title)} &nearr;</div><div class="c">${escapeHtml(ext.composer)}</div>`;
+      picker.appendChild(card);
+    });
+  }
+
+  // ===========================================================
+  // Wiring
+  // ===========================================================
+  playBtn.addEventListener("click", () => { if (state === "playing") pause(); else play(); });
+  restartBtn.addEventListener("click", restart);
+  document.addEventListener("keydown", (e) => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
+    if (e.key === "r" || e.key === "R") restart();
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      const dir = e.key === "ArrowRight" ? 1 : -1;
+      const idx = SONGS.findIndex((s) => s.id === currentDef.id);
+      const next = SONGS[(idx + dir + SONGS.length) % SONGS.length];
+      selectSong(next);
+    }
+  });
+  window.addEventListener("resize", () => { resizeCanvas(); drawRoll(currentSongTime()); });
+
+  buildPicker();
+  selectSong(SONGS[0]);
+})();
+</script>
+</body>
+</html>
