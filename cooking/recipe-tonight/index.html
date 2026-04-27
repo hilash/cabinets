@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cooking · Recipe Tonight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #C24A2E;            /* coral / paprika */
+    --area-soft: rgba(194, 74, 46, 0.16);
+    --bg-tint-1: rgba(194, 74, 46, 0.10);
+    --bg-tint-2: rgba(216, 162, 78, 0.08);
+    --bg-tint-3: rgba(107, 142, 90, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 16px 20px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 6px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 4px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.alert { color: var(--alert); }
+
+  /* Tonight + Pantry row */
+  .tonight-row { display: grid; grid-template-columns: 1.7fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .tonight-row { grid-template-columns: 1fr; } }
+
+  .tonight {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .tonight .head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px; border-bottom: 1px solid var(--glass-bevel);
+  }
+  .tonight .head .label { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-3); font-weight: 500; }
+  .tonight .head .swap { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--area); padding: 5px 12px; border-radius: 100px; background: var(--area-soft); font-weight: 600; }
+  .tonight .swap:hover { background: rgba(194,74,46,0.25); }
+
+  .recipe-body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+  }
+  @media (max-width: 720px) { .recipe-body { grid-template-columns: 1fr; } }
+  .recipe-art {
+    background: linear-gradient(135deg, rgba(194,74,46,0.10) 0%, rgba(216,162,78,0.08) 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 22px;
+    border-right: 1px solid var(--glass-bevel);
+  }
+  .recipe-art svg { width: 100%; max-width: 160px; height: auto; color: var(--area); }
+  .recipe-info { padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+  .recipe-info h2 {
+    font-family: var(--serif); font-weight: 500; font-size: 28px;
+    letter-spacing: -0.018em; line-height: 1.05; color: var(--ink);
+  }
+  .recipe-info h2 em { font-style: italic; }
+  .recipe-info .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .recipe-info .pill {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 3px 10px; border-radius: 100px; background: rgba(255,255,255,0.5);
+    border: 1px solid var(--glass-stroke); color: var(--ink-2); font-weight: 600;
+  }
+  .recipe-info .pill.use {
+    background: var(--area-soft); color: var(--area); border-color: rgba(194,74,46,0.3);
+  }
+  .recipe-info .pill.rating { background: rgba(184,137,46,0.15); color: var(--warn); border-color: rgba(184,137,46,0.3); }
+  .recipe-info .why {
+    font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--ink-2);
+    line-height: 1.45;
+  }
+  .recipe-info .why strong { color: var(--ink); font-weight: 600; font-style: normal; }
+
+  /* Servings + ingredients */
+  .servings-bar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 24px; border-top: 1px solid var(--glass-bevel);
+  }
+  .servings-bar .lbl { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); font-weight: 500; }
+  .servings-bar .ctrl {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.5); border: 1px solid var(--glass-stroke);
+    border-radius: 100px; padding: 4px 6px;
+  }
+  .servings-bar .ctrl button {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--area); color: white;
+    font-size: 16px; line-height: 1; font-weight: 600;
+  }
+  .servings-bar .ctrl button:hover { background: #A53D26; }
+  .servings-bar .ctrl .n { font-family: var(--serif); font-style: italic; font-size: 18px; min-width: 28px; text-align: center; font-weight: 500; }
+
+  .ingredients {
+    padding: 16px 24px; display: flex; flex-direction: column; gap: 6px;
+    border-top: 1px solid var(--glass-bevel);
+  }
+  .ingredients .lbl { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); margin-bottom: 4px; font-weight: 500; }
+  .ing { display: grid; grid-template-columns: 70px 1fr auto; gap: 12px; padding: 4px 0; align-items: baseline; }
+  .ing .qty { font-family: var(--mono); font-size: 12px; color: var(--ink); font-weight: 500; text-align: right; }
+  .ing .name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .ing .have { font-family: var(--mono); font-size: 9.5px; padding: 2px 8px; border-radius: 100px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; }
+  .ing .have.yes { background: rgba(107,142,90,0.18); color: var(--good); }
+  .ing .have.expiring { background: rgba(216,162,78,0.20); color: var(--warn); }
+  .ing .have.no { background: rgba(194,74,106,0.20); color: var(--alert); }
+
+  .steps {
+    padding: 16px 24px 22px; border-top: 1px solid var(--glass-bevel);
+  }
+  .steps .lbl { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); margin-bottom: 10px; font-weight: 500; }
+  .step { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; padding: 6px 0; align-items: baseline; }
+  .step .n {
+    font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--area); font-weight: 600; line-height: 1;
+  }
+  .step .what { font-size: 13px; line-height: 1.55; color: var(--ink); }
+  .step .timer {
+    font-family: var(--mono); font-size: 9.5px; color: var(--warn); font-weight: 600;
+    background: rgba(184,137,46,0.15); padding: 2px 8px; border-radius: 100px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+
+  /* Pantry: use it or lose it */
+  .pantry-card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .pantry-list { display: flex; flex-direction: column; gap: 0; }
+  .p-item { padding: 8px 0; border-bottom: 1px solid var(--glass-bevel); }
+  .p-item:last-child { border-bottom: none; }
+  .p-item .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .p-item .name { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--ink); }
+  .p-item .when {
+    font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 100px;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .p-item .when.today { background: rgba(194,74,46,0.18); color: var(--area); }
+  .p-item .when.tomorrow { background: rgba(184,137,46,0.18); color: var(--warn); }
+  .p-item .when.soon { background: rgba(216,162,78,0.12); color: var(--ink-3); }
+  .p-item .uses { font-family: var(--sans); font-size: 11.5px; color: var(--ink-3); }
+  .p-item .uses strong { color: var(--ink-2); font-weight: 500; }
+
+  /* Bottom: meal plan + shopping */
+  .bottom-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .bottom-row { grid-template-columns: 1fr; } }
+
+  .week-plan { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .day-plan {
+    padding: 10px 8px; border-radius: var(--r-md);
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid var(--glass-stroke);
+    text-align: center;
+    min-height: 80px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+  }
+  .day-plan.today { background: var(--area-soft); border-color: rgba(194,74,46,0.3); }
+  .day-plan .day { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); font-weight: 500; }
+  .day-plan.today .day { color: var(--area); }
+  .day-plan .meal { font-family: var(--serif); font-style: italic; font-size: 12.5px; color: var(--ink); line-height: 1.25; }
+  .day-plan .prep { font-family: var(--mono); font-size: 9px; color: var(--ink-3); }
+
+  .shopping-list { display: flex; flex-direction: column; gap: 0; }
+  .shop-section {
+    padding: 8px 0; border-bottom: 1px solid var(--glass-bevel);
+  }
+  .shop-section:last-child { border-bottom: none; }
+  .shop-section .lbl {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--area); font-weight: 600; margin-bottom: 4px;
+  }
+  .shop-section .items { display: flex; flex-wrap: wrap; gap: 4px 8px; font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--ink); }
+  .shop-section .items span { display: inline-flex; align-items: baseline; gap: 4px; }
+  .shop-section .items span .qty { font-family: var(--mono); font-size: 10px; color: var(--ink-3); font-style: normal; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">Cooking · <strong>Recipe Tonight</strong></div>
+    <div class="crumb" id="today-crumb">—</div>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>What's <em>for dinner</em>?</h1>
+      <div class="stand">Tonight's pick from your pantry · weekly plan · shopping list — auto.</div>
+    </div>
+    <div class="right">5:30 pm scan · 4 items expiring</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Tonight in</div><div class="v">2h 14m</div><div class="delta">cook starts ~6:45</div></div>
+    <div class="big-stat glass"><div class="lbl">Expiring this week</div><div class="v">8 <small>items</small></div><div class="delta alert">salmon by Apr 28</div></div>
+    <div class="big-stat glass"><div class="lbl">Recipes saved</div><div class="v">20</div><div class="delta">3 pasta · 4 chicken · 2 fish</div></div>
+    <div class="big-stat glass"><div class="lbl">Avg prep this week</div><div class="v">22 <small>min</small></div><div class="delta">2 batch nights · 1 treat</div></div>
+  </section>
+
+  <section class="tonight-row">
+
+    <div class="tonight glass">
+      <div class="head">
+        <span class="label">Tonight's pick · why this</span>
+        <button class="swap">⟲ swap</button>
+      </div>
+
+      <div class="recipe-body">
+        <div class="recipe-art" aria-hidden="true">
+          <!-- Salmon SVG -->
+          <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="100" cy="105" rx="80" ry="36"/>
+            <path d="M30 105 Q100 60 170 105"/>
+            <path d="M40 110 Q100 130 160 110"/>
+            <path d="M55 100 Q70 90 85 100 M115 100 Q130 90 145 100"/>
+            <circle cx="170" cy="105" r="3" fill="currentColor"/>
+            <path d="M40 145 Q35 160 50 165 M70 150 Q70 170 88 168 M100 150 Q105 175 122 165 M130 145 Q140 165 152 158"/>
+          </svg>
+        </div>
+        <div class="recipe-info">
+          <h2><em>Sheet-pan salmon</em> with lemon &amp; herbs</h2>
+          <div class="pills">
+            <span class="pill use">uses · salmon (expires tomorrow)</span>
+            <span class="pill">10 min prep</span>
+            <span class="pill">18 min cook</span>
+            <span class="pill">2 servings</span>
+            <span class="pill rating">★★★★★ · last cooked Apr 12</span>
+          </div>
+          <div class="why">Salmon is the most-expiring item in your fridge — needs to be cooked tonight or tomorrow. <strong>You haven't had fish in 14 days</strong>, and you have lemons + spinach + olive oil all ready. Mediterranean weeknight, 28 min total. <em>Easy win.</em></div>
+        </div>
+      </div>
+
+      <div class="servings-bar">
+        <span class="lbl">Servings</span>
+        <div class="ctrl">
+          <button>−</button>
+          <span class="n">2</span>
+          <button>+</button>
+        </div>
+        <span style="font-family:var(--mono); font-size:10.5px; color:var(--ink-3);">scaled for 2</span>
+      </div>
+
+      <div class="ingredients">
+        <span class="lbl">Ingredients</span>
+        <div class="ing"><span class="qty">2 fillets</span><span class="name">salmon (≈ 200g each)</span><span class="have expiring">expires tomorrow</span></div>
+        <div class="ing"><span class="qty">1</span><span class="name">lemon, sliced thin</span><span class="have yes">have 4</span></div>
+        <div class="ing"><span class="qty">3 tbsp</span><span class="name">olive oil, good</span><span class="have yes">have</span></div>
+        <div class="ing"><span class="qty">2 cloves</span><span class="name">garlic, minced</span><span class="have yes">have head</span></div>
+        <div class="ing"><span class="qty">1 small bunch</span><span class="name">basil + dill (chopped)</span><span class="have expiring">basil exp Apr 30</span></div>
+        <div class="ing"><span class="qty">200g</span><span class="name">baby spinach (wilted under salmon)</span><span class="have expiring">exp tomorrow</span></div>
+        <div class="ing"><span class="qty">to taste</span><span class="name">flaky sea salt + black pepper</span><span class="have yes">have</span></div>
+      </div>
+
+      <div class="steps">
+        <span class="lbl">Steps</span>
+        <div class="step"><span class="n">1</span><span class="what">Heat oven to 220°C / 425°F. Line a sheet pan with parchment.</span><span class="timer">~5 min</span></div>
+        <div class="step"><span class="n">2</span><span class="what">Lay spinach on the pan in a thin bed. Drizzle 1 tbsp olive oil + pinch salt.</span></div>
+        <div class="step"><span class="n">3</span><span class="what">Pat salmon dry. Place skin-side down on spinach. Top with lemon slices, minced garlic, drizzle remaining olive oil. Generous salt + pepper.</span></div>
+        <div class="step"><span class="n">4</span><span class="what">Bake 12–14 min until salmon flakes at thickest point but center is just translucent. The spinach beneath will steam-wilt.</span><span class="timer">12–14 min</span></div>
+        <div class="step"><span class="n">5</span><span class="what">Scatter chopped basil + dill over the top. Squeeze half a lemon. Serve with the wilted spinach.</span></div>
+        <div class="step"><span class="n">6</span><span class="what">Optional: a hunk of sourdough to mop the pan juices. (You have one on the counter.)</span></div>
+      </div>
+    </div>
+
+    <div class="pantry-card glass">
+      <div class="card-head">
+        <span class="title">Use it or lose it</span>
+        <span class="meta">8 items</span>
+      </div>
+      <div class="pantry-list">
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Salmon fillet (400g)</span>
+            <span class="when today">tomorrow</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> tonight's pick · poke bowl · pan-seared with greens</div>
+        </div>
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Baby spinach (200g)</span>
+            <span class="when today">tomorrow</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> tonight · frittata · pasta al limone</div>
+        </div>
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Sourdough loaf</span>
+            <span class="when tomorrow">in 2 days</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> tonight · breakfast toast · bruschetta</div>
+        </div>
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Mozzarella ball (250g)</span>
+            <span class="when tomorrow">in 3 days</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> caprese · margherita · eggplant parm</div>
+        </div>
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Avocado (3)</span>
+            <span class="when tomorrow">in 3 days</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> tacos · poke bowl · breakfast</div>
+        </div>
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Celery (1 bunch)</span>
+            <span class="when tomorrow">in 3 days</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> ragu · stew · stock base</div>
+        </div>
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Basil (1 bunch)</span>
+            <span class="when tomorrow">in 3 days</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> tonight · pesto · caprese</div>
+        </div>
+        <div class="p-item">
+          <div class="head">
+            <span class="name">Chicken thighs (800g)</span>
+            <span class="when soon">in 2 days</span>
+          </div>
+          <div class="uses"><strong>Use:</strong> Greek lemon · katsu · crispy-skin</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-row">
+
+    <div class="card glass" style="padding: 18px 22px;">
+      <div class="card-head">
+        <span class="title">This week's plan</span>
+        <span class="meta">balanced · fish · veg · 1 batch</span>
+      </div>
+      <div class="week-plan">
+        <div class="day-plan today">
+          <div class="day">Mon · today</div>
+          <div class="meal">Sheet-pan salmon</div>
+          <div class="prep">28 min</div>
+        </div>
+        <div class="day-plan">
+          <div class="day">Tue</div>
+          <div class="meal">Greek lemon chicken</div>
+          <div class="prep">60 min · batch</div>
+        </div>
+        <div class="day-plan">
+          <div class="day">Wed</div>
+          <div class="meal">Leftover chicken bowls</div>
+          <div class="prep">10 min</div>
+        </div>
+        <div class="day-plan">
+          <div class="day">Thu</div>
+          <div class="meal">Caprese + sourdough</div>
+          <div class="prep">10 min · easy</div>
+        </div>
+        <div class="day-plan">
+          <div class="day">Fri</div>
+          <div class="meal">Beef tacos</div>
+          <div class="prep">30 min</div>
+        </div>
+        <div class="day-plan">
+          <div class="day">Sat</div>
+          <div class="meal">Mom's beef ragu</div>
+          <div class="prep">3 hr · treat</div>
+        </div>
+        <div class="day-plan">
+          <div class="day">Sun</div>
+          <div class="meal">Frittata + greens</div>
+          <div class="prep">30 min</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card glass" style="padding: 18px 22px;">
+      <div class="card-head">
+        <span class="title">Shopping list</span>
+        <span class="meta">14 items · auto-built</span>
+      </div>
+      <div class="shopping-list">
+        <div class="shop-section">
+          <div class="lbl">Produce</div>
+          <div class="items">
+            <span><span class="qty">3</span> tomatoes</span>
+            <span><span class="qty">2</span> bell peppers</span>
+            <span><span class="qty">1</span> bunch dill</span>
+            <span><span class="qty">2</span> peaches</span>
+            <span><span class="qty">1 head</span> romaine</span>
+          </div>
+        </div>
+        <div class="shop-section">
+          <div class="lbl">Protein</div>
+          <div class="items">
+            <span><span class="qty">600g</span> ground beef</span>
+            <span><span class="qty">8</span> tortillas</span>
+          </div>
+        </div>
+        <div class="shop-section">
+          <div class="lbl">Dairy</div>
+          <div class="items">
+            <span><span class="qty">200g</span> sour cream</span>
+            <span><span class="qty">100g</span> grated parmesan</span>
+          </div>
+        </div>
+        <div class="shop-section">
+          <div class="lbl">Dry / pantry</div>
+          <div class="items">
+            <span><span class="qty">1 jar</span> capers</span>
+            <span><span class="qty">1 box</span> pappardelle</span>
+            <span><span class="qty">1 bottle</span> red wine (cooking)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Cooking · Recipe Tonight · Chef's pick from your pantry</p>
+
+</main>
+
+<script>
+'use strict';
+document.getElementById('today-crumb').textContent =
+  new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+</script>
+</body>
+</html>

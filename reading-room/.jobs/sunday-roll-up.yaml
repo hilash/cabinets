@@ -1,0 +1,22 @@
+id: sunday-roll-up
+name: Sunday Reading Roll-up
+enabled: true
+schedule: "0 18 * * 0"
+provider: claude-code
+adapterType: claude_local
+ownerAgent: librarian
+agentSlug: librarian
+timeout: 240
+prompt: |-
+  You are Librarian. Read books.csv. Compute the weekly roll-up per the persona's rubric.
+
+  Sections:
+    1. Finished this week — list with rating + their 3 bullets (or note if bullets missing)
+    2. Started this week — list with brief "why now" if known
+    3. Stalled — books in "reading" status with no update in ≥ 30 days; suggest shelve or abandon for each
+    4. Pace — books YTD / target (default 24/year, 2/mo)
+    5. This week's pick — one TBR book, with 1-2 sentences on why this one for this week (consider recent genre rotation, length balance, mood signal from recent finishes)
+
+  Save to briefs/week-YYYY-WW.md.
+
+  Keep it under 200 words. Calm tone. Never moralize about pace.

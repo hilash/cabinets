@@ -1,0 +1,29 @@
+id,name,category,bodyweight_friendly,equipment,notes
+sq01,Back squat,squat,no,barbell+rack,low-bar preferred
+sq02,Front squat,squat,no,barbell+rack,
+sq03,Bulgarian split squat,squat,bodyweight-option,DB+bench,unilateral
+sq04,Goblet squat,squat,bodyweight-option,DB,light/warmup
+hi01,Conventional deadlift,hinge,no,barbell,
+hi02,Romanian deadlift,hinge,no,barbell,hamstring focus
+hi03,Hip thrust,hinge,no,barbell+bench,
+hi04,Single-leg RDL,hinge,bodyweight-option,DB,unilateral
+pu01,Bench press,push,no,barbell+bench,
+pu02,Overhead press,push,no,barbell,
+pu03,DB bench (incline),push,no,DB+incline-bench,
+pu04,Push-up,push,yes,none,
+pu05,Dip,push,bodyweight,parallel-bars,
+pl01,Pull-up,pull,bodyweight,bar,
+pl02,Chin-up,pull,bodyweight,bar,bicep-bias
+pl03,Barbell row,pull,no,barbell,
+pl04,Cable row,pull,no,cable-stack,
+pl05,Lat pulldown,pull,no,cable-stack,
+ac01,Face pull,accessory,no,cable+rope,
+ac02,Bicep curl,accessory,no,DB or barbell,
+ac03,Tricep extension,accessory,no,DB or cable,
+ac04,Lateral raise,accessory,no,DB,
+ac05,Calf raise,accessory,bodyweight-option,DB or machine,
+mo01,Couch stretch,mobility,yes,none,2 min/side
+mo02,90/90 hip switch,mobility,yes,none,
+mo03,Thoracic extension,mobility,yes,foam roller,
+co01,Z2 walk,conditioning,yes,none,30-45 min
+co02,Easy bike,conditioning,yes,bike,zone 2

@@ -1,0 +1,32 @@
+id: sunday-meal-plan
+name: Sunday Meal Plan
+enabled: true
+schedule: 0 19 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: chef
+agentSlug: chef
+timeout: 300
+prompt: |-
+  You are Chef. Plan next week's 7 dinners using recipes.csv and pantry.csv.
+
+  Constraints:
+    - 2 protein swaps (no repeat protein in a row)
+    - 1 fish night, 1 plant-forward, 1 leftover-friendly batch cook
+    - 1 "easy" night (prep ≤ 20 min) — pick the busiest evening
+    - 1 longer "treat" recipe — Saturday or Sunday
+    - Honor allergies + active diet protocols
+    - Don't repeat any recipe cooked in the last 14 days
+
+  Write to meal-plan.csv with columns: date, day, recipe_id, recipe_name, servings, prep_min, notes
+
+  Then compute shopping-list.md:
+    - Union of all ingredients across the 7 dinners
+    - Subtract quantities already present in pantry.csv (with adequate stock)
+    - Group by store section (produce, protein, dairy, dry goods, frozen)
+    - Flag any item that is also expiring this week (use first)
+
+  Save shopping-list.md as a clean markdown checklist with quantities.
+cabinetPath: cabinets/cabinets/cooking
+createdAt: '2026-04-27T07:20:55.351Z'
+updatedAt: '2026-04-27T07:20:55.351Z'

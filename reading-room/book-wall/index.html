@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reading Room · Book Wall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #A87D3F;            /* aged amber */
+    --area-soft: rgba(168, 125, 63, 0.16);
+    --bg-tint-1: rgba(168, 125, 63, 0.10);
+    --bg-tint-2: rgba(46, 65, 86, 0.06);
+    --bg-tint-3: rgba(185, 110, 233, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+  .filter-pills { display: flex; gap: 4px; }
+  .filter-pills button { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); padding: 5px 12px; border-radius: 100px; }
+  .filter-pills button:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .filter-pills button.active { background: var(--area-soft); color: var(--area); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.up { color: var(--good); } .big-stat .delta.down { color: var(--alert); }
+
+  /* Currently reading + featured */
+  .now-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .now-row { grid-template-columns: 1fr; } }
+
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 14px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  .reading-list { display: flex; flex-direction: column; gap: 0; }
+  .now { padding: 12px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 50px 1fr 90px; gap: 14px; align-items: center; }
+  .now:last-child { border-bottom: none; }
+  .now .spine {
+    width: 36px; height: 50px;
+    background: linear-gradient(135deg, var(--area) 0%, #8C6630 100%);
+    border-radius: 2px;
+    box-shadow: 1px 0 2px rgba(0,0,0,0.2), inset 0 -2px 4px rgba(0,0,0,0.15);
+    position: relative;
+  }
+  .now .spine::after {
+    content: '';
+    position: absolute; top: 4px; left: 3px; right: 3px; height: 1px;
+    background: rgba(255,255,255,0.4);
+  }
+  .now .spine.color-a { background: linear-gradient(135deg, #C24A6A 0%, #8B2840 100%); }
+  .now .spine.color-b { background: linear-gradient(135deg, #6FA8E5 0%, #2E4156 100%); }
+  .now .spine.color-c { background: linear-gradient(135deg, #B8892E 0%, #6F4F1A 100%); }
+  .now .info .name { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink); font-weight: 500; }
+  .now .info .by { font-family: var(--mono); font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 2px; }
+  .now .info .meta { font-family: var(--sans); font-size: 11.5px; color: var(--ink-3); margin-top: 4px; }
+  .now .progress {
+    text-align: right;
+  }
+  .now .progress .bar { height: 4px; background: rgba(168,125,63,0.10); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+  .now .progress .fill { height: 100%; background: var(--area); border-radius: 2px; }
+  .now .progress .pct { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+
+  /* Featured (this week's pick) */
+  .featured-card {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .featured-card .head {
+    padding: 14px 20px; border-bottom: 1px solid var(--glass-bevel);
+    background: linear-gradient(135deg, rgba(168,125,63,0.10), transparent);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .featured-card .head .label { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--area); font-weight: 600; }
+  .featured-card .body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .featured-card .body h3 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 22px; line-height: 1.15; letter-spacing: -0.01em; }
+  .featured-card .body .by { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.14em; }
+  .featured-card .body .why { font-family: var(--serif); font-size: 14.5px; color: var(--ink-2); line-height: 1.5; }
+  .featured-card .body .why em { font-style: italic; color: var(--ink); font-weight: 500; }
+
+  /* Year wall — books by month */
+  .year-wall { display: flex; flex-direction: column; gap: 18px; }
+  .month-strip { display: grid; grid-template-columns: 60px 1fr; gap: 18px; }
+  .month-strip .month {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: 22px; color: var(--ink); padding-top: 4px;
+  }
+  .month-strip .month small { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.12em; }
+  .month-books { display: flex; gap: 12px; flex-wrap: wrap; }
+  .book {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 12px 14px; min-width: 200px; max-width: 260px;
+    background: rgba(255, 252, 244, 0.6);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-md);
+    backdrop-filter: blur(20px) saturate(170%);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    box-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.50) inset,
+      0 4px 14px -8px rgba(27, 24, 20, 0.08);
+    transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .book:hover { transform: translateY(-3px); }
+  .book .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .book .stars { font-family: serif; color: var(--area); font-size: 12px; letter-spacing: 1px; }
+  .book .stars .empty { color: var(--ink-4); }
+  .book .name { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 15.5px; color: var(--ink); line-height: 1.2; }
+  .book .by { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: -2px; }
+  .book .bullets { display: flex; flex-direction: column; gap: 4px; padding-top: 4px; border-top: 1px solid var(--glass-bevel); }
+  .book .bullet { font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
+  .book .bullet::before { content: '·'; color: var(--area); font-weight: 700; margin-right: 5px; }
+
+  /* TBR shelf */
+  .tbr { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tbr-spine {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 8px 10px;
+    background: linear-gradient(135deg, rgba(168,125,63,0.12), rgba(168,125,63,0.05));
+    border: 1px solid rgba(168,125,63,0.25);
+    border-left: 3px solid var(--area);
+    border-radius: 4px;
+    min-width: 160px;
+  }
+  .tbr-spine .name { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); line-height: 1.2; }
+  .tbr-spine .by { font-family: var(--mono); font-size: 9px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  /* Genre pie / breakdown */
+  .genres { display: flex; flex-direction: column; gap: 9px; }
+  .genre-row { display: grid; grid-template-columns: 110px 1fr 40px; gap: 10px; align-items: center; }
+  .genre-row .lbl { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .genre-row .bar-wrap { height: 10px; background: rgba(168,125,63,0.08); border-radius: 5px; overflow: hidden; }
+  .genre-row .bar { height: 100%; background: linear-gradient(90deg, var(--area), #C9A26B); border-radius: 5px; }
+  .genre-row .ct { font-family: var(--mono); font-size: 11px; color: var(--ink-2); text-align: right; font-weight: 500; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">Reading Room · <strong>Book Wall</strong></div>
+    <nav class="filter-pills">
+      <button class="active">All</button>
+      <button>Reading</button>
+      <button>Finished</button>
+      <button>TBR</button>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>What you're <em>reading</em>.</h1>
+      <div class="stand">Currently 3 in flight · 14 finished YTD · 7 on the shelf · 2 abandoned with grace.</div>
+    </div>
+    <div class="right">last update · today</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Finished YTD</div><div class="v">14</div><div class="delta up">target 24 · ahead by 4</div></div>
+    <div class="big-stat glass"><div class="lbl">Currently reading</div><div class="v">3</div><div class="delta">avg 47% through</div></div>
+    <div class="big-stat glass"><div class="lbl">TBR shelf</div><div class="v">7 <small>books</small></div><div class="delta">healthy · won't overwhelm</div></div>
+    <div class="big-stat glass"><div class="lbl">Pace this month</div><div class="v">3.2 <small>books</small></div><div class="delta up">↑ from 2.8 monthly avg</div></div>
+  </section>
+
+  <!-- Currently reading + this week's pick -->
+  <section class="now-row">
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Currently reading</span>
+        <span class="meta">3 in flight</span>
+      </div>
+      <div class="reading-list">
+        <div class="now">
+          <div class="spine color-b"></div>
+          <div class="info">
+            <div class="name">The Beginning of Infinity</div>
+            <div class="by">David Deutsch</div>
+            <div class="meta">started Mar 4 · physics, philosophy</div>
+          </div>
+          <div class="progress">
+            <div class="bar"><div class="fill" style="width:62%"></div></div>
+            <div class="pct">62% · ch 9</div>
+          </div>
+        </div>
+        <div class="now">
+          <div class="spine color-c"></div>
+          <div class="info">
+            <div class="name">The Anxious Generation</div>
+            <div class="by">Jonathan Haidt</div>
+            <div class="meta">started Mar 28 · sociology</div>
+          </div>
+          <div class="progress">
+            <div class="bar"><div class="fill" style="width:88%"></div></div>
+            <div class="pct">88% · finishing</div>
+          </div>
+        </div>
+        <div class="now">
+          <div class="spine color-a"></div>
+          <div class="info">
+            <div class="name">Working Backwards</div>
+            <div class="by">Bryar &amp; Carr</div>
+            <div class="meta">started Apr 1 · business</div>
+          </div>
+          <div class="progress">
+            <div class="bar"><div class="fill" style="width:34%"></div></div>
+            <div class="pct">34%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-card glass">
+      <div class="head">
+        <span class="label">This week's pick · Librarian</span>
+      </div>
+      <div class="body">
+        <h3>Demon Copperhead</h3>
+        <div class="by">Barbara Kingsolver · 560 pages</div>
+        <div class="why">You finished three nonfiction reads in a row and your last fiction (<em>Tomorrow and Tomorrow</em>) landed hard. This is a heavier book — modern Dickens reset in Appalachia — but you're due for something with characters. <em>Time to live somewhere else for a few weeks.</em></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Year wall — finished books by month -->
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">2026 — what you finished</span>
+      <span class="meta">14 books · 4 months</span>
+    </div>
+
+    <div class="year-wall">
+
+      <div class="month-strip">
+        <div class="month">Apr<small>1 book</small></div>
+        <div class="month-books">
+          <div class="book">
+            <div class="head">
+              <div>
+                <div class="name">How to Take Smart Notes</div>
+                <div class="by">Sönke Ahrens</div>
+              </div>
+              <div class="stars">★★★★<span class="empty">★</span></div>
+            </div>
+            <div class="bullets">
+              <div class="bullet">Zettelkasten: each note an atomic idea, written in your own words</div>
+              <div class="bullet">Notes that restate are filing — not thinking</div>
+              <div class="bullet">Rebuilt my vault to enforce one-idea-per-note</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="month-strip">
+        <div class="month">Mar<small>3 books</small></div>
+        <div class="month-books">
+          <div class="book">
+            <div class="head">
+              <div>
+                <div class="name">Same as Ever</div>
+                <div class="by">Morgan Housel</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="bullets">
+              <div class="bullet">Calibrate to the things that don't change — fear, greed, attention</div>
+              <div class="bullet">Most predictions assume too much novelty</div>
+              <div class="bullet">Now I ask: what would this prediction look like in a stable world?</div>
+            </div>
+          </div>
+          <div class="book">
+            <div class="head">
+              <div>
+                <div class="name">Bird by Bird</div>
+                <div class="by">Anne Lamott</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="bullets">
+              <div class="bullet">Shitty first drafts. Show up daily. One thing at a time.</div>
+              <div class="bullet">"Bird by bird, buddy."</div>
+              <div class="bullet">Stopped writing 'the chapter,' started writing the next paragraph</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="month-strip">
+        <div class="month">Feb<small>2 books</small></div>
+        <div class="month-books">
+          <div class="book">
+            <div class="head">
+              <div>
+                <div class="name">The Innovator's Solution</div>
+                <div class="by">Christensen &amp; Raynor</div>
+              </div>
+              <div class="stars">★★★★<span class="empty">★</span></div>
+            </div>
+            <div class="bullets">
+              <div class="bullet">Disruption from below; incumbents serve their best customers right off the cliff</div>
+              <div class="bullet">'Good management' on a quarterly horizon kills decade-scale companies</div>
+              <div class="bullet">Reframed how I read every product roadmap</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="month-strip">
+        <div class="month">Jan<small>2 books</small></div>
+        <div class="month-books">
+          <div class="book">
+            <div class="head">
+              <div>
+                <div class="name">The Power of Habit</div>
+                <div class="by">Charles Duhigg</div>
+              </div>
+              <div class="stars">★★★<span class="empty">★★</span></div>
+            </div>
+            <div class="bullets">
+              <div class="bullet">Cue → routine → reward. Identify it to interrupt or design</div>
+              <div class="bullet">Keystone habits — small ones that pull others up</div>
+              <div class="bullet">Rebuilt morning around one keystone (sunlight in first 30 min)</div>
+            </div>
+          </div>
+          <div class="book">
+            <div class="head">
+              <div>
+                <div class="name">The Three-Body Problem</div>
+                <div class="by">Liu Cixin</div>
+              </div>
+              <div class="stars">★★★★★</div>
+            </div>
+            <div class="bullets">
+              <div class="bullet">Civilizations are not static — and not necessarily friendly</div>
+              <div class="bullet">The chilling line about radio silence as the only safe strategy</div>
+              <div class="bullet">Less optimistic about cosmic optimism</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TBR shelf + Genre breakdown -->
+  <section class="row">
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">TBR shelf</span>
+        <span class="meta">7 books · plenty of room</span>
+      </div>
+      <div class="tbr">
+        <div class="tbr-spine"><div class="name">Demon Copperhead</div><div class="by">Barbara Kingsolver</div></div>
+        <div class="tbr-spine"><div class="name">Stoner</div><div class="by">John Williams</div></div>
+        <div class="tbr-spine"><div class="name">Kitchen Confidential</div><div class="by">Anthony Bourdain</div></div>
+        <div class="tbr-spine"><div class="name">Talking to Strangers</div><div class="by">Malcolm Gladwell</div></div>
+        <div class="tbr-spine"><div class="name">The Coddling of the American Mind</div><div class="by">Lukianoff &amp; Haidt</div></div>
+        <div class="tbr-spine"><div class="name">The Algebra of Happiness</div><div class="by">Scott Galloway</div></div>
+        <div class="tbr-spine"><div class="name">A Pattern Language</div><div class="by">Christopher Alexander</div></div>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Genres · last 12 months</span>
+        <span class="meta">21 books</span>
+      </div>
+      <div class="genres">
+        <div class="genre-row"><span class="lbl">Nonfiction</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="ct">8</span></div>
+        <div class="genre-row"><span class="lbl">Fiction</span><div class="bar-wrap"><div class="bar" style="width:55%"></div></div><span class="ct">5</span></div>
+        <div class="genre-row"><span class="lbl">Sci-fi</span><div class="bar-wrap"><div class="bar" style="width:35%"></div></div><span class="ct">3</span></div>
+        <div class="genre-row"><span class="lbl">Memoir</span><div class="bar-wrap"><div class="bar" style="width:25%"></div></div><span class="ct">2</span></div>
+        <div class="genre-row"><span class="lbl">Business</span><div class="bar-wrap"><div class="bar" style="width:25%"></div></div><span class="ct">2</span></div>
+        <div class="genre-row"><span class="lbl">Self-help</span><div class="bar-wrap"><div class="bar" style="width:15%"></div></div><span class="ct">1</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Reading Room · Book Wall · curated by Librarian</p>
+
+</main>
+</body>
+</html>

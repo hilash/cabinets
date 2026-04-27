@@ -1,0 +1,11 @@
+schemaVersion: 1
+id: fitness-root
+name: Fitness
+kind: root
+version: 0.1.0
+description: >
+  A cabinet for strength, mobility, and conditioning. The Strength Console
+  tracks your top sets per movement, current cycle, weekly volume, and
+  recovery. Coach plans the week's training, suggests deloads when volume
+  spikes, and keeps the program coherent across cycles. One agent: Coach.
+entry: index.md

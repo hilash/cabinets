@@ -1,0 +1,11 @@
+schemaVersion: 1
+id: cooking-root
+name: Cooking
+kind: root
+version: 0.1.0
+description: >
+  A cabinet for cooking at home — what's in the fridge, what's about to expire,
+  what to make tonight. Recipe Tonight webapp picks dinner from your pantry,
+  weekly meal plan generates the shopping list, recipes are saved with notes
+  so the next time you make them they're better. One agent: Chef.
+entry: index.md

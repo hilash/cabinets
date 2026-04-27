@@ -1,0 +1,21 @@
+id,name,cuisine,protein,prep_min,cook_min,servings,rating,last_cooked,tags,source
+r01,Sheet-pan salmon with lemon and herbs,mediterranean,fish,10,18,2,5,2026-04-12,easy;weeknight;low-carb,nytcooking
+r02,Pasta al limone,italian,vegetarian,5,15,4,5,2026-04-08,easy;quick;crowd-pleaser,bon-appetit
+r03,Chicken thighs with crispy skin and salsa verde,mediterranean,chicken,15,35,4,5,2026-04-15,classic;weeknight,salt-fat-acid-heat
+r04,Greek salad with feta and oregano,greek,vegetarian,15,0,3,4,2026-04-19,easy;raw;summer,personal
+r05,Mom's beef ragu pappardelle,italian,beef,20,180,6,5,2026-03-20,batch;weekend;leftovers,family
+r06,Quick chickpea curry,indian,vegan,10,25,4,4,2026-04-02,batch;easy;weeknight,nytcooking
+r07,Cacio e pepe,italian,vegetarian,5,15,2,5,2026-04-21,easy;quick;date-night,roman-classic
+r08,Pan-seared chicken with white beans,italian,chicken,10,25,4,5,2026-04-10,easy;weeknight,bon-appetit
+r09,Salmon poke bowl,japanese,fish,15,0,2,4,2026-04-05,raw;summer;low-carb,personal
+r10,Spicy crispy tofu with rice,asian,vegan,15,25,4,4,2026-03-28,batch;weeknight,seriouseats
+r11,Frittata with greens,mediterranean,eggs,10,20,4,4,2026-04-18,easy;leftovers;brunch,personal
+r12,Sausage and white bean stew,italian,sausage,15,40,4,5,2026-03-15,batch;cold-night,nytcooking
+r13,Mushroom risotto,italian,vegetarian,15,30,4,4,2026-03-30,treat;weekend,classic
+r14,Greek lemon chicken (avgolemono),greek,chicken,20,40,4,4,2026-03-25,batch;leftovers,personal
+r15,Caprese with peach and basil,italian,vegetarian,10,0,2,5,2026-04-22,raw;summer;easy,personal
+r16,Beef tacos with quick pico,mexican,beef,15,15,4,4,2026-04-09,easy;weeknight;crowd,personal
+r17,Roasted vegetable + tahini grain bowl,mediterranean,vegan,15,30,2,4,2026-04-14,batch;leftovers,nytcooking
+r18,Pasta puttanesca,italian,vegetarian,5,20,4,4,2026-04-16,easy;pantry;weeknight,marcella-hazan
+r19,Eggplant parmesan,italian,vegetarian,30,60,6,5,2026-03-10,treat;weekend;crowd,personal
+r20,Chicken katsu with cabbage slaw,japanese,chicken,20,20,4,4,2026-04-03,treat;crispy,bon-appetit

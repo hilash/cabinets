@@ -1,0 +1,37 @@
+item,location,quantity,unit,purchased,expires,notes
+chicken thighs,fridge,800,g,2026-04-25,2026-04-29,boneless skinless
+ground beef,fridge,500,g,2026-04-26,2026-04-29,80/20
+salmon fillet,fridge,400,g,2026-04-26,2026-04-28,wild Alaskan
+eggs,fridge,10,units,2026-04-22,2026-05-12,large
+milk,fridge,1.5,L,2026-04-25,2026-05-04,whole
+butter,fridge,200,g,2026-04-20,2026-06-20,
+heavy cream,fridge,200,ml,2026-04-25,2026-05-08,
+parmesan,fridge,150,g,2026-04-15,2026-06-15,Reggiano
+feta,fridge,200,g,2026-04-22,2026-05-15,
+mozzarella ball,fridge,250,g,2026-04-26,2026-04-30,fresh
+onions,pantry,4,units,2026-04-20,2026-05-15,yellow
+garlic,pantry,1,head,2026-04-15,2026-05-30,
+carrots,fridge,500,g,2026-04-20,2026-05-05,
+celery,fridge,1,bunch,2026-04-22,2026-04-30,
+spinach,fridge,200,g,2026-04-26,2026-04-29,baby
+mixed greens,fridge,150,g,2026-04-26,2026-04-29,arugula+watercress
+cucumber,fridge,2,units,2026-04-25,2026-05-04,
+cherry tomatoes,fridge,250,g,2026-04-26,2026-05-02,
+avocado,fridge,3,units,2026-04-25,2026-04-30,ripe
+zucchini,fridge,2,units,2026-04-25,2026-05-01,
+basil,fridge,1,bunch,2026-04-26,2026-04-30,
+lemons,fridge,4,units,2026-04-22,2026-05-12,
+olive oil,pantry,500,ml,2026-04-01,2027-04-01,Castello di Ama
+sea salt,pantry,500,g,2026-01-01,2030-01-01,Maldon
+black pepper,pantry,80,g,2026-01-01,2027-01-01,Tellicherry
+pasta penne,pantry,500,g,2026-03-10,2027-03-10,
+pasta spaghetti,pantry,500,g,2026-03-10,2027-03-10,De Cecco
+rice basmati,pantry,1000,g,2026-02-20,2027-02-20,
+quinoa,pantry,500,g,2026-03-15,2027-03-15,
+canned tomatoes,pantry,3,cans,2026-01-10,2028-01-10,San Marzano
+canned beans white,pantry,2,cans,2026-02-01,2028-02-01,cannellini
+chicken broth,pantry,1,L,2026-03-01,2027-03-01,low sodium
+soy sauce,pantry,500,ml,2026-01-01,2028-01-01,
+sesame oil,pantry,250,ml,2026-01-15,2027-01-15,toasted
+honey,pantry,400,g,2026-01-01,2030-01-01,
+sourdough,counter,1,loaf,2026-04-26,2026-04-29,Bäckerei Domberger

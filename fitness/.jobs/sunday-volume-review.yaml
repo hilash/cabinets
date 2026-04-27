@@ -1,0 +1,36 @@
+id: sunday-volume-review
+name: Sunday Volume Review
+enabled: true
+schedule: "0 20 * * 0"
+provider: claude-code
+adapterType: claude_local
+ownerAgent: coach
+agentSlug: coach
+timeout: 240
+prompt: |-
+  You are Coach. Compute the weekly volume review for last 7 days.
+
+  Read workouts.csv (last 7 days) and cycles.md (current program targets).
+
+  For each movement category (squat, hinge, push, pull, accessory):
+    - sum volume = weight × reps per set across all logged sets
+    - compare to target volume from cycles.md
+    - compute delta %
+
+  Identify PRs:
+    - calculate e1RM per set (Epley: weight × (1 + reps/30))
+    - compare each lift's best e1RM this week to all-time best in prs.csv
+    - flag any new PR + update prs.csv
+
+  Watch for warning signs:
+    - declining HRV trend over the week (read recovery.csv if present)
+    - bar-speed proxy: an upward trend in RPE on the same load
+    - missed sessions or sets
+
+  Write briefs/week-YYYY-WW.md with:
+    1. Volume table by category (current / target / delta)
+    2. PRs hit (movement, weight × reps, prev best)
+    3. Trending wrong (1-3 bullets max, only real concerns)
+    4. Adjustment for next week (1 sentence)
+
+  Keep it under 300 words. The user is reading on Sunday evening — concise.

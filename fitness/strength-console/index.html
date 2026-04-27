@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fitness · Strength Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #B8392E;            /* ember red */
+    --area-soft: rgba(184, 57, 46, 0.16);
+    --bg-tint-1: rgba(184, 57, 46, 0.10);
+    --bg-tint-2: rgba(46, 65, 86, 0.08);
+    --bg-tint-3: rgba(216, 162, 78, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.up { color: var(--good); } .big-stat .delta.down { color: var(--alert); }
+
+  /* Tomorrow's session card */
+  .tomorrow {
+    padding: 22px 26px;
+    background: linear-gradient(135deg, rgba(184,57,46,0.10) 0%, rgba(255,252,244,0.55) 100%);
+    border: 1px solid rgba(184,57,46,0.25);
+    border-radius: var(--r-lg);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    align-items: center;
+  }
+  .tomorrow .left { display: flex; flex-direction: column; gap: 8px; }
+  .tomorrow .label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--area); font-weight: 600; }
+  .tomorrow h2 { font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 24px; letter-spacing: -0.005em; color: var(--ink); }
+  .tomorrow .lifts { font-family: var(--serif); font-size: 16px; color: var(--ink-2); line-height: 1.5; }
+  .tomorrow .lifts strong { color: var(--ink); font-weight: 600; }
+  .tomorrow .why { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+  .tomorrow .right {
+    text-align: right;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .tomorrow .right .est { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 1; color: var(--ink); }
+  .tomorrow .right .est small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 4px; }
+  .tomorrow .right .when { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); }
+
+  /* Volume heatmap */
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 14px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  .vol-heatmap-wrap { overflow-x: auto; }
+  .vol-heatmap { display: grid; grid-template-columns: 110px repeat(16, minmax(28px, 1fr)); gap: 3px; min-width: 600px; }
+  .vol-heatmap .col-head {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-3); text-align: center; padding-bottom: 6px;
+  }
+  .vol-heatmap .row-head {
+    font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink);
+    padding-right: 8px; display: flex; align-items: center;
+  }
+  .vol-heatmap .cell {
+    border-radius: 3px; height: 30px;
+    background: rgba(184, 57, 46, 0.05);
+    transition: transform 0.12s; cursor: pointer;
+  }
+  .vol-heatmap .cell:hover { transform: scale(1.4); z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .vol-heatmap .cell.l1 { background: rgba(184, 57, 46, 0.18); }
+  .vol-heatmap .cell.l2 { background: rgba(184, 57, 46, 0.42); }
+  .vol-heatmap .cell.l3 { background: rgba(184, 57, 46, 0.65); }
+  .vol-heatmap .cell.l4 { background: rgba(184, 57, 46, 0.88); }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  /* Movement library */
+  .movements { width: 100%; border-collapse: collapse; }
+  .movements th { text-align: left; font-family: var(--mono); font-size: 8.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); padding: 5px 10px; border-bottom: 1px solid var(--glass-bevel); }
+  .movements td { padding: 9px 10px; border-bottom: 1px solid var(--glass-bevel); font-size: 13px; vertical-align: middle; }
+  .movements tr:last-child td { border-bottom: none; }
+  .movements .mv-name { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--ink); }
+  .movements .mv-name small { display: block; font-family: var(--mono); font-size: 9px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .movements .e1rm { font-family: var(--serif); font-weight: 500; font-size: 16px; text-align: right; }
+  .movements .e1rm small { font-family: var(--sans); font-size: 11px; color: var(--ink-3); font-weight: 400; margin-left: 3px; font-style: italic; }
+  .movements .last { font-family: var(--mono); font-size: 11px; color: var(--ink-2); text-align: right; }
+  .movements .pr-pill {
+    font-family: var(--mono); font-size: 8.5px; padding: 2px 7px; border-radius: 100px;
+    background: rgba(184,137,46,0.18); color: var(--warn); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em; margin-left: 4px;
+  }
+
+  /* Recent workouts */
+  .workouts { display: flex; flex-direction: column; gap: 0; }
+  .wo { padding: 10px 0; border-bottom: 1px solid var(--glass-bevel); }
+  .wo:last-child { border-bottom: none; }
+  .wo .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .wo .when { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); }
+  .wo .vol { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+  .wo .lifts { font-family: var(--sans); font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+  .wo .lifts strong { color: var(--ink); font-weight: 600; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">Fitness · <strong>Strength Console</strong></div>
+    <div class="crumb">Cycle: <strong>5/3/1 BBB · week 3 of 4</strong></div>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Where the <em>strength</em> is.</h1>
+      <div class="stand">Today's session, weekly volume, PRs hit, recovery score — Coach is honest.</div>
+    </div>
+    <div class="right">last logged · today 7:14 am</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Sessions this week</div><div class="v">4 <small>of 4</small></div><div class="delta up">on target · 100%</div></div>
+    <div class="big-stat glass"><div class="lbl">Volume (week)</div><div class="v">12.4<small>k kg</small></div><div class="delta up">↑ 8% vs last week</div></div>
+    <div class="big-stat glass"><div class="lbl">PRs (last 7d)</div><div class="v">2</div><div class="delta up">deadlift 140×3 · OHP 47.5×5</div></div>
+    <div class="big-stat glass"><div class="lbl">Recovery (HRV)</div><div class="v">52 <small>ms</small></div><div class="delta up">↑ from 47 last week</div></div>
+  </section>
+
+  <!-- Tomorrow's session highlighted -->
+  <section class="tomorrow">
+    <div class="left">
+      <span class="label">Tomorrow · Tue Apr 28</span>
+      <h2>Lower — squat focus</h2>
+      <div class="lifts">
+        <strong>Back squat</strong>: 5 × 3 @ 117.5 (top set RPE ≤ 9) · <strong>RDL</strong>: 3 × 8 @ 100 ·
+        <strong>Bulgarian split squat</strong>: 3 × 8/leg @ 18 DB · <strong>Calf raises</strong>: 3 × 15
+      </div>
+      <div class="why">Week 3 of 4 — peak volume before deload. HRV ↑ 5 from last week, you're cleared for the heavier top set.</div>
+    </div>
+    <div class="right">
+      <div class="est">~ 55 <small>min</small></div>
+      <div class="when">est. with rest</div>
+    </div>
+  </section>
+
+  <!-- Volume heatmap -->
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">Volume heatmap · 16 weeks × 5 categories</span>
+      <span class="meta">cell intensity = total volume vs target</span>
+    </div>
+    <div class="vol-heatmap-wrap">
+      <div class="vol-heatmap" id="vol-heatmap"></div>
+    </div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Movement library</span>
+        <span class="meta">10 tracked · e1RM = Epley</span>
+      </div>
+      <table class="movements">
+        <thead>
+          <tr>
+            <th>Movement</th>
+            <th style="text-align:right">e1RM</th>
+            <th style="text-align:right">Last set</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><div class="mv-name">Back squat<small>compound · squat</small></div></td><td class="e1rm">131.6 <small>kg</small></td><td class="last">115×3 · Apr 25</td></tr>
+          <tr><td><div class="mv-name">Conventional deadlift<small>compound · hinge</small></div></td><td class="e1rm">154 <small>kg</small> <span class="pr-pill">PR</span></td><td class="last">140×3 · Apr 25</td></tr>
+          <tr><td><div class="mv-name">Bench press<small>compound · push</small></div></td><td class="e1rm">96.3 <small>kg</small></td><td class="last">82.5×5 · Apr 23</td></tr>
+          <tr><td><div class="mv-name">Overhead press<small>compound · push</small></div></td><td class="e1rm">55.4 <small>kg</small> <span class="pr-pill">PR</span></td><td class="last">47.5×5 · Apr 27</td></tr>
+          <tr><td><div class="mv-name">Romanian deadlift<small>compound · hinge</small></div></td><td class="e1rm">126.7 <small>kg</small></td><td class="last">100×8 · Apr 21</td></tr>
+          <tr><td><div class="mv-name">Pull-up<small>bodyweight · pull</small></div></td><td class="e1rm">— <small>BW × 8</small></td><td class="last">8 reps · Apr 27</td></tr>
+          <tr><td><div class="mv-name">Barbell row<small>compound · pull</small></div></td><td class="e1rm">101.3 <small>kg</small></td><td class="last">80×8 · Apr 23</td></tr>
+          <tr><td><div class="mv-name">Bicep curl<small>accessory</small></div></td><td class="e1rm">21 <small>kg</small></td><td class="last">15×10 · Apr 21</td></tr>
+          <tr><td><div class="mv-name">Lateral raise<small>accessory</small></div></td><td class="e1rm">14 <small>kg</small></td><td class="last">10×10 · Apr 27</td></tr>
+          <tr><td><div class="mv-name">Face pull<small>accessory · pull</small></div></td><td class="e1rm">25.2 <small>kg</small></td><td class="last">18×12 · Apr 23</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Recent workouts</span>
+        <span class="meta">last 14 days · 6 sessions</span>
+      </div>
+      <div class="workouts">
+        <div class="wo">
+          <div class="head"><span class="when">Today · Mon</span><span class="vol">2,950 kg</span></div>
+          <div class="lifts"><strong>Upper</strong> · OHP 47.5×5 (PR e1RM 55.4) · pull-up 8/8/7 · lateral raise 10×3</div>
+        </div>
+        <div class="wo">
+          <div class="head"><span class="when">Sun · Apr 26</span><span class="vol">walk only</span></div>
+          <div class="lifts"><strong>Z2 walk</strong> · 30 min Tiergarten · recovery</div>
+        </div>
+        <div class="wo">
+          <div class="head"><span class="when">Sat · Apr 25</span><span class="vol">3,820 kg</span></div>
+          <div class="lifts"><strong>Lower</strong> · squat 115×3 · deadlift 140×3 (PR) · calf 20×15</div>
+        </div>
+        <div class="wo">
+          <div class="head"><span class="when">Thu · Apr 23</span><span class="vol">3,180 kg</span></div>
+          <div class="lifts"><strong>Upper</strong> · bench 82.5×5×4 · row 80×8×3 · face pull 18×15</div>
+        </div>
+        <div class="wo">
+          <div class="head"><span class="when">Tue · Apr 21</span><span class="vol">2,460 kg</span></div>
+          <div class="lifts"><strong>Lower</strong> · squat 110×5×4 · RDL 100×8×3 · curl 15×12</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Fitness · Strength Console · Coach reads every set</p>
+
+</main>
+
+<script>
+'use strict';
+
+const CATEGORIES = ['Squat', 'Hinge', 'Push', 'Pull', 'Accessory'];
+// 16 weeks × 5 categories of volume "intensity" levels (0-4)
+function pattern() {
+  const out = [];
+  for (let i = 0; i < 16; i++) {
+    let level;
+    const r = Math.random();
+    // Recent weeks more likely to be higher (current cycle building)
+    const recencyBonus = i / 16;
+    if (r < 0.10) level = 0;
+    else if (r < 0.30 - recencyBonus * 0.10) level = 1;
+    else if (r < 0.60 - recencyBonus * 0.05) level = 2;
+    else if (r < 0.90) level = 3;
+    else level = 4;
+    out.push(level);
+  }
+  // Force last 3 weeks to be higher (current build)
+  out[13] = 3; out[14] = 4; out[15] = 4;
+  return out;
+}
+
+function renderHeatmap() {
+  const grid = document.getElementById('vol-heatmap');
+  let html = '<div class="col-head">category</div>';
+  for (let w = 0; w < 16; w++) html += `<div class="col-head">${w % 4 === 0 ? 'w' + (w + 14) : ''}</div>`;
+  CATEGORIES.forEach(cat => {
+    html += `<div class="row-head">${cat}</div>`;
+    pattern().forEach(level => {
+      html += `<div class="cell ${level ? 'l' + level : ''}" title="${cat}"></div>`;
+    });
+  });
+  grid.innerHTML = html;
+}
+renderHeatmap();
+</script>
+</body>
+</html>
