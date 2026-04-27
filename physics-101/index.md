@@ -1,44 +1,30 @@
 ---
 title: Physics 101
 created: 2026-04-25
+modified: 2026-04-27
 tags: [curriculum, physics, education]
 icon: atom
 ---
 
 # Physics 101 — Beginner Curriculum
 
-A 6-module introductory physics curriculum. Each module is an interactive lesson page covering a foundational topic, building from observable mechanics up through the behavior of light.
+A 6-module introductory physics curriculum. Algebra and basic geometry only — no calculus, no proofs.
 
-> **Open the [[course/index|🎓 Course]] first.** Full-screen Liquid Glass page with all 6 modules side-by-side, each with its **PhET sim embedded inline** — drag sliders, drop the skater into the half-pipe, build a circuit, bend light through water, all without leaving the page.
+> **👉 Open the [[course/index|🎓 Course]] webapp.** Single full-screen page with every module's full content (Hook, Core Concepts, Worked Examples, Practice Questions, What's Next), every PhET sim embedded inline. Read the entire curriculum without ever leaving the page.
 
-## Learning Path
+## Learning path
 
-1. **Motion** — Position, velocity, acceleration. The language of how things move.
-2. **Forces** — Newton's laws. Why things move (or don't).
-3. **Energy** — Kinetic, potential, conservation. The currency of physics.
-4. **Waves** — Frequency, amplitude, interference. How disturbances travel.
-5. **Electricity** — Charge, current, circuits. The flow of electrons.
-6. **Light** — Reflection, refraction, the EM spectrum. Waves and particles.
+1. Motion → 2. Forces → 3. Energy → 4. Waves → 5. Electricity → 6. Light
 
-## Curriculum status
+## Status
 
-- ✅ [Module 1 — Motion](module-1-motion/) — complete
-- 🔲 [Module 2 — Forces](module-2-forces/) — stub
-- 🔲 [Module 3 — Energy](module-3-energy/) — stub
-- ✅ [Module 4 — Waves](module-4-waves/) — complete
-- ✅ [Module 5 — Electricity](module-5-electricity/) — complete
-- 🔲 [Module 6 — Light](module-6-light/) — stub
-
-The three stub modules are scaffolded with the standard pedagogy template; each section is marked `_TBD._` until written. The `instructor` agent's weekly heartbeat picks the lowest-numbered incomplete module each Monday and drafts one missing section.
+- ✅ Modules 1, 4, 5 are complete (~90 min each)
+- 🔲 Modules 2, 3, 6 are scaffolded stubs — the `instructor` agent's weekly heartbeat fills in one missing section each Monday. The Course webapp shows the embedded PhET sim for each stub so they're useful even before the prose lands.
 
 ## Pedagogy
 
-Each module follows the same structure:
-- **Hook** — a real-world question or demo
-- **Core concepts** — the minimum vocabulary
-- **Interactive element** — slider, simulation, or guided thought experiment
-- **Worked example** — one problem solved step by step
-- **Practice** — 3-5 short questions with answers
-- **What's next** — bridge to the following module
+Every module follows the same six-section template: **Hook · Core Concepts · Interactive Element · Worked Example · Practice · What's Next.** No exceptions.
 
-Audience: curious beginners, no calculus assumed. Algebra and basic geometry only.
+## Sister cabinet
+
+Pair with **`physics-experiments`** (10 hand-built interactive demos: inclined plane, pendulum wave, double-slit, Stern-Gerlach, Bragg diffraction…). The Course webapp links to each matching demo from the relevant module.

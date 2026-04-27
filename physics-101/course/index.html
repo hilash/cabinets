@@ -10,7 +10,7 @@
 <style>
   :root {
     --bg: #FBF6EB;
-    --area: #3A5A7A;            /* teal-navy for physics */
+    --area: #3A5A7A;
     --area-soft: rgba(58, 90, 122, 0.16);
     --bg-tint-1: rgba(58, 90, 122, 0.10);
     --bg-tint-2: rgba(216, 162, 78, 0.08);
@@ -31,7 +31,7 @@
       0 4px 12px -4px rgba(27, 24, 20, 0.06);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14.5px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
   body { min-height: 100vh; position: relative; overflow-x: hidden; }
   body::before { content: ''; position: fixed; inset: 0; z-index: -1;
     background:
@@ -56,7 +56,7 @@
   .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
 
-  .shell { max-width: 1280px; margin: 0 auto; padding: 28px 28px 80px; display: flex; flex-direction: column; gap: 20px; }
+  .shell { max-width: 980px; margin: 0 auto; padding: 28px 28px 80px; display: flex; flex-direction: column; gap: 22px; }
 
   .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; flex-wrap: wrap; gap: 8px; }
   .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
@@ -76,21 +76,18 @@
   .hero .stand { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink-2); margin-top: 8px; max-width: 620px; }
   .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
 
-  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
   @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
-  .big-stat { padding: 18px 22px; }
-  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
-  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
-  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat { padding: 16px 20px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 6px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 11px; color: var(--ink-3); margin-left: 4px; }
   .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
   .big-stat .delta.good { color: var(--good); }
   .big-stat .delta.stub { color: var(--warn); }
 
-  /* ========== Module cards ========== */
-  .module {
-    padding: 0;
-    overflow: hidden;
-  }
+  /* ========== Module ========== */
+  .module { padding: 0; overflow: hidden; }
   .module-head {
     display: grid;
     grid-template-columns: 60px 1fr auto;
@@ -105,12 +102,11 @@
     text-align: center;
   }
   .module-head .info h2 {
-    font-family: var(--serif); font-weight: 500; font-size: 26px; letter-spacing: -0.01em; line-height: 1.1;
+    font-family: var(--serif); font-weight: 500; font-size: 28px; letter-spacing: -0.01em; line-height: 1.1;
   }
   .module-head .info h2 em { font-style: italic; }
   .module-head .info .by { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); margin-top: 4px; font-weight: 500; }
-  .module-head .info .desc { font-family: var(--serif); font-size: 14.5px; color: var(--ink-2); margin-top: 8px; line-height: 1.5; max-width: 720px; font-style: italic; }
-  .module-head .meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; min-width: 130px; }
+  .module-head .meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; min-width: 110px; }
   .module-head .pill {
     font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.14em;
     padding: 4px 11px; border-radius: 100px; font-weight: 600;
@@ -120,15 +116,17 @@
   .module-head .time { font-family: var(--serif); font-weight: 500; font-size: 18px; line-height: 1; }
   .module-head .time small { font-family: var(--sans); font-size: 11px; color: var(--ink-3); margin-left: 3px; font-style: italic; }
 
-  .module-body { padding: 22px 26px; display: flex; flex-direction: column; gap: 18px; }
+  .module-body { padding: 22px 26px 26px; display: flex; flex-direction: column; gap: 20px; }
 
   .hook {
-    font-family: var(--serif); font-size: 16px; color: var(--ink); line-height: 1.55;
-    padding: 16px 20px;
+    font-family: var(--serif); font-size: 17px; color: var(--ink); line-height: 1.6;
+    padding: 18px 22px;
     background: rgba(255, 252, 244, 0.65);
     border-left: 3px solid var(--area);
     border-radius: 0 var(--r-md) var(--r-md) 0;
   }
+  .hook p { margin-bottom: 0.7em; }
+  .hook p:last-child { margin-bottom: 0; }
   .hook strong { color: var(--ink); font-weight: 600; }
   .hook em { color: var(--area); font-style: italic; }
 
@@ -147,64 +145,232 @@
   .sim-card .sc-head .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); font-weight: 500; }
   .sim-card .sc-head .by { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); font-weight: 500; }
   .sim-card .frame {
-    position: relative;
-    width: 100%;
-    padding-bottom: 62%;
-    background: #f5f0e0;
-    overflow: hidden;
+    position: relative; width: 100%; padding-bottom: 62%;
+    background: #f5f0e0; overflow: hidden;
   }
   .sim-card iframe {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    border: none;
-    display: block;
+    border: none; display: block;
   }
 
-  .module-cta {
-    display: flex; gap: 10px; flex-wrap: wrap;
-    padding-top: 4px;
+  /* Section block (Core Concepts, Worked Example, Practice, What's Next) */
+  details.section {
+    background: rgba(255, 252, 244, 0.40);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-md);
+    overflow: hidden;
   }
-  .module-cta a {
+  details.section > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    transition: background 0.12s;
+  }
+  details.section > summary:hover { background: rgba(255,255,255,0.4); }
+  details.section > summary::-webkit-details-marker { display: none; }
+  details.section .label-row { display: flex; align-items: baseline; gap: 12px; }
+  details.section .label-row .tag {
+    font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--ink-3); font-weight: 500; padding: 3px 10px;
+    background: rgba(255,255,255,0.6); border: 1px solid var(--glass-stroke);
+    border-radius: 100px;
+  }
+  details.section .label-row .name {
+    font-family: var(--serif); font-weight: 500; font-size: 19px; letter-spacing: -0.005em; color: var(--ink);
+  }
+  details.section .label-row .name em { font-style: italic; }
+  details.section .caret { color: var(--area); font-family: var(--serif); font-size: 22px; font-style: italic; transition: transform 0.18s; }
+  details.section[open] .caret { transform: rotate(90deg); }
+  details.section .body {
+    padding: 6px 22px 20px;
+    font-family: var(--sans);
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  details.section .body p { margin-bottom: 0.9em; }
+  details.section .body p:last-child { margin-bottom: 0; }
+  details.section .body h4 {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: 18px; color: var(--ink); margin: 1em 0 0.4em; line-height: 1.2;
+  }
+  details.section .body strong { font-weight: 600; color: var(--ink); }
+  details.section .body em { font-style: italic; color: var(--ink-2); }
+  details.section .body code {
+    font-family: var(--mono); font-size: 12.5px;
+    background: rgba(58,90,122,0.08); padding: 1px 5px; border-radius: 4px;
+    color: var(--area); font-weight: 500;
+  }
+  details.section .body ul, details.section .body ol { padding-left: 22px; margin-bottom: 0.9em; }
+  details.section .body li { margin-bottom: 0.3em; }
+
+  /* Equation block */
+  .eqn {
+    font-family: var(--mono); font-size: 13.5px;
+    background: rgba(58,90,122,0.06);
+    border: 1px solid rgba(58,90,122,0.15);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin: 0.6em 0 1em;
+    color: var(--area);
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .eqn-list {
+    font-family: var(--mono); font-size: 13px;
+    background: rgba(58,90,122,0.06);
+    border: 1px solid rgba(58,90,122,0.15);
+    border-radius: 8px;
+    padding: 12px 22px;
+    margin: 0.6em 0 1em;
+    color: var(--area);
+    font-weight: 500;
+    line-height: 1.9;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* Tables in body */
+  details.section .body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.6em 0 1em;
+    font-size: 13px;
+  }
+  details.section .body th {
+    font-family: var(--mono); font-size: 9.5px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--ink-3);
+    text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--glass-bevel);
+  }
+  details.section .body td {
+    padding: 8px 10px; border-bottom: 1px solid var(--glass-bevel);
+    vertical-align: top;
+  }
+  details.section .body tr:last-child td { border-bottom: none; }
+
+  /* Practice question + answer */
+  .practice-q {
+    border-top: 1px solid var(--glass-bevel);
+    padding: 12px 0 0;
+    margin-top: 12px;
+  }
+  .practice-q .q {
+    font-family: var(--serif); font-style: italic; font-size: 15.5px; color: var(--ink);
+    line-height: 1.5; margin-bottom: 8px;
+  }
+  .practice-q .q .num {
+    font-weight: 600; color: var(--area); margin-right: 6px;
+  }
+  .practice-q details.answer {
+    background: rgba(255,255,255,0.5);
+    border: 1px solid var(--glass-stroke);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .practice-q details.answer summary {
+    list-style: none; cursor: pointer;
+    padding: 7px 12px;
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--area); font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .practice-q details.answer summary::-webkit-details-marker { display: none; }
+  .practice-q details.answer summary::before { content: '▸'; transition: transform 0.18s; display: inline-block; }
+  .practice-q details.answer[open] summary::before { transform: rotate(90deg); }
+  .practice-q details.answer .ans-body {
+    padding: 0 14px 12px 28px;
+    font-size: 13.5px; line-height: 1.55; color: var(--ink-2);
+  }
+  .practice-q details.answer .ans-body code {
+    font-family: var(--mono); font-size: 12.5px;
+    background: rgba(58,90,122,0.08); padding: 1px 5px; border-radius: 4px;
+    color: var(--area);
+  }
+
+  /* Bridge / What's Next */
+  .bridge {
+    padding: 16px 20px;
+    background: linear-gradient(90deg, rgba(58,90,122,0.06) 0%, transparent 80%);
+    border-left: 3px solid var(--area);
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+    font-family: var(--serif); font-size: 15.5px; line-height: 1.6; color: var(--ink-2);
+  }
+  .bridge p { margin-bottom: 0.7em; }
+  .bridge p:last-child { margin-bottom: 0; }
+  .bridge em { color: var(--area); font-style: italic; font-weight: 500; }
+  .bridge strong { color: var(--ink); font-weight: 600; }
+  .bridge .arrow {
+    display: inline-block; font-family: var(--serif); font-style: italic;
+    color: var(--area); font-weight: 500; margin-top: 8px; font-size: 16px;
+  }
+
+  /* Sister cabinet links row at bottom of module */
+  .sister-row {
+    display: flex; gap: 8px; flex-wrap: wrap; padding-top: 4px;
+  }
+  .sister-row a {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 16px; border-radius: 100px;
-    font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 8px 14px; border-radius: 100px;
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em;
     font-weight: 600;
+    background: rgba(255,255,255,0.5); color: var(--ink-2); border: 1px solid var(--glass-stroke);
     transition: all 0.15s;
   }
-  .module-cta .primary {
-    background: var(--area); color: white;
-  }
-  .module-cta .primary:hover { background: #2C4760; }
-  .module-cta .secondary {
-    background: rgba(255,255,255,0.5); color: var(--ink-2); border: 1px solid var(--glass-stroke);
-  }
-  .module-cta .secondary:hover { background: rgba(255,255,255,0.85); color: var(--ink); }
+  .sister-row a:hover { background: rgba(255,255,255,0.85); color: var(--area); border-color: var(--area); }
 
-  /* ========== Bottom row ========== */
+  /* Stub callout */
+  .stub-note {
+    padding: 14px 20px;
+    background: rgba(184,137,46,0.10);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+    font-family: var(--serif); font-size: 14.5px; line-height: 1.55; color: var(--ink);
+  }
+  .stub-note strong { color: var(--warn); font-weight: 600; }
+
+  /* Bottom row: pedagogy + sister */
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
   .card { padding: 18px 22px; }
   .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
   .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
   .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .pedagogy .step { padding: 7px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: baseline; }
+  .pedagogy .step:last-child { border-bottom: none; }
+  .pedagogy .step .n { font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 17px; color: var(--area); line-height: 1; }
+  .pedagogy .step .name { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--ink); font-weight: 500; }
+  .pedagogy .step .name small { display: block; font-family: var(--sans); font-size: 11.5px; color: var(--ink-2); margin-top: 1px; font-style: normal; line-height: 1.4; }
 
-  .pedagogy { display: flex; flex-direction: column; gap: 0; }
-  .step { padding: 8px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: baseline; }
-  .step:last-child { border-bottom: none; }
-  .step .n { font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 18px; color: var(--area); line-height: 1; }
-  .step .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); font-weight: 500; }
-  .step .name small { display: block; font-family: var(--sans); font-size: 12px; color: var(--ink-2); margin-top: 2px; font-style: normal; line-height: 1.4; }
-
-  .sister {
-    padding: 18px 22px;
-  }
-  .sister h3 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 18px; margin-bottom: 8px; }
+  .sister h3 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 17px; margin-bottom: 6px; }
   .sister h3 em { color: var(--area); }
-  .sister p { font-family: var(--serif); font-size: 14.5px; color: var(--ink-2); line-height: 1.5; margin-bottom: 10px; }
-  .sister .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding-top: 6px; }
-  .sister .exp { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); padding: 4px 0; }
+  .sister p { font-family: var(--serif); font-size: 14px; color: var(--ink-2); line-height: 1.5; margin-bottom: 8px; }
+  .sister .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding-top: 4px; }
+  .sister .exp { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-3); padding: 3px 0; }
   .sister .exp::before { content: '· '; color: var(--area); font-weight: 700; }
 
   .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+
+  /* Quick-jump nav (sticky on desktop) */
+  .quick-jump {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    padding: 10px 14px;
+    background: rgba(255, 252, 244, 0.7);
+    backdrop-filter: blur(20px) saturate(170%);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: 100px;
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-3);
+  }
+  .quick-jump .lbl { color: var(--ink-3); padding: 3px 8px; }
+  .quick-jump a {
+    padding: 4px 10px; border-radius: 100px; color: var(--ink-2); font-weight: 600;
+    transition: all 0.12s;
+  }
+  .quick-jump a:hover { background: var(--area-soft); color: var(--area); }
 </style>
 </head>
 <body>
@@ -215,12 +381,6 @@
     <div class="crumb">Physics 101 · <strong>Course</strong></div>
     <nav class="top-nav">
       <a class="active" href="#">Course</a>
-      <a href="../module-1-motion/index.md">Module 1</a>
-      <a href="../module-2-forces/index.md">2</a>
-      <a href="../module-3-energy/index.md">3</a>
-      <a href="../module-4-waves/index.md">4</a>
-      <a href="../module-5-electricity/index.md">5</a>
-      <a href="../module-6-light/index.md">6</a>
     </nav>
   </div>
 
@@ -229,24 +389,35 @@
       <h1>Physics, <em>from scratch</em>.</h1>
       <div class="stand">A 6-module beginner curriculum — algebra and basic geometry only, no calculus. Six classic topics: how things move, why they move, the energy that makes it happen, and the waves, electricity, and light that shaped modern science.</div>
     </div>
-    <div class="right">~10 h reading · 6 PhET sims embedded</div>
+    <div class="right">~10 h reading · 6 PhET sims · 1 page</div>
   </header>
 
   <section class="big-stats">
     <div class="big-stat glass"><div class="lbl">Modules</div><div class="v">6</div><div class="delta">motion → light · linear path</div></div>
     <div class="big-stat glass"><div class="lbl">Status</div><div class="v">3 / 6</div><div class="delta good">complete · 3 in stub</div></div>
-    <div class="big-stat glass"><div class="lbl">Reading time</div><div class="v">~ 10 <small>hours</small></div><div class="delta">3 hr/week × 3 weeks</div></div>
+    <div class="big-stat glass"><div class="lbl">Reading time</div><div class="v">~ 10 <small>hours</small></div><div class="delta">spread over 3 weeks</div></div>
     <div class="big-stat glass"><div class="lbl">Math required</div><div class="v">Algebra</div><div class="delta">no calculus · no proofs</div></div>
   </section>
 
-  <!-- ============ Module 1: Motion ============ -->
-  <section class="module glass">
+  <nav class="quick-jump">
+    <span class="lbl">Jump to</span>
+    <a href="#m1">1 · Motion</a>
+    <a href="#m2">2 · Forces</a>
+    <a href="#m3">3 · Energy</a>
+    <a href="#m4">4 · Waves</a>
+    <a href="#m5">5 · Electricity</a>
+    <a href="#m6">6 · Light</a>
+  </nav>
+
+  <!-- ============================================================
+       Module 1: Motion (COMPLETE)
+       ============================================================ -->
+  <section id="m1" class="module glass">
     <div class="module-head">
       <div class="module-num">1</div>
       <div class="info">
         <h2><em>Motion</em></h2>
         <div class="by">Position · velocity · acceleration · the language of how things move</div>
-        <div class="desc">Drop a ball. It hits the floor in half a second, a meter down — but not at constant speed. Three ideas explain that: position, velocity, acceleration. If you can tell them apart, you can describe the motion of anything.</div>
       </div>
       <div class="meta">
         <span class="pill">complete</span>
@@ -254,35 +425,150 @@
       </div>
     </div>
     <div class="module-body">
+
       <div class="hook">
-        <strong>The hook:</strong> drop a tennis ball from your hand. Half a second. ~1 meter. Not at constant speed — slow at first, fast at the end. <em>The whole module is hidden inside that one observation.</em>
+        <p><strong>Drop a tennis ball from your hand.</strong> It hits the floor in about half a second. In that half second, it covered roughly a meter — but it didn't cover the meter at a steady pace. It started slow and finished fast.</p>
+        <p>That single observation contains the three ideas that run this entire module: <strong>position</strong> (where the ball is), <strong>velocity</strong> (how fast its position is changing), and <strong>acceleration</strong> (how fast its velocity is changing). <em>If you can tell those three apart, you can describe the motion of anything.</em></p>
       </div>
 
       <div class="sim-card">
         <div class="sc-head">
-          <span class="name">PhET — Projectile Motion (interactive)</span>
-          <span class="by">tune angle, speed, gravity</span>
+          <span class="name">PhET — Projectile Motion</span>
+          <span class="by">tune angle · speed · gravity</span>
         </div>
         <div class="frame">
           <iframe src="https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_en.html" title="PhET Projectile Motion" allowfullscreen></iframe>
         </div>
       </div>
 
-      <div class="module-cta">
-        <a class="primary" href="../module-1-motion/index.md">Open Module 1 →</a>
-        <a class="secondary" href="../../physics-experiments/projectile-motion/index.html">Sister cabinet · Projectile demo</a>
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">2 · Core</span><span class="name"><em>Core Concepts</em></span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <h4>Position (x)</h4>
+          <p>Position is <em>where something is</em>, measured from a chosen origin. Units: meters (m). It's a number with a sign — pick "right" as positive and <code>x = +3 m</code> means three meters to the right; <code>x = -2 m</code> means two to the left. The origin is your choice; pick whatever makes the problem easy.</p>
+
+          <h4>Displacement (Δx)</h4>
+          <p>Displacement is the <em>change</em> in position: <code>Δx = x_final − x_initial</code>. Not the same as distance traveled. Walk 3 m east then 3 m back west: distance = 6 m, displacement = 0 m. <strong>Physics cares about displacement.</strong></p>
+
+          <h4>Velocity (v)</h4>
+          <p>Velocity is <em>how fast position changes, and in what direction</em>. Units: meters per second (m/s).</p>
+          <div class="eqn">v_avg = Δx / Δt = (x_final − x_initial) / (t_final − t_initial)</div>
+          <p>Velocity has a sign: <code>+5 m/s</code> means moving in the positive direction at 5 m/s; <code>-5 m/s</code> means the same speed in the opposite direction. <strong>Speed</strong> is just the magnitude of velocity.</p>
+
+          <h4>Acceleration (a)</h4>
+          <p>Acceleration is <em>how fast velocity changes</em>. Units: meters per second per second (m/s²).</p>
+          <div class="eqn">a_avg = Δv / Δt = (v_final − v_initial) / (t_final − t_initial)</div>
+          <p>Three things to internalize:</p>
+          <ol>
+            <li>Acceleration is <em>not</em> "going fast." A car cruising at 100 km/h has zero acceleration.</li>
+            <li>Same sign as velocity → speeding up. Opposite sign → slowing down ("deceleration" is just a word — physics only has acceleration).</li>
+            <li>On Earth, free-falling objects have a downward acceleration of <code>g ≈ 9.8 m/s²</code>, regardless of mass.</li>
+          </ol>
+
+          <h4>The four kinematic equations (constant acceleration)</h4>
+          <p>For straight-line motion with constant acceleration, four equations cover almost everything:</p>
+          <div class="eqn-list">1.  v  = v₀ + a·t                    (velocity at time t)
+2.  x  = x₀ + v₀·t + ½·a·t²         (position at time t)
+3.  v² = v₀² + 2·a·(x − x₀)         (velocity vs position, no t)
+4.  x  = x₀ + ½·(v₀ + v)·t          (uses average velocity)</div>
+          <p><code>v₀</code> is initial velocity, <code>x₀</code> is initial position. Pick the equation whose unknowns match what you have and want.</p>
+
+          <h4>Graphs of motion</h4>
+          <table>
+            <thead><tr><th>Graph</th><th>Slope means</th><th>Area means</th></tr></thead>
+            <tbody>
+              <tr><td>Position vs time (x-t)</td><td>velocity</td><td>—</td></tr>
+              <tr><td>Velocity vs time (v-t)</td><td>acceleration</td><td>displacement</td></tr>
+              <tr><td>Acceleration vs time (a-t)</td><td>"jerk" (ignore)</td><td>change in velocity</td></tr>
+            </tbody>
+          </table>
+          <p>Two patterns to memorize: a straight, sloped line on x-t = constant velocity. A straight, sloped line on v-t = constant acceleration (which makes x-t a parabola).</p>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">4 · Worked</span><span class="name"><em>The Stoplight Sprint</em></span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <p><strong>Problem.</strong> A car is stopped at a red light. The light turns green and the car accelerates at a constant <code>2.5 m/s²</code> for <code>8 seconds</code>, then continues at that velocity. How far has the car traveled at the moment it stops accelerating, and how fast is it going?</p>
+
+          <h4>Step 1 — what we know</h4>
+          <div class="eqn-list">v₀ = 0 m/s        (starts from rest)
+a  = 2.5 m/s²
+t  = 8 s
+x₀ = 0 m          (call the stoplight the origin)</div>
+
+          <h4>Step 2 — pick equations</h4>
+          <p>For final velocity, equation 1: <code>v = v₀ + a·t = 0 + (2.5)(8) = 20 m/s</code>.</p>
+          <p>For position, equation 2: <code>x = x₀ + v₀·t + ½·a·t² = 0 + 0 + ½·(2.5)·(64) = 80 m</code>.</p>
+
+          <h4>Step 3 — sanity check</h4>
+          <p>Average velocity should be <code>(0 + 20)/2 = 10 m/s</code>. Multiplied by 8 s gives 80 m. ✓</p>
+
+          <p><strong>Answer:</strong> The car has traveled <strong>80 meters</strong> and is moving at <strong>20 m/s</strong> (~72 km/h, or 45 mph) when it stops accelerating.</p>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">5 · Practice</span><span class="name">5 questions · answers below each</span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <p>Try each one with paper before peeking.</p>
+
+          <div class="practice-q">
+            <div class="q"><span class="num">Q1.</span>A jogger runs 200 m east in 50 s, pauses for 10 s, then walks 50 m east in 25 s. What is her average velocity over the entire trip?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body">Total displacement = 200 + 0 + 50 = 250 m east. Total time = 50 + 10 + 25 = 85 s. <code>v_avg = 250 / 85 ≈ 2.94 m/s east</code>.</div></details>
+          </div>
+
+          <div class="practice-q">
+            <div class="q"><span class="num">Q2.</span>A skateboarder is rolling at +4 m/s when she starts pushing, accelerating at +0.5 m/s² for 6 s. What is her velocity at the end of the 6 s?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>v = v₀ + a·t = 4 + (0.5)(6) = 4 + 3 = 7 m/s</code>.</div></details>
+          </div>
+
+          <div class="practice-q">
+            <div class="q"><span class="num">Q3.</span>A ball is dropped from rest off a bridge and falls for 3 s before hitting the water. Using <code>g = 9.8 m/s²</code>, how fast is it moving when it hits, and how far did it fall?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>v = v₀ + g·t = 0 + (9.8)(3) = 29.4 m/s downward</code>. Distance: <code>x = ½·g·t² = ½·(9.8)·(9) = 44.1 m</code>.</div></details>
+          </div>
+
+          <div class="practice-q">
+            <div class="q"><span class="num">Q4.</span>A cyclist traveling at +12 m/s brakes uniformly and comes to a stop in 4 s. What is the acceleration (include sign), and how far does the bike travel during braking?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>a = (v − v₀)/t = (0 − 12)/4 = -3 m/s²</code> (negative because she's slowing down). Distance: average velocity is <code>(12 + 0)/2 = 6 m/s</code>, times 4 s = <strong>24 m</strong>.</div></details>
+          </div>
+
+          <div class="practice-q">
+            <div class="q"><span class="num">Q5.</span>Looking at a velocity-vs-time graph, you see a straight horizontal line at v = -3 m/s from t = 0 to t = 6 s. Describe the motion in words, and find the displacement over those 6 s.</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body">The object is moving in the negative direction at a constant 3 m/s — no acceleration, just steady backward motion. Displacement is the area under the v-t graph: <code>(-3 m/s)(6 s) = -18 m</code> (i.e., 18 meters in the negative direction).</div></details>
+          </div>
+        </div>
+      </details>
+
+      <div class="bridge">
+        <p><strong>Bridge to Module 2 — Forces.</strong> You can now describe <em>how</em> things move. You cannot yet explain <em>why</em>. Why does the dropped tennis ball accelerate at exactly 9.8 m/s² and not some other number? Every acceleration in this module had a <em>cause</em> — gravity, an engine, friction. That cause has a name: <strong>force</strong>. Module 2 introduces Newton's three laws and <code>F = m·a</code>.</p>
+      </div>
+
+      <div class="sister-row">
+        <a href="../../physics-experiments/projectile-motion/index.html">⟶ Sister: projectile-motion demo</a>
+        <a href="../../physics-experiments/inclined-plane/index.html">⟶ Sister: Galileo's inclined plane</a>
       </div>
     </div>
   </section>
 
-  <!-- ============ Module 2: Forces ============ -->
-  <section class="module glass">
+  <!-- ============================================================
+       Module 2: Forces (STUB)
+       ============================================================ -->
+  <section id="m2" class="module glass">
     <div class="module-head">
       <div class="module-num">2</div>
       <div class="info">
         <h2><em>Forces</em></h2>
         <div class="by">Newton's three laws · why things move (or don't)</div>
-        <div class="desc">Module 1 told you <em>how</em> things move. This one tells you <em>why</em>. Every acceleration has a cause — a force. Push, pull, gravity, friction. F = m·a is the equation that ties Module 1 to the physical world.</div>
       </div>
       <div class="meta">
         <span class="pill stub">stub</span>
@@ -290,34 +576,31 @@
       </div>
     </div>
     <div class="module-body">
-      <div class="hook">
-        <strong>This module is in stub state</strong> — pedagogy template scaffolded, content coming. The instructor agent fills in one section per Monday. Use the embedded PhET sim below right now to build intuition.
+      <div class="stub-note">
+        <strong>This module is in stub state.</strong> The pedagogy template is scaffolded; the instructor agent fills in one section every Monday. Use the embedded PhET sim below right now to build intuition for Newton's laws — push the box, watch friction win, change the mass, observe the acceleration.
       </div>
 
       <div class="sim-card">
         <div class="sc-head">
-          <span class="name">PhET — Forces &amp; Motion: Basics</span>
-          <span class="by">push the box · watch friction win</span>
+          <span class="name">PhET — Forces and Motion: Basics</span>
+          <span class="by">push · pull · friction · balanced forces</span>
         </div>
         <div class="frame">
           <iframe src="https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html" title="PhET Forces and Motion" allowfullscreen></iframe>
         </div>
       </div>
-
-      <div class="module-cta">
-        <a class="primary" href="../module-2-forces/index.md">Open Module 2 →</a>
-      </div>
     </div>
   </section>
 
-  <!-- ============ Module 3: Energy ============ -->
-  <section class="module glass">
+  <!-- ============================================================
+       Module 3: Energy (STUB)
+       ============================================================ -->
+  <section id="m3" class="module glass">
     <div class="module-head">
       <div class="module-num">3</div>
       <div class="info">
         <h2><em>Energy</em></h2>
         <div class="by">Kinetic · potential · conservation · the currency of physics</div>
-        <div class="desc">A roller-coaster sits at the top of the first hill, full of potential energy. It rushes through the loop, every joule of potential converting to kinetic and back, friction skimming a bit each cycle. Energy is conserved — the bookkeeping always balances.</div>
       </div>
       <div class="meta">
         <span class="pill stub">stub</span>
@@ -325,8 +608,8 @@
       </div>
     </div>
     <div class="module-body">
-      <div class="hook">
-        <strong>This module is in stub state.</strong> The PhET <em>Energy Skate Park</em> sim below is the perfect interactive — drop a skater into the half-pipe and watch KE/PE swap in real time, with and without friction.
+      <div class="stub-note">
+        <strong>This module is in stub state.</strong> The PhET <em>Energy Skate Park</em> sim below is the best possible interactive: drop a skater into the half-pipe, watch kinetic and potential energy swap in real time. Toggle friction to see where the energy goes.
       </div>
 
       <div class="sim-card">
@@ -338,21 +621,18 @@
           <iframe src="https://phet.colorado.edu/sims/html/energy-skate-park-basics/latest/energy-skate-park-basics_en.html" title="PhET Energy Skate Park" allowfullscreen></iframe>
         </div>
       </div>
-
-      <div class="module-cta">
-        <a class="primary" href="../module-3-energy/index.md">Open Module 3 →</a>
-      </div>
     </div>
   </section>
 
-  <!-- ============ Module 4: Waves ============ -->
-  <section class="module glass">
+  <!-- ============================================================
+       Module 4: Waves (COMPLETE)
+       ============================================================ -->
+  <section id="m4" class="module glass">
     <div class="module-head">
       <div class="module-num">4</div>
       <div class="info">
         <h2><em>Waves</em></h2>
         <div class="by">Frequency · amplitude · interference · how disturbances travel</div>
-        <div class="desc">Pluck a guitar string. Drop a pebble in a pond. Yell across a canyon. Each is energy traveling through stuff while the stuff doesn't go anywhere. Waves: the substrate of sound, light, earthquakes, and anything that wiggles.</div>
       </div>
       <div class="meta">
         <span class="pill">complete</span>
@@ -360,36 +640,138 @@
       </div>
     </div>
     <div class="module-body">
+
       <div class="hook">
-        <strong>The hook:</strong> the string doesn't fly off the guitar. The pond water doesn't travel to shore. The air between you and your friend doesn't whoosh forward. <em>Energy is moving. The medium isn't.</em>
+        <p>Pluck a guitar string. Drop a pebble in a pond. Yell across a canyon. Wave at a friend (literally). In every case, <strong>something is moving</strong> — but the string doesn't fly off, the pond water doesn't travel to shore, the air between you and your friend doesn't whoosh forward.</p>
+        <p><em>Energy is moving. The medium isn't.</em> That single idea — energy traveling through stuff without the stuff going anywhere — is the whole game of waves.</p>
       </div>
 
       <div class="sim-card">
         <div class="sc-head">
           <span class="name">PhET — Waves Intro</span>
-          <span class="by">water · sound · light · all the same math</span>
+          <span class="by">water · sound · light · same math</span>
         </div>
         <div class="frame">
           <iframe src="https://phet.colorado.edu/sims/html/waves-intro/latest/waves-intro_en.html" title="PhET Waves Intro" allowfullscreen></iframe>
         </div>
       </div>
 
-      <div class="module-cta">
-        <a class="primary" href="../module-4-waves/index.md">Open Module 4 →</a>
-        <a class="secondary" href="../../physics-experiments/wave-interference/index.html">Sister · Wave Interference demo</a>
-        <a class="secondary" href="../../physics-experiments/pendulum-wave/index.html">Sister · Pendulum Wave</a>
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">2 · Core</span><span class="name"><em>Core Concepts</em></span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <h4>What a wave actually is</h4>
+          <p>A <strong>wave</strong> is a disturbance that travels through a medium (or through space), carrying energy without permanently moving the medium itself. Picture a row of dominoes — each one barely moves, but the <em>falling</em> travels all the way down the line.</p>
+
+          <h4>The four numbers that describe any wave</h4>
+          <table>
+            <thead><tr><th>Quantity</th><th>Symbol</th><th>What it measures</th><th>Units</th></tr></thead>
+            <tbody>
+              <tr><td>Wavelength</td><td>λ (lambda)</td><td>Distance from one peak to the next peak</td><td>meters (m)</td></tr>
+              <tr><td>Frequency</td><td>f</td><td>How many full waves pass a point each second</td><td>hertz (Hz)</td></tr>
+              <tr><td>Period</td><td>T</td><td>Time for one full wave to pass</td><td>seconds (s)</td></tr>
+              <tr><td>Amplitude</td><td>A</td><td>Max height of a peak from the resting line</td><td>meters or signal-units</td></tr>
+            </tbody>
+          </table>
+          <p>Period and frequency are tied: <code>T = 1 / f</code> and <code>f = 1 / T</code>. If 5 waves pass per second (f = 5 Hz), each one takes 1/5 s (T = 0.2 s). Same fact, two ways.</p>
+          <p><strong>Amplitude</strong> tells you how loud, bright, or strong the wave is. <strong>Frequency</strong> tells you what <em>kind</em> of wave it is — high pitch vs low pitch, red light vs blue light. They're independent: you can crank up volume without changing the note.</p>
+
+          <h4>Wave speed</h4>
+          <p>How fast does a wave move? Multiply how long each wave is by how many pass per second:</p>
+          <div class="eqn">v = f · λ</div>
+          <p>Most important equation in this module. Memorize it. <code>v</code> is in m/s, <code>f</code> in Hz, <code>λ</code> in m. The medium sets the speed — frequency and wavelength trade off against each other inside that constant.</p>
+
+          <h4>Transverse vs longitudinal</h4>
+          <ul>
+            <li><strong>Transverse:</strong> the medium moves <em>perpendicular</em> to the wave's direction. Flick a rope up and down — it wiggles vertically while the wave travels horizontally. Examples: light, water surface waves, guitar strings.</li>
+            <li><strong>Longitudinal:</strong> the medium moves <em>parallel</em> to the wave's direction — squeezing and stretching. Push and pull a slinky along its length. Examples: sound in air, P-waves in earthquakes.</li>
+          </ul>
+
+          <h4>Interference: what happens when waves meet</h4>
+          <p>Two waves passing through the same spot at the same time <strong>add together</strong> — the superposition principle. You literally just add the heights at each point.</p>
+          <ul>
+            <li><strong>Constructive:</strong> peaks line up with peaks. Bigger wave. Louder, brighter, taller.</li>
+            <li><strong>Destructive:</strong> peaks line up with troughs. They cancel. Silence, darkness, flatness.</li>
+          </ul>
+          <p>Noise-cancelling headphones are pure destructive interference: the headphones listen to incoming sound, generate the inverted wave, and the two cancel inside your ear. After the meeting, both waves keep going as if nothing happened.</p>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">4 · Worked</span><span class="name"><em>Tuning Fork at Concert A</em></span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <p><strong>Problem.</strong> A tuning fork vibrates at 440 Hz (concert A). The sound wave travels through air at 343 m/s. What is the wavelength?</p>
+
+          <h4>Step 1 — what we know</h4>
+          <p>Frequency <code>f = 440 Hz</code>. Wave speed <code>v = 343 m/s</code>. Find: wavelength <code>λ</code>.</p>
+
+          <h4>Step 2 — equation</h4>
+          <p>The wave-speed equation: <code>v = f · λ</code>. Rearrange: <code>λ = v / f</code>.</p>
+
+          <h4>Step 3 — plug in</h4>
+          <div class="eqn">λ = 343 m/s ÷ 440 Hz = 0.78 m</div>
+
+          <h4>Step 4 — sanity check</h4>
+          <p>About 78 cm — roughly the length of your arm. Reasonable for an audible sound (audible wavelengths range from a couple centimeters up to ~17 m). Higher pitch = shorter wavelength.</p>
+
+          <p><strong>Answer:</strong> λ ≈ 0.78 m</p>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">5 · Practice</span><span class="name">5 questions · answers below each</span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <div class="practice-q">
+            <div class="q"><span class="num">Q1.</span>A wave on a rope has a wavelength of 2 m and a frequency of 5 Hz. How fast is it traveling?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>v = f · λ = 5 Hz × 2 m = 10 m/s</code>.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q2.</span>A radio station broadcasts at 100 MHz (10⁸ Hz). Radio waves travel at the speed of light, 3 × 10⁸ m/s. What's the wavelength?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>λ = v / f = (3 × 10⁸) / 10⁸ = 3 m</code>. That's why FM radio antennas are about a meter long — they're tuned to a fraction of the wavelength.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q3.</span>You double the amplitude of a sound wave but leave the frequency alone. What changes — pitch, loudness, both, or neither?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><strong>Loudness only.</strong> Amplitude controls intensity; frequency controls pitch. They're independent.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q4.</span>A pendulum completes one full swing every 0.5 seconds. What's its frequency?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>f = 1 / T = 1 / 0.5 = 2 Hz</code>.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q5.</span>Two identical waves meet. Wave A's peak lines up exactly with Wave B's trough. What does the combined wave look like at that instant — and what is this called?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body">The waves cancel completely — flat at the meeting point. <strong>Destructive interference.</strong> If they keep traveling, they emerge unchanged on the other side.</div></details>
+          </div>
+        </div>
+      </details>
+
+      <div class="bridge">
+        <p><strong>Bridge to Module 5 — Electricity.</strong> You just learned that waves carry energy through a medium without the medium going anywhere. Hold onto that. In Module 5 you'll meet <em>current</em> — the flow of electrons. At first it looks like the opposite of a wave: actual particles moving down a wire. But when you flip a light switch, the bulb lights up almost instantly, even if the wire is a kilometer long. The electrons themselves drift slowly. <em>The energy travels as a wave</em> — an electromagnetic disturbance racing down the wire near the speed of light. Same trick.</p>
+      </div>
+
+      <div class="sister-row">
+        <a href="../../physics-experiments/wave-interference/index.html">⟶ Sister: wave-interference demo</a>
+        <a href="../../physics-experiments/pendulum-wave/index.html">⟶ Sister: pendulum-wave demo</a>
       </div>
     </div>
   </section>
 
-  <!-- ============ Module 5: Electricity ============ -->
-  <section class="module glass">
+  <!-- ============================================================
+       Module 5: Electricity (COMPLETE)
+       ============================================================ -->
+  <section id="m5" class="module glass">
     <div class="module-head">
       <div class="module-num">5</div>
       <div class="info">
         <h2><em>Electricity</em></h2>
-        <div class="by">Charge · current · voltage · resistance — the flow of electrons</div>
-        <div class="desc">Touch a 9-volt battery to your tongue and you feel it. Touch the same battery to your fingertip — nothing. Same battery, same 9 volts. Three numbers tell you why: voltage, resistance, current. Ohm's law in three keystrokes.</div>
+        <div class="by">Charge · current · voltage · resistance · the flow of electrons</div>
       </div>
       <div class="meta">
         <span class="pill">complete</span>
@@ -397,8 +779,10 @@
       </div>
     </div>
     <div class="module-body">
+
       <div class="hook">
-        <strong>The hook:</strong> a 9V battery on the tongue tingles. On a fingertip, nothing. <em>Why?</em> The answer is hiding in three numbers — voltage, resistance, current — and the law that ties them together.
+        <p><strong>Pick up a 9-volt battery</strong> (the rectangular kind with both terminals on top) and touch it to your tongue. You feel a sharp, metallic tingle. Touch the same battery to your fingertip — nothing.</p>
+        <p>Same battery. Same 9 volts. <em>Why does your tongue feel it but your skin doesn't?</em> The answer is hiding in this module — three numbers explain it: voltage, resistance, current.</p>
       </div>
 
       <div class="sim-card">
@@ -411,20 +795,134 @@
         </div>
       </div>
 
-      <div class="module-cta">
-        <a class="primary" href="../module-5-electricity/index.md">Open Module 5 →</a>
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">2 · Core</span><span class="name"><em>Core Concepts</em></span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <h4>Charge (Q)</h4>
+          <p>Atoms contain protons (+) and electrons (−). More electrons than protons → negative charge. Fewer → positive. Equal → neutral. Symbol: <code>Q</code>. Unit: coulomb (C). One coulomb ≈ 6.24 × 10¹⁸ electrons. <strong>Like charges repel; opposite charges attract.</strong></p>
+
+          <h4>Current (I)</h4>
+          <p>When charges <em>move</em> through a wire, you have a current — the rate of charge flow. Symbol: <code>I</code>. Unit: ampere (A) = 1 coulomb per second. Direction by convention: from + to − (Benjamin Franklin guessed wrong; we never bothered to flip). Think of it as flow rate of water in a pipe: liters per second of water → coulombs per second of charge.</p>
+
+          <h4>Voltage (V)</h4>
+          <p>Voltage is electrical pressure — energy per unit charge. Symbol: <code>V</code>. Unit: volt (V) = 1 joule per coulomb. A 9V battery puts 9 joules into every coulomb that flows out. Water analogy: the height drop between a tank and a tap.</p>
+
+          <h4>Resistance (R)</h4>
+          <p>Every wire and component fights the flow of charge. That opposition is resistance. Symbol: <code>R</code>. Unit: ohm (Ω). A short, thick copper wire: tiny resistance. A long, thin tungsten filament: big resistance — that's why it heats up and glows.</p>
+
+          <h4>Ohm's Law</h4>
+          <p>The most-used equation in electronics:</p>
+          <div class="eqn">V = I × R</div>
+          <p>Rearrangements: <code>I = V / R</code> (current grows with voltage, shrinks with resistance) and <code>R = V / I</code>. Most of intro circuit analysis is bookkeeping around this one equation.</p>
+
+          <h4>Series vs Parallel</h4>
+          <p><strong>Series</strong> — components on a single loop. Same current flows through every one. Resistances <em>add</em>:</p>
+          <div class="eqn">R_total = R₁ + R₂ + R₃ + …</div>
+          <p><strong>Parallel</strong> — components on separate branches between the same two points. Same voltage across each branch. Currents add. Total resistance is <em>less</em> than the smallest individual resistance:</p>
+          <div class="eqn">1 / R_total = 1/R₁ + 1/R₂ + 1/R₃ + …</div>
+          <p>Intuition: parallel paths give the current more room to flow, like opening extra lanes on a highway.</p>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">3 · Interactive</span><span class="name"><em>Reasoning Exercises</em></span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <p>Reason out each scenario before peeking. Cover the answer with your hand if you have to.</p>
+
+          <div class="practice-q">
+            <div class="q"><span class="num">A.</span>The doubled battery — one 1.5V battery + one 10Ω resistor. You measure the current. Now you swap the battery for a 3V one (same resistor). What happens to the current?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><strong>Current doubles.</strong> Ohm: <code>I = V / R</code>. R unchanged, V doubled, so I doubles. New: <code>3 / 10 = 0.3 A</code>. Old: <code>1.5 / 10 = 0.15 A</code>.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">B.</span>Two identical bulbs wired in <strong>series</strong>. Both glow dimly. You unscrew one. What happens to the other?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><strong>Goes out.</strong> Series = same current through every component. Removing one bulb breaks the loop — current can't flow at all.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">C.</span>Same two bulbs, now wired in <strong>parallel</strong> to the same battery. You unscrew one. What happens to the other?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><strong>Keeps glowing — and a touch brighter</strong> in real circuits. Each bulb is on its own branch with the full battery voltage across it. (This is why house wiring is parallel: turning off the kitchen light shouldn't kill the bedroom.)</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">D.</span>Back to the hook: 9V on tongue (~5,000 Ω resistance) vs 9V on dry fingertip (~100,000 Ω). Estimate the current in each. Which can you feel?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body">Tongue: <code>I = 9 / 5,000 = 1.8 mA</code>. You feel that. Fingertip: <code>I = 9 / 100,000 = 0.09 mA</code>. Below the threshold of sensation. Same voltage, different resistance, different current, different sensation.</div></details>
+          </div>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">4 · Worked</span><span class="name"><em>Series circuit, two resistors</em></span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <p><strong>Problem.</strong> A 12V battery in series with a 4Ω resistor and an 8Ω resistor. Find: (1) total resistance, (2) current in the loop, (3) voltage across each resistor.</p>
+
+          <h4>Step 1 — total resistance</h4>
+          <p>Series add: <code>R_total = 4 + 8 = 12 Ω</code>.</p>
+
+          <h4>Step 2 — current</h4>
+          <p>The whole loop sees 12V across 12Ω. <code>I = V / R_total = 12 / 12 = 1 A</code>. Same 1 A through every component (defining property of series).</p>
+
+          <h4>Step 3 — voltage per resistor</h4>
+          <p>Apply Ohm to each (same current, different R):</p>
+          <ul>
+            <li><code>V₁ = I × R₁ = 1 × 4 = 4 V</code></li>
+            <li><code>V₂ = I × R₂ = 1 × 8 = 8 V</code></li>
+          </ul>
+
+          <p><strong>Sanity check.</strong> The voltages add to the battery: <code>4 + 8 = 12 V ✓</code>. This is <strong>Kirchhoff's voltage law</strong> in disguise: every joule a coulomb gains from the battery has to be spent somewhere in the loop.</p>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>
+          <div class="label-row"><span class="tag">5 · Practice</span><span class="name">5 questions · answers below each</span></div>
+          <span class="caret">›</span>
+        </summary>
+        <div class="body">
+          <div class="practice-q">
+            <div class="q"><span class="num">Q1.</span>A 6V battery and a 2Ω resistor. What is the current?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>I = V / R = 6 / 2 = 3 A</code>.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q2.</span>A current of 0.5 A flows through a resistor when 10V is applied. What is its resistance?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>R = V / I = 10 / 0.5 = 20 Ω</code>.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q3.</span>Three resistors — 2Ω, 3Ω, 5Ω — connected in <strong>series</strong>. Total resistance?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>R_total = 2 + 3 + 5 = 10 Ω</code>. Series resistances simply add.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q4.</span>Two 6Ω resistors in <strong>parallel</strong>. Total resistance?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body"><code>1 / R_total = 1/6 + 1/6 = 2/6 = 1/3</code>, so <strong>R_total = 3 Ω</strong>. Shortcut for two equal resistors in parallel: halve the value. Two equal lanes carry twice the current.</div></details>
+          </div>
+          <div class="practice-q">
+            <div class="q"><span class="num">Q5.</span>A toaster on a 120V outlet draws 10 A. What's the resistance of the heating element, and how much charge flows through it in one minute?</div>
+            <details class="answer"><summary>Show answer</summary><div class="ans-body">Resistance: <code>R = V / I = 120 / 10 = 12 Ω</code>. Charge in one minute: <code>Q = I × t = 10 × 60 = 600 C</code> — about 3.7 × 10²¹ electrons. Toast is hard work.</div></details>
+          </div>
+        </div>
+      </details>
+
+      <div class="bridge">
+        <p><strong>Bridge to Module 6 — Light.</strong> You just learned that moving charges = current. Here's the punchline that connects this module to the next: <em>whenever charges accelerate, they radiate electromagnetic waves.</em> The current wiggling in a radio antenna <em>is</em> what produces radio waves. Electrons jumping between energy levels in a lightbulb filament <em>are</em> what produces visible light. Electricity and light are not two phenomena — they're the same field, vibrating at different frequencies.</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ Module 6: Light ============ -->
-  <section class="module glass">
+  <!-- ============================================================
+       Module 6: Light (STUB)
+       ============================================================ -->
+  <section id="m6" class="module glass">
     <div class="module-head">
       <div class="module-num">6</div>
       <div class="info">
         <h2><em>Light</em></h2>
         <div class="by">Reflection · refraction · the EM spectrum · waves and particles</div>
-        <div class="desc">A straw looks bent in a glass of water. The sky is blue at noon and red at sunset. A prism splits white light into a rainbow. Light is wave (Module 4 applies) and particle (quantization shows up). The final module bridges classical and quantum.</div>
       </div>
       <div class="meta">
         <span class="pill stub">stub</span>
@@ -432,8 +930,8 @@
       </div>
     </div>
     <div class="module-body">
-      <div class="hook">
-        <strong>This module is in stub state.</strong> Use the PhET <em>Bending Light</em> sim below to see refraction live — change the medium, watch the angle bend predictably (Snell's law). Wave-particle duality lives in the sister cabinet's Double-Slit experiment.
+      <div class="stub-note">
+        <strong>This module is in stub state.</strong> Use the PhET <em>Bending Light</em> sim below to see refraction live — change the medium, watch the laser bend predictably (Snell's law). For wave-particle duality, head to the sister cabinet's Double-Slit experiment.
       </div>
 
       <div class="sim-card">
@@ -446,9 +944,8 @@
         </div>
       </div>
 
-      <div class="module-cta">
-        <a class="primary" href="../module-6-light/index.md">Open Module 6 →</a>
-        <a class="secondary" href="../../physics-experiments/double-slit/index.html">Sister · Double-Slit experiment</a>
+      <div class="sister-row">
+        <a href="../../physics-experiments/double-slit/index.html">⟶ Sister: double-slit (wave-particle)</a>
       </div>
     </div>
   </section>
@@ -464,30 +961,30 @@
       <div class="pedagogy">
         <div class="step"><span class="n">1</span><div><div class="name">Hook</div><small>A real-world question or demo. One paragraph.</small></div></div>
         <div class="step"><span class="n">2</span><div><div class="name">Core Concepts</div><small>Minimum vocabulary with definitions, units, sign conventions.</small></div></div>
-        <div class="step"><span class="n">3</span><div><div class="name">Interactive Element</div><small>A guided thought experiment, or a link to a free PhET sim (now embedded above).</small></div></div>
+        <div class="step"><span class="n">3</span><div><div class="name">Interactive Element</div><small>A guided thought experiment + an embedded PhET sim.</small></div></div>
         <div class="step"><span class="n">4</span><div><div class="name">Worked Example</div><small>One problem solved step-by-step, ending with a sanity-check.</small></div></div>
-        <div class="step"><span class="n">5</span><div><div class="name">Practice Questions</div><small>3–5 short problems · answers below the fold.</small></div></div>
-        <div class="step"><span class="n">6</span><div><div class="name">What's Next</div><small>One paragraph bridging to the next module.</small></div></div>
+        <div class="step"><span class="n">5</span><div><div class="name">Practice Questions</div><small>5 short problems · click any answer to expand.</small></div></div>
+        <div class="step"><span class="n">6</span><div><div class="name">What's Next</div><small>Bridge paragraph to the next module.</small></div></div>
       </div>
     </div>
 
-    <div class="sister glass">
+    <div class="sister card glass">
       <div class="card-head">
         <span class="title">Sister cabinet · physics-experiments</span>
-        <span class="meta">10 interactive demos</span>
+        <span class="meta">10 demos</span>
       </div>
       <h3>Pair with the <em>Physics Experiments</em> cabinet</h3>
-      <p>If installed, you get 10 hand-built interactive demos that map directly to these modules — open them as you go through each topic. Linked from each module above.</p>
+      <p>If installed, you get 10 hand-built interactive demos that map directly to these modules. Linked from each module's "sister" row above.</p>
       <div class="exp-grid">
         <span class="exp">Galileo's inclined plane</span>
         <span class="exp">Brachistochrone race</span>
         <span class="exp">Projectile motion</span>
         <span class="exp">Foucault pendulum</span>
         <span class="exp">Pendulum wave</span>
-        <span class="exp">Double-slit (wave-particle)</span>
-        <span class="exp">Wave interference (ripple tank)</span>
-        <span class="exp">Stern-Gerlach (spin)</span>
-        <span class="exp">Millikan oil drop (charge)</span>
+        <span class="exp">Double-slit</span>
+        <span class="exp">Wave interference</span>
+        <span class="exp">Stern-Gerlach</span>
+        <span class="exp">Millikan oil drop</span>
         <span class="exp">Bragg X-ray diffraction</span>
       </div>
     </div>
