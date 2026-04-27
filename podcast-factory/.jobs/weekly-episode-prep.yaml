@@ -1,0 +1,26 @@
+id: weekly-episode-prep
+name: Weekly Episode Prep
+enabled: true
+schedule: 0 10 * * 3
+provider: claude-code
+adapterType: claude_local
+ownerAgent: producer
+agentSlug: producer
+timeout: 900
+prompt: |-
+  Goal: make sure the next episode the host will record is fully scripted by Wednesday morning.
+
+  Steps:
+  1. Read `brand/index.md` for tone, length, and format rules.
+  2. Open `content-calendar.csv` and find the lowest-numbered episode with `status = idea` or `status = outlined`.
+  3. If no episode folder exists at `episodes/<NNN-slug>/`, create one. The slug is the kebab-cased working title.
+  4. If `episodes/<NNN-slug>/script.md` does not yet exist, generate it using the matching prompt from `generators/script-generator.md` (pick the right template for the episode's `format` column).
+  5. If `episodes/<NNN-slug>/shownotes.md` does not yet exist, draft a placeholder version using `generators/shownotes-generator.md` (it gets finalized after recording, but the structure should be ready).
+  6. Append a one-line cover-art prompt to `episodes/<NNN-slug>/index.md` under a "## Cover-art prompt" heading, generated via `generators/image-generator.md`. The host will paste it into their image tool of choice.
+  7. Update the row in `content-calendar.csv` — set `status` to `scripted`.
+  8. Append a "## Episode prep — [YYYY-MM-DD]" block to `index.md` with: episode number, title, recommended recording platform (1 line of reasoning, citing `recording-guide/index.md`), and a checklist of what the host still needs to do before recording.
+
+  Do not record anything. Do not invent guest quotes. If the script needs information the calendar row does not provide, mark it `[TK — host to confirm]` and flag it in the prep block.
+cabinetPath: cabinets/cabinets/podcast-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

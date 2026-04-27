@@ -1,0 +1,30 @@
+id: weekly-calendar-fill
+name: Weekly Calendar Fill
+enabled: true
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: producer
+agentSlug: producer
+timeout: 600
+prompt: |-
+  Read `brand/index.md` to confirm the show's premise, target audience, episode length, and tone.
+
+  Open `content-calendar.csv` and count the number of rows whose `status` is `idea` or `outlined` (i.e. not yet scripted, recorded, or published).
+
+  If that count is less than 8, append new episode ideas until there are 8 fresh ones in the pipeline. For each new row, fill these columns:
+  - `episode_number` — next available integer
+  - `working_title` — short, hooky, no clickbait
+  - `premise` — one sentence: what is the listener going to learn or feel?
+  - `format` — one of: solo, conversation, interview, narrative, mailbag
+  - `target_minutes` — match `brand/index.md`
+  - `status` — `idea`
+  - `target_publish_date` — weekly cadence from the latest scheduled episode (or weekly from today if the pipeline is empty)
+  - `notes` — anything the host needs to know (guest to book, clip needed, etc.)
+
+  Do not modify rows that are already `scripted`, `recorded`, or `published`. Do not delete rows.
+
+  After updating, append a "## Calendar update — [YYYY-MM-DD]" block to `index.md` listing the new episode numbers and titles you added. One line each.
+cabinetPath: cabinets/cabinets/podcast-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

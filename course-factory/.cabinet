@@ -1,0 +1,13 @@
+schemaVersion: 1
+id: course-factory-root
+name: Course Factory
+kind: root
+version: 0.1.0
+description: >
+  A complete online-course OS in a directory. Fill in three placeholders (who
+  you are, what the course teaches, format + price), run the bootstrap prompt,
+  and a course-creator agent builds your curriculum outline, an 8-module syllabus,
+  drafts the welcome lesson, generates slide prompts, sales-page copy, and a
+  launch-week sequence — plus a platform recommendation (Teachable / Maven /
+  Kajabi / Podia / School / self-hosted).
+entry: index.md

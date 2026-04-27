@@ -1,0 +1,42 @@
+id: monthly-budget-check
+name: Monthly Budget Check
+enabled: true
+schedule: 0 9 1 * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: planner
+agentSlug: planner
+timeout: 600
+prompt: |-
+  Read `vision/index.md` for the total budget target.
+  Open `budget/tracker.csv` and analyze the current state.
+
+  Steps:
+
+  1. Sum `estimated_cost` and `actual_cost` columns.
+  2. Compute total estimated vs total actual vs total budget.
+  3. For each line item, compute the variance: `actual - estimated`. Flag items where variance is >10% of the line's estimated cost.
+  4. Compute remaining budget headroom (total budget - sum of actuals where status is `paid` or `confirmed`).
+  5. Identify "soft costs" not yet captured — line items where `actual_cost` is empty but the wedding date is within 90 days. Flag these.
+
+  Append a "## Monthly budget check — [YYYY-MM]" block to `budget/index.md` with:
+
+  ### Status
+  - Total budget: $X
+  - Total estimated: $X (Y% of budget)
+  - Total actual + confirmed: $X (Y% of budget)
+  - Remaining headroom: $X
+
+  ### Variance flags
+  - [Items >10% over estimate, with reason if known]
+
+  ### Coming due
+  - [Vendors with payments due in next 30 days, with amounts]
+
+  ### Recommendation
+  - [One sentence: are we on track, tight, or over? What's the one move this month?]
+
+  Keep under 250 words.
+cabinetPath: cabinets/cabinets/wedding-planner
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

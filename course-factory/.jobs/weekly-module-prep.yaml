@@ -1,0 +1,26 @@
+id: weekly-module-prep
+name: Weekly Module Prep
+enabled: true
+schedule: 0 10 * * 3
+provider: claude-code
+adapterType: claude_local
+ownerAgent: course-creator
+agentSlug: course-creator
+timeout: 900
+prompt: |-
+  Goal: have the next un-built module fully scripted and slide-briefed by Wednesday morning.
+
+  Steps:
+  1. Read `brand/index.md` — confirm transformation, format (cohort/self-paced/hybrid), and module length norms.
+  2. Find the lowest-numbered row in `module-tracker.csv` with status `outlined` or `not_started`.
+  3. Create folder `modules/<NNN-slug>/` if missing.
+  4. If `lesson.md` is missing: generate using `generators/lesson-generator.md`. The lesson should include all sub-lessons in the module.
+  5. If `slides-brief.md` is missing: generate using `generators/slide-generator.md`.
+  6. If `practice.md` is missing: generate one practice exercise per sub-lesson. Each exercise: clear prompt, expected output, common mistakes to flag.
+  7. Update the row in `module-tracker.csv` — set `status` to `drafted`.
+  8. Append a "## Module prep — [YYYY-MM-DD]" block to `index.md` with: module number, title, lesson count, total duration estimate, and any flagged questions for the creator.
+
+  Do not invent statistics, claims, or research citations. Mark unsourced material `[TK — creator to verify]`.
+cabinetPath: cabinets/cabinets/course-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

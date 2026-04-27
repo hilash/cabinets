@@ -1,0 +1,13 @@
+schemaVersion: 1
+id: newsletter-factory-root
+name: Newsletter Factory
+kind: root
+version: 0.1.0
+description: >
+  A complete newsletter OS in a directory. Fill in three placeholders (who you
+  are, what the newsletter is about, your style and cadence), run the bootstrap
+  prompt, and an editor-in-chief agent builds your brand voice, a 12-issue
+  content calendar, drafts the launch issue, generates subject-line variants,
+  and recommends a platform (Substack / Beehiiv / ConvertKit / Ghost) with
+  growth-loop tactics.
+entry: index.md

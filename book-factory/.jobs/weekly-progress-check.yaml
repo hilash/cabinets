@@ -1,0 +1,41 @@
+id: weekly-progress-check
+name: Weekly Progress Check
+enabled: true
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: book-coach
+agentSlug: book-coach
+timeout: 600
+prompt: |-
+  Goal: surface what's working, what's stuck, and what's drifting from the premise.
+
+  Steps:
+
+  1. Read `brand/index.md` (premise, voice, archetype).
+  2. Read `chapter-tracker.csv`. Tally: chapters at each status. Compute % complete vs total target.
+  3. For chapters at status `drafted` or further: spot-check the latest 1–2 drafts against the voice rules. Flag any chapter where the voice has visibly drifted.
+  4. Identify the single highest-leverage chapter to draft next (usually the lowest-numbered un-drafted chapter, but flag if the author has been stuck on a specific chapter — recommend skipping ahead and returning).
+  5. Identify the messy-middle risk: if chapters 4–8 are mostly un-drafted while chapters 1–3 are over-revised, flag — first-time authors over-polish the start and never reach the middle.
+  6. Re-read the premise. Has any drafted chapter drifted from it? Flag.
+
+  Append a "## Weekly progress check — [YYYY-MM-DD]" block to `index.md` with:
+
+  ### Progress
+  - X of Y chapters drafted (Z% complete)
+  - Chapters at each status
+
+  ### Voice drift flags
+  - [Chapters where voice diverges from brand/index.md, with specific examples]
+
+  ### Premise drift flags
+  - [Chapters that don't move the reader toward the One Thing the book delivers]
+
+  ### Recommended focus this week
+  - The ONE chapter to make progress on
+  - Optional: ONE structural question to resolve
+
+  Keep total under 300 words. The author is busy writing — give them signal, not noise.
+cabinetPath: cabinets/cabinets/book-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

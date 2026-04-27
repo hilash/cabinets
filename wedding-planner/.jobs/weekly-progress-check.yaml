@@ -1,0 +1,37 @@
+id: weekly-progress-check
+name: Weekly Progress Check
+enabled: true
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: planner
+agentSlug: planner
+timeout: 600
+prompt: |-
+  Read `vision/index.md` (especially the wedding date) and `timeline/tracker.csv`.
+
+  Steps:
+
+  1. Find rows whose `due_date` is in the past and `status` is not `done`. List them as overdue.
+  2. Find rows whose `due_date` is within the next 14 days and `status` is `not_started` or `in_progress`. List them as upcoming.
+  3. Cross-reference `vendors/tracker.csv` — flag any vendor in `prospecting` or `quoted` status whose related milestone is now in the upcoming-14-day window.
+  4. Identify "blocked" items — anything where `notes` contains the word "blocked" or "waiting" or "stuck".
+
+  Append a "## Weekly progress check — [YYYY-MM-DD]" block to `index.md` with:
+
+  ### Overdue
+  - [Bullet list of overdue items, with owner and how late]
+
+  ### Coming up in 14 days
+  - [Bullet list of upcoming items, sorted by due date]
+
+  ### Blocked
+  - [Items with the blocker noted]
+
+  ### Recommended focus this week
+  - [3 specific items the couple should tackle this week, in priority order]
+
+  Keep total length under 300 words. The couple is busy — give them the punch list, not the explanation.
+cabinetPath: cabinets/cabinets/wedding-planner
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

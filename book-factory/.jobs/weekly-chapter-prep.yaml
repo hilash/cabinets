@@ -1,0 +1,25 @@
+id: weekly-chapter-prep
+name: Weekly Chapter Prep
+enabled: true
+schedule: 0 10 * * 3
+provider: claude-code
+adapterType: claude_local
+ownerAgent: book-coach
+agentSlug: book-coach
+timeout: 1200
+prompt: |-
+  Goal: have the next un-drafted chapter ready for the author's revision pass by Wednesday.
+
+  Steps:
+  1. Read `brand/index.md` for premise, voice, target reader, and book archetype.
+  2. Find the lowest-numbered row in `chapter-tracker.csv` with status `outlined` or `not_started`.
+  3. Create folder `chapters/<NNN-slug>/` if missing.
+  4. If `draft.md` is missing: generate using `generators/chapter-generator.md`. Match the chapter's archetype + the book's voice rules. Target chapter length from `brand/index.md`.
+  5. If `notes.md` is missing: create with a fresh "## Author notes" section for the author to mark in-line concerns.
+  6. Update the row in `chapter-tracker.csv` — set `status` to `drafted`.
+  7. Append a "## Chapter prep — [YYYY-MM-DD]" block to `index.md` with: chapter number, working title, word count estimate, and any structural questions for the author.
+
+  Do not invent quotes, statistics, or research citations. Mark unsourced material `[TK — author to verify]`. Mark places where a real personal anecdote should go `[TK — author's story]`.
+cabinetPath: cabinets/cabinets/book-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

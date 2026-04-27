@@ -38,8 +38,14 @@ Each top-level directory in this repo is a complete cabinet template you can ins
 | [saas-startup](./saas-startup) | B2B | 3 | 2 | 0 | SaaS startup with product-led growth |
 | [content-creator](./content-creator) | Solo | 3 | 2 | 0 | Solo content creator operation |
 | [ecommerce](./ecommerce) | B2C | 2 | 2 | 0 | Direct-to-consumer e-commerce brand |
+| [podcast-factory](./podcast-factory) | Solo | 1 | 2 | 0 | Podcast OS — bootstrap builds brand, calendar, scripts, shownotes, cover-art prompts, recording-platform guide |
+| [youtube-channel-factory](./youtube-channel-factory) | Solo | 1 | 2 | 0 | YouTube OS — brand, content calendar, scripts (7 formats), thumbnail briefs, gear matrix, SEO + Shorts playbook |
+| [newsletter-factory](./newsletter-factory) | Solo | 1 | 2 | 0 | Newsletter OS — brand, issue calendar, drafts, subject-line + opening-hook generators, platform + growth guides |
+| [wedding-planner](./wedding-planner) | Personal | 1 | 2 | 0 | Wedding OS — vision, vendor matrix, 18-month timeline, budget tracker, vow + speech generators, day-of runbook |
+| [course-factory](./course-factory) | Solo | 1 | 2 | 0 | Course OS — transformation spec, 8-module syllabus, lesson + slide briefs, sales page, launch sequence |
+| [book-factory](./book-factory) | Solo | 1 | 2 | 0 | Book OS — premise sheet, 12-chapter outline, chapter drafts, cover-art + blurb generators, publishing-path matrix |
 
-**Totals:** 8 cabinets, 47 agents, 36 jobs across the registry.
+**Totals:** 14 cabinets, 53 agents, 48 jobs across the registry.
 
 ## Cabinet File Format
 

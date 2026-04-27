@@ -1,0 +1,27 @@
+id: weekly-video-prep
+name: Weekly Video Prep
+enabled: true
+schedule: 0 10 * * 3
+provider: claude-code
+adapterType: claude_local
+ownerAgent: creative-director
+agentSlug: creative-director
+timeout: 900
+prompt: |-
+  Goal: have the next un-shot video fully scripted and thumbnailed by Wednesday morning.
+
+  Steps:
+  1. Read `brand/index.md` for tone, length, and channel formats.
+  2. Find the lowest-numbered row in `content-calendar.csv` with status `idea` or `outlined`.
+  3. Create folder `videos/<NNN-slug>/` if missing (slug = kebab-cased working title).
+  4. If `script.md` is missing: generate one using the right template from `generators/script-generator.md` (match the row's `format` column).
+  5. If `thumbnail-brief.md` is missing: generate one using `generators/thumbnail-generator.md` (must include the image-gen prompt + the on-thumbnail text + alternative concepts).
+  6. Append "## Title candidates" + "## Hook candidates" to `videos/<NNN-slug>/index.md` using `generators/title-and-hook-generator.md`. 8 titles + 3 hooks.
+  7. Append "## End-screen + CTA" to the same file using `generators/end-screen-generator.md`.
+  8. Update the calendar row — set `status` to `scripted`.
+  9. Append a "## Video prep — [YYYY-MM-DD]" block to `index.md` with: video number, title, recommended production setup (1 line citing `production-guide/index.md`), and a checklist of what the creator still needs to do before recording.
+
+  Do not invent claims, statistics, or quotes. Mark unsourced facts `[TK — creator to confirm]`.
+cabinetPath: cabinets/cabinets/youtube-channel-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

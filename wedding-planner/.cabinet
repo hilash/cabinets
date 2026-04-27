@@ -1,0 +1,12 @@
+schemaVersion: 1
+id: wedding-planner-root
+name: Wedding Planner
+kind: root
+version: 0.1.0
+description: >
+  A complete wedding-planning OS in a directory. Fill in three placeholders (who
+  you are, your vision, your budget + date), run the bootstrap prompt, and a
+  planner agent builds your vendor matrix, budget tracker, 18-month timeline,
+  guest-list scaffold, vow + speech generators, RSVP system, and a day-of
+  runbook. One agent, two routines, complete sanity in the chaos.
+entry: index.md

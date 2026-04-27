@@ -1,0 +1,27 @@
+id: weekly-issue-prep
+name: Weekly Issue Prep
+enabled: true
+schedule: 0 10 * * 3
+provider: claude-code
+adapterType: claude_local
+ownerAgent: editor-in-chief
+agentSlug: editor-in-chief
+timeout: 900
+prompt: |-
+  Goal: have the next un-drafted issue fully written by Wednesday morning.
+
+  Steps:
+  1. Read `brand/index.md` for tone, length, and format rules.
+  2. Find the lowest-numbered row in `issue-calendar.csv` with status `idea` or `outlined`.
+  3. Create folder `issues/<NNN-slug>/` if missing.
+  4. If `draft.md` is missing: generate using the right template from `generators/issue-generator.md` (match the row's `format`).
+  5. Append "## Subject-line candidates" (8 variants) to `issues/<NNN-slug>/index.md` using `generators/subject-line-generator.md`.
+  6. Append "## Opening-line hooks" (3 variants) to the same file using `generators/opening-hook-generator.md`.
+  7. Append "## Growth-loop hook" to the draft (one referral or share line) using `generators/growth-loop-generator.md`.
+  8. Update calendar row — `status` to `drafted`.
+  9. Append a "## Issue prep — [YYYY-MM-DD]" block to `index.md` with: issue number, title, top subject-line pick, recommended send time (citing `growth-guide/index.md`), and a checklist of what the editor still needs to do before sending.
+
+  Do not invent statistics or quotes. Mark unsourced claims `[TK — editor to confirm]`.
+cabinetPath: cabinets/cabinets/newsletter-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

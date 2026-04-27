@@ -1,0 +1,36 @@
+id: weekly-marketing-prep
+name: Weekly Marketing Prep
+enabled: true
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: course-creator
+agentSlug: course-creator
+timeout: 600
+prompt: |-
+  Goal: keep the marketing engine running while modules are being built.
+
+  Steps:
+  1. Read `brand/index.md` for course premise + transformation + audience.
+  2. Read `launch-guide/index.md` for the current phase (pre-launch / launch / post-launch).
+
+  Based on phase:
+
+  PRE-LAUNCH:
+    - Generate 3 social posts (X / LinkedIn) about the upcoming course — one teaching post (give value), one storytelling post (your why), one signal post ("here's what I'm building").
+    - Each post drives signups to the wait-list.
+    - Append to `launch-guide/pre-launch-content.md` under a new "## Week of [YYYY-MM-DD]" heading.
+
+  LAUNCH WEEK:
+    - Run `generators/launch-sequence-generator.md` if the email sequence isn't drafted yet.
+    - Generate 5 short social posts (one per launch day) — countdown energy, social proof, FAQ, last-call.
+
+  POST-LAUNCH:
+    - Generate 3 testimonial-collection prompts to send to current students.
+    - Generate 2 case-study outlines from any student wins documented in `modules/`.
+    - Identify the best 5 evergreen posts from the launch and queue them for re-share.
+
+  Always ground content in `brand/index.md`. Do not invent student wins or testimonials.
+cabinetPath: cabinets/cabinets/course-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

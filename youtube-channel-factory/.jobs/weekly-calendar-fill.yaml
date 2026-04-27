@@ -1,0 +1,31 @@
+id: weekly-calendar-fill
+name: Weekly Calendar Fill
+enabled: true
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: creative-director
+agentSlug: creative-director
+timeout: 600
+prompt: |-
+  Read `brand/index.md` to confirm channel premise, target viewer, formats, target length, and upload cadence.
+
+  Open `content-calendar.csv` and count rows whose `status` is `idea` or `outlined`.
+
+  If that count is less than 8, append new video ideas until there are 8 fresh ones in the pipeline. For each new row:
+  - `video_number` — next available integer
+  - `working_title` — under 60 characters, front-loaded with the hook keyword
+  - `premise` — one sentence: what the viewer learns or feels
+  - `format` — tutorial, vlog, essay, listicle, reaction, mini-doc, or short
+  - `target_minutes` — match `brand/index.md` (or shorter for Shorts)
+  - `status` — `idea`
+  - `target_publish_date` — match upload cadence
+  - `thumbnail_concept` — one sentence describing the central visual idea — must be drawable
+  - `notes` — anything the creator needs to know
+
+  Do not modify rows already `scripted`, `recorded`, `edited`, or `published`. Do not delete rows.
+
+  Append a "## Calendar update — [YYYY-MM-DD]" block to `index.md` listing the new video numbers and titles. One line each.
+cabinetPath: cabinets/cabinets/youtube-channel-factory
+createdAt: '2026-04-27T00:00:00.000Z'
+updatedAt: '2026-04-27T00:00:00.000Z'

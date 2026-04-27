@@ -1,0 +1,13 @@
+schemaVersion: 1
+id: book-factory-root
+name: Book Factory
+kind: root
+version: 0.1.0
+description: >
+  A complete book-writing OS in a directory. Fill in three placeholders (who you
+  are, what the book is about, format + audience), run the bootstrap prompt,
+  and a book-coach agent builds your premise sheet, a 12-chapter outline, drafts
+  chapter 1, generates cover-art prompts, drafts the back-cover blurb, and
+  recommends a publishing path (KDP / IngramSpark / Draft2Digital / hybrid /
+  query agent route). Designed for non-fiction; adaptable to memoir.
+entry: index.md

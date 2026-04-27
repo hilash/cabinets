@@ -1,0 +1,12 @@
+schemaVersion: 1
+id: youtube-channel-factory-root
+name: YouTube Channel Factory
+kind: root
+version: 0.1.0
+description: >
+  A complete YouTube OS in a directory. Fill in three placeholders (who you are,
+  what your channel is about, your style and format), run the bootstrap prompt,
+  and a creative-director agent builds out your channel brand, a 12-video
+  content calendar, scripts, thumbnail prompts, and a production-gear decision
+  guide (DSLR vs mirrorless vs phone, editing software, audio chain).
+entry: index.md

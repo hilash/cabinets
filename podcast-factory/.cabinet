@@ -1,0 +1,12 @@
+schemaVersion: 1
+id: podcast-factory-root
+name: Podcast Factory
+kind: root
+version: 0.1.0
+description: >
+  A complete Podcast OS in a directory. Fill in three placeholders (who you are,
+  what the show is about, your style), run the bootstrap prompt, and a
+  podcast-producer agent builds out your brand page, a 12-episode content
+  calendar, scripts, shownotes, cover-art prompts, and a recording-platform
+  decision guide (Riverside, StreamYard, Zencastr, audio-only).
+entry: index.md
