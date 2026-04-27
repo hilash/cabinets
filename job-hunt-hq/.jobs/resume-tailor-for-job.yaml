@@ -1,9 +1,12 @@
 id: resume-tailor-for-job
 name: Resume Tailor for Job
-description: Generates a tailored resume and optional cover letter for a specific job posting.
-ownerAgent: resume-tailor
 enabled: true
-schedule: "manual"
+schedule: manual
+provider: claude-code
+adapterType: claude_local
+ownerAgent: resume-tailor
+agentSlug: resume-tailor
+timeout: 600
 prompt: |-
   Given a specific job posting (provided as input or from /job-board/saved-jobs.csv):
   1. Analyze the posting for key requirements, preferred skills, and cultural signals
@@ -20,5 +23,6 @@ prompt: |-
      - Closes with a clear, confident call to action
   6. List any gaps between the posting and the resume with suggested talking points
   Save the tailored resume as a new markdown page under /profile.
-createdAt: "2026-04-12T00:00:00.000Z"
-updatedAt: "2026-04-12T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/job-hunt-hq
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

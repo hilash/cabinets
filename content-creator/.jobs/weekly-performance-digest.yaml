@@ -1,9 +1,12 @@
 id: weekly-performance-digest
 name: Weekly Performance Digest
-description: Analyzes content performance from the past week and recommends adjustments.
-ownerAgent: content-strategist
 enabled: true
-schedule: "0 8 * * 1"
+schedule: 0 8 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: content-strategist
+agentSlug: content-strategist
+timeout: 600
 prompt: |-
   Review content performance data from the past week.
   Write a performance digest covering:
@@ -12,5 +15,6 @@ prompt: |-
   - Audience growth trends
   - One recommendation for next week's content strategy
   Save the digest to /audience-research.
-createdAt: "2026-04-11T00:00:00.000Z"
-updatedAt: "2026-04-11T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/content-creator
+createdAt: '2026-04-11T00:00:00.000Z'
+updatedAt: '2026-04-11T00:00:00.000Z'

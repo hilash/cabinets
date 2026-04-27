@@ -1,9 +1,12 @@
 id: weekly-pipeline-review
 name: Weekly Pipeline Review
-description: Analyzes the full application pipeline for health, velocity, and strategy adjustments.
-ownerAgent: career-strategist
 enabled: true
-schedule: "0 9 * * 1"
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: career-strategist
+agentSlug: career-strategist
+timeout: 600
 prompt: |-
   Review the full pipeline in /pipeline/applications.csv and recent interview feedback in /interviews/feedback-log.csv.
   Produce a weekly pipeline health report that includes:
@@ -15,5 +18,6 @@ prompt: |-
   - Top-performing channels (referral, direct apply, recruiter, job board)
   - One specific strategy recommendation based on the data
   Save the report as a new page or update the dashboard context.
-createdAt: "2026-04-12T00:00:00.000Z"
-updatedAt: "2026-04-12T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/job-hunt-hq
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

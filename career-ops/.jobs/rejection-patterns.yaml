@@ -3,6 +3,7 @@ name: Rejection Pattern Analysis
 enabled: true
 schedule: 0 9 * * 5
 provider: claude-code
+adapterType: claude_local
 ownerAgent: evaluator
 agentSlug: evaluator
 timeout: 600
@@ -30,6 +31,6 @@ prompt: |-
 
   Save the analysis to /analytics with specific, actionable recommendations.
   Compare to previous week's analysis if available.
-cabinetPath: example-text-your-mom/marketing/career-ops
+cabinetPath: cabinets/cabinets/career-ops
 createdAt: '2026-04-12T00:00:00.000Z'
 updatedAt: '2026-04-12T00:00:00.000Z'

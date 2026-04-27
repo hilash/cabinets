@@ -1,9 +1,12 @@
 id: weekly-reddit-learnings-digest
 name: Weekly Reddit Learnings Digest
-description: Summarizes what Reddit revealed about user pain, message fit, and experiment quality.
-ownerAgent: data-analyst
 enabled: false
-schedule: "0 9 * * 1"
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: data-analyst
+agentSlug: data-analyst
+timeout: 600
 prompt: |-
   Review subreddit notes, comment opportunities, and recent experiment ideas.
   Write a weekly learnings digest for Text Your Mom that includes:
@@ -12,5 +15,6 @@ prompt: |-
   - risks or objections the product should address
   - which ideas deserve product or growth follow-up
   Save the digest in /analytics.
-createdAt: "2026-04-11T00:00:00.000Z"
-updatedAt: "2026-04-11T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/text-your-mom/marketing/reddit
+createdAt: '2026-04-11T00:00:00.000Z'
+updatedAt: '2026-04-11T00:00:00.000Z'

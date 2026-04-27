@@ -1,13 +1,17 @@
 id: daily-content-queue
 name: Daily Content Queue
-description: Reviews the content calendar and prepares the day's publishing queue.
-ownerAgent: content-strategist
 enabled: true
-schedule: "0 8 * * 1-5"
+schedule: 0 8 * * 1-5
+provider: claude-code
+adapterType: claude_local
+ownerAgent: content-strategist
+agentSlug: content-strategist
+timeout: 600
 prompt: |-
   Check the content calendar for today and tomorrow.
   Confirm what needs to be published today.
   Flag any gaps or missing drafts.
   Write a brief daily queue note.
-createdAt: "2026-04-11T00:00:00.000Z"
-updatedAt: "2026-04-11T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/content-creator
+createdAt: '2026-04-11T00:00:00.000Z'
+updatedAt: '2026-04-11T00:00:00.000Z'

@@ -1,7 +1,7 @@
 id: sunday-volume-review
 name: Sunday Volume Review
 enabled: true
-schedule: "0 20 * * 0"
+schedule: 0 20 * * 0
 provider: claude-code
 adapterType: claude_local
 ownerAgent: coach
@@ -34,3 +34,6 @@ prompt: |-
     4. Adjustment for next week (1 sentence)
 
   Keep it under 300 words. The user is reading on Sunday evening — concise.
+cabinetPath: cabinets/cabinets/fitness
+createdAt: '2026-04-27T07:34:38.353Z'
+updatedAt: '2026-04-27T07:34:38.353Z'

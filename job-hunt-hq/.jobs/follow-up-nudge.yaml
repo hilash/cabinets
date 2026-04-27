@@ -1,9 +1,12 @@
 id: follow-up-nudge
 name: Follow-up Nudge
-description: Checks for stale applications, unreplied networking messages, and interview thank-yous.
-ownerAgent: career-strategist
 enabled: true
-schedule: "0 10 * * 2,4"
+schedule: 0 10 * * 2,4
+provider: claude-code
+adapterType: claude_local
+ownerAgent: career-strategist
+agentSlug: career-strategist
+timeout: 600
 prompt: |-
   Review the pipeline in /pipeline/applications.csv and contacts in /networking/contacts.csv.
   Generate a follow-up action list:
@@ -16,5 +19,6 @@ prompt: |-
   - Keep the tone warm, professional, and specific to the relationship
   - Note when following up again would cross into pestering territory
   Save the action list as a daily page or append to the networking log.
-createdAt: "2026-04-12T00:00:00.000Z"
-updatedAt: "2026-04-12T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/job-hunt-hq
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'

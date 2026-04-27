@@ -1,9 +1,12 @@
 id: weekly-operating-review
 name: Weekly Operating Review
-description: Reviews execution health across the company and flags bottlenecks or overloaded teams.
-ownerAgent: coo
 enabled: true
-schedule: "0 11 * * 1"
+schedule: 0 11 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: coo
+agentSlug: coo
+timeout: 600
 prompt: |-
   Review the root cabinet plus every child cabinet for execution health.
   Summarize open bottlenecks, stale work, duplicate effort, and places where one team is blocked by another.
@@ -13,5 +16,6 @@ prompt: |-
   - overdue items
   - one process fix to make this week
   Save the review to a company operations page.
-createdAt: "2026-04-11T00:00:00.000Z"
-updatedAt: "2026-04-11T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/text-your-mom
+createdAt: '2026-04-11T00:00:00.000Z'
+updatedAt: '2026-04-11T00:00:00.000Z'

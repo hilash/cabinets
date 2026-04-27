@@ -1,9 +1,12 @@
 id: weekly-executive-brief
 name: Weekly Executive Brief
-description: Creates the weekly leadership brief covering growth, product risks, and next decisions.
-ownerAgent: ceo
 enabled: true
-schedule: "0 9 * * 1"
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: ceo
+agentSlug: ceo
+timeout: 600
 prompt: |-
   Review the company strategy, goals, KPI pages, and all active child cabinet summaries.
   Write a sharp weekly executive brief for Text Your Mom that includes:
@@ -12,5 +15,6 @@ prompt: |-
   - the top product risk
   - one decision leadership should make next
   Save the brief as a new page under /company/strategy or append to the latest weekly review page.
-createdAt: "2026-04-11T00:00:00.000Z"
-updatedAt: "2026-04-11T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/text-your-mom
+createdAt: '2026-04-11T00:00:00.000Z'
+updatedAt: '2026-04-11T00:00:00.000Z'

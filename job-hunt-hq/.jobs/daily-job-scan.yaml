@@ -1,9 +1,12 @@
 id: daily-job-scan
 name: Daily Job Scan
-description: Scans target role criteria and saved job boards to surface new matching opportunities.
-ownerAgent: career-strategist
 enabled: true
-schedule: "0 8 * * 1-5"
+schedule: 0 8 * * 1-5
+provider: claude-code
+adapterType: claude_local
+ownerAgent: career-strategist
+agentSlug: career-strategist
+timeout: 600
 prompt: |-
   Review the target roles in /profile/target-roles.md and the current saved jobs in /job-board/saved-jobs.csv.
   Search for new job postings that match the candidate's criteria:
@@ -16,5 +19,6 @@ prompt: |-
   - Flag any that have a warm connection in /networking/contacts.csv
   - Note the application deadline if visible
   Summarize findings as a brief daily digest.
-createdAt: "2026-04-12T00:00:00.000Z"
-updatedAt: "2026-04-12T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/job-hunt-hq
+createdAt: '2026-04-12T00:00:00.000Z'
+updatedAt: '2026-04-12T00:00:00.000Z'
