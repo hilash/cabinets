@@ -1,9 +1,12 @@
 id: weekly-meal-plan
 name: Weekly Meal Plan
-description: Monday 10am — meal rotation + grocery list for the coming week.
-ownerAgent: meal-architect
 enabled: true
-schedule: "0 10 * * 1"
+schedule: 0 10 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: meal-architect
+agentSlug: meal-architect
+timeout: 600
 prompt: |-
   Read targets.md, meals/preferences.md, meals/favorites.md, and the past 2 weeks of logs/ (to avoid repetition).
   If personal-os/family/ exists, account for household size + kid-friendly variants.
@@ -18,5 +21,6 @@ prompt: |-
     6. Grocery list (grouped by store section)
 
   Include at least one "20-min weeknight" meal every 3 days and one batch-cook meal for Sunday.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/keto-hq
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

@@ -1,9 +1,12 @@
 id: weekly-electrolyte-review
 name: Weekly Electrolyte Review
-description: Sunday 9:30am — intake estimates, symptom review, one adjustment.
-ownerAgent: keto-coach
 enabled: true
-schedule: "30 9 * * 0"
+schedule: 30 9 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: keto-coach
+agentSlug: keto-coach
+timeout: 600
 prompt: |-
   Read logs/ (food + symptoms) for the past 7 days.
 
@@ -17,5 +20,6 @@ prompt: |-
     - BP meds / renal / heart failure → defer to physician
     - Potassium OTC limit 99 mg/pill — never recommend higher
     - Food first, always
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/keto-hq
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

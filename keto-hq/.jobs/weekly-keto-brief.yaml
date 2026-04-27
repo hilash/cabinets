@@ -1,9 +1,12 @@
 id: weekly-keto-brief
 name: Weekly Keto Brief
-description: Sunday 9am — adherence, signals, and one adjustment.
-ownerAgent: keto-coach
 enabled: true
-schedule: "0 9 * * 0"
+schedule: 0 9 * * 0
+provider: claude-code
+adapterType: claude_local
+ownerAgent: keto-coach
+agentSlug: keto-coach
+timeout: 600
 prompt: |-
   Read logs/ for the past 7 days, weight trend, and any BHB readings.
   If personal-os/health/wearables/ exists, pull HRV + sleep context.
@@ -18,5 +21,6 @@ prompt: |-
   personal-os/health/briefs/keto-week-YYYY-WW-summary.md.
 
   No cheerleading. No scold. Signal only.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/keto-hq
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

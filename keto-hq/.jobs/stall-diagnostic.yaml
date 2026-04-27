@@ -1,10 +1,12 @@
 id: stall-diagnostic
 name: Stall Diagnostic (on plateau)
-description: Triggered when weight is flat ≥14 days despite adherence — walks the diagnostic checklist.
-ownerAgent: keto-coach
 enabled: true
-trigger: on-condition
-condition: weight_plateau_days >= 14
+schedule: 0 9 * * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: keto-coach
+agentSlug: keto-coach
+timeout: 600
 prompt: |-
   A plateau has been detected (weight flat ≥14 days with adherence intact).
 
@@ -17,5 +19,6 @@ prompt: |-
     6. Cycle phase (if applicable — late luteal water retention)
 
   Write stalls/YYYY-MM-DD.md with the likely culprit and ONE test to run for 5–7 days.
-createdAt: "2026-04-23T00:00:00.000Z"
-updatedAt: "2026-04-23T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/keto-hq
+createdAt: '2026-04-23T00:00:00.000Z'
+updatedAt: '2026-04-23T00:00:00.000Z'

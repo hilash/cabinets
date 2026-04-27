@@ -1,77 +1,330 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>E-commerce Dashboard</title>
-    <style>
-      :root{--bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--green:#22c55e;--red:#ef4444;--blue:#3b82f6}
-      *{box-sizing:border-box;margin:0}
-      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
-      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
-      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
-      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
-      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
-      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
-      .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
-      .stat-val{font-size:30px;font-weight:800}
-      .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
-      .stat-delta{font-size:11px;margin-top:3px;font-weight:600}
-      .up{color:var(--green)}.down{color:var(--red)}
-      .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
-      @media(max-width:700px){.two{grid-template-columns:1fr}}
-      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
-      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
-      .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-      .row:last-child{border-bottom:none}
-      .r-name{flex:1;font-size:14px;font-weight:600}
-      .r-sub{font-size:12px;color:var(--muted)}
-      .r-val{font-size:14px;font-weight:700;flex-shrink:0}
-      .bar-wrap{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
-      .bar{height:100%;border-radius:999px}
-      .product{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-      .product:last-child{border-bottom:none}
-      .p-rank{width:24px;font-size:14px;font-weight:800;color:var(--accent);flex-shrink:0}
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="kicker">E-commerce Store</div>
-      <h1>Sales Dashboard</h1>
-      <p class="sub">Revenue, inventory, and channel performance this week.</p>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ecommerce · Inventory &amp; Cash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #B8892E;
+    --area-soft: rgba(184, 137, 46, 0.16);
+    --bg-tint-1: rgba(184, 137, 46, 0.10);
+    --bg-tint-2: rgba(233, 123, 146, 0.08);
+    --bg-tint-3: rgba(107, 142, 90, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
 
-      <div class="stats">
-        <div class="stat"><div class="stat-val" style="color:var(--green)">$48.2K</div><div class="stat-label">Weekly Revenue</div><div class="stat-delta up">+12% vs last week</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--blue)">847</div><div class="stat-label">Orders</div><div class="stat-delta up">+8%</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--accent)">$56.90</div><div class="stat-label">Avg Order Value</div><div class="stat-delta up">+3%</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--ink)">3.2%</div><div class="stat-label">Conversion Rate</div><div class="stat-delta down">-0.4%</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--red)">23</div><div class="stat-label">Low Stock Items</div><div class="stat-delta down">needs reorder</div></div>
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.up { color: var(--good); } .big-stat .delta.down { color: var(--alert); }
+
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 14px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* SKU table */
+  .skus { width: 100%; border-collapse: collapse; }
+  .skus th { text-align: left; font-family: var(--mono); font-size: 8.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); padding: 5px 10px; border-bottom: 1px solid var(--glass-bevel); }
+  .skus td { padding: 9px 10px; border-bottom: 1px solid var(--glass-bevel); font-size: 13px; vertical-align: middle; }
+  .skus tr:last-child td { border-bottom: none; }
+  .skus .sku-name { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--ink); }
+  .skus .sku-name small { display: block; font-family: var(--mono); font-size: 9px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .skus .stock-cell { width: 200px; }
+  .skus .stock-bar-wrap {
+    height: 8px; background: rgba(216,162,78,0.10); border-radius: 4px;
+    position: relative; overflow: hidden;
+  }
+  .skus .stock-bar { height: 100%; border-radius: 4px; }
+  .skus .stock-bar.healthy { background: var(--good); }
+  .skus .stock-bar.low { background: var(--warn); }
+  .skus .stock-bar.critical { background: var(--alert); }
+  .skus .stock-text {
+    font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-top: 3px;
+    display: flex; justify-content: space-between;
+  }
+  .skus .stock-text .reorder { color: var(--warn); font-weight: 600; }
+  .skus .stock-text .crit { color: var(--alert); font-weight: 600; }
+  .skus .vel { font-family: var(--mono); font-size: 11px; color: var(--ink-2); text-align: right; }
+  .skus .vel small { color: var(--ink-3); }
+  .skus .cover { font-family: var(--serif); font-weight: 500; font-size: 14px; text-align: right; }
+  .skus .cover.crit { color: var(--alert); font-style: italic; }
+  .skus .cover.warn { color: var(--warn); font-style: italic; }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  /* Cash forecast chart */
+  .cash-chart { height: 220px; width: 100%; }
+  .cash-chart svg { display: block; width: 100%; height: 100%; }
+
+  /* Reorder list */
+  .reorders { display: flex; flex-direction: column; gap: 0; }
+  .reorder-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--glass-bevel); align-items: center; }
+  .reorder-row:last-child { border-bottom: none; }
+  .reorder-row .what { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .reorder-row .what small { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .reorder-row .qty { font-family: var(--serif); font-weight: 500; font-size: 14px; text-align: right; }
+  .reorder-row .when {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 3px 9px; border-radius: 100px; font-weight: 600; background: rgba(184,137,46,0.18); color: var(--warn);
+    border: 1px solid rgba(184,137,46,0.3);
+  }
+  .reorder-row .when.now { background: rgba(194,74,106,0.20); color: var(--alert); border-color: rgba(194,74,106,0.35); }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">Ecommerce · <strong>Inventory &amp; Cash</strong></div>
+    <div class="crumb">Apr 27 · 14:32</div>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>What's <em>selling</em>, what's stuck.</h1>
+      <div class="stand">SKU stock levels, days of cover, reorder triggers, 90-day cash forecast.</div>
+    </div>
+    <div class="right">12 active SKUs · €82k inventory</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Inventory value</div><div class="v">€82,400</div><div class="delta">at landed cost</div></div>
+    <div class="big-stat glass"><div class="lbl">Days of cover (avg)</div><div class="v">42 <small>days</small></div><div class="delta up">target 30–60</div></div>
+    <div class="big-stat glass"><div class="lbl">Top mover</div><div class="v">Onyx <small>tee</small></div><div class="delta up">62/wk · ↑ 18%</div></div>
+    <div class="big-stat glass"><div class="lbl">Cash tied up</div><div class="v">63%</div><div class="delta down">€52k of €82k working cap</div></div>
+  </section>
+
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">SKU stock levels</span>
+      <span class="meta">12 active · 2 below reorder</span>
+    </div>
+    <table class="skus" id="skus"></table>
+  </section>
+
+  <section class="row">
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">90-day cash forecast</span>
+        <span class="meta">inventory commits vs revenue</span>
       </div>
-
-      <div class="two">
-        <div class="panel">
-          <div class="panel-title">Top Products</div>
-          <div class="product"><div class="p-rank">1</div><div class="r-name">Classic Tote Bag</div><div class="r-val" style="color:var(--green)">$8,420</div></div>
-          <div class="product"><div class="p-rank">2</div><div class="r-name">Leather Journal Set</div><div class="r-val">$6,180</div></div>
-          <div class="product"><div class="p-rank">3</div><div class="r-name">Ceramic Mug Collection</div><div class="r-val">$4,950</div></div>
-          <div class="product"><div class="p-rank">4</div><div class="r-name">Organic Candle Bundle</div><div class="r-val">$3,820</div></div>
-          <div class="product"><div class="p-rank">5</div><div class="r-name">Linen Apron</div><div class="r-val">$2,640</div></div>
-        </div>
-        <div class="panel">
-          <div class="panel-title">Channel Performance</div>
-          <div class="row"><div class="r-name">Email Campaigns</div><div class="bar-wrap"><div class="bar" style="width:45%;background:var(--green)"></div></div><div class="r-val">45%</div></div>
-          <div class="row"><div class="r-name">Organic Search</div><div class="bar-wrap"><div class="bar" style="width:28%;background:var(--blue)"></div></div><div class="r-val">28%</div></div>
-          <div class="row"><div class="r-name">Social Media</div><div class="bar-wrap"><div class="bar" style="width:18%;background:var(--accent)"></div></div><div class="r-val">18%</div></div>
-          <div class="row"><div class="r-name">Direct</div><div class="bar-wrap"><div class="bar" style="width:9%;background:var(--muted)"></div></div><div class="r-val">9%</div></div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">Inventory Alerts</div>
-        <div class="row"><span style="color:var(--red);font-weight:700;font-size:12px">LOW</span><div class="r-name">Classic Tote Bag - Natural</div><div class="r-sub">12 units left</div><div class="r-val" style="color:var(--red)">Reorder</div></div>
-        <div class="row"><span style="color:var(--red);font-weight:700;font-size:12px">LOW</span><div class="r-name">Ceramic Mug - Sage</div><div class="r-sub">8 units left</div><div class="r-val" style="color:var(--red)">Reorder</div></div>
-        <div class="row"><span style="color:var(--accent);font-weight:700;font-size:12px">WATCH</span><div class="r-name">Leather Journal - Brown</div><div class="r-sub">34 units left</div><div class="r-val">Monitor</div></div>
+      <div class="cash-chart">
+        <svg id="cash-svg" viewBox="0 0 700 220" preserveAspectRatio="none"></svg>
       </div>
     </div>
-  </body>
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Reorder list</span>
+        <span class="meta">5 actions</span>
+      </div>
+      <div class="reorders">
+        <div class="reorder-row">
+          <div class="what">Onyx Tee — Black, M<small>Suzhou Kong · 18d lead</small></div>
+          <span class="qty">+200</span>
+          <span class="when now">order today</span>
+        </div>
+        <div class="reorder-row">
+          <div class="what">Onyx Tee — White, L<small>Suzhou Kong · 18d lead</small></div>
+          <span class="qty">+150</span>
+          <span class="when now">order today</span>
+        </div>
+        <div class="reorder-row">
+          <div class="what">Sage Hoodie — Sage, M<small>Lisbon Knit · 35d lead</small></div>
+          <span class="qty">+100</span>
+          <span class="when">in 5 days</span>
+        </div>
+        <div class="reorder-row">
+          <div class="what">Cream Cap — Adjustable<small>Hangzhou Cap Co · 22d</small></div>
+          <span class="qty">+80</span>
+          <span class="when">in 7 days</span>
+        </div>
+        <div class="reorder-row">
+          <div class="what">Tote — Natural canvas<small>Porto Bag · 20d</small></div>
+          <span class="qty">+60</span>
+          <span class="when">in 12 days</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Ecommerce · Inventory &amp; Cash Console</p>
+
+</main>
+
+<script>
+'use strict';
+
+const SKUS = [
+  { name: 'Onyx Tee — Black M',     code: 'TEE-BLK-M', stock: 38,  reorder: 60,  max: 240, vel: 62, status: 'critical' },
+  { name: 'Onyx Tee — White L',     code: 'TEE-WHT-L', stock: 52,  reorder: 60,  max: 240, vel: 48, status: 'low' },
+  { name: 'Onyx Tee — Black L',     code: 'TEE-BLK-L', stock: 124, reorder: 60,  max: 240, vel: 41, status: 'healthy' },
+  { name: 'Onyx Tee — White M',     code: 'TEE-WHT-M', stock: 168, reorder: 60,  max: 240, vel: 38, status: 'healthy' },
+  { name: 'Sage Hoodie — Sage M',   code: 'HOO-SAG-M', stock: 22,  reorder: 30,  max: 120, vel: 14, status: 'low' },
+  { name: 'Sage Hoodie — Cream L',  code: 'HOO-CRM-L', stock: 64,  reorder: 30,  max: 120, vel: 18, status: 'healthy' },
+  { name: 'Sage Hoodie — Sage L',   code: 'HOO-SAG-L', stock: 51,  reorder: 30,  max: 120, vel: 16, status: 'healthy' },
+  { name: 'Cream Cap — Adjustable', code: 'CAP-CRM-A', stock: 48,  reorder: 50,  max: 180, vel: 22, status: 'low' },
+  { name: 'Tote — Natural Canvas',  code: 'TOT-NAT-A', stock: 92,  reorder: 40,  max: 160, vel: 12, status: 'healthy' },
+  { name: 'Sock Pack 3pk — Cream',  code: 'SOC-CRM-3', stock: 156, reorder: 60,  max: 240, vel: 28, status: 'healthy' },
+  { name: 'Mug — Onyx',             code: 'MUG-ONX-A', stock: 78,  reorder: 30,  max: 120, vel: 8,  status: 'healthy' },
+  { name: 'Sticker pack',           code: 'STK-PCK-A', stock: 412, reorder: 100, max: 600, vel: 35, status: 'healthy' },
+];
+
+function renderSkus() {
+  let html = `<thead><tr>
+    <th>SKU</th>
+    <th>Stock level</th>
+    <th style="text-align:right">Velocity</th>
+    <th style="text-align:right">Days of cover</th>
+  </tr></thead><tbody>`;
+  SKUS.forEach(s => {
+    const pct = (s.stock / s.max) * 100;
+    const cover = Math.floor((s.stock / s.vel) * 7);
+    const cls = s.status;
+    const coverCls = cover < 14 ? 'crit' : cover < 30 ? 'warn' : '';
+    html += `<tr>
+      <td><div class="sku-name">${s.name}<small>${s.code}</small></div></td>
+      <td class="stock-cell">
+        <div class="stock-bar-wrap"><div class="stock-bar ${cls}" style="width:${pct}%"></div></div>
+        <div class="stock-text">
+          <span>${s.stock} units</span>
+          <span class="${cls === 'critical' ? 'crit' : cls === 'low' ? 'reorder' : ''}">${cls === 'critical' ? 'critical · order now' : cls === 'low' ? 'reorder soon' : `reorder at ${s.reorder}`}</span>
+        </div>
+      </td>
+      <td class="vel">${s.vel}<small> /wk</small></td>
+      <td class="cover ${coverCls}">${cover}<small style="font-family:var(--sans);font-size:11px;color:var(--ink-3);font-weight:400;font-style:normal;margin-left:3px"> days</small></td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('skus').innerHTML = html;
+}
+
+function drawCash() {
+  const svg = document.getElementById('cash-svg');
+  const W = 700, H = 220, padX = 36, padY = 22;
+  const innerW = W - padX * 2, innerH = H - padY * 2;
+  // 13 weeks of cash, projected
+  const cash =     [82, 78, 75, 88, 84, 80, 95, 92, 88, 102, 98, 94, 108];
+  const inflow =   [12, 14, 13, 16, 15, 14, 18, 17, 16, 19, 18, 17, 20];
+  const outflow =  [-8, -11, -16, -3, -19, -18, -3, -20, -20, -5, -22, -21, -6];
+
+  const min = 60, max = 120;
+  const x = i => padX + (i / (cash.length - 1)) * innerW;
+  const y = v => H - padY - ((v - min) / (max - min)) * innerH;
+
+  let html = '';
+  // Grid
+  html += '<g stroke="rgba(216, 162, 78, 0.10)" stroke-width="1">';
+  for (let v = 70; v <= 110; v += 10) html += `<line x1="${padX}" y1="${y(v)}" x2="${W - padX}" y2="${y(v)}"/>`;
+  html += '</g>';
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E">';
+  for (let v = 70; v <= 110; v += 10) html += `<text x="0" y="${y(v) - 3}">€${v}k</text>`;
+  html += '</g>';
+
+  // Cash line — smooth
+  let path = '';
+  for (let i = 0; i < cash.length; i++) {
+    const x1 = x(i), y1 = y(cash[i]);
+    if (i === 0) path += `M ${x1} ${y1}`;
+    else {
+      const x0 = x(i - 1), y0 = y(cash[i - 1]);
+      const cx = (x0 + x1) / 2;
+      path += ` C ${cx} ${y0} ${cx} ${y1} ${x1} ${y1}`;
+    }
+  }
+  html += `<defs><linearGradient id="cashGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(184,137,46,0.32)"/><stop offset="100%" stop-color="rgba(184,137,46,0.02)"/></linearGradient></defs>`;
+  html += `<path d="${path} L ${x(cash.length - 1)} ${H - padY} L ${x(0)} ${H - padY} Z" fill="url(#cashGrad)"/>`;
+  html += `<path d="${path}" fill="none" stroke="#B8892E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  // Inflow/outflow bars per week
+  const barW = innerW / cash.length * 0.18;
+  cash.forEach((c, i) => {
+    const cx = x(i);
+    const baseY = H - padY;
+    const inflowH = (inflow[i] / max) * innerH;
+    html += `<rect x="${cx - barW * 1.2}" y="${baseY - inflowH}" width="${barW}" height="${inflowH}" fill="rgba(107,142,90,0.65)" rx="1"/>`;
+    const outflowH = (Math.abs(outflow[i]) / max) * innerH;
+    html += `<rect x="${cx + barW * 0.2}" y="${baseY - outflowH}" width="${barW}" height="${outflowH}" fill="rgba(194,74,106,0.55)" rx="1"/>`;
+  });
+
+  // Last point
+  const last = cash.length - 1;
+  html += `<circle cx="${x(last)}" cy="${y(cash[last])}" r="11" fill="#B8892E" opacity="0.12"/>`;
+  html += `<circle cx="${x(last)}" cy="${y(cash[last])}" r="6" fill="#B8892E" stroke="white" stroke-width="2"/>`;
+  html += `<text x="${x(last) - 36}" y="${y(cash[last]) - 14}" font-family="Cormorant Garamond, serif" font-size="14" font-style="italic" fill="#1B1814">€${cash[last]}k</text>`;
+
+  // X labels
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E">';
+  for (let i = 0; i < cash.length; i++) {
+    if (i % 3 === 0) html += `<text x="${x(i) - 6}" y="${H - 4}">w${i + 17}</text>`;
+  }
+  html += '</g>';
+
+  svg.innerHTML = html;
+}
+
+renderSkus();
+drawCash();
+</script>
+</body>
 </html>

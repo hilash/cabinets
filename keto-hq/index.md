@@ -13,6 +13,8 @@ order: 1
 
 A specialty cabinet for running a ketogenic protocol. Installs standalone or alongside Personal OS — if `personal-os/health/` exists, Keto HQ reads labs, weight, and workouts from it and stays in lane on diet.
 
+> **Open the [[macro-day/index|🥑 Macro Day]] first.** Full-screen Liquid Glass dashboard — three big macro dials (net carbs / protein / fat) showing today's intake against your target, today's meals with macro breakdowns, weight + ketone + carb sparklines, and a quick-add row to log common meals in two taps.
+
 **Not a doctor.** Informational layer for adults without contraindications. See [[sources/keto/contraindications]].
 
 ## What lives here

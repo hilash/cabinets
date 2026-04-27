@@ -1,70 +1,308 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Agency Dashboard</title>
-    <style>
-      :root { --bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--accent-bg:#f5e6d3;--green:#22c55e;--red:#ef4444;--blue:#3b82f6; }
-      *{box-sizing:border-box;margin:0}
-      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
-      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
-      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
-      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
-      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
-      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px}
-      .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
-      .stat-val{font-size:32px;font-weight:800}
-      .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
-      .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
-      @media(max-width:700px){.two{grid-template-columns:1fr}}
-      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
-      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
-      .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-      .row:last-child{border-bottom:none}
-      .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-      .r-name{flex:1;font-size:14px;font-weight:600}
-      .r-sub{font-size:12px;color:var(--muted)}
-      .r-val{font-size:14px;font-weight:700;flex-shrink:0}
-      .bar-wrap{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
-      .bar{height:100%;border-radius:999px}
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="kicker">Digital Agency</div>
-      <h1>Agency Dashboard</h1>
-      <p class="sub">Client health, team utilization, and project status at a glance.</p>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agency · Utilization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #2E4156;
+    --area-soft: rgba(46, 65, 86, 0.16);
+    --bg-tint-1: rgba(46, 65, 86, 0.08);
+    --bg-tint-2: rgba(216, 162, 78, 0.08);
+    --bg-tint-3: rgba(107, 142, 90, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
 
-      <div class="stats">
-        <div class="stat"><div class="stat-val" style="color:var(--accent)">2</div><div class="stat-label">Active Clients</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--blue)">87%</div><div class="stat-label">Utilization</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--green)">$142K</div><div class="stat-label">Monthly Revenue</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--ink)">14</div><div class="stat-label">Active Projects</div></div>
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+  .filter-pills { display: flex; gap: 4px; }
+  .filter-pills button { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); padding: 5px 12px; border-radius: 100px; }
+  .filter-pills button:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .filter-pills button.active { background: var(--area-soft); color: var(--area); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.up { color: var(--good); } .big-stat .delta.down { color: var(--alert); }
+
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 14px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* Heatmap */
+  .heatmap-wrap { overflow-x: auto; }
+  .heatmap { display: grid; grid-template-columns: 180px repeat(26, minmax(22px, 1fr)); gap: 2px; min-width: 720px; }
+  .heatmap .col-head {
+    font-family: var(--mono); font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-3); text-align: center; padding-bottom: 6px; height: 22px;
+  }
+  .heatmap .person {
+    font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink);
+    padding: 2px 8px 2px 0; display: flex; flex-direction: column; justify-content: center;
+  }
+  .heatmap .person small { display: block; font-family: var(--mono); font-size: 9px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .heatmap .cell {
+    border-radius: 3px;
+    height: 28px;
+    background: rgba(216, 162, 78, 0.08);
+    transition: transform 0.12s;
+    cursor: pointer;
+  }
+  .heatmap .cell:hover { transform: scale(1.4); z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .heatmap .cell.l1 { background: rgba(194, 74, 106, 0.55); }
+  .heatmap .cell.l2 { background: rgba(216, 162, 78, 0.55); }
+  .heatmap .cell.l3 { background: rgba(107, 142, 90, 0.65); }
+  .heatmap .cell.l4 { background: rgba(46, 65, 86, 0.75); }
+
+  .heat-legend { display: flex; gap: 14px; align-items: center; padding-top: 12px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; }
+  .heat-legend .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -3px; margin-right: 6px; }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  .clients { display: flex; flex-direction: column; gap: 0; }
+  .client { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--glass-bevel); align-items: center; }
+  .client:last-child { border-bottom: none; }
+  .client .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); }
+  .client .name small { display: block; font-family: var(--mono); font-size: 9px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .client .arr { font-family: var(--serif); font-weight: 500; font-size: 14px; color: var(--ink-2); text-align: right; }
+  .client .last { font-family: var(--mono); font-size: 10px; color: var(--ink-3); text-align: right; }
+  .client .rag {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+  }
+  .client .rag.g { background: var(--good); }
+  .client .rag.a { background: var(--warn); }
+  .client .rag.r { background: var(--alert); }
+
+  .pipeline { display: flex; flex-direction: column; gap: 0; }
+  .opp { padding: 9px 0; border-bottom: 1px solid var(--glass-bevel); }
+  .opp:last-child { border-bottom: none; }
+  .opp .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .opp .name { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .opp .val { font-family: var(--serif); font-weight: 500; font-size: 14px; color: var(--ink); }
+  .opp .stage {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-3); padding: 2px 8px; border-radius: 100px; background: rgba(255,255,255,0.5);
+    border: 1px solid var(--glass-stroke); display: inline-block; font-weight: 600;
+  }
+  .opp .stage.proposal { color: var(--warn); border-color: rgba(184,137,46,0.3); background: rgba(184,137,46,0.10); }
+  .opp .stage.contract { color: var(--good); border-color: rgba(107,142,90,0.3); background: rgba(107,142,90,0.10); }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">Agency · <strong>Utilization</strong></div>
+    <nav class="filter-pills">
+      <button class="active">This week</button>
+      <button>Last 4 weeks</button>
+      <button>This quarter</button>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Where the <em>people</em> are.</h1>
+      <div class="stand">Team utilization, client health, deal pipeline — the operating spine.</div>
+    </div>
+    <div class="right">12 people · 8 active clients</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Avg utilization</div><div class="v">78%</div><div class="delta up">target 75 · ↑ 3pp</div></div>
+    <div class="big-stat glass"><div class="lbl">Billable hrs (week)</div><div class="v">374</div><div class="delta">of 480 total · 78%</div></div>
+    <div class="big-stat glass"><div class="lbl">On bench</div><div class="v">2</div><div class="delta down">designer + jr eng</div></div>
+    <div class="big-stat glass"><div class="lbl">Burnout risk</div><div class="v">1</div><div class="delta down">Lior 5 wks &gt; 95%</div></div>
+  </section>
+
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">Utilization heatmap · 26 weeks</span>
+      <span class="meta">cell = % billable per week per person</span>
+    </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+    <div class="heat-legend">
+      <span><span class="swatch" style="background:rgba(194,74,106,0.55)"></span>&lt; 60% bench</span>
+      <span><span class="swatch" style="background:rgba(216,162,78,0.55)"></span>60–75% light</span>
+      <span><span class="swatch" style="background:rgba(107,142,90,0.65)"></span>75–90% healthy</span>
+      <span><span class="swatch" style="background:rgba(46,65,86,0.75)"></span>&gt; 90% burnout risk</span>
+    </div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Client health board</span>
+        <span class="meta">8 active · ARR €1.4M</span>
       </div>
+      <div class="clients" id="clients"></div>
+    </div>
 
-      <div class="two">
-        <div class="panel">
-          <div class="panel-title">Client Health</div>
-          <div class="row"><div class="dot" style="background:var(--green)"></div><div class="r-name">Client Alpha</div><div class="r-sub">Retainer - $68K/mo</div><div class="r-val" style="color:var(--green)">Healthy</div></div>
-          <div class="row"><div class="dot" style="background:var(--accent)"></div><div class="r-name">Client Beta</div><div class="r-sub">Project - $74K/mo</div><div class="r-val" style="color:var(--accent)">At Risk</div></div>
-        </div>
-        <div class="panel">
-          <div class="panel-title">Team Utilization</div>
-          <div class="row"><div class="r-name">Account Directors</div><div class="bar-wrap"><div class="bar" style="width:92%;background:var(--green)"></div></div><div class="r-val">92%</div></div>
-          <div class="row"><div class="r-name">Designers</div><div class="bar-wrap"><div class="bar" style="width:85%;background:var(--blue)"></div></div><div class="r-val">85%</div></div>
-          <div class="row"><div class="r-name">Developers</div><div class="bar-wrap"><div class="bar" style="width:78%;background:var(--accent)"></div></div><div class="r-val">78%</div></div>
-          <div class="row"><div class="r-name">Strategists</div><div class="bar-wrap"><div class="bar" style="width:95%;background:var(--red)"></div></div><div class="r-val" style="color:var(--red)">95%</div></div>
-        </div>
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Pipeline</span>
+        <span class="meta">€420k weighted</span>
       </div>
-
-      <div class="panel">
-        <div class="panel-title">Recent Activity</div>
-        <div class="row"><div class="dot" style="background:var(--green)"></div><div class="r-name">Client Alpha: Q2 campaign assets delivered</div><div class="r-sub">2 hours ago</div></div>
-        <div class="row"><div class="dot" style="background:var(--accent)"></div><div class="r-name">Client Beta: Scope creep flagged on redesign project</div><div class="r-sub">Yesterday</div></div>
-        <div class="row"><div class="dot" style="background:var(--blue)"></div><div class="r-name">Monthly utilization report generated</div><div class="r-sub">Apr 7</div></div>
-        <div class="row"><div class="dot" style="background:var(--green)"></div><div class="r-name">New project brief received from Client Alpha</div><div class="r-sub">Apr 5</div></div>
+      <div class="pipeline">
+        <div class="opp">
+          <div class="head"><span class="name">Stripe — design system audit</span><span class="val">€85k</span></div>
+          <span class="stage contract">contract sent</span>
+        </div>
+        <div class="opp">
+          <div class="head"><span class="name">Notion — internal tools 2026</span><span class="val">€140k</span></div>
+          <span class="stage proposal">proposal</span>
+        </div>
+        <div class="opp">
+          <div class="head"><span class="name">Linear — onboarding redesign</span><span class="val">€55k</span></div>
+          <span class="stage proposal">proposal</span>
+        </div>
+        <div class="opp">
+          <div class="head"><span class="name">Vercel — docs IA</span><span class="val">€38k</span></div>
+          <span class="stage">discovery</span>
+        </div>
+        <div class="opp">
+          <div class="head"><span class="name">Retool — quarterly retainer Q3</span><span class="val">€102k</span></div>
+          <span class="stage contract">contract sent</span>
+        </div>
       </div>
     </div>
-  </body>
+  </section>
+
+  <p class="footer">Agency · the operating console</p>
+
+</main>
+
+<script>
+'use strict';
+const TEAM = [
+  { name: 'Maya Cohen',     role: 'managing director',  data: gen(26, 0.85) },
+  { name: 'Adam Field',     role: 'account director',   data: gen(26, 0.82) },
+  { name: 'Lior Ben-Ari',   role: 'sr designer',        data: genHigh(26) },
+  { name: 'Sara Klein',     role: 'sr engineer',        data: gen(26, 0.78) },
+  { name: 'Tom Weiss',      role: 'design',             data: gen(26, 0.70) },
+  { name: 'Anna Roth',      role: 'engineer',           data: gen(26, 0.74) },
+  { name: 'Nadav Avital',   role: 'engineer',           data: gen(26, 0.72) },
+  { name: 'Daria Petrov',   role: 'pm',                 data: gen(26, 0.80) },
+  { name: 'Yael Mor',       role: 'design',             data: gen(26, 0.66) },
+  { name: 'Felix Berg',     role: 'jr engineer',        data: genLow(26) },
+  { name: 'Hana Sato',      role: 'jr design',          data: genLow(26) },
+  { name: 'Eli Stern',      role: 'producer',           data: gen(26, 0.78) },
+];
+
+const CLIENTS = [
+  { name: 'Stripe',     team: 'Maya, Lior, Sara',  arr: '€280k', last: '2 days ago',  rag: 'g' },
+  { name: 'Notion',     team: 'Adam, Tom, Daria',  arr: '€220k', last: '1 day ago',   rag: 'g' },
+  { name: 'Linear',     team: 'Adam, Lior, Anna',  arr: '€180k', last: '5 days ago',  rag: 'a' },
+  { name: 'Vercel',     team: 'Maya, Sara',        arr: '€160k', last: '12 days ago', rag: 'r' },
+  { name: 'Retool',     team: 'Daria, Felix',      arr: '€140k', last: 'today',       rag: 'g' },
+  { name: 'Cloudflare', team: 'Adam, Nadav',       arr: '€120k', last: '4 days ago',  rag: 'g' },
+  { name: 'Supabase',   team: 'Tom, Hana',         arr: '€95k',  last: '8 days ago',  rag: 'a' },
+  { name: 'Anthropic',  team: 'Maya, Eli',         arr: '€210k', last: '1 day ago',   rag: 'g' },
+];
+
+function gen(n, target) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const v = target + (Math.random() - 0.5) * 0.3;
+    if (v < 0.6) out.push(1);
+    else if (v < 0.75) out.push(2);
+    else if (v < 0.9) out.push(3);
+    else out.push(4);
+  }
+  return out;
+}
+function genHigh(n) { const out = gen(n, 0.85); for (let i = n - 5; i < n; i++) out[i] = 4; return out; }
+function genLow(n) { const out = gen(n, 0.72); for (let i = n - 2; i < n; i++) out[i] = 1; return out; }
+
+function render() {
+  const heatmap = document.getElementById('heatmap');
+  let html = '<div class="col-head">person</div>';
+  for (let w = 0; w < 26; w++) {
+    const wkNum = w + 12;
+    html += `<div class="col-head">${w % 4 === 0 ? 'w' + wkNum : ''}</div>`;
+  }
+  TEAM.forEach(p => {
+    html += `<div class="person">${p.name}<small>${p.role}</small></div>`;
+    p.data.forEach(level => {
+      html += `<div class="cell l${level}" title="${p.name}"></div>`;
+    });
+  });
+  heatmap.innerHTML = html;
+
+  document.getElementById('clients').innerHTML = CLIENTS.map(c => `
+    <div class="client">
+      <div>
+        <div class="name">${c.name}</div>
+        <div class="name"><small>${c.team}</small></div>
+      </div>
+      <span class="arr">${c.arr}</span>
+      <span class="last">${c.last}</span>
+      <span class="rag ${c.rag}"></span>
+    </div>`).join('');
+}
+render();
+</script>
+</body>
 </html>

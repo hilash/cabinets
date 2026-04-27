@@ -1,9 +1,12 @@
 id: weekly-metrics-review
 name: Weekly Metrics Review
-description: Reviews key SaaS metrics including MRR, churn, activation rate, and burn multiple.
-ownerAgent: ceo
 enabled: true
-schedule: "0 9 * * 1"
+schedule: 0 9 * * 1
+provider: claude-code
+adapterType: claude_local
+ownerAgent: ceo
+agentSlug: ceo
+timeout: 600
 prompt: |-
   Review the company metrics page and all child cabinet summaries.
   Write a weekly metrics review that includes:
@@ -13,5 +16,6 @@ prompt: |-
   - Burn multiple and runway status
   - One decision leadership should make this week
   Save the review to /company/metrics.
-createdAt: "2026-04-11T00:00:00.000Z"
-updatedAt: "2026-04-11T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/saas-startup
+createdAt: '2026-04-11T00:00:00.000Z'
+updatedAt: '2026-04-11T00:00:00.000Z'

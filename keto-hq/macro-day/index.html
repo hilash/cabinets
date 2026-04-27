@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keto HQ · Macro Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #6B8E5A;
+    --area-soft: rgba(107, 142, 90, 0.16);
+    --bg-tint-1: rgba(107, 142, 90, 0.12);
+    --bg-tint-2: rgba(216, 162, 78, 0.08);
+    --bg-tint-3: rgba(233, 123, 146, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --carbs: #C24A6A; --protein: #6FA8E5; --fat: #B8892E;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  /* Three big macro dials */
+  .dials {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 880px) { .dials { grid-template-columns: 1fr; } }
+  .dial-card {
+    padding: 24px 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .dial-card .lbl {
+    font-family: var(--mono); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.18em; color: var(--ink-3); font-weight: 500;
+  }
+  .dial-wrap { position: relative; width: 180px; height: 180px; }
+  .dial-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .dial-bg { fill: none; stroke: rgba(216,162,78,0.10); stroke-width: 14; }
+  .dial-fg { fill: none; stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.6s cubic-bezier(0.2,0.8,0.2,1); }
+  .dial-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .dial-center .v {
+    font-family: var(--serif); font-weight: 500; font-size: 44px;
+    letter-spacing: -0.025em; line-height: 1;
+  }
+  .dial-center .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 4px; font-weight: 500; }
+  .dial-center .of { font-family: var(--mono); font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.14em; margin-top: 4px; font-weight: 500; }
+  .dial-card .verdict {
+    font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-2);
+  }
+  .dial-card .verdict.over { color: var(--alert); }
+  .dial-card .verdict.under { color: var(--warn); }
+  .dial-card .verdict.ok { color: var(--good); }
+
+  .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 14px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* Today's food log */
+  .meals { display: flex; flex-direction: column; gap: 0; }
+  .meal { padding: 12px 0; border-bottom: 1px solid var(--glass-bevel); }
+  .meal:last-child { border-bottom: none; }
+  .meal .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .meal .when { font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 500; }
+  .meal .calories { font-family: var(--serif); font-weight: 500; font-size: 14px; color: var(--ink); }
+  .meal .name { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink); margin-bottom: 4px; }
+  .meal .macros {
+    display: flex; gap: 14px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);
+  }
+  .meal .macros .m strong { color: var(--ink); font-weight: 600; }
+  .meal .macros .m.c strong { color: var(--carbs); }
+  .meal .macros .m.p strong { color: var(--protein); }
+  .meal .macros .m.f strong { color: var(--fat); }
+
+  /* Sparklines */
+  .sparks { display: grid; grid-template-rows: repeat(3, 1fr); gap: 12px; }
+  .spark-card {
+    padding: 12px 18px;
+    display: grid; grid-template-columns: 100px 1fr auto; align-items: center; gap: 14px;
+  }
+  .spark-card .lbl { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .spark-card .lbl small { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .spark-card .spark { height: 48px; width: 100%; }
+  .spark-card .spark svg { width: 100%; height: 100%; }
+  .spark-card .v {
+    font-family: var(--serif); font-weight: 500; font-size: 22px; line-height: 1; text-align: right;
+  }
+  .spark-card .v small { display: block; font-family: var(--sans); font-size: 11px; font-style: italic; color: var(--ink-3); margin-top: 4px; font-weight: 500; }
+  .spark-card .v.up { color: var(--good); }
+  .spark-card .v.down { color: var(--alert); }
+
+  /* Quick add bar */
+  .quick-add {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding: 14px 18px;
+    background: rgba(232, 240, 228, 0.55);
+    border: 1px solid rgba(200, 216, 192, 0.6);
+    border-radius: var(--r-md);
+    backdrop-filter: blur(20px) saturate(170%);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+  }
+  .quick-add .lbl {
+    font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-3); align-self: center; margin-right: 4px; font-weight: 500;
+  }
+  .quick-add button {
+    font-family: var(--sans); font-size: 12.5px; font-weight: 500; color: var(--ink);
+    padding: 6px 14px; border-radius: 100px;
+    background: rgba(255,252,244,0.7);
+    border: 1px solid var(--glass-stroke);
+  }
+  .quick-add button:hover { background: rgba(107,142,90,0.18); border-color: rgba(107,142,90,0.3); }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">Keto HQ · <strong>Macro Day</strong></div>
+    <div class="crumb" id="today-crumb">—</div>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Today's <em>macros</em>.</h1>
+      <div class="stand">Net carbs, protein, fat — versus your targets. Log a meal in two taps.</div>
+    </div>
+    <div class="right">target: metabolic-health · 25g net carbs</div>
+  </header>
+
+  <!-- Three macro dials -->
+  <section class="dials">
+    <div class="dial-card glass">
+      <div class="lbl">Net carbs</div>
+      <div class="dial-wrap">
+        <svg viewBox="0 0 200 200">
+          <circle class="dial-bg" cx="100" cy="100" r="80"/>
+          <circle class="dial-fg" id="dial-carbs" cx="100" cy="100" r="80" stroke="#C24A6A"
+                  stroke-dasharray="502.65" stroke-dashoffset="502.65"/>
+        </svg>
+        <div class="dial-center">
+          <div class="v"><span id="carbs-v">18</span><small>g</small></div>
+          <div class="of">of <span id="carbs-target">25</span>g</div>
+        </div>
+      </div>
+      <div class="verdict ok" id="carbs-verdict">7g headroom — under</div>
+    </div>
+
+    <div class="dial-card glass">
+      <div class="lbl">Protein</div>
+      <div class="dial-wrap">
+        <svg viewBox="0 0 200 200">
+          <circle class="dial-bg" cx="100" cy="100" r="80"/>
+          <circle class="dial-fg" id="dial-protein" cx="100" cy="100" r="80" stroke="#6FA8E5"
+                  stroke-dasharray="502.65" stroke-dashoffset="502.65"/>
+        </svg>
+        <div class="dial-center">
+          <div class="v"><span id="protein-v">96</span><small>g</small></div>
+          <div class="of">of <span id="protein-target">120</span>g</div>
+        </div>
+      </div>
+      <div class="verdict under" id="protein-verdict">need 24g more · target 1.2g/lb LBM</div>
+    </div>
+
+    <div class="dial-card glass">
+      <div class="lbl">Fat</div>
+      <div class="dial-wrap">
+        <svg viewBox="0 0 200 200">
+          <circle class="dial-bg" cx="100" cy="100" r="80"/>
+          <circle class="dial-fg" id="dial-fat" cx="100" cy="100" r="80" stroke="#B8892E"
+                  stroke-dasharray="502.65" stroke-dashoffset="502.65"/>
+        </svg>
+        <div class="dial-center">
+          <div class="v"><span id="fat-v">128</span><small>g</small></div>
+          <div class="of">of <span id="fat-target">145</span>g</div>
+        </div>
+      </div>
+      <div class="verdict ok" id="fat-verdict">17g headroom — fill the rest</div>
+    </div>
+  </section>
+
+  <!-- Quick add row -->
+  <section class="quick-add">
+    <span class="lbl">Quick add:</span>
+    <button>2 eggs + butter</button>
+    <button>4oz salmon</button>
+    <button>1 avocado</button>
+    <button>2 tbsp olive oil</button>
+    <button>1 cup spinach</button>
+    <button>3oz cheddar</button>
+    <button>+ custom</button>
+  </section>
+
+  <section class="row">
+    <!-- Today's food log -->
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Today's meals</span>
+        <span class="meta">3 logged · 1,612 kcal · 65% fat / 24% protein / 11% carb</span>
+      </div>
+      <div class="meals">
+        <div class="meal">
+          <div class="head">
+            <span class="when">7:30 am · breakfast</span>
+            <span class="calories">540 kcal</span>
+          </div>
+          <div class="name">3 eggs + 2 tbsp butter, 1 avocado, coffee w/ heavy cream</div>
+          <div class="macros">
+            <span class="m c"><strong>3g</strong> net carbs</span>
+            <span class="m p"><strong>22g</strong> protein</span>
+            <span class="m f"><strong>48g</strong> fat</span>
+          </div>
+        </div>
+        <div class="meal">
+          <div class="head">
+            <span class="when">12:45 pm · lunch</span>
+            <span class="calories">620 kcal</span>
+          </div>
+          <div class="name">Mixed-greens salad · 5oz salmon · olive oil + lemon · feta</div>
+          <div class="macros">
+            <span class="m c"><strong>8g</strong> net carbs</span>
+            <span class="m p"><strong>42g</strong> protein</span>
+            <span class="m f"><strong>44g</strong> fat</span>
+          </div>
+        </div>
+        <div class="meal">
+          <div class="head">
+            <span class="when">3:30 pm · snack</span>
+            <span class="calories">452 kcal</span>
+          </div>
+          <div class="name">Macadamia nuts (1oz) · cheddar (3oz) · cucumber slices</div>
+          <div class="macros">
+            <span class="m c"><strong>7g</strong> net carbs</span>
+            <span class="m p"><strong>32g</strong> protein</span>
+            <span class="m f"><strong>36g</strong> fat</span>
+          </div>
+        </div>
+        <div class="meal" style="opacity:0.55;">
+          <div class="head">
+            <span class="when">7:00 pm · dinner (planned)</span>
+            <span class="calories">~600 kcal</span>
+          </div>
+          <div class="name">Ribeye steak · grilled asparagus + butter · arugula</div>
+          <div class="macros">
+            <span class="m c"><strong>4g</strong> net carbs</span>
+            <span class="m p"><strong>40g</strong> protein</span>
+            <span class="m f"><strong>42g</strong> fat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: 7-day signals -->
+    <div class="sparks">
+      <div class="spark-card glass">
+        <div class="lbl">Weight<small>fasted morning</small></div>
+        <div class="spark"><svg id="spark-weight" viewBox="0 0 100 48" preserveAspectRatio="none"></svg></div>
+        <div class="v down">62.4<small>kg · ↓0.6</small></div>
+      </div>
+      <div class="spark-card glass">
+        <div class="lbl">Blood ketones<small>BHB · morning</small></div>
+        <div class="spark"><svg id="spark-bhb" viewBox="0 0 100 48" preserveAspectRatio="none"></svg></div>
+        <div class="v up">1.8<small>mmol · in zone</small></div>
+      </div>
+      <div class="spark-card glass">
+        <div class="lbl">Net carbs<small>weekly avg</small></div>
+        <div class="spark"><svg id="spark-carbs" viewBox="0 0 100 48" preserveAspectRatio="none"></svg></div>
+        <div class="v up">22<small>g/day · under target</small></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">Keto HQ · Macro Day · electrolyte review Sunday 9:30am</p>
+
+</main>
+
+<script>
+'use strict';
+
+const TARGETS = { carbs: 25, protein: 120, fat: 145 };
+const TODAY   = { carbs: 18, protein: 96,  fat: 128 };
+
+function setDial(id, value, target, color) {
+  const el = document.getElementById(id);
+  const C = 2 * Math.PI * 80;   // ≈ 502.65
+  const pct = Math.min(1, value / target);
+  el.setAttribute('stroke-dashoffset', C * (1 - pct));
+}
+setDial('dial-carbs',   TODAY.carbs,   TARGETS.carbs);
+setDial('dial-protein', TODAY.protein, TARGETS.protein);
+setDial('dial-fat',     TODAY.fat,     TARGETS.fat);
+
+// Date crumb
+document.getElementById('today-crumb').textContent =
+  new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+
+// Sparklines
+function spark(id, data, color, fillOpacity) {
+  const svg = document.getElementById(id);
+  const W = 100, H = 48;
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = max - min || 1;
+  const x = i => (i / (data.length - 1)) * W;
+  const y = v => H - 6 - ((v - min) / range) * (H - 12);
+  let path = '';
+  for (let i = 0; i < data.length; i++) {
+    const x1 = x(i), y1 = y(data[i]);
+    if (i === 0) path += `M ${x1} ${y1}`;
+    else {
+      const x0 = x(i - 1), y0 = y(data[i - 1]);
+      const cx = (x0 + x1) / 2;
+      path += ` C ${cx} ${y0} ${cx} ${y1} ${x1} ${y1}`;
+    }
+  }
+  let html = '';
+  html += `<defs><linearGradient id="g-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="${fillOpacity || 0.30}"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>`;
+  html += `<path d="${path} L ${W} ${H} L 0 ${H} Z" fill="url(#g-${id})"/>`;
+  html += `<path d="${path}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round"/>`;
+  html += `<circle cx="${x(data.length-1)}" cy="${y(data[data.length-1])}" r="2.5" fill="${color}"/>`;
+  svg.innerHTML = html;
+}
+spark('spark-weight', [63.0, 62.9, 62.8, 62.6, 62.5, 62.5, 62.4], '#998E7E');
+spark('spark-bhb',    [0.8, 1.1, 1.4, 1.5, 1.2, 1.6, 1.8], '#6B8E5A');
+spark('spark-carbs',  [28, 24, 22, 20, 23, 21, 22], '#C24A6A');
+</script>
+</body>
+</html>

@@ -1,82 +1,372 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SaaS Metrics Dashboard</title>
-    <style>
-      :root{--bg:#faf6f1;--card:#fff;--ink:#3b2f2f;--muted:#6b5b4f;--line:#e8ddd0;--accent:#8b5e3c;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6}
-      *{box-sizing:border-box;margin:0}
-      body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
-      .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 64px}
-      .kicker{font:600 11px/1.2 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:8px}
-      h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
-      .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
-      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
-      .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
-      .stat-val{font-size:28px;font-weight:800}
-      .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
-      .stat-delta{font-size:11px;margin-top:3px;font-weight:600}
-      .up{color:var(--green)}.down{color:var(--red)}
-      .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
-      @media(max-width:700px){.two{grid-template-columns:1fr}}
-      .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
-      .panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:14px}
-      .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
-      .row:last-child{border-bottom:none}
-      .r-name{flex:1;font-size:14px;font-weight:600}
-      .r-val{font-size:14px;font-weight:700;flex-shrink:0}
-      .r-sub{font-size:12px;color:var(--muted)}
-      .bar-wrap{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden}
-      .bar{height:100%;border-radius:999px}
-      .funnel{margin-bottom:24px}
-      .funnel-row{display:flex;align-items:center;gap:14px;padding:8px 0}
-      .f-label{width:100px;font-size:13px;font-weight:600;flex-shrink:0}
-      .f-bar-wrap{flex:1;height:24px;background:var(--line);border-radius:8px;overflow:hidden}
-      .f-bar{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;font-size:12px;font-weight:700;color:#fff}
-      .f-val{width:50px;text-align:right;font-size:14px;font-weight:700;flex-shrink:0}
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="kicker">SaaS Startup</div>
-      <h1>Growth Dashboard</h1>
-      <p class="sub">ARR, funnel health, and customer metrics for the B2B SaaS motion.</p>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SaaS Startup · MRR Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #B96EE9;
+    --area-soft: rgba(185, 110, 233, 0.16);
+    --bg-tint-1: rgba(185, 110, 233, 0.10);
+    --bg-tint-2: rgba(111, 168, 229, 0.08);
+    --bg-tint-3: rgba(216, 162, 78, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --new: #6B8E5A; --expand: #6FA8E5; --contract: #B8892E; --churn: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
 
-      <div class="stats">
-        <div class="stat"><div class="stat-val" style="color:var(--green)">$1.8M</div><div class="stat-label">ARR</div><div class="stat-delta up">+18% QoQ</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--blue)">$156K</div><div class="stat-label">MRR</div><div class="stat-delta up">+$12K</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--accent)">342</div><div class="stat-label">Customers</div><div class="stat-delta up">+28 this month</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--green)">94%</div><div class="stat-label">Logo Retention</div><div class="stat-delta up">+2%</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--purple)">112%</div><div class="stat-label">Net Revenue Retention</div><div class="stat-delta up">healthy</div></div>
-        <div class="stat"><div class="stat-val" style="color:var(--ink)">14.2</div><div class="stat-label">LTV/CAC Ratio</div><div class="stat-delta up">target: >3</div></div>
+  .shell { max-width: 1380px; margin: 0 auto; padding: 24px 28px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+  .filter-pills { display: flex; gap: 4px; }
+  .filter-pills button { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); padding: 5px 12px; border-radius: 100px; }
+  .filter-pills button:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .filter-pills button.active { background: var(--area-soft); color: var(--area); font-weight: 600; }
+
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4vw, 50px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); margin-top: 6px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+  .big-stat .delta.up { color: var(--good); } .big-stat .delta.down { color: var(--alert); }
+
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 14px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* MRR chart */
+  .chart-wrap { height: 280px; width: 100%; }
+  .chart-wrap svg { display: block; width: 100%; height: 100%; }
+  .chart-legend { display: flex; gap: 18px; padding-top: 10px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; }
+  .chart-legend .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+
+  /* Activation funnel */
+  .funnel { display: flex; flex-direction: column; gap: 10px; }
+  .stage-row {
+    display: grid; grid-template-columns: 110px 1fr auto; gap: 12px; align-items: center;
+  }
+  .stage-row .lbl { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink); }
+  .stage-row .lbl small { display: block; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .stage-row .bar-wrap {
+    height: 28px; background: rgba(185, 110, 233, 0.06);
+    border-radius: 6px; position: relative; overflow: hidden;
+  }
+  .stage-row .bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--area) 0%, #D29CF0 100%);
+    border-radius: 6px;
+  }
+  .stage-row .bar.warm  { background: linear-gradient(90deg, #6B8E5A, #8FB57F); }
+  .stage-row .bar.cool  { background: linear-gradient(90deg, #6FA8E5, #92BFEC); }
+  .stage-row .bar.dim   { background: linear-gradient(90deg, #B8892E, #D6A85A); }
+  .stage-row .bar-label {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-family: var(--mono); font-size: 10.5px; color: white; font-weight: 600;
+  }
+  .stage-row .v { font-family: var(--serif); font-weight: 500; font-size: 16px; text-align: right; }
+
+  /* Cohort retention */
+  .cohort-grid { display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 3px; min-width: 480px; }
+  .cohort-cell-head {
+    font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--ink-3); text-align: center; padding-bottom: 4px;
+  }
+  .cohort-cell-name {
+    font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-2);
+    padding: 6px 0; display: flex; align-items: center;
+  }
+  .cohort-cell {
+    height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; color: var(--ink);
+  }
+  .cohort-cell.empty { background: rgba(216,162,78,0.04); color: transparent; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">SaaS · <strong>MRR Console</strong></div>
+    <nav class="filter-pills">
+      <button>1 month</button>
+      <button>3 months</button>
+      <button class="active">12 months</button>
+      <button>All time</button>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Where the <em>revenue</em> is.</h1>
+      <div class="stand">MRR breakdown, activation funnel, cohort retention — the metrics that matter.</div>
+    </div>
+    <div class="right">last sync · stripe · 8 min ago</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">MRR</div><div class="v">$48.2k</div><div class="delta up">↑ $3.1k MoM · +6.9%</div></div>
+    <div class="big-stat glass"><div class="lbl">NRR</div><div class="v">112%</div><div class="delta up">expansion &gt; churn</div></div>
+    <div class="big-stat glass"><div class="lbl">Runway</div><div class="v">18 <small>months</small></div><div class="delta">at current burn</div></div>
+    <div class="big-stat glass"><div class="lbl">Paying customers</div><div class="v">412</div><div class="delta up">+24 net new</div></div>
+  </section>
+
+  <section class="card glass">
+    <div class="card-head">
+      <span class="title">MRR — last 12 months</span>
+      <span class="meta">$28k → $48.2k · ↑ 72%</span>
+    </div>
+    <div class="chart-wrap">
+      <svg id="mrr-chart" viewBox="0 0 700 280" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-legend">
+      <span><span class="swatch" style="background:var(--new)"></span>New</span>
+      <span><span class="swatch" style="background:var(--expand)"></span>Expansion</span>
+      <span><span class="swatch" style="background:var(--contract)"></span>Contraction</span>
+      <span><span class="swatch" style="background:var(--churn)"></span>Churn</span>
+    </div>
+  </section>
+
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Activation funnel · this month</span>
+        <span class="meta">conversion at each stage</span>
       </div>
-
-      <div class="panel funnel">
-        <div class="panel-title">Growth Funnel — This Month</div>
-        <div class="funnel-row"><div class="f-label">Visitors</div><div class="f-bar-wrap"><div class="f-bar" style="width:100%;background:var(--muted)">24,500</div></div><div class="f-val">24.5K</div></div>
-        <div class="funnel-row"><div class="f-label">Signups</div><div class="f-bar-wrap"><div class="f-bar" style="width:12%;background:var(--blue)">2,940</div></div><div class="f-val">12%</div></div>
-        <div class="funnel-row"><div class="f-label">Activated</div><div class="f-bar-wrap"><div class="f-bar" style="width:5.2%;background:var(--accent)">1,274</div></div><div class="f-val">43%</div></div>
-        <div class="funnel-row"><div class="f-label">Trial</div><div class="f-bar-wrap"><div class="f-bar" style="width:2.1%;background:var(--purple)">510</div></div><div class="f-val">40%</div></div>
-        <div class="funnel-row"><div class="f-label">Paid</div><div class="f-bar-wrap"><div class="f-bar" style="width:0.5%;background:var(--green)">28</div></div><div class="f-val">5.5%</div></div>
-      </div>
-
-      <div class="two">
-        <div class="panel">
-          <div class="panel-title">Top Growth Channels</div>
-          <div class="row"><div class="r-name">Organic / SEO</div><div class="bar-wrap"><div class="bar" style="width:42%;background:var(--green)"></div></div><div class="r-val">42%</div></div>
-          <div class="row"><div class="r-name">Product Referrals</div><div class="bar-wrap"><div class="bar" style="width:28%;background:var(--blue)"></div></div><div class="r-val">28%</div></div>
-          <div class="row"><div class="r-name">Content Marketing</div><div class="bar-wrap"><div class="bar" style="width:18%;background:var(--accent)"></div></div><div class="r-val">18%</div></div>
-          <div class="row"><div class="r-name">Paid Ads</div><div class="bar-wrap"><div class="bar" style="width:12%;background:var(--purple)"></div></div><div class="r-val">12%</div></div>
+      <div class="funnel">
+        <div class="stage-row">
+          <div class="lbl">Visitors<small>landing pages</small></div>
+          <div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-label">100% · 12,400</span></div>
+          <span class="v">12,400</span>
         </div>
-        <div class="panel">
-          <div class="panel-title">Customer Health</div>
-          <div class="row"><div class="r-name">Healthy (daily active)</div><div class="r-val" style="color:var(--green)">78%</div></div>
-          <div class="row"><div class="r-name">At Risk (low usage 14d)</div><div class="r-val" style="color:var(--accent)">16%</div></div>
-          <div class="row"><div class="r-name">Churn Risk (inactive 30d)</div><div class="r-val" style="color:var(--red)">6%</div></div>
-          <div class="row"><div class="r-name">NPS Score</div><div class="r-val" style="color:var(--green)">52</div></div>
+        <div class="stage-row">
+          <div class="lbl">Signups<small>email + magic link</small></div>
+          <div class="bar-wrap"><div class="bar warm" style="width:18%"></div><span class="bar-label">18% · 2,232</span></div>
+          <span class="v">2,232</span>
+        </div>
+        <div class="stage-row">
+          <div class="lbl">Activated<small>created 1st workspace</small></div>
+          <div class="bar-wrap"><div class="bar cool" style="width:11%"></div><span class="bar-label">61% of signups · 1,361</span></div>
+          <span class="v">1,361</span>
+        </div>
+        <div class="stage-row">
+          <div class="lbl">Engaged<small>3 sessions in 7 days</small></div>
+          <div class="bar-wrap"><div class="bar cool" style="width:7%"></div><span class="bar-label">62% of activated · 844</span></div>
+          <span class="v">844</span>
+        </div>
+        <div class="stage-row">
+          <div class="lbl">Trial → Paid<small>conversion</small></div>
+          <div class="bar-wrap"><div class="bar dim" style="width:2%"></div><span class="bar-label">25% of engaged · 211</span></div>
+          <span class="v">211</span>
         </div>
       </div>
     </div>
-  </body>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Cohort retention · monthly</span>
+        <span class="meta">% of cohort still paying after N months</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <div class="cohort-grid" id="cohort"></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">SaaS Startup · MRR Console</p>
+
+</main>
+
+<script>
+'use strict';
+
+// Stacked area data: 12 months × 4 components ($k)
+const MRR_DATA = [
+  { m: 'May', new: 1.5, exp: 0.4, con: -0.2, ch: -0.6, total: 28.0 },
+  { m: 'Jun', new: 1.8, exp: 0.5, con: -0.3, ch: -0.7, total: 29.3 },
+  { m: 'Jul', new: 2.1, exp: 0.6, con: -0.2, ch: -0.5, total: 31.3 },
+  { m: 'Aug', new: 1.9, exp: 0.7, con: -0.4, ch: -0.6, total: 32.9 },
+  { m: 'Sep', new: 2.2, exp: 0.8, con: -0.3, ch: -0.7, total: 34.9 },
+  { m: 'Oct', new: 2.4, exp: 0.9, con: -0.4, ch: -0.6, total: 37.2 },
+  { m: 'Nov', new: 2.6, exp: 1.1, con: -0.3, ch: -0.7, total: 39.9 },
+  { m: 'Dec', new: 2.3, exp: 1.0, con: -0.5, ch: -0.8, total: 41.9 },
+  { m: 'Jan', new: 2.8, exp: 1.2, con: -0.4, ch: -0.7, total: 44.8 },
+  { m: 'Feb', new: 2.5, exp: 1.3, con: -0.3, ch: -0.6, total: 47.7 },
+  { m: 'Mar', new: 2.6, exp: 1.4, con: -0.4, ch: -0.7, total: 50.6 },
+  { m: 'Apr', new: 2.9, exp: 1.6, con: -0.3, ch: -0.8, total: 48.2 },  // last
+];
+
+// Cohort retention — rows = signup month, cols = months since signup
+const COHORTS = [
+  { name: 'Oct',  data: [100, 78, 65, 58, 54, 51, 49] },
+  { name: 'Nov',  data: [100, 81, 70, 64, 60, 57] },
+  { name: 'Dec',  data: [100, 76, 64, 56, 52] },
+  { name: 'Jan',  data: [100, 84, 73, 67] },
+  { name: 'Feb',  data: [100, 86, 76] },
+  { name: 'Mar',  data: [100, 88] },
+  { name: 'Apr',  data: [100] },
+];
+
+function drawMRR() {
+  const svg = document.getElementById('mrr-chart');
+  const W = 700, H = 280, padX = 36, padY = 22;
+  const innerW = W - padX * 2, innerH = H - padY * 2;
+  const max = 60;   // $k cap
+  const x = i => padX + (i / (MRR_DATA.length - 1)) * innerW;
+  const y = v => H - padY - (v / max) * innerH;
+
+  let html = '';
+  // Grid lines
+  html += '<g stroke="rgba(216, 162, 78, 0.10)" stroke-width="1">';
+  for (let v = 10; v <= 60; v += 10) html += `<line x1="${padX}" y1="${y(v)}" x2="${W - padX}" y2="${y(v)}"/>`;
+  html += '</g>';
+  // Y axis
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E">';
+  for (let v = 10; v <= 50; v += 10) html += `<text x="0" y="${y(v) - 3}">$${v}k</text>`;
+  html += '</g>';
+
+  // Stacked area: build paths bottom-up
+  html += `<defs>
+    <linearGradient id="newGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(107,142,90,0.85)"/><stop offset="100%" stop-color="rgba(107,142,90,0.50)"/></linearGradient>
+    <linearGradient id="expGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(111,168,229,0.85)"/><stop offset="100%" stop-color="rgba(111,168,229,0.50)"/></linearGradient>
+  </defs>`;
+
+  // For each segment, build a stacked area going through the data points
+  // Layer 1 (bottom): retained = total - new - exp + con + ch (i.e. base MRR)
+  // Layer 2: + new
+  // Layer 3: + expansion
+  // Then contraction/churn shown as red/orange below zero
+
+  // For simplicity, draw 2 stacked areas: base (smooth line) and components
+  // Actually let's draw the total as a clean area and overlay components as bars at each month
+
+  // Total MRR area (smooth)
+  let path = '';
+  for (let i = 0; i < MRR_DATA.length; i++) {
+    const x1 = x(i), y1 = y(MRR_DATA[i].total);
+    if (i === 0) path += `M ${x1} ${y1}`;
+    else {
+      const x0 = x(i - 1), y0 = y(MRR_DATA[i - 1].total);
+      const cx = (x0 + x1) / 2;
+      path += ` C ${cx} ${y0} ${cx} ${y1} ${x1} ${y1}`;
+    }
+  }
+  html += `<defs><linearGradient id="totGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(185,110,233,0.30)"/><stop offset="100%" stop-color="rgba(185,110,233,0.04)"/></linearGradient></defs>`;
+  html += `<path d="${path} L ${x(MRR_DATA.length - 1)} ${H - padY} L ${x(0)} ${H - padY} Z" fill="url(#totGrad)"/>`;
+  html += `<path d="${path}" fill="none" stroke="#B96EE9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  // Per-month component bars (mini stacked bars on x-axis)
+  const barW = innerW / MRR_DATA.length * 0.4;
+  MRR_DATA.forEach((d, i) => {
+    const cx = x(i);
+    const baseY = H - padY;
+    // New (above baseline)
+    const newH = (d.new / max) * innerH;
+    html += `<rect x="${cx - barW}" y="${baseY - newH}" width="${barW * 0.45}" height="${newH}" fill="url(#newGrad)" rx="1"/>`;
+    // Expansion
+    const expH = (d.exp / max) * innerH;
+    html += `<rect x="${cx - barW + barW * 0.5}" y="${baseY - expH}" width="${barW * 0.45}" height="${expH}" fill="url(#expGrad)" rx="1"/>`;
+    // Contraction (negative — below baseline)
+    const conH = (Math.abs(d.con) / max) * innerH;
+    html += `<rect x="${cx + barW * 0.05}" y="${baseY}" width="${barW * 0.45}" height="${conH}" fill="rgba(184,137,46,0.65)" rx="1"/>`;
+    // Churn
+    const chH = (Math.abs(d.ch) / max) * innerH;
+    html += `<rect x="${cx + barW * 0.55}" y="${baseY}" width="${barW * 0.45}" height="${chH}" fill="rgba(194,74,106,0.65)" rx="1"/>`;
+  });
+
+  // Last point marker
+  const last = MRR_DATA.length - 1;
+  html += `<circle cx="${x(last)}" cy="${y(MRR_DATA[last].total)}" r="11" fill="#B96EE9" opacity="0.12"/>`;
+  html += `<circle cx="${x(last)}" cy="${y(MRR_DATA[last].total)}" r="6" fill="#B96EE9" stroke="white" stroke-width="2"/>`;
+  html += `<text x="${x(last) - 36}" y="${y(MRR_DATA[last].total) - 14}" font-family="Cormorant Garamond, serif" font-size="14" font-style="italic" fill="#1B1814">$${MRR_DATA[last].total}k</text>`;
+
+  // X labels
+  html += '<g font-family="JetBrains Mono, monospace" font-size="9" fill="#998E7E" letter-spacing="1">';
+  MRR_DATA.forEach((d, i) => { if (i % 2 === 0) html += `<text x="${x(i) - 5}" y="${H - 4}">${d.m}</text>`; });
+  html += '</g>';
+
+  svg.innerHTML = html;
+}
+
+function drawCohort() {
+  const grid = document.getElementById('cohort');
+  let html = '<div class="cohort-cell-head">cohort</div>';
+  for (let m = 0; m <= 6; m++) html += `<div class="cohort-cell-head">m${m}</div>`;
+  COHORTS.forEach(c => {
+    html += `<div class="cohort-cell-name">${c.name}</div>`;
+    for (let m = 0; m <= 6; m++) {
+      if (m < c.data.length) {
+        const v = c.data[m];
+        const intensity = v / 100;
+        const bg = `rgba(185, 110, 233, ${intensity * 0.6})`;
+        const color = v > 60 ? 'white' : 'var(--ink)';
+        html += `<div class="cohort-cell" style="background:${bg};color:${color}">${v}%</div>`;
+      } else {
+        html += `<div class="cohort-cell empty">·</div>`;
+      }
+    }
+  });
+  grid.innerHTML = html;
+}
+
+drawMRR();
+drawCohort();
+</script>
+</body>
 </html>

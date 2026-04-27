@@ -1,13 +1,17 @@
 id: monthly-utilization-review
 name: Monthly Utilization Review
-description: Reviews team utilization and profitability across all client engagements.
-ownerAgent: managing-director
 enabled: true
-schedule: "0 10 1 * *"
+schedule: 0 10 1 * *
+provider: claude-code
+adapterType: claude_local
+ownerAgent: managing-director
+agentSlug: managing-director
+timeout: 600
 prompt: |-
   Review the past month of client engagement data.
   Calculate utilization rate, revenue per client, and profitability.
   Identify under-utilized capacity and over-stretched teams.
   Write a monthly utilization report with recommendations.
-createdAt: "2026-04-11T00:00:00.000Z"
-updatedAt: "2026-04-11T00:00:00.000Z"
+cabinetPath: cabinets/cabinets/agency
+createdAt: '2026-04-11T00:00:00.000Z'
+updatedAt: '2026-04-11T00:00:00.000Z'
