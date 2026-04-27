@@ -15,6 +15,8 @@ icon: 🦸
 
 > **A complete, interactive course on AI.** Start with a single neuron, end with your own GPT. Math, intuition, theory, and hands-on construction — at your own pace.
 
+> **Open the [[course/index|🎓 Course]] first.** Full-screen Liquid Glass page with all videos *embedded* (not just linked), every stage's playlist playing inline, and working clickable navigation to the dashboard + 5 visualization webapps + each module page.
+
 You will cover the math, develop intuition for the architecture, and build an LLM from the ground up — starting with a perceptron in pure Python, finishing with your own GPT in PyTorch, and closing with a research paper you can read critically.
 
 ## How long will this take?

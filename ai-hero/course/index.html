@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Hero · Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EB;
+    --area: #2E4156;
+    --area-soft: rgba(46, 65, 86, 0.16);
+    --bg-tint-1: rgba(46, 65, 86, 0.10);
+    --bg-tint-2: rgba(185, 110, 233, 0.08);
+    --bg-tint-3: rgba(216, 162, 78, 0.06);
+    --glass: rgba(255, 252, 244, 0.55);
+    --glass-strong: rgba(255, 252, 244, 0.75);
+    --glass-stroke: rgba(255, 255, 255, 0.55);
+    --glass-bevel: rgba(27, 24, 20, 0.04);
+    --ink: #1B1814; --ink-2: #5C544A; --ink-3: #998E7E; --ink-4: #C0B6A2;
+    --good: #6B8E5A; --warn: #B8892E; --alert: #C24A6A;
+    --serif: 'Cormorant Garamond', Garamond, serif;
+    --sans:  'Manrope', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --r-md: 14px; --r-lg: 20px;
+    --glass-shadow:
+      0 1px 1px rgba(255, 255, 255, 0.55) inset,
+      0 -1px 1px rgba(27, 24, 20, 0.05) inset,
+      0 14px 40px -12px rgba(27, 24, 20, 0.10),
+      0 4px 12px -4px rgba(27, 24, 20, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(40rem 30rem at 18% 12%, var(--bg-tint-1) 0%, transparent 60%),
+      radial-gradient(50rem 35rem at 88% 28%, var(--bg-tint-2) 0%, transparent 60%),
+      radial-gradient(45rem 30rem at 50% 92%, var(--bg-tint-3) 0%, transparent 60%);
+  }
+  body::after { content: ''; position: fixed; inset: 0; z-index: -1; background: var(--bg); }
+  .num { font-variant-numeric: tabular-nums; }
+  button, a { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--area); outline-offset: 3px; border-radius: 6px; }
+
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative; overflow: hidden;
+  }
+  .glass::before { content: ''; position: absolute; top: 0; left: 18px; right: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent); }
+
+  .shell { max-width: 1280px; margin: 0 auto; padding: 28px 28px 80px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ========== Topbar ========== */
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 0; flex-wrap: wrap; gap: 8px; }
+  .crumb { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+  .top-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .top-nav a {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-3); padding: 5px 12px; border-radius: 100px;
+    transition: all 0.15s;
+  }
+  .top-nav a:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .top-nav a.active { background: var(--area-soft); color: var(--area); font-weight: 600; }
+
+  /* ========== Hero ========== */
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 4px 6px 6px; }
+  .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4.5vw, 56px); letter-spacing: -0.022em; line-height: 0.98; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--area); }
+  .hero .stand { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--ink-2); margin-top: 8px; max-width: 620px; }
+  .hero .right { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.16em; }
+
+  /* ========== Big stats ========== */
+  .big-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .big-stats { grid-template-columns: repeat(2, 1fr); } }
+  .big-stat { padding: 18px 22px; }
+  .big-stat .lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .big-stat .v { font-family: var(--serif); font-weight: 500; font-size: 32px; letter-spacing: -0.02em; line-height: 1; }
+  .big-stat .v small { font-family: var(--sans); font-size: 12px; color: var(--ink-3); margin-left: 5px; }
+  .big-stat .delta { margin-top: 6px; font-family: var(--sans); font-size: 12px; font-style: italic; color: var(--ink-3); }
+
+  /* ========== Section header ========== */
+  .section-h {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 8px 6px 0;
+  }
+  .section-h .title {
+    font-family: var(--serif); font-weight: 500; font-size: 22px; letter-spacing: -0.01em;
+  }
+  .section-h .title em { font-style: italic; color: var(--area); }
+  .section-h .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+
+  /* ========== Visualizations row ========== */
+  .viz-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  @media (max-width: 980px) { .viz-grid { grid-template-columns: repeat(2, 1fr); } }
+  .viz-card {
+    padding: 16px 16px 18px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: transform 0.18s cubic-bezier(0.2,0.8,0.2,1);
+    color: inherit;
+  }
+  .viz-card:hover { transform: translateY(-3px); }
+  .viz-card .glyph { font-size: 26px; line-height: 1; margin-bottom: 4px; }
+  .viz-card .name {
+    font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 16px; color: var(--ink); line-height: 1.15;
+  }
+  .viz-card .desc { font-family: var(--sans); font-size: 11px; color: var(--ink-2); line-height: 1.4; }
+  .viz-card .open {
+    margin-top: auto; font-family: var(--mono); font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--area); font-weight: 600; padding-top: 8px;
+  }
+
+  /* ========== Stage cards ========== */
+  .stage {
+    padding: 0;
+    overflow: hidden;
+  }
+  .stage-head {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--glass-bevel);
+  }
+  .stage-num {
+    font-family: var(--serif); font-weight: 500; font-style: italic;
+    font-size: 56px; line-height: 0.85; color: var(--area);
+    text-align: center;
+  }
+  .stage-head .info h2 {
+    font-family: var(--serif); font-weight: 500; font-size: 26px; letter-spacing: -0.01em; line-height: 1.1;
+  }
+  .stage-head .info h2 em { font-style: italic; }
+  .stage-head .info .by { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); margin-top: 4px; font-weight: 500; }
+  .stage-head .info .desc { font-family: var(--serif); font-size: 14.5px; color: var(--ink-2); margin-top: 8px; line-height: 1.5; max-width: 720px; }
+  .stage-head .meta { display: flex; flex-direction: column; gap: 4px; text-align: right; min-width: 140px; }
+  .stage-head .meta .time {
+    font-family: var(--serif); font-weight: 500; font-size: 22px; line-height: 1;
+  }
+  .stage-head .meta .time small { font-family: var(--sans); font-size: 11px; color: var(--ink-3); margin-left: 3px; }
+  .stage-head .meta .pace {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); font-weight: 500;
+  }
+
+  .stage-body { padding: 22px 26px; display: flex; flex-direction: column; gap: 18px; }
+  .video-row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+  .video-card {
+    background: rgba(255,255,255,0.4);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .video-card .vc-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--glass-bevel);
+    background: rgba(255,255,255,0.4);
+  }
+  .video-card .vc-head .name { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink); font-weight: 500; }
+  .video-card .vc-head .time { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-3); font-weight: 500; }
+  .video-card .frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;        /* 16:9 */
+    background: #000;
+    overflow: hidden;
+  }
+  .video-card iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .stage-cta {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    padding-top: 4px;
+  }
+  .stage-cta a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; border-radius: 100px;
+    font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .stage-cta .primary {
+    background: var(--area); color: white;
+  }
+  .stage-cta .primary:hover { background: #1A2632; }
+  .stage-cta .secondary {
+    background: rgba(255,255,255,0.5); color: var(--ink-2); border: 1px solid var(--glass-stroke);
+  }
+  .stage-cta .secondary:hover { background: rgba(255,255,255,0.85); color: var(--ink); }
+
+  .submodule-list { display: flex; flex-direction: column; gap: 4px; }
+  .submodule {
+    display: grid; grid-template-columns: 28px 1fr auto auto; gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--glass-bevel);
+    align-items: center;
+  }
+  .submodule:last-child { border-bottom: none; }
+  .submodule .ix { font-family: var(--serif); font-style: italic; color: var(--area); font-weight: 600; font-size: 16px; line-height: 1; }
+  .submodule .name { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--ink); }
+  .submodule .name small { display: block; font-family: var(--mono); font-size: 9px; color: var(--ink-3); margin-top: 1px; font-style: normal; text-transform: uppercase; letter-spacing: 0.1em; }
+  .submodule .time { font-family: var(--mono); font-size: 10px; color: var(--ink-3); font-weight: 500; }
+  .submodule .open {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--area); font-weight: 600;
+    padding: 4px 10px; border-radius: 100px;
+    background: var(--area-soft); border: 1px solid rgba(46,65,86,0.18);
+  }
+  .submodule .open:hover { background: rgba(46,65,86,0.25); }
+
+  /* ========== Team + ground rules ========== */
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 980px) { .row { grid-template-columns: 1fr; } }
+  .card { padding: 18px 22px; }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--glass-bevel); margin-bottom: 12px; }
+  .card-head .title { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.005em; }
+  .card-head .meta { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); }
+  .agent { padding: 10px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+  .agent:last-child { border-bottom: none; }
+  .agent .glyph { font-size: 22px; line-height: 1.1; padding-top: 2px; }
+  .agent .name { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 16px; color: var(--ink); }
+  .agent .what { font-family: var(--sans); font-size: 12.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+  .rules { display: flex; flex-direction: column; gap: 0; }
+  .rule { padding: 10px 0; border-bottom: 1px solid var(--glass-bevel); display: grid; grid-template-columns: 32px 1fr; gap: 12px; }
+  .rule:last-child { border-bottom: none; }
+  .rule .n { font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 22px; color: var(--area); line-height: 1; }
+  .rule .what { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--ink); line-height: 1.4; }
+  .rule .what strong { font-style: normal; color: var(--ink); font-weight: 600; }
+
+  .footer { text-align: center; color: var(--ink-3); font-family: var(--serif); font-style: italic; font-size: 13px; padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<main class="shell">
+
+  <div class="topbar">
+    <div class="crumb">AI Hero · <strong>Course</strong></div>
+    <nav class="top-nav">
+      <a class="active" href="#">Course</a>
+      <a href="../dashboard/index.html">Dashboard</a>
+      <a href="../concept-map/index.html">Concept map</a>
+      <a href="../neuron-playground/index.html">Neuron</a>
+      <a href="../gradient-descent/index.html">Gradient</a>
+      <a href="../attention-viz/index.html">Attention</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <div>
+      <h1>Build a <em>GPT</em>, from scratch.</h1>
+      <div class="stand">A 20-hour run from a single neuron in pure Python to your own working transformer in PyTorch — math, intuition, theory, hands-on, and one paper read critically. Self-paced.</div>
+    </div>
+    <div class="right">~20 h · 5 stages · self-paced</div>
+  </header>
+
+  <section class="big-stats">
+    <div class="big-stat glass"><div class="lbl">Total time</div><div class="v">~20 <small>hours</small></div><div class="delta">video at 1× · 2× often fine</div></div>
+    <div class="big-stat glass"><div class="lbl">Stages</div><div class="v">5</div><div class="delta">math · intuition · theory · build · paper</div></div>
+    <div class="big-stat glass"><div class="lbl">Hands-on builds</div><div class="v">11</div><div class="delta">micrograd → GPT → tokenizer</div></div>
+    <div class="big-stat glass"><div class="lbl">Concepts</div><div class="v">38</div><div class="delta">all linked in the concept map</div></div>
+  </section>
+
+  <!-- Visualizations -->
+  <div class="section-h">
+    <span class="title">Five live <em>visualizations</em></span>
+    <span class="meta">play while you watch</span>
+  </div>
+  <section class="viz-grid">
+    <a class="viz-card glass" href="../dashboard/index.html">
+      <div class="glyph">📊</div>
+      <div class="name">Dashboard</div>
+      <div class="desc">progress across all stages with per-section bars</div>
+      <div class="open">Open →</div>
+    </a>
+    <a class="viz-card glass" href="../concept-map/index.html">
+      <div class="glyph">🗺️</div>
+      <div class="name">Concept Map</div>
+      <div class="desc">force-directed graph of 38 concepts · click to locate</div>
+      <div class="open">Open →</div>
+    </a>
+    <a class="viz-card glass" href="../neuron-playground/index.html">
+      <div class="glyph">🧠</div>
+      <div class="name">Neuron Playground</div>
+      <div class="desc">drag inputs + weights · watch one neuron fire</div>
+      <div class="open">Open →</div>
+    </a>
+    <a class="viz-card glass" href="../gradient-descent/index.html">
+      <div class="glyph">🎢</div>
+      <div class="name">Gradient Descent</div>
+      <div class="desc">drop a ball on a 2D loss landscape · break it on purpose</div>
+      <div class="open">Open →</div>
+    </a>
+    <a class="viz-card glass" href="../attention-viz/index.html">
+      <div class="glyph">👁️</div>
+      <div class="name">Attention Visualizer</div>
+      <div class="desc">click tokens · watch the heatmap light up · toggle the mask</div>
+      <div class="open">Open →</div>
+    </a>
+  </section>
+
+  <!-- ============ Stage 1: Math Prerequisites ============ -->
+  <section class="stage glass">
+    <div class="stage-head">
+      <div class="stage-num">1</div>
+      <div class="info">
+        <h2>Math <em>Prerequisites</em></h2>
+        <div class="by">Linear algebra · Calculus · Probability — Serrano Academy + Khan</div>
+        <div class="desc">Cover the math you'll lean on for the rest of the course. You don't need proofs — you need geometry. If matrix multiplication and the chain rule click, everything downstream gets easier.</div>
+      </div>
+      <div class="meta">
+        <div class="time">4 <small>hours</small></div>
+        <div class="pace">video</div>
+      </div>
+    </div>
+
+    <div class="stage-body">
+
+      <div class="video-card">
+        <div class="vc-head">
+          <span class="name">Linear Algebra — Serrano Academy (full playlist)</span>
+          <span class="time">≈ 100 min · 9 videos</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://www.youtube.com/embed/videoseries?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab" title="Linear Algebra playlist" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="vc-head">
+          <span class="name">Calculus — single intro video + Khan playlist</span>
+          <span class="time">≈ 90 min</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://www.youtube.com/embed/AXqhWeUEtQU" title="Calculus intro" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="vc-head">
+          <span class="name">Probability — Statquest playlist</span>
+          <span class="time">≈ 60 min</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://www.youtube.com/embed/videoseries?list=PLiAulSm0XXgvCGe63mrAkda9UQ9478YQv" title="Probability playlist" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="stage-cta">
+        <a class="primary" href="../01-math-prerequisites/index.md">Open stage page →</a>
+        <a class="secondary" href="../01-math-prerequisites/linear-algebra/index.md">Linear algebra notes</a>
+        <a class="secondary" href="../01-math-prerequisites/calculus/index.md">Calculus notes</a>
+        <a class="secondary" href="../01-math-prerequisites/probability/index.md">Probability notes</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Stage 2: Intuition ============ -->
+  <section class="stage glass">
+    <div class="stage-head">
+      <div class="stage-num">2</div>
+      <div class="info">
+        <h2>Neural network <em>intuition</em></h2>
+        <div class="by">3Blue1Brown — the playlist that broke through for everyone</div>
+        <div class="desc">Geometric intuition for what neural networks actually compute. Match Grant Sanderson's pictures to the math you just learned. After this, when Karpathy builds the same ideas in code, both framings will be in your head.</div>
+      </div>
+      <div class="meta">
+        <div class="time">3 <small>hours</small></div>
+        <div class="pace">video</div>
+      </div>
+    </div>
+
+    <div class="stage-body">
+      <div class="video-card">
+        <div class="vc-head">
+          <span class="name">3Blue1Brown — Neural Networks (full playlist)</span>
+          <span class="time">≈ 3 hours · 8 videos</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://www.youtube.com/embed/videoseries?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" title="3Blue1Brown — Neural Networks" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="stage-cta">
+        <a class="primary" href="../02-intuition/index.md">Open stage page →</a>
+        <a class="secondary" href="../neuron-playground/index.html">Try the Neuron Playground</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Stage 3: Academic Theory ============ -->
+  <section class="stage glass">
+    <div class="stage-head">
+      <div class="stage-num">3</div>
+      <div class="info">
+        <h2>Academic <em>theory</em></h2>
+        <div class="by">Survey of modern architectures — one video, then read</div>
+        <div class="desc">Bridge from "I get neural networks" to "I can read a paper." Survey RNNs, CNNs, transformers, attention, encoder-decoder, scaling laws. After this you'll know what to skim and what to read line-by-line.</div>
+      </div>
+      <div class="meta">
+        <div class="time">2 <small>hours</small></div>
+        <div class="pace">video + read</div>
+      </div>
+    </div>
+
+    <div class="stage-body">
+      <div class="video-card">
+        <div class="vc-head">
+          <span class="name">Modern AI architectures — Yannic Kilcher overview</span>
+          <span class="time">≈ 60 min</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://www.youtube.com/embed/Q9bdjoVx_m4" title="Academic theory survey" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="stage-cta">
+        <a class="primary" href="../03-academic-theory/index.md">Open stage page →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Stage 4: Hands-On ============ -->
+  <section class="stage glass">
+    <div class="stage-head">
+      <div class="stage-num">4</div>
+      <div class="info">
+        <h2>Hands-On — <em>Karpathy's Zero to Hero</em></h2>
+        <div class="by">11 videos · type the code yourself · build a GPT from scratch</div>
+        <div class="desc">The crown jewel. Andrej Karpathy walks you from a single neuron (micrograd) through bigram → MLP → activations → backprop → WaveNet → GPT → tokenizer. Total ~12 hours of video plus ~5 of exercises. Don't copy — type.</div>
+      </div>
+      <div class="meta">
+        <div class="time">17 <small>hours</small></div>
+        <div class="pace">video + code</div>
+      </div>
+    </div>
+
+    <div class="stage-body">
+
+      <!-- Featured: micrograd -->
+      <div class="video-card">
+        <div class="vc-head">
+          <span class="name">1. Micrograd — the spelled-out intro to backpropagation</span>
+          <span class="time">≈ 2.5 hours</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://www.youtube.com/embed/VMj-3S1tku0" title="Building micrograd" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- Featured: build GPT -->
+      <div class="video-card">
+        <div class="vc-head">
+          <span class="name">9. Build GPT from scratch — the destination</span>
+          <span class="time">≈ 2 hours</span>
+        </div>
+        <div class="frame">
+          <iframe src="https://www.youtube.com/embed/kCc8FmEb1nY" title="Build GPT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- All 11 in a list -->
+      <div>
+        <div style="font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-3); font-weight: 500; padding-bottom: 10px;">All 11 hands-on modules</div>
+        <div class="submodule-list">
+          <div class="submodule">
+            <div class="ix">1</div>
+            <div class="name">Micrograd<small>backprop from scratch · Karpathy</small></div>
+            <div class="time">2.5 h</div>
+            <a class="open" href="../04-hands-on/01-micrograd/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">2</div>
+            <div class="name">Makemore — bigram<small>character-level language model</small></div>
+            <div class="time">1.5 h</div>
+            <a class="open" href="../04-hands-on/02-makemore-bigram/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">3</div>
+            <div class="name">Trigram exercise<small>extend bigram to 3-character context</small></div>
+            <div class="time">45 min</div>
+            <a class="open" href="../04-hands-on/03-trigram-exercise/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">4</div>
+            <div class="name">Makemore — MLP<small>first multi-layer perceptron</small></div>
+            <div class="time">1.5 h</div>
+            <a class="open" href="../04-hands-on/04-makemore-mlp/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">5</div>
+            <div class="name">MLP tuning<small>learning rate, batches, splits</small></div>
+            <div class="time">45 min</div>
+            <a class="open" href="../04-hands-on/05-mlp-tuning/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">6</div>
+            <div class="name">Activations + batchnorm<small>internals of a healthy network</small></div>
+            <div class="time">1.5 h</div>
+            <a class="open" href="../04-hands-on/06-activations-batchnorm/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">7</div>
+            <div class="name">Backprop ninja<small>build gradients by hand · the hardest one</small></div>
+            <div class="time">2 h</div>
+            <a class="open" href="../04-hands-on/07-backprop-ninja/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">8</div>
+            <div class="name">WaveNet<small>convolutional architecture for sequences</small></div>
+            <div class="time">1.5 h</div>
+            <a class="open" href="../04-hands-on/08-wavenet/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">9</div>
+            <div class="name">Build GPT<small>the destination · 2 hours of pure attention</small></div>
+            <div class="time">2 h</div>
+            <a class="open" href="../04-hands-on/09-build-gpt/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">10</div>
+            <div class="name">GPT addition<small>train your GPT to do arithmetic</small></div>
+            <div class="time">1 h</div>
+            <a class="open" href="../04-hands-on/10-gpt-addition/index.md">Open</a>
+          </div>
+          <div class="submodule">
+            <div class="ix">11</div>
+            <div class="name">GPT tokenizer<small>BPE from scratch · the LLM glue</small></div>
+            <div class="time">2 h</div>
+            <a class="open" href="../04-hands-on/11-gpt-tokenizer/index.md">Open</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-cta">
+        <a class="primary" href="../04-hands-on/index.md">Open stage page →</a>
+        <a class="secondary" href="../attention-viz/index.html">Try the Attention Visualizer</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Stage 5: Research Paper ============ -->
+  <section class="stage glass">
+    <div class="stage-head">
+      <div class="stage-num">5</div>
+      <div class="info">
+        <h2>Read one <em>research paper</em> critically</h2>
+        <div class="by">Closing the loop · earn the right to skim arXiv</div>
+        <div class="desc">Pick one influential paper (Attention Is All You Need is the canonical choice), read it line-by-line, write a 1-page summary in your own words. After this you'll know whether a new paper is worth your weekend.</div>
+      </div>
+      <div class="meta">
+        <div class="time">1 <small>hour</small></div>
+        <div class="pace">read + write</div>
+      </div>
+    </div>
+
+    <div class="stage-body">
+      <div style="font-family: var(--serif); font-size: 14.5px; color: var(--ink-2); line-height: 1.55;">
+        Recommended paper: <em>Attention Is All You Need</em> (Vaswani et al., 2017) — the original transformer paper. Read on
+        <a href="https://arxiv.org/abs/1706.03762" target="_blank" style="color: var(--area); text-decoration: underline; text-underline-offset: 2px;">arXiv</a>.
+        Write your own one-pager covering: what problem does it solve, what's the key idea, what's the experimental result, what would you do next.
+      </div>
+      <div class="stage-cta">
+        <a class="primary" href="../05-research-paper/index.md">Open stage page →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Team + Ground Rules ============ -->
+  <section class="row">
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Your team</span>
+        <span class="meta">2 agents · ask anything</span>
+      </div>
+      <div class="agent">
+        <div class="glyph">🎓</div>
+        <div>
+          <div class="name">Mentor</div>
+          <div class="what">Plans your week, sets pace, flags when you're behind. Explains math intuitions (matrix ops, chain rule, probability). Owns <code style="font-family:var(--mono);font-size:11px;background:rgba(46,65,86,0.08);padding:1px 5px;border-radius:4px;">progress/progress.csv</code> and the dashboard.</div>
+        </div>
+      </div>
+      <div class="agent">
+        <div class="glyph">💻</div>
+        <div>
+          <div class="name">Code Tutor</div>
+          <div class="what">Reviews your notebook attempts. Explains PyTorch + Python patterns. Will refuse to write your code for you.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-head">
+        <span class="title">Ground rules</span>
+        <span class="meta">non-negotiable</span>
+      </div>
+      <div class="rules">
+        <div class="rule"><div class="n">1</div><div class="what"><strong>Do exercises yourself.</strong> Wrong attempts teach more than copying a solution.</div></div>
+        <div class="rule"><div class="n">2</div><div class="what"><strong>Type the code.</strong> Do not copy-paste from Karpathy's videos. Your fingers need the reps.</div></div>
+        <div class="rule"><div class="n">3</div><div class="what"><strong>Write in the notes fields.</strong> Each section has a "My notes" block. Future-you needs them.</div></div>
+        <div class="rule"><div class="n">4</div><div class="what"><strong>If you're stuck &gt; 30 min</strong>, ask the tutors — don't ask ChatGPT (it'll give you spoilers).</div></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer">AI Hero · Course · self-paced · ship it 🚀</p>
+
+</main>
+</body>
+</html>
