@@ -70,3 +70,6 @@ covers-backup/
 
 # Music-factory test artifacts
 music-factory/still-alive-v2/
+
+# Local TODO / scratch notes
+/TODO.local.md
