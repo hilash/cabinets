@@ -42,3 +42,31 @@ covers-backup/
 
 # Runtime dashboard snapshots
 **/analytics/dashboard-context.md
+
+# Internal release/planning docs — local only, repo holds cabinets only
+/CABINET-IDEAS.md
+/CABINET-PERSONAS.csv
+/CABINET-TOP-100-X.csv
+/COMPLETE-SETUP-SUMMARY.md
+/COVER-IMAGE-GENERATION.md
+/ECOSYSTEM-ARCHITECTURE.md
+/HOW-TO-WRITE-CABINET.md
+/MOM-BABY-CABINET-SERIES.md
+/QUICK-START-IMAGE-GENERATION.md
+/RELEASE-INDEX.md
+/RELEASE-WORKFLOW.md
+/STYLE-GUIDE/
+
+# Cabinet-instance runtime files (research, tailored CVs, dated outreach, etc.)
+**/cv-lab/cv-*.md
+**/evaluations/research-*.md
+**/evaluations/pipeline-*-*.md
+**/evaluations/*-2026-*.md
+**/interview-prep/*-prep.md
+**/interview-prep/*-debrief.md
+**/interview-prep/*-negotiation.md
+**/outreach/cadence-*.md
+**/outreach/follow-up-*.md
+
+# Music-factory test artifacts
+music-factory/still-alive-v2/
