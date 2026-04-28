@@ -1,0 +1,4 @@
+ID,Company,Role,Status,Score,Discovered,Applied,Last Update,Source,Portal Type,Contact,Salary Range,Block A,Block B,Block C,Block D,Block E,Block F,Notes
+1,"Example Corp","Senior Product Manager",Evaluated,4.2,"2026-01-10","","2026-01-12",Career Page,Greenhouse,,"EUR 140-180K",4.3,4.1,4.2,4.0,4.3,4.3,"Template row — copy to tracker.csv (gitignored) and replace with your real pipeline."
+2,"Example Inc","PM, Platform",Applied,3.9,"2026-01-08","2026-01-11","2026-01-11",LinkedIn,Lever,,"EUR 130-170K",4.0,3.8,3.9,3.7,4.0,4.0,"Template row."
+3,"Example Co","Head of Product",Screen,4.4,"2026-01-05","2026-01-09","2026-01-15",Referral,Ashby,"Recruiter Name (Role)","EUR 160-200K",4.5,4.3,4.4,4.2,4.5,4.4,"Template row."

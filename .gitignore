@@ -4,3 +4,41 @@
 .agents/.conversations/
 .agents/.memory/
 .agents/.messages/
+**/.agents/.conversations/
+**/.agents/.memory/
+**/.agents/.messages/
+
+# Cover-generation tooling — local only, NOT for public registry
+scripts/
+covers-backup/
+
+# Local cabinet-manager metadata
+.cabinet-meta
+.repo.yaml
+
+# Temp / leftover files
+**/cover.jpg.tmp
+**/*.tmp
+**/__pycache__/
+
+# Finder leftovers
+**/New Folder With Items/
+
+# Per-cabinet runtime analytics output (not template content)
+**/analytics/pattern-analysis-*.md
+
+# Runtime analytics and pipeline outputs (per-cabinet, not templates)
+**/analytics/pipeline-health-*.md
+**/analytics/rejection-pattern-analysis-*.md
+**/pipeline/scan-digest-*.md
+**/cv-lab/audit-*.md
+
+# Per-cabinet local cabinet-manager metadata
+**/.cabinet-meta
+**/.repo.yaml
+
+# Pipeline tracker uses real data — must be local-only
+**/pipeline/tracker.csv
+
+# Runtime dashboard snapshots
+**/analytics/dashboard-context.md
