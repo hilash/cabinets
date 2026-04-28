@@ -12,9 +12,9 @@ jobs:
   trigger:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger cabinets-web rebuild
+      - name: Trigger cabinets-website rebuild
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.CABINETS_WEB_PAT }}
-          repository: ${{ github.repository_owner }}/cabinets-web
+          repository: ${{ github.repository_owner }}/cabinets-website
           event-type: registry-updated
