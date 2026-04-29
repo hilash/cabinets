@@ -1,0 +1,16 @@
+{
+  "name": "cabinets-manifest-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Builds manifest.json — single source of truth for downstream cabinet clients",
+  "type": "module",
+  "scripts": {
+    "manifest": "node build-manifest.mjs"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-04-29T10:25:24.995Z",
+  "cabinetCount": 27,
+  "cabinets": [
+    {
+      "slug": "agency",
+      "name": "Digital Agency",
+      "description": "Digital agency managing multiple client engagements with shared processes and templates.",
+      "version": "0.1.0",
+      "domain": "Professional Services",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 2,
+      "childCount": 2,
+      "tags": [
+        "agency",
+        "services",
+        "multi-client",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "ai-hero",
+      "name": "AI Hero",
+      "description": "Self-paced AI course — 20 hours of math, intuition, theory, and hands-on LLM construction. Build a neural net from pure Python up through GPT-2, with embedded videos, interactive notebooks, checklists, and a progress dashboard.\n",
+      "version": "0.1.0",
+      "domain": "Education",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "course",
+        "ai",
+        "llm",
+        "self-paced"
+      ]
+    },
+    {
+      "slug": "biology-experiments",
+      "name": "Biology Experiments",
+      "description": "Five interactive simulations of landmark biology experiments — Griffith's transformation, Hershey-Chase, Mendel's peas, Meselson-Stahl, and Miller-Urey. The experiments that proved DNA is the genetic material, that inheritance is particulate, that DNA replication is semiconservative, and that life's building blocks form from a primordial soup. Vanilla JS, runs in the browser.\n",
+      "version": "0.1.0",
+      "domain": "Education",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 1,
+      "childCount": 0,
+      "tags": [
+        "biology",
+        "experiments",
+        "simulations",
+        "history-of-science"
+      ]
+    },
+    {
+      "slug": "book-factory",
+      "name": "Book Factory",
+      "description": "A complete book-writing OS in a directory. Fill in three placeholders (who you are, what the book is about, format + audience), run the bootstrap prompt, and a book-coach agent builds your premise sheet, a 12-chapter outline, drafts chapter 1, generates cover-art prompts, drafts the back-cover blurb, and recommends a publishing path (KDP / IngramSpark / Draft2Digital / hybrid / query agent route). Designed for non-fiction; adaptable to memoir.\n",
+      "version": "0.1.0",
+      "domain": "Media",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "book",
+        "writing",
+        "template"
+      ]
+    },
+    {
+      "slug": "career-ops",
+      "name": "Career Ops",
+      "description": "AI-powered job search command center. Evaluate offers with a 6-block scoring system, scan 45+ company portals, generate ATS-optimized CVs, and track your pipeline with data-driven precision. Inspired by santifer/career-ops (MIT) by Santiago Fernandez.\n",
+      "version": "0.1.0",
+      "domain": "Operations",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 5,
+      "childCount": 0,
+      "tags": [
+        "job-search",
+        "career",
+        "ai-powered",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "content-creator",
+      "name": "Content Creator",
+      "description": "Solo content creator operation with strategy, editing, and analytics workflows.",
+      "version": "0.1.0",
+      "domain": "Media",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "creator",
+        "content",
+        "solo",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "cooking",
+      "name": "Cooking",
+      "description": "A cabinet for cooking at home — what's in the fridge, what's about to expire, what to make tonight. Recipe Tonight webapp picks dinner from your pantry, weekly meal plan generates the shopping list, recipes are saved with notes so the next time you make them they're better. One agent: Chef.\n",
+      "version": "0.1.0",
+      "domain": "Lifestyle",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 1,
+      "childCount": 0,
+      "tags": [
+        "cooking",
+        "recipes",
+        "meal-planning",
+        "pantry"
+      ]
+    },
+    {
+      "slug": "course-factory",
+      "name": "Course Factory",
+      "description": "A complete online-course OS in a directory. Fill in three placeholders (who you are, what the course teaches, format + price), run the bootstrap prompt, and a course-creator agent builds your curriculum outline, an 8-module syllabus, drafts the welcome lesson, generates slide prompts, sales-page copy, and a launch-week sequence — plus a platform recommendation (Teachable / Maven / Kajabi / Podia / School / self-hosted).\n",
+      "version": "0.1.0",
+      "domain": "Education",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "course",
+        "education",
+        "template"
+      ]
+    },
+    {
+      "slug": "ecommerce",
+      "name": "E-commerce Store",
+      "description": "Direct-to-consumer e-commerce brand with inventory, email marketing, and fulfillment operations.",
+      "version": "0.1.0",
+      "domain": "E-commerce",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "ecommerce",
+        "dtc",
+        "retail",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "fitness",
+      "name": "Fitness",
+      "description": "A cabinet for strength, mobility, and conditioning. The Strength Console tracks your top sets per movement, current cycle, weekly volume, and recovery. Coach plans the week's training, suggests deloads when volume spikes, and keeps the program coherent across cycles. One agent: Coach.\n",
+      "version": "0.1.0",
+      "domain": "Lifestyle",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 1,
+      "childCount": 0,
+      "tags": [
+        "fitness",
+        "strength",
+        "training",
+        "log"
+      ]
+    },
+    {
+      "slug": "job-hunt-hq",
+      "name": "Job Hunt HQ",
+      "description": "Job search is a full-time job. This cabinet staffs it with a career strategist, resume tailor, interview coach, and networking scout.",
+      "version": "0.1.0",
+      "domain": "Operations",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 4,
+      "childCount": 0,
+      "tags": [
+        "job-search",
+        "career",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "keto-hq",
+      "name": "Keto HQ",
+      "description": "Specialty protocol cabinet for ketogenic eating. Macros, electrolytes, ketone tracking, stall diagnosis, meal planning. Designed to plug into personal-os/health data (labs, weight, workouts) while staying installable standalone. Every recommendation cites a source.\n",
+      "version": "0.1.0",
+      "domain": "Lifestyle",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 4,
+      "childCount": 0,
+      "tags": [
+        "keto",
+        "nutrition",
+        "protocol",
+        "specialty"
+      ]
+    },
+    {
+      "slug": "mom-command",
+      "name": "Mom Command",
+      "description": "The always-installed root for the Mom & Baby cabinet series. Holds the shared family context — baby profile, growth chart, feed/sleep/diaper logs, milestone log, vaccination schedule, pediatrician info, emergency contacts. Pairs with one stage cabinet at a time (newborn, infant, crawler, etc.). One agent: Martha, your chief of staff.\n",
+      "version": "0.1.0",
+      "domain": "Lifestyle",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "family",
+        "baby",
+        "parenting",
+        "root"
+      ]
+    },
+    {
+      "slug": "music-factory",
+      "name": "Music Factory",
+      "description": "A browser-native MIDI factory. Pick a famous public-domain song, watch the piano roll, listen via Web Audio synthesis, download a real .mid file. Ships with Ode to Joy, Für Elise, Twinkle Twinkle, Jingle Bells, Happy Birthday, Tetris (Korobeiniki), Canon in D, and When the Saints Go Marching In — plus the original Portal \"Still Alive\" player as a sub-app.\n",
+      "version": "0.2.0",
+      "domain": "Media",
+      "cover": "cover.jpg",
+      "agentCount": 0,
+      "jobCount": 0,
+      "childCount": 0,
+      "tags": [
+        "music",
+        "midi",
+        "browser-apps",
+        "public-domain"
+      ]
+    },
+    {
+      "slug": "newborn",
+      "name": "Newborn (0–3 months)",
+      "description": "The survival cabinet for weeks 0–12 with a brand-new baby. Pairs with mom-command (the always-installed root). One agent: Martha, your newborn counselor — same Martha as every other Mom & Baby cabinet, just titled for this stage. Full-screen Survival Tracker webapp, 20 short wiki pages on newborn essentials, milestone CSV, and a clear red-flags page for when to call the doctor.\n",
+      "version": "0.1.0",
+      "domain": "Lifestyle",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "newborn",
+        "fourth-trimester",
+        "survival",
+        "0-3-months"
+      ]
+    },
+    {
+      "slug": "newsletter-factory",
+      "name": "Newsletter Factory",
+      "description": "A complete newsletter OS in a directory. Fill in three placeholders (who you are, what the newsletter is about, your style and cadence), run the bootstrap prompt, and an editor-in-chief agent builds your brand voice, a 12-issue content calendar, drafts the launch issue, generates subject-line variants, and recommends a platform (Substack / Beehiiv / ConvertKit / Ghost) with growth-loop tactics.\n",
+      "version": "0.1.0",
+      "domain": "Media",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "newsletter",
+        "email",
+        "content",
+        "template"
+      ]
+    },
+    {
+      "slug": "personal-os",
+      "name": "Personal OS",
+      "description": "Your life has departments. Staff them. A second-brain / personal-assistant cabinet with six life areas — brain, family, home, money, health, play — each with its own agents, jobs, and working files.\n",
+      "version": "0.1.0",
+      "domain": "Operations",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 1,
+      "childCount": 6,
+      "tags": [
+        "personal",
+        "pkm",
+        "second-brain",
+        "life-ops"
+      ]
+    },
+    {
+      "slug": "physics-101",
+      "name": "Physics 101",
+      "description": "A 6-module beginner physics curriculum — Motion, Forces, Energy, Waves, Electricity, Light. Each module follows the same pedagogy: hook, core concepts, interactive element, worked example, practice questions, bridge to the next module. No calculus assumed; algebra and basic geometry only.\n",
+      "version": "0.1.0",
+      "domain": "Education",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 1,
+      "childCount": 0,
+      "tags": [
+        "curriculum",
+        "physics",
+        "education"
+      ]
+    },
+    {
+      "slug": "physics-experiments",
+      "name": "Physics Experiments",
+      "description": "Five interactive, self-contained simulations of classic physics experiments — double-slit, pendulum wave, projectile motion, wave interference, and the brachistochrone race. Vanilla JS + Canvas 2D, zero build step, runs entirely in the browser. Each experiment is a full-screen Cabinet app you can open from the sidebar.\n",
+      "version": "0.1.0",
+      "domain": "Education",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 1,
+      "childCount": 0,
+      "tags": [
+        "physics",
+        "experiments",
+        "simulations"
+      ]
+    },
+    {
+      "slug": "podcast-factory",
+      "name": "Podcast Factory",
+      "description": "A complete Podcast OS in a directory. Fill in three placeholders (who you are, what the show is about, your style), run the bootstrap prompt, and a podcast-producer agent builds out your brand page, a 12-episode content calendar, scripts, shownotes, cover-art prompts, and a recording-platform decision guide (Riverside, StreamYard, Zencastr, audio-only).\n",
+      "version": "0.1.0",
+      "domain": "Media",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "podcast",
+        "audio",
+        "content",
+        "template"
+      ]
+    },
+    {
+      "slug": "reading-room",
+      "name": "Reading Room",
+      "description": "A cabinet for what you read — TBR, currently reading, finished, with star ratings, three-bullet \"what I learned\", and a year-in-review wall. Goodreads but private, beautiful, and your data on your disk. Librarian curates.\n",
+      "version": "0.1.0",
+      "domain": "Education",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 1,
+      "childCount": 0,
+      "tags": [
+        "reading",
+        "books",
+        "library",
+        "learning"
+      ]
+    },
+    {
+      "slug": "real-estate",
+      "name": "Real Estate Brokerage",
+      "description": "Real estate brokerage with listings management, marketing, and client relationship operations.",
+      "version": "0.1.0",
+      "domain": "Sales",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 2,
+      "childCount": 3,
+      "tags": [
+        "real-estate",
+        "brokerage",
+        "property",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "saas-startup",
+      "name": "SaaS Startup",
+      "description": "B2B SaaS startup with product-led growth, engineering, and customer success teams.",
+      "version": "0.1.0",
+      "domain": "Software",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "saas",
+        "b2b",
+        "startup",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "text-your-mom",
+      "name": "Text Your Mom",
+      "description": "Relatable B2C app company cabinet used to test nested cabinet behavior.",
+      "version": "0.1.0",
+      "domain": "Software",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 3,
+      "childCount": 3,
+      "tags": [
+        "example",
+        "b2c",
+        "company",
+        "cabinet"
+      ]
+    },
+    {
+      "slug": "usa-travel-planner",
+      "name": "USA Travel Planner",
+      "description": "An inspiration board for exploring the United States — interactive map of all 63 national parks with been-there checklist, every state fair, federal holidays, iconic regional fast-food chains, and a live event-hunter agent that scans X and news for cool things happening across the country.\n",
+      "version": "0.1.0",
+      "domain": "Lifestyle",
+      "cover": "cover.jpg",
+      "agentCount": 2,
+      "jobCount": 3,
+      "childCount": 0,
+      "tags": [
+        "travel",
+        "usa",
+        "inspiration",
+        "bucket-list"
+      ]
+    },
+    {
+      "slug": "wedding-planner",
+      "name": "Wedding Planner",
+      "description": "A complete wedding-planning OS in a directory. Fill in three placeholders (who you are, your vision, your budget + date), run the bootstrap prompt, and a planner agent builds your vendor matrix, budget tracker, 18-month timeline, guest-list scaffold, vow + speech generators, RSVP system, and a day-of runbook. One agent, two routines, complete sanity in the chaos.\n",
+      "version": "0.1.0",
+      "domain": "Lifestyle",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "wedding",
+        "planning",
+        "template"
+      ]
+    },
+    {
+      "slug": "youtube-channel-factory",
+      "name": "YouTube Channel Factory",
+      "description": "A complete YouTube OS in a directory. Fill in three placeholders (who you are, what your channel is about, your style and format), run the bootstrap prompt, and a creative-director agent builds out your channel brand, a 12-video content calendar, scripts, thumbnail prompts, and a production-gear decision guide (DSLR vs mirrorless vs phone, editing software, audio chain).\n",
+      "version": "0.1.0",
+      "domain": "Media",
+      "cover": "cover.jpg",
+      "agentCount": 1,
+      "jobCount": 2,
+      "childCount": 0,
+      "tags": [
+        "youtube",
+        "video",
+        "content",
+        "template"
+      ]
+    }
+  ]
+}

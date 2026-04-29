@@ -9,8 +9,10 @@
 **/.agents/.messages/
 
 # Cover-generation tooling — local only, NOT for public registry
-scripts/
+# (anchored to repo root so .github/scripts/ — the manifest builder — stays tracked)
+/scripts/
 covers-backup/
+.github/scripts/node_modules/
 
 # Local cabinet-manager metadata
 .cabinet-meta

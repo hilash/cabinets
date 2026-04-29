@@ -1,0 +1,62 @@
+name: Build manifest
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'manifest.json'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'RELEASE-INDEX.md'
+      - 'RELEASE-WORKFLOW.md'
+      - 'ECOSYSTEM-ARCHITECTURE.md'
+      - 'COVER-IMAGE-GENERATION.md'
+      - 'COMPLETE-SETUP-SUMMARY.md'
+      - 'MOM-BABY-CABINET-SERIES.md'
+      - 'TODO.local.md'
+      - 'STYLE-GUIDE/**'
+      - '.github/workflows/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/PULL_REQUEST_TEMPLATE.md'
+      - '.gitignore'
+      - 'covers-backup/**'
+      - 'CABINET-TOP-100-X.csv'
+      - 'CABINET-PERSONAS.csv'
+      - 'QUICK-START-IMAGE-GENERATION.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-manifest
+  cancel-in-progress: false
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install manifest deps
+        working-directory: .github/scripts
+        run: npm ci
+
+      - name: Build manifest.json
+        run: node .github/scripts/build-manifest.mjs
+
+      - name: Commit manifest if changed
+        run: |
+          if git diff --quiet -- manifest.json; then
+            echo "manifest.json unchanged"
+            exit 0
+          fi
+          git config user.name "cabinet-bot"
+          git config user.email "bot@runcabinet.com"
+          git add manifest.json
+          git commit -m "chore: rebuild manifest.json [skip ci]"
+          git push
