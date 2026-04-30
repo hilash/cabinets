@@ -8,10 +8,8 @@
 **/.agents/.memory/
 **/.agents/.messages/
 
-# Cover-generation tooling — local only, NOT for public registry
-# (anchored to repo root so .github/scripts/ — the manifest builder — stays tracked)
-/scripts/
-covers-backup/
+# Local docs, planning, and tooling — not for public registry
+/cabinets-docs/
 .github/scripts/node_modules/
 
 # Local cabinet-manager metadata
@@ -45,20 +43,6 @@ covers-backup/
 # Runtime dashboard snapshots
 **/analytics/dashboard-context.md
 
-# Internal release/planning docs — local only, repo holds cabinets only
-/CABINET-IDEAS.md
-/CABINET-PERSONAS.csv
-/CABINET-TOP-100-X.csv
-/COMPLETE-SETUP-SUMMARY.md
-/COVER-IMAGE-GENERATION.md
-/ECOSYSTEM-ARCHITECTURE.md
-/HOW-TO-WRITE-CABINET.md
-/MOM-BABY-CABINET-SERIES.md
-/QUICK-START-IMAGE-GENERATION.md
-/RELEASE-INDEX.md
-/RELEASE-WORKFLOW.md
-/STYLE-GUIDE/
-
 # Cabinet-instance runtime files (research, tailored CVs, dated outreach, etc.)
 **/cv-lab/cv-*.md
 **/evaluations/research-*.md
@@ -73,5 +57,3 @@ covers-backup/
 # Music-factory test artifacts
 music-factory/still-alive-v2/
 
-# Local TODO / scratch notes
-/TODO.local.md
