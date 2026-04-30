@@ -8,14 +8,17 @@ A cabinet is a directory on disk that contains everything an AI-powered team nee
 
 ```
 my-company/
-  .cabinet              # identity & metadata (YAML)
-  .cabinet-state/       # runtime state (gitkeep'd)
+  .cabinet              # identity & metadata (YAML, no extension)
+  .cabinet-state/       # runtime state (gitkeep'd, never committed)
   .agents/              # persistent AI team members
-    ceo/persona.md
-    cto/persona.md
+    ceo/
+      persona.md        # agent identity, heartbeat, behavior
+    cto/
+      persona.md
   .jobs/                # scheduled automations
     weekly-brief.yaml
-  index.md              # entry point
+  cover.jpg             # registry cover image (1200×630)
+  index.md              # entry point with frontmatter
   marketing/            # child cabinet
     reddit/             #   nested child cabinet
     tiktok/             #   nested child cabinet
@@ -189,9 +192,17 @@ tags:
 A consumer app that helps people stay close to family...
 ```
 
+### `cover.jpg`
+
+The registry cover image shown in the Cabinet app carousel and browser. Every cabinet in this registry ships with one.
+
+- **Size:** 1200×630 px
+- **File size:** under 100 KB
+- **Style:** pastel, minimalist, flat — soft gradient background, a single centered icon or simple illustration, the cabinet name in clean sans-serif. No photos, no busy layouts.
+
 ### `.cabinet-state/` (runtime directory)
 
-Reserved for runtime state. Kept empty with a `.gitkeep` in templates.
+Reserved for runtime state — conversation history, agent memory, generated outputs. Kept empty with a `.gitkeep` in templates so the directory exists but nothing inside gets committed.
 
 ## Cabinet Tree Structure
 
@@ -269,14 +280,46 @@ Or with git directly:
 git clone --filter=blob:none --sparse https://github.com/hilash/cabinets.git && cd cabinets && git sparse-checkout set text-your-mom
 ```
 
+## Community
+
+Have a cabinet idea? Want to see what others are building?
+
+Join the **[Cabinet Discord](https://discord.com/invite/hJa5TRTbTH)**:
+
+- **`#cabinets` channel** — request a cabinet you'd like to see, upvote others' ideas, or share one you built
+- Ask questions about the format, get feedback on your structure, or just lurk and see what's coming next
+
 ## Contributing
 
-To add a cabinet to the registry:
+Want to add a cabinet to the registry? Here's the full checklist.
 
-1. Fork this repo
-2. Create a new directory with your cabinet name (kebab-case)
-3. Include at minimum: `.cabinet`, `.agents/`, `.jobs/`, `index.md`, `.cabinet-state/.gitkeep`
-4. Submit a pull request
+### Required files
+
+Every cabinet must include these files — no exceptions:
+
+```
+my-cabinet/
+  .cabinet                      # YAML identity file (see schema above)
+  .cabinet-state/
+    .gitkeep                    # keeps the dir in git; nothing else goes here
+  .agents/
+    <slug>/
+      persona.md                # at least one agent
+  .jobs/
+    <name>.yaml                 # at least one job
+  index.md                      # entry point with YAML frontmatter
+  cover.jpg                     # 1200×630 px, < 100 KB, pastel minimalist style
+```
+
+### Steps
+
+1. Scaffold with `npx create-cabinet` or copy an existing cabinet as a starting point
+2. Fill in real content — agents with clear personas, jobs with useful prompts, an `index.md` that explains the cabinet's purpose
+3. Add a `cover.jpg` that matches the registry style: pastel background, single icon or simple illustration, cabinet name in clean sans-serif
+4. Run `node .github/scripts/build-manifest.mjs` locally and confirm your cabinet appears in `manifest.json`
+5. Fork this repo, add your cabinet directory, and open a pull request — CI rebuilds the manifest on merge
+
+Not sure where to start or want feedback before opening a PR? Post in the [#cabinets channel on Discord](https://discord.com/invite/hJa5TRTbTH).
 
 ## License
 
