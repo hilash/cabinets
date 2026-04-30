@@ -28,24 +28,37 @@ A cabinet is just a directory. Copy it, version it, share it — it works anywhe
 
 Each top-level directory in this repo is a complete cabinet template you can install and customize.
 
-| Cabinet | Type | Agents | Jobs | Children | Description |
-|---------|------|--------|------|----------|-------------|
-| [text-your-mom](./text-your-mom) | B2C | 16 | 12 | 3 | Consumer app company with marketing (TikTok, Reddit) and engineering teams |
-| [career-ops](./career-ops) | Personal | 10 | 5 | 0 | AI-powered job search command center with pipeline tracking and CV tailoring |
-| [job-hunt-hq](./job-hunt-hq) | Personal | 4 | 4 | 0 | Job hunt cabinet with interview prep, networking, and application pipeline |
-| [real-estate](./real-estate) | Industry | 5 | 5 | 3 | Real estate brokerage with listings, marketing, and client relations |
-| [agency](./agency) | B2B | 4 | 4 | 2 | Digital agency managing multiple client engagements |
-| [saas-startup](./saas-startup) | B2B | 3 | 2 | 0 | SaaS startup with product-led growth |
-| [content-creator](./content-creator) | Solo | 3 | 2 | 0 | Solo content creator operation |
-| [ecommerce](./ecommerce) | B2C | 2 | 2 | 0 | Direct-to-consumer e-commerce brand |
-| [podcast-factory](./podcast-factory) | Solo | 1 | 2 | 0 | Podcast OS — bootstrap builds brand, calendar, scripts, shownotes, cover-art prompts, recording-platform guide |
-| [youtube-channel-factory](./youtube-channel-factory) | Solo | 1 | 2 | 0 | YouTube OS — brand, content calendar, scripts (7 formats), thumbnail briefs, gear matrix, SEO + Shorts playbook |
-| [newsletter-factory](./newsletter-factory) | Solo | 1 | 2 | 0 | Newsletter OS — brand, issue calendar, drafts, subject-line + opening-hook generators, platform + growth guides |
-| [wedding-planner](./wedding-planner) | Personal | 1 | 2 | 0 | Wedding OS — vision, vendor matrix, 18-month timeline, budget tracker, vow + speech generators, day-of runbook |
-| [course-factory](./course-factory) | Solo | 1 | 2 | 0 | Course OS — transformation spec, 8-module syllabus, lesson + slide briefs, sales page, launch sequence |
-| [book-factory](./book-factory) | Solo | 1 | 2 | 0 | Book OS — premise sheet, 12-chapter outline, chapter drafts, cover-art + blurb generators, publishing-path matrix |
+| Cabinet | Domain | Agents | Jobs | Children | Description |
+|---------|--------|--------|------|----------|-------------|
+| [agency](./agency) | Professional Services | 2 | 2 | 2 | Digital agency managing multiple client engagements |
+| [ai-hero](./ai-hero) | Education | 2 | 2 | 0 | Self-paced AI course from Python up through GPT-2 construction |
+| [biology-experiments](./biology-experiments) | Education | 1 | 1 | 0 | Five browser-based simulations of landmark biology experiments |
+| [book-factory](./book-factory) | Media | 1 | 2 | 0 | Book OS — premise, outline, chapter draft, blurb, and publishing-path matrix |
+| [career-ops](./career-ops) | Operations | 2 | 5 | 0 | AI-powered job search command center with pipeline tracking and CV tailoring |
+| [content-creator](./content-creator) | Media | 2 | 2 | 0 | Solo content creator operation with strategy, editing, and analytics |
+| [cooking](./cooking) | Lifestyle | 1 | 1 | 0 | Pantry tracker, recipe suggestions, and weekly meal-plan generator |
+| [course-factory](./course-factory) | Education | 1 | 2 | 0 | Course OS — curriculum, lessons, sales page, and launch sequence |
+| [ecommerce](./ecommerce) | E-commerce | 2 | 2 | 0 | DTC brand with inventory, email marketing, and fulfillment ops |
+| [fitness](./fitness) | Lifestyle | 1 | 1 | 0 | Strength and conditioning tracker with smart deload suggestions |
+| [job-hunt-hq](./job-hunt-hq) | Operations | 2 | 4 | 0 | Career strategist, resume tailor, interview coach, and networking scout |
+| [keto-hq](./keto-hq) | Lifestyle | 2 | 4 | 0 | Macros, electrolytes, stall diagnosis, and meal planning for keto protocol |
+| [mom-command](./mom-command) | Lifestyle | 1 | 2 | 0 | Root cabinet for the Mom & Baby series — shared family context and data |
+| [music-factory](./music-factory) | Media | 0 | 0 | 0 | Browser-native MIDI factory with piano roll, Web Audio playback, and .mid export |
+| [newborn](./newborn) | Lifestyle | 1 | 2 | 0 | Survival tracker for weeks 0–12 — feeds, sleep, milestones, red flags |
+| [newsletter-factory](./newsletter-factory) | Media | 1 | 2 | 0 | Newsletter OS — brand voice, calendar, drafts, subject-line generators, platform guide |
+| [personal-os](./personal-os) | Operations | 1 | 1 | 6 | Second-brain cabinet with six life areas (brain, family, home, money, health, play) |
+| [physics-101](./physics-101) | Education | 1 | 1 | 0 | 6-module beginner curriculum — Motion through Light, no calculus required |
+| [physics-experiments](./physics-experiments) | Education | 1 | 1 | 0 | Five browser-based simulations of classic physics experiments |
+| [podcast-factory](./podcast-factory) | Media | 1 | 2 | 0 | Podcast OS — brand, calendar, scripts, shownotes, and recording-platform guide |
+| [reading-room](./reading-room) | Education | 1 | 1 | 0 | Private Goodreads — TBR, ratings, what-I-learned notes, year-in-review |
+| [real-estate](./real-estate) | Sales | 2 | 2 | 3 | Real estate brokerage with listings management, marketing, and client relations |
+| [saas-startup](./saas-startup) | Software | 2 | 2 | 0 | B2B SaaS with product-led growth, engineering, and customer success |
+| [text-your-mom](./text-your-mom) | Software | 2 | 3 | 3 | B2C app company with TikTok, Reddit, and engineering child cabinets |
+| [usa-travel-planner](./usa-travel-planner) | Lifestyle | 2 | 3 | 0 | National parks map, state fairs, and event-hunter agent for US travel |
+| [wedding-planner](./wedding-planner) | Lifestyle | 1 | 2 | 0 | Wedding OS — timeline, budget tracker, vow generators, and day-of runbook |
+| [youtube-channel-factory](./youtube-channel-factory) | Media | 1 | 2 | 0 | YouTube OS — brand, calendar, scripts, thumbnail briefs, and gear guide |
 
-**Totals:** 14 cabinets, 53 agents, 48 jobs across the registry.
+**Totals:** 27 cabinets, 37 agents, 54 jobs across the registry.
 
 ## Cabinet File Format
 
